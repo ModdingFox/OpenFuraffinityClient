@@ -106,7 +106,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
                 public void onClick(View v) {
                     try {
                         Intent intent = new Intent(v.getContext(), Class.forName(mDataSet.get(position).get("postClass")));
-                        intent.putExtra(mDataSet.get(position).get("messageId"), mDataSet.get(position).get("postLink"));
+                        intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("postLink"));
                         v.getContext().startActivity(intent);
                     } catch (ClassNotFoundException e) {
                         Log.e(TAG, "onClick: ", e);
