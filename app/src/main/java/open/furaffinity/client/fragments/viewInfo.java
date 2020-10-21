@@ -46,7 +46,7 @@ public class viewInfo extends Fragment {
     }
 
     private void fetchPageData() {
-        submissionCommentsString =getArguments().getString(messageIds.submissionComments_MESSAGE);
+        submissionCommentsString = getArguments().getString(messageIds.submissionComments_MESSAGE);
         submissionFavoritesString = getArguments().getString(messageIds.submissionFavorites_MESSAGE);
         submissionViewsString = getArguments().getString(messageIds.submissionViews_MESSAGE);
         submissionRatingString = getArguments().getString(messageIds.submissionRating_MESSAGE);

@@ -57,12 +57,10 @@ public class watch extends Fragment {
     }
 
     private void fetchPageData() {
-        if(isFirstLoad)
-        {
+        if (isFirstLoad) {
             mDataSet = watchList.processWatchList(getArguments().getString(messageIds.userWatchRecent_MESSAGE), true);
             isFirstLoad = false;
-        }
-        else {
+        } else {
             if (!(loadingStopCounter == 0)) {
                 page = new open.furaffinity.client.pages.watchList(page);
                 try {

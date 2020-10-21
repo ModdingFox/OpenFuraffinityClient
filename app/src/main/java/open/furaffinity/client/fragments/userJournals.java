@@ -54,8 +54,7 @@ public class userJournals extends Fragment {
             page = new open.furaffinity.client.pages.journals(page);
             try {
                 page.execute(webClient).get();
-            }
-            catch (ExecutionException | InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "loadNextPage: ", e);
             }
 

@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
@@ -51,6 +52,7 @@ public class browse extends Fragment {
     private FloatingActionButton fab;
 
     private webClient webClient;
+    private loginTest loginTest;
     private open.furaffinity.client.pages.browse page;
 
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
@@ -75,12 +77,15 @@ public class browse extends Fragment {
 
     private void initClientAndPage() {
         webClient = new webClient(this.getActivity());
+        loginTest = new loginTest();
         page = new open.furaffinity.client.pages.browse();
     }
 
     private void fetchPageData() {
+        loginTest = new loginTest();
         page = new open.furaffinity.client.pages.browse(page);
         try {
+            loginTest.execute(webClient).get();
             page.execute(webClient).get();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
@@ -97,6 +102,14 @@ public class browse extends Fragment {
     }
 
     private void updateUIElements() {
+        if (loginTest.getIsLoggedIn()) {
+            browseRatingMatureSwitch.setVisibility(View.VISIBLE);
+            browseRatingAdultSwitch.setVisibility(View.VISIBLE);
+        } else {
+            browseRatingMatureSwitch.setVisibility(View.GONE);
+            browseRatingAdultSwitch.setVisibility(View.GONE);
+        }
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new imageListAdapter(mDataSet);
@@ -111,8 +124,14 @@ public class browse extends Fragment {
         uiControls.spinnerSetAdapter(requireContext(), browsePerpageSpinner, page.getPerpage(), page.getCurrentPerpage(), true, true);
         browsePageEditText.setText(page.getCurrentPage());
         browseRatingGeneralSwitch.setChecked((!page.getCurrentRatingGeneral().equals("")));
-        browseRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
-        browseRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
+
+        if (loginTest.getIsLoggedIn()) {
+            browseRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
+            browseRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
+        } else {
+            browseRatingMatureSwitch.setChecked(false);
+            browseRatingAdultSwitch.setChecked(false);
+        }
     }
 
     private void saveCurrentSettings() {
@@ -217,6 +236,14 @@ public class browse extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initClientAndPage();
+        fetchPageData();
+        updateUIElements();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

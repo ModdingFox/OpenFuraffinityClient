@@ -42,8 +42,7 @@ public class userGallery extends Fragment {
             gallery = new open.furaffinity.client.pages.gallery(gallery);
             try {
                 gallery.execute(webClient).get();
-            }
-            catch (ExecutionException | InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "loadNextPage: ", e);
             }
 

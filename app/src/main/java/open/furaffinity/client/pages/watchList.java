@@ -37,7 +37,7 @@ public class watchList extends AsyncTask<webClient, Void, Void> {
         List<HashMap<String, String>> result = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);
-        Elements watchListItems = doc.select(((isUserPageData)?("a"):("div.watch-list-items")));
+        Elements watchListItems = doc.select(((isUserPageData) ? ("a") : ("div.watch-list-items")));
 
         for (Element currentElement : watchListItems) {
             HashMap<String, String> newUser = new HashMap<>();

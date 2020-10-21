@@ -258,7 +258,7 @@ public class user extends AsyncTask<webClient, Void, Void> {
         return userShouts;
     }
 
-    public static List<HashMap<String, String>>  processShouts(String html) {
+    public static List<HashMap<String, String>> processShouts(String html) {
         List<HashMap<String, String>> result = new ArrayList<>();
 
         if (html != null && html.length() > 0) {

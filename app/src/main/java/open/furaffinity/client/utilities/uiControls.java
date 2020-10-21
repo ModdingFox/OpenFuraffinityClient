@@ -51,10 +51,9 @@ public class uiControls {
         }
 
         if (sortKeys) {
-            if(isNumeric) {
+            if (isNumeric) {
                 Collections.sort(spinnerData, (o1, o2) -> Integer.compare(Integer.parseInt(o1.getKey()), Integer.parseInt(o2.getKey())));
-            }
-            else {
+            } else {
                 Collections.sort(spinnerData, (o1, o2) -> compareStrings(o1.getKey(), o2.getKey()));
             }
         }

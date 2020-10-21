@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,16 +26,14 @@ public class mainActivity extends AppCompatActivity {
     private static final String TAG = mainActivity.class.getName();
     private AppBarConfiguration mAppBarConfiguration;
 
-    Toolbar toolbar;
-    DrawerLayout drawer;
-    NavigationView navigationView;
-    Menu navMenu;
-    NavController navController;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private Menu navMenu;
+    private NavController navController;
 
-    webClient webClient;
-    loginTest loginTest;
-
-    private boolean isLoggedIn;
+    private webClient webClient;
+    private loginTest loginTest;
 
     private void getElements() {
         toolbar = findViewById(R.id.toolbar);
@@ -61,17 +58,14 @@ public class mainActivity extends AppCompatActivity {
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
-
-        isLoggedIn = loginTest.getIsLoggedIn();
     }
 
     private void updateUIElements() {
-        if(isLoggedIn) {
+        if (loginTest.getIsLoggedIn()) {
             navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
             navMenu.findItem(R.id.nav_msg_others).setVisible(true);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
-        }
-        else {
+        } else {
             navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
             navMenu.findItem(R.id.nav_msg_others).setVisible(false);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
@@ -89,14 +83,6 @@ public class mainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        initClientAndPage();
-        fetchPageData();
-        updateUIElements();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -105,6 +91,14 @@ public class mainActivity extends AppCompatActivity {
         fetchPageData();
         updateUIElements();
         setupNavigationUI();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initClientAndPage();
+        fetchPageData();
+        updateUIElements();
     }
 
     @Override

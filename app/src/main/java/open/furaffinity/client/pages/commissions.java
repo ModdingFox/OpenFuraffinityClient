@@ -19,7 +19,7 @@ public class commissions extends AsyncTask<webClient, Void, Void> {
     }
 
     private void processPageData(String html) {
-        if(html != null) {
+        if (html != null) {
             Document doc = Jsoup.parse(html);
 
             Element userPageFlexItemUsernameH = doc.selectFirst("div.section-body :first-child > table :first-child > table");

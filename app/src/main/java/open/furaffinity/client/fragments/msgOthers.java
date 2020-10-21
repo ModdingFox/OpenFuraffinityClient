@@ -38,8 +38,7 @@ public class msgOthers extends Fragment {
     private void fetchPageData() {
         try {
             page.execute(webClient).get();
-        }
-        catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
     }

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 
 public class msgOthers extends AsyncTask<webClient, Void, Void> {

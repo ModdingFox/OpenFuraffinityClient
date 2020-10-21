@@ -13,9 +13,13 @@ public class loginTest extends AsyncTask<webClient, Void, Void> {
     @Override
     protected Void doInBackground(webClient... webClients) {
         Document doc = Jsoup.parse(webClients[0].sendGetRequest(webClients[0].getBaseUrl()));
-        if(doc.selectFirst("a[href=/login]") == null) { isLoggedIn = true; }
+        if (doc.selectFirst("a[href=/login]") == null) {
+            isLoggedIn = true;
+        }
         return null;
     }
 
-    public boolean getIsLoggedIn() { return isLoggedIn; }
+    public boolean getIsLoggedIn() {
+        return isLoggedIn;
+    }
 };

@@ -75,15 +75,12 @@ public class userActivitySectionsPagerAdapter extends FragmentPagerAdapter {
                 webViewContent newUserCommissionsFragment = new webViewContent();
                 commissions commissions = new commissions(user.getUserCommissionPath());
                 webClient webClient = new webClient(mContext);
-                try
-                {
+                try {
                     commissions.execute(webClient).get();
-                }
-                catch (InterruptedException | ExecutionException e)
-                {
+                } catch (InterruptedException | ExecutionException e) {
                     Log.e(TAG, "getItem: ", e);
                 }
-    
+
                 bundle.putString(messageIds.submissionDescription_MESSAGE, "<table>" + commissions.getCommissionBodyBody() + "</table>");
                 newUserCommissionsFragment.setArguments(bundle);
                 return newUserCommissionsFragment;
