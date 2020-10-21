@@ -32,59 +32,79 @@ import open.furaffinity.client.utilities.webClient;
 public class watch extends Fragment {
     private static final String TAG = watch.class.getName();
 
+    private LinearLayoutManager layoutManager;
+
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-    private LinearLayoutManager layoutManager;
 
-    Button button;
+    private Button button;
 
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.watchList watchList;
+    private open.furaffinity.client.pages.watchList page;
 
     private int loadingStopCounter = 3;
+    private boolean isFirstLoad = true;
+    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void loadPage() {
-        if (!(loadingStopCounter == 0)) {
-            watchList = new open.furaffinity.client.pages.watchList(watchList);
-            try {
-                watchList.execute(webClient).get();
-            }//we wait to get the data here. Fuck if i know the proper way to do this in android
-            catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "loadNextPage: ", e);
+    private void getElements(View rootView) {
+        layoutManager = new LinearLayoutManager(getActivity());
+
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        button = rootView.findViewById(R.id.button);
+    }
+
+    private void initClientAndPage() {
+        webClient = new webClient(this.getActivity());
+        page = new watchList(getArguments().getString(messageIds.userWatchesPath_MESSAGE));
+    }
+
+    private void fetchPageData() {
+        if(isFirstLoad)
+        {
+            mDataSet = watchList.processWatchList(getArguments().getString(messageIds.userWatchRecent_MESSAGE), true);
+            isFirstLoad = false;
+        }
+        else {
+            if (!(loadingStopCounter == 0)) {
+                page = new open.furaffinity.client.pages.watchList(page);
+                try {
+                    page.execute(webClient).get();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "loadNextPage: ", e);
+                }
+
+                List<HashMap<String, String>> pageResults = page.getPageResults();
+
+                if (pageResults.size() == 0 && loadingStopCounter > 0) {
+                    loadingStopCounter--;
+                }
+
+                //Deduplicate results
+                List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("item")).collect(Collectors.toList());
+                List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("item")).collect(Collectors.toList());
+                newPostPaths.removeAll(oldPostPaths);
+                pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("item"))).collect(Collectors.toList());
+                mDataSet.addAll(pageResults);
             }
-
-            List<HashMap<String, String>> pageResults = watchList.getPageResults();
-
-            if (pageResults.size() == 0 && loadingStopCounter > 0) {
-                loadingStopCounter--;
-            }
-
-            //Deduplicate results
-            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("item")).collect(Collectors.toList());
-            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("item")).collect(Collectors.toList());
-            newPostPaths.removeAll(oldPostPaths);
-            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("item"))).collect(Collectors.toList());
-            mDataSet.addAll(pageResults);
         }
     }
 
-    private void initEndlessRecyclerView(View rootView) {
-        loadPage();
-
-        recyclerView = rootView.findViewById(R.id.recyclerView);
+    private void updateUIElements() {
         recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new stringListAdapter(mDataSet);
+        recyclerView.setAdapter(mAdapter);
+    }
 
+    private void updateUIElementListeners(View rootView) {
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                watchList.setPage(Integer.toString(watchList.getPage() + 1));
+            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
+                page.setPage(Integer.toString(page.getPage() + 1));
                 int curSize = mAdapter.getItemCount();
-                loadPage();
+                fetchPageData();
                 mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
@@ -92,13 +112,20 @@ public class watch extends Fragment {
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        mAdapter = new stringListAdapter(mDataSet);
-        recyclerView.setAdapter(mAdapter);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                button.setVisibility(View.GONE);
+                mDataSet = new ArrayList<>();
+                fetchPageData();
+                updateUIElements();
+            }
+        });
     }
 
+    @Override
     public void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -109,39 +136,11 @@ public class watch extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_watch, container, false);
-
-        webClient = new webClient(this.getActivity());
-
-        List<HashMap<String, String>> usersList = new ArrayList<>();
-
-        Document doc = Jsoup.parse(getArguments().getString(messageIds.userWatchRecent_MESSAGE));
-        for (Element currentElement : doc.select("a")) {
-            HashMap<String, String> newUser = new HashMap<>();
-            newUser.put("item", currentElement.text());
-            newUser.put("path", currentElement.attr("href"));
-            newUser.put("class", open.furaffinity.client.activity.userActivity.class.getName());
-            newUser.put("messageId", messageIds.pagePath_MESSAGE);
-            usersList.add(newUser);
-        }
-
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-        button = rootView.findViewById(R.id.button);
-
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-
-        mAdapter = new stringListAdapter(usersList);
-        recyclerView.setAdapter(mAdapter);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                button.setVisibility(View.GONE);
-                watchList = new watchList(getArguments().getString(messageIds.userWatchesPath_MESSAGE));
-                initEndlessRecyclerView(rootView);
-            }
-        });
-
+        getElements(rootView);
+        initClientAndPage();
+        fetchPageData();
+        updateUIElements();
+        updateUIElementListeners(rootView);
         return rootView;
     }
 }

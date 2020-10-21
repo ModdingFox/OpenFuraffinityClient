@@ -33,18 +33,26 @@ public class watchList extends AsyncTask<webClient, Void, Void> {
         this.page = watchList.page;
     }
 
-    private void processPageData(String html) {
+    public static List<HashMap<String, String>> processWatchList(String html, boolean isUserPageData) {
+        List<HashMap<String, String>> result = new ArrayList<>();
+
         Document doc = Jsoup.parse(html);
-        Elements watchListItems = doc.select("div.watch-list-items");
+        Elements watchListItems = doc.select(((isUserPageData)?("a"):("div.watch-list-items")));
 
         for (Element currentElement : watchListItems) {
             HashMap<String, String> newUser = new HashMap<>();
             newUser.put("item", currentElement.text());
             newUser.put("path", currentElement.selectFirst("a").attr("href"));
-            newUser.put("class", "open.furaffinity.client.activity.userActivity");
+            newUser.put("class", open.furaffinity.client.activity.userActivity.class.getName());
             newUser.put("messageId", messageIds.pagePath_MESSAGE);
-            pageResults.add(newUser);
+            result.add(newUser);
         }
+
+        return result;
+    }
+
+    private void processPageData(String html) {
+        pageResults = processWatchList(html, false);
     }
 
     @Override

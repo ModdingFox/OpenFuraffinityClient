@@ -26,28 +26,40 @@ import open.furaffinity.client.utilities.webClient;
 public class userJournals extends Fragment {
     private static final String TAG = userJournals.class.getName();
 
+    private LinearLayoutManager layoutManager;
+
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-    private LinearLayoutManager layoutManager;
 
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
-    private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.journals journals;
+    private webClient webClient;
+    private open.furaffinity.client.pages.journals page;
 
     private int loadingStopCounter = 3;
+    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void loadPage() {
+    private void getElements(View rootView) {
+        layoutManager = new LinearLayoutManager(getActivity());
+
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+    }
+
+    private void initClientAndPage() {
+        webClient = new webClient(this.getActivity());
+        page = new open.furaffinity.client.pages.journals(getArguments().getString(messageIds.pagePath_MESSAGE));
+    }
+
+    private void fetchPageData() {
         if (!(loadingStopCounter == 0)) {
-            journals = new open.furaffinity.client.pages.journals(journals);
+            page = new open.furaffinity.client.pages.journals(page);
             try {
-                journals.execute(webClient).get();
-            }//we wait to get the data here. Fuck if i know the proper way to do this in android
+                page.execute(webClient).get();
+            }
             catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "loadNextPage: ", e);
             }
 
-            List<HashMap<String, String>> pageResults = journals.getPageResults();
+            List<HashMap<String, String>> pageResults = page.getPageResults();
 
             if (pageResults.size() == 0 && loadingStopCounter > 0) {
                 loadingStopCounter--;
@@ -62,30 +74,26 @@ public class userJournals extends Fragment {
         }
     }
 
-    private void initEndlessRecyclerView(View rootView) {
-        loadPage();
-
-        recyclerView = rootView.findViewById(R.id.recyclerView);
+    private void updateUIElements() {
         recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new journalListAdapter(mDataSet);
+        recyclerView.setAdapter(mAdapter);
+    }
 
+    private void updateUIElementListeners(View rootView) {
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                journals.setPage(Integer.toString(journals.getPage() + 1));
+            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
+                page.setPage(Integer.toString(page.getPage() + 1));
                 int curSize = mAdapter.getItemCount();
-                loadPage();
+                fetchPageData();
                 mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
 
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
-
-        mAdapter = new journalListAdapter(mDataSet);
-        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -96,13 +104,11 @@ public class userJournals extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-
-        webClient = new webClient(this.getActivity());
-
-        journals = new open.furaffinity.client.pages.journals(getArguments().getString(messageIds.pagePath_MESSAGE));
-
-        initEndlessRecyclerView(rootView);
-
+        getElements(rootView);
+        initClientAndPage();
+        fetchPageData();
+        updateUIElements();
+        updateUIElementListeners(rootView);
         return rootView;
     }
 }
