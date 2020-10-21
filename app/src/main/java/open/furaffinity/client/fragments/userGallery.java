@@ -83,7 +83,7 @@ public class userGallery extends Fragment {
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        mAdapter = new imageListAdapter(mDataSet);
+        mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
 

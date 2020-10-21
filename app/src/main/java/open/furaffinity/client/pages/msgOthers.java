@@ -165,7 +165,7 @@ public class msgOthers extends AsyncTask<webClient, Void, Void> {
                 currentElementResult.put("userName", currentElementStrong.get(0).text());
                 currentElementResult.put("postLink", currentElementAHref.get(1).attr("href"));
                 currentElementResult.put("postName", currentElementStrong.get(1).text());
-                currentElementResult.put("postClass", open.furaffinity.client.activity.viewActivity.class.getName());
+                currentElementResult.put("postClass", open.furaffinity.client.fragments.view.class.getName());
                 currentElementResult.put("time", currentElementSpan.text());
                 currentElementResult.put("actionText", actionText);
 

@@ -1,5 +1,6 @@
 package open.furaffinity.client.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import java.util.HashMap;
 import java.util.List;
 
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.R;
 import open.furaffinity.client.utilities.messageIds;
 
@@ -23,9 +25,11 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
     private static final String TAG = msgOthersListAdapter.class.getName();
 
     private List<HashMap<String, String>> mDataSet;
+    private Context context;
 
-    public msgOthersListAdapter(List<HashMap<String, String>> mDataSetIn) {
+    public msgOthersListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
+        this.context = context;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -104,12 +108,16 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
             holder.actionText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        Intent intent = new Intent(v.getContext(), Class.forName(mDataSet.get(position).get("postClass")));
-                        intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("postLink"));
-                        v.getContext().startActivity(intent);
-                    } catch (ClassNotFoundException e) {
-                        Log.e(TAG, "onClick: ", e);
+                    if(mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.view.class.getName())) {
+                        ((mainActivity)context).setViewPath(mDataSet.get(position).get("postLink"));
+                    } else {
+                        try {
+                            Intent intent = new Intent(v.getContext(), Class.forName(mDataSet.get(position).get("postClass")));
+                            intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("postLink"));
+                            v.getContext().startActivity(intent);
+                        } catch (ClassNotFoundException e) {
+                            Log.e(TAG, "onClick: ", e);
+                        }
                     }
                 }
             });

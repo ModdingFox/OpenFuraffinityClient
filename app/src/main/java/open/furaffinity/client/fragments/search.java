@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.loginTest;
@@ -70,6 +71,7 @@ public class search extends Fragment {
     private open.furaffinity.client.pages.search page;
 
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private boolean loadedMainActivitySearchQuery = false;
 
     private void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
@@ -127,7 +129,18 @@ public class search extends Fragment {
     }
 
     private void loadCurrentSettings() {
-        searchEditText.setText(page.getCurrentQuery());
+        if(!loadedMainActivitySearchQuery) {
+            String mainActivitySearchQuery = ((mainActivity)getActivity()).getSearchQuery();
+            if(mainActivitySearchQuery != null) {
+                searchEditText.setText(mainActivitySearchQuery);
+            } else {
+                searchEditText.setText(page.getCurrentQuery());
+            }
+            loadedMainActivitySearchQuery = true;
+        } else {
+            searchEditText.setText(page.getCurrentQuery());
+        }
+
         uiControls.spinnerSetAdapter(requireContext(), searchOrderBySpinner, page.getOrderBy(), page.getCurrentOrderBy(), false, false);
         uiControls.spinnerSetAdapter(requireContext(), searchOrderDirectionSpinner, page.getOrderDirection(), page.getCurrentOrderDirection(), false, false);
 
@@ -298,7 +311,7 @@ public class search extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new imageListAdapter(mDataSet);
+        mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -336,14 +349,6 @@ public class search extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        initClientAndPage();
-        fetchPageData();
-        updateUIElements();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

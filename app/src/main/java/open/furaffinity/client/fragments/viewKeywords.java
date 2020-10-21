@@ -1,19 +1,26 @@
 package open.furaffinity.client.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.R;
-import open.furaffinity.client.adapter.stringListAdapter;
+import open.furaffinity.client.adapter.checkboxListAdapter;
 import open.furaffinity.client.utilities.messageIds;
 
 public class viewKeywords extends Fragment {
@@ -22,12 +29,18 @@ public class viewKeywords extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
 
+    private LinearLayout controls;
+    private Button searchButton;
+
     private ArrayList<String> mDataSet = new ArrayList<>();
 
     private void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        controls = rootView.findViewById(R.id.controls);
+        searchButton = new Button(requireContext());
     }
 
     private void fetchPageData() {
@@ -35,8 +48,22 @@ public class viewKeywords extends Fragment {
     }
 
     private void updateUIElements() {
-        mAdapter = new stringListAdapter(mDataSet);
+        searchButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        searchButton.setText("Search Selected");
+        controls.addView(searchButton);
+
+        recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new checkboxListAdapter(mDataSet);
         recyclerView.setAdapter(mAdapter);
+    }
+
+    private void updateUIElementListeners(View rootView) {
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((mainActivity)getActivity()).setSearchQuery("@keywords " + ((checkboxListAdapter)mAdapter).getCheckedItems().stream().collect(Collectors.joining(" ")));
+            }
+        });
     }
 
     @Override
@@ -50,6 +77,7 @@ public class viewKeywords extends Fragment {
         getElements(rootView);
         fetchPageData();
         updateUIElements();
+        updateUIElementListeners(rootView);
         return rootView;
     }
 }

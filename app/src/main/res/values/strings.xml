@@ -12,7 +12,6 @@
     <string name="nav_header_title">@string/app_name</string>
     <string name="nav_header_subtitle">Built by Tyst Jal(ModdingFox)</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
     <string name="menu_browse">Browse</string>
     <string name="menu_search">Search</string>
@@ -20,6 +19,7 @@
     <string name="menu_msg_submission">Submissions</string>
     <string name="menu_msg_others">Notifications</string>
     <string name="menu_msg_pms">Notes</string>
+    <string name="menu_view">View</string>
     <string name="menu_login">Login</string>
     <string name="menu_logout">Logout</string>
 

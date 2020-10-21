@@ -88,7 +88,7 @@ public class msgSubmission extends Fragment {
     private void updateUIElements() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new imageListAdapter(mDataSet);
+        mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
 

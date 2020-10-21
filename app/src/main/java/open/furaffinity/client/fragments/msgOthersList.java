@@ -68,7 +68,7 @@ public class msgOthersList extends Fragment {
     private void updateUIElements() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new msgOthersListAdapter(mDataSet);
+        mAdapter = new msgOthersListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
 

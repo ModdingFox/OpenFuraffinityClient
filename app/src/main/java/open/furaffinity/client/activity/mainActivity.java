@@ -1,6 +1,7 @@
 package open.furaffinity.client.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -9,7 +10,6 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,6 +18,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.pages.loginTest;
@@ -35,6 +37,27 @@ public class mainActivity extends AppCompatActivity {
 
     private webClient webClient;
     private loginTest loginTest;
+
+    private String searchQuery = null;
+    private String viewPath = null;
+
+    private void getPagePath() {
+        Intent intent = getIntent();
+        Uri incomingPagePath = intent.getData();
+
+        if (incomingPagePath != null) {
+            String pagePath = incomingPagePath.getPath().toString();
+
+            Matcher pathMatcher = Pattern.compile("^\\/(view)\\/(.+)$").matcher(pagePath);
+
+            if (pathMatcher.find()) {
+                switch (pathMatcher.group(1)) {
+                    case "view":
+                        setViewPath(pagePath);
+                }
+            }
+        }
+    }
 
     private void getElements() {
         toolbar = findViewById(R.id.toolbar);
@@ -73,12 +96,18 @@ public class mainActivity extends AppCompatActivity {
             navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
             navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
         }
+
+        if(viewPath == null) {
+            navMenu.findItem(R.id.nav_view).setVisible(false);
+        } else {
+            navMenu.findItem(R.id.nav_view).setVisible(true);
+        }
     }
 
     private void setupNavigationUI() {
         setSupportActionBar(toolbar);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_login)
+                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_view, R.id.nav_login)
                 .setDrawerLayout(drawer)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -94,6 +123,22 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_browse, 0);
     }
 
+    public String getSearchQuery() { return searchQuery; }
+    public void setSearchQuery(String searchQueryIn) {
+        searchQuery = searchQueryIn;
+        updateUIElements();
+        navigationView.setCheckedItem(R.id.nav_search);
+        navigationView.getMenu().performIdentifierAction(R.id.nav_search, 0);
+    }
+
+    public String getViewPath() { return viewPath; }
+    public void setViewPath(String pathIn) {
+        viewPath = pathIn;
+        updateUIElements();
+        navigationView.setCheckedItem(R.id.nav_view);
+        navigationView.getMenu().performIdentifierAction(R.id.nav_view, 0);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +148,7 @@ public class mainActivity extends AppCompatActivity {
         fetchPageData();
         updateUIElements();
         setupNavigationUI();
+        getPagePath();
     }
 
     @Override
@@ -114,10 +160,6 @@ public class mainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent intent = new Intent(this, open.furaffinity.client.activity.settingsActivity.class);
-                startActivity(intent);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
