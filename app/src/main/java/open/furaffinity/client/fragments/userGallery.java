@@ -5,6 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -20,33 +24,55 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.messageIds;
+import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
 public class userGallery extends Fragment {
     private static final String TAG = userGallery.class.getName();
 
+    private LinearLayoutManager layoutManager;
+
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-    private LinearLayoutManager layoutManager;
 
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
-    private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.gallery gallery;
+    private LinearLayout controls;
+    private Spinner folderSpinner;
+
+    private webClient webClient;
+    private open.furaffinity.client.pages.gallery page;
 
     private int loadingStopCounter = 3;
+    private String pagePath = null;
+    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private HashMap<String, String> folderList = new HashMap<>();
 
-    private void loadPage() {
+    private void getElements(View rootView) {
+        layoutManager = new LinearLayoutManager(getActivity());
+
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        controls = rootView.findViewById(R.id.controls);
+        folderSpinner = new Spinner(requireContext());
+    }
+
+    private void initClientAndPage() {
+        webClient = new webClient(this.getActivity());
+        page = new open.furaffinity.client.pages.gallery(pagePath);
+    }
+
+    private void fetchPageData() {
         if (!(loadingStopCounter == 0)) {
-            gallery = new open.furaffinity.client.pages.gallery(gallery);
+            page = new open.furaffinity.client.pages.gallery(page);
             try {
-                gallery.execute(webClient).get();
+                page.execute(webClient).get();
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "loadNextPage: ", e);
             }
 
-            List<HashMap<String, String>> pageResults = gallery.getPageResults();
+            List<HashMap<String, String>> pageResults = page.getPageResults();
 
             if (pageResults.size() == 0 && loadingStopCounter > 0) {
                 loadingStopCounter--;
@@ -58,24 +84,33 @@ public class userGallery extends Fragment {
             newPostPaths.removeAll(oldPostPaths);
             pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
             mDataSet.addAll(pageResults);
+
+            folderList = page.getFolderResults();
         }
     }
 
-    private void initEndlessRecyclerView(View rootView) {
-        loadPage();
+    private void updateUIElements() {
+        if(folderList.size() > 0) {
+            folderSpinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, page.getPagePath(), true, false);
 
-        recyclerView = rootView.findViewById(R.id.recyclerView);
+            controls.removeView(folderSpinner);
+            controls.addView(folderSpinner);
+        }
+
         recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new imageListAdapter(mDataSet, getActivity());
+        recyclerView.setAdapter(mAdapter);
+    }
 
+    private void updateUIElementListeners(View rootView) {
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                gallery.setPage(Integer.toString(gallery.getPage() + 1));
+            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
+                page.setPage(Integer.toString(page.getPage() + 1));
                 int curSize = mAdapter.getItemCount();
-                loadPage();
+                fetchPageData();
                 mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
@@ -83,8 +118,25 @@ public class userGallery extends Fragment {
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        mAdapter = new imageListAdapter(mDataSet, getActivity());
-        recyclerView.setAdapter(mAdapter);
+        folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String newPagePath = ((kvPair) folderSpinner.getSelectedItem()).getKey();
+                if(newPagePath != pagePath) {
+                    pagePath = newPagePath;
+                    mDataSet = new ArrayList<>();
+                    folderList = new HashMap<>();
+                    initClientAndPage();
+                    fetchPageData();
+                    updateUIElements();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -95,13 +147,12 @@ public class userGallery extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-
-        webClient = new webClient(this.getActivity());
-
-        gallery = new open.furaffinity.client.pages.gallery(getArguments().getString(messageIds.pagePath_MESSAGE));
-
-        initEndlessRecyclerView(rootView);
-
+        pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
+        getElements(rootView);
+        initClientAndPage();
+        fetchPageData();
+        updateUIElements();
+        updateUIElementListeners(rootView);
         return rootView;
     }
 }

@@ -48,7 +48,7 @@ public class viewKeywords extends Fragment {
     }
 
     private void updateUIElements() {
-        searchButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        searchButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         searchButton.setText("Search Selected");
         controls.addView(searchButton);
 

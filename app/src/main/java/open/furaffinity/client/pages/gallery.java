@@ -3,6 +3,11 @@ package open.furaffinity.client.pages;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +23,7 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
     String pagePath;
     private String page;
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
+    private HashMap<String, String> folderResults = new HashMap<>();
 
     public gallery(String pagePath) {
         this.pagePath = pagePath;
@@ -31,6 +37,22 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
 
     private void processPageData(String html) {
         pageResults = getResultsData(html);
+
+        Document doc = Jsoup.parse(html);
+        Element folderListDiv = doc.selectFirst("div.folder-list");
+
+        if(folderListDiv != null) {
+            Element currentFolder = folderListDiv.selectFirst("li.active");
+            folderResults.put(pagePath, currentFolder.text());
+
+            Elements folderLinks = folderListDiv.select("a");
+
+            if(folderLinks != null) {
+                for (Element currentElement : folderLinks) {
+                    folderResults.put(currentElement.attr("href"), currentElement.text());
+                }
+            }
+        }
     }
 
     @Override
@@ -40,6 +62,8 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
         processPageData(html);
         return null;
     }
+
+    public String getPagePath() { return pagePath; }
 
     public int getPage() {
         try {
@@ -68,4 +92,6 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
     public List<HashMap<String, String>> getPageResults() {
         return pageResults;
     }
+
+    public HashMap<String, String> getFolderResults() { return folderResults; }
 }
