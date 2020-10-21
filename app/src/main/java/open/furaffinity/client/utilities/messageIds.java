@@ -19,10 +19,8 @@ public class messageIds {
 
     public static String userPageProfile_MESSAGE = "open.furaffinity.client.userPageProfile";
     public static String userProfile_Message = "open.furaffinity.client.userProfile";
-    public static String userGalleryPath_Message = "open.furaffinity.client.userGalleryPath";
 
     public static String userWatchRecent_MESSAGE = "open.furaffinity.client.userWatchRecent";
-    public static String userWatchesPath_MESSAGE = "open.furaffinity.client.userWatchesPath";
 
     public static String userShouts_MESSAGE = "open.furaffinity.client.userShouts";
 

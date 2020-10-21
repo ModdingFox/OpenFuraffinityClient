@@ -12,6 +12,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import open.furaffinity.client.R;
 
 public class profile extends Fragment {
+
+    private FloatingActionButton fab;
+
+    private void getElements(View rootView) {
+        fab = rootView.findViewById(R.id.fabProfile);
+    }
+
+    private void updateUIElementListeners(View rootView) {
+        fab.setOnClickListener(view ->
+        {
+        });
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,12 +32,8 @@ public class profile extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
-
-        FloatingActionButton fab = rootView.findViewById(R.id.fabProfile);
-        fab.setOnClickListener(view ->
-        {
-        });
-
+        getElements(rootView);
+        updateUIElementListeners(rootView);
         return rootView;
     }
 }

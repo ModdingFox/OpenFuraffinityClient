@@ -42,7 +42,7 @@ public class userGallery extends Fragment {
             gallery = new open.furaffinity.client.pages.gallery(gallery);
             try {
                 gallery.execute(webClient).get();
-            }//we wait to get the data here. Fuck if i know the proper way to do this in android
+            }
             catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "loadNextPage: ", e);
             }
@@ -99,7 +99,7 @@ public class userGallery extends Fragment {
 
         webClient = new webClient(this.getActivity());
 
-        gallery = new open.furaffinity.client.pages.gallery(getArguments().getString(messageIds.userGalleryPath_Message));
+        gallery = new open.furaffinity.client.pages.gallery(getArguments().getString(messageIds.pagePath_MESSAGE));
 
         initEndlessRecyclerView(rootView);
 

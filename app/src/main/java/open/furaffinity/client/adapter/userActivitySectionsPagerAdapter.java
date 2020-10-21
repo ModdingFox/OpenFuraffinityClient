@@ -45,17 +45,17 @@ public class userActivitySectionsPagerAdapter extends FragmentPagerAdapter {
                 return newUserProfileFragment;
             case 1:
                 userGallery newUserGalleryFragment = new userGallery();
-                bundle.putString(messageIds.userGalleryPath_Message, user.getUserGalleryPath());
+                bundle.putString(messageIds.pagePath_MESSAGE, user.getUserGalleryPath());
                 newUserGalleryFragment.setArguments(bundle);
                 return newUserGalleryFragment;
             case 2:
                 userGallery newUserScrapsFragment = new userGallery();
-                bundle.putString(messageIds.userGalleryPath_Message, user.getUserScrapsPath());
+                bundle.putString(messageIds.pagePath_MESSAGE, user.getUserScrapsPath());
                 newUserScrapsFragment.setArguments(bundle);
                 return newUserScrapsFragment;
             case 3:
                 userGallery newUserFavoritesFragment = new userGallery();
-                bundle.putString(messageIds.userGalleryPath_Message, user.getUserFavoritesPath());
+                bundle.putString(messageIds.pagePath_MESSAGE, user.getUserFavoritesPath());
                 newUserFavoritesFragment.setArguments(bundle);
                 return newUserFavoritesFragment;
             case 4:
@@ -87,13 +87,13 @@ public class userActivitySectionsPagerAdapter extends FragmentPagerAdapter {
             case 6:
                 watch newUserWatchedByFragment = new watch();
                 bundle.putString(messageIds.userWatchRecent_MESSAGE, user.getUserRecentWatchers());
-                bundle.putString(messageIds.userWatchesPath_MESSAGE, user.getUserWatchersPath());
+                bundle.putString(messageIds.pagePath_MESSAGE, user.getUserWatchersPath());
                 newUserWatchedByFragment.setArguments(bundle);
                 return newUserWatchedByFragment;
             case 7:
                 watch newUserWatchingFragment = new watch();
                 bundle.putString(messageIds.userWatchRecent_MESSAGE, user.getUserRecentlyWatching());
-                bundle.putString(messageIds.userWatchesPath_MESSAGE, user.getUserWatchingPath());
+                bundle.putString(messageIds.pagePath_MESSAGE, user.getUserWatchingPath());
                 newUserWatchingFragment.setArguments(bundle);
                 return newUserWatchingFragment;
             case 8:

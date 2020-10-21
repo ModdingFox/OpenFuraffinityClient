@@ -29,30 +29,48 @@ import open.furaffinity.client.utilities.webClient;
 public class msgSubmission extends Fragment {
     private static final String TAG = msgSubmission.class.getName();
 
+    private LinearLayoutManager layoutManager;
+
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-    private LinearLayoutManager layoutManager;
 
     private Switch msgSubmissionOrder;
 
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
-    private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.msgSubmission msgSubmission;
+    private FloatingActionButton fab;
+
+    private webClient webClient;
+    private open.furaffinity.client.pages.msgSubmission page;
 
     private int loadingStopCounter = 3;
+    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void loadPage() {
+    private void getElements(View rootView) {
+        layoutManager = new LinearLayoutManager(getActivity());
+
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        msgSubmissionOrder = rootView.findViewById(R.id.msgSubmissionOrder);
+
+        fab = rootView.findViewById(R.id.fab);
+    }
+
+    private void initClientAndPage() {
+        webClient = new webClient(this.getActivity());
+        page = new open.furaffinity.client.pages.msgSubmission(true);
+    }
+
+    private void fetchPageData() {
         if (!(loadingStopCounter == 0)) {
-            msgSubmission = new open.furaffinity.client.pages.msgSubmission(msgSubmission);
+            page = new open.furaffinity.client.pages.msgSubmission(page);
             try {
-                msgSubmission.execute(webClient).get();
+                page.execute(webClient).get();
             }//we wait to get the data here. Fuck if i know the proper way to do this in android
             catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "loadNextPage: ", e);
             }
 
-            List<HashMap<String, String>> pageResults = msgSubmission.getPageResults();
+            List<HashMap<String, String>> pageResults = page.getPageResults();
 
             if (pageResults.size() == 0 && loadingStopCounter > 0) {
                 loadingStopCounter--;
@@ -67,35 +85,15 @@ public class msgSubmission extends Fragment {
         }
     }
 
-    private void initEndlessRecyclerView(View rootView) {
-        loadPage();
-
-        recyclerView = rootView.findViewById(R.id.recyclerView);
+    private void updateUIElements() {
         recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if (msgSubmission.setNextPage()) {
-                    int curSize = mAdapter.getItemCount();
-                    loadPage();
-                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
-                }
-            }
-        };
-
-        //noinspection deprecation
-        recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
-
         mAdapter = new imageListAdapter(mDataSet);
         recyclerView.setAdapter(mAdapter);
     }
 
     private void loadCurrentSettings() {
-        if (msgSubmission.getIsNewestFirst()) {
+        if (page.getIsNewestFirst()) {
             msgSubmissionOrder.setChecked(true);
         } else {
             msgSubmissionOrder.setChecked(false);
@@ -105,8 +103,8 @@ public class msgSubmission extends Fragment {
     private void saveCurrentSettings() {
         boolean valueChanged = false;
 
-        if (msgSubmission.getIsNewestFirst() != msgSubmissionOrder.isChecked()) {
-            msgSubmission = new open.furaffinity.client.pages.msgSubmission(msgSubmissionOrder.isChecked());
+        if (page.getIsNewestFirst() != msgSubmissionOrder.isChecked()) {
+            page = new open.furaffinity.client.pages.msgSubmission(msgSubmissionOrder.isChecked());
             valueChanged = true;
         }
 
@@ -115,29 +113,26 @@ public class msgSubmission extends Fragment {
             mDataSet.clear();
             mAdapter.notifyDataSetChanged();
             endlessRecyclerViewScrollListener.resetState();
-            msgSubmission = new open.furaffinity.client.pages.msgSubmission(msgSubmission);
-            loadPage();
+            page = new open.furaffinity.client.pages.msgSubmission(page);
+            fetchPageData();
         }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private void updateUIElementListeners(View rootView) {
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
+                if (page.setNextPage()) {
+                    int curSize = mAdapter.getItemCount();
+                    fetchPageData();
+                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+                }
+            }
+        };
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_msg_submission, container, false);
+        //noinspection deprecation
+        recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        webClient = new webClient(this.getActivity());
-
-        msgSubmissionOrder = rootView.findViewById(R.id.msgSubmissionOrder);
-
-        msgSubmission = new open.furaffinity.client.pages.msgSubmission(true);
-
-        initEndlessRecyclerView(rootView);
-
-        FloatingActionButton fab = rootView.findViewById(R.id.fab);
         fab.setOnClickListener(view ->
         {
             RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
@@ -152,7 +147,21 @@ public class msgSubmission extends Fragment {
                 recyclerView.setVisibility(View.VISIBLE);
             }
         });
+    }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_msg_submission, container, false);
+        getElements(rootView);
+        initClientAndPage();
+        fetchPageData();
+        updateUIElements();
+        updateUIElementListeners(rootView);
         return rootView;
     }
 }

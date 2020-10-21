@@ -57,7 +57,7 @@ public class watch extends Fragment {
 
     private void initClientAndPage() {
         webClient = new webClient(this.getActivity());
-        page = new watchList(getArguments().getString(messageIds.userWatchesPath_MESSAGE));
+        page = new watchList(getArguments().getString(messageIds.pagePath_MESSAGE));
     }
 
     private void fetchPageData() {
