@@ -20,6 +20,8 @@
     <string name="menu_msg_submission">Submissions</string>
     <string name="menu_msg_others">Notifications</string>
     <string name="menu_msg_pms">Notes</string>
+    <string name="menu_login">Login</string>
+    <string name="menu_logout">Logout</string>
 
     <string name="browseOptions">Browse Options</string>
     <string name="browseCat">Category:</string>

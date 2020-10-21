@@ -40,4 +40,10 @@
         android:name="open.furaffinity.client.fragments.profile"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="open.furaffinity.client.fragments.login"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login" />
 </navigation>

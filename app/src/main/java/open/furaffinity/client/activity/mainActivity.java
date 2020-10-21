@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -65,21 +66,32 @@ public class mainActivity extends AppCompatActivity {
             navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
             navMenu.findItem(R.id.nav_msg_others).setVisible(true);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
+            navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_logout);
         } else {
             navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
             navMenu.findItem(R.id.nav_msg_others).setVisible(false);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
+            navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
         }
     }
 
     private void setupNavigationUI() {
         setSupportActionBar(toolbar);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms)
+                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_login)
                 .setDrawerLayout(drawer)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    public void updateUILoginState() {
+        initClientAndPage();
+        fetchPageData();
+        updateUIElements();
+
+        navigationView.setCheckedItem(R.id.nav_browse);
+        navigationView.getMenu().performIdentifierAction(R.id.nav_browse, 0);
     }
 
     @Override
@@ -91,14 +103,6 @@ public class mainActivity extends AppCompatActivity {
         fetchPageData();
         updateUIElements();
         setupNavigationUI();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initClientAndPage();
-        fetchPageData();
-        updateUIElements();
     }
 
     @Override
