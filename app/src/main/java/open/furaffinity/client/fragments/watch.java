@@ -12,10 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +36,7 @@ public class watch extends Fragment {
 
     private Button button;
 
-    private open.furaffinity.client.utilities.webClient webClient;
+    private webClient webClient;
     private open.furaffinity.client.pages.watchList page;
 
     private int loadingStopCounter = 3;

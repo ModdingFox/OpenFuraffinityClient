@@ -2,12 +2,15 @@ package open.furaffinity.client.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.notImplementedYet;
@@ -16,10 +19,15 @@ import open.furaffinity.client.fragments.userGallery;
 import open.furaffinity.client.fragments.userJournals;
 import open.furaffinity.client.fragments.userProfile;
 import open.furaffinity.client.fragments.watch;
+import open.furaffinity.client.fragments.webViewContent;
+import open.furaffinity.client.pages.commissions;
 import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
+import open.furaffinity.client.utilities.webClient;
 
 public class userActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+    private static final String TAG = userActivitySectionsPagerAdapter.class.getName();
+
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.userTab0, R.string.userTab1, R.string.userTab2, R.string.userTab3, R.string.userTab4, R.string.userTab5, R.string.userTab6, R.string.userTab7, R.string.userTab8};
     private final Context mContext;
@@ -64,26 +72,21 @@ public class userActivitySectionsPagerAdapter extends FragmentPagerAdapter {
                 newUserJournalsFragment.setArguments(bundle);
                 return newUserJournalsFragment;
             case 5:
-             /*
-                open.furaffinity.client.fragments.webViewContent newUserComissionsFragment = new webViewContent();
-                
-                open.furaffinity.client.pages.commissions commissions = new commissions(user.getUserCommissionPath());
-                open.furaffinity.client.utilities.webClient webClient = new open.furaffinity.client.utilities.webClient();
-                
+                webViewContent newUserCommissionsFragment = new webViewContent();
+                commissions commissions = new commissions(user.getUserCommissionPath());
+                webClient webClient = new webClient(mContext);
                 try
                 {
                     commissions.execute(webClient).get();
                 }
-                catch (ExecutionException | InterruptedException e)
+                catch (InterruptedException | ExecutionException e)
                 {
                     Log.e(TAG, "getItem: ", e);
                 }
     
-                bundle.putString(messageIds.submissionDescription_MESSAGE, "<table>" + commissions.getComissionBody() + "</table>");
-                newUserComissionsFragment.setArguments(bundle);
-                return newUserComissionsFragment;
-              */
-                return new notImplementedYet();
+                bundle.putString(messageIds.submissionDescription_MESSAGE, "<table>" + commissions.getCommissionBodyBody() + "</table>");
+                newUserCommissionsFragment.setArguments(bundle);
+                return newUserCommissionsFragment;
             case 6:
                 watch newUserWatchedByFragment = new watch();
                 bundle.putString(messageIds.userWatchRecent_MESSAGE, user.getUserRecentWatchers());

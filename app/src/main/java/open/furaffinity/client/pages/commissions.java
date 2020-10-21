@@ -12,17 +12,20 @@ public class commissions extends AsyncTask<webClient, Void, Void> {
     private static final String TAG = commissions.class.getName();
 
     String pagePath;
-    String comissionBody;
+    String commissionBody = "";
 
     public commissions(String pagePath) {
         this.pagePath = pagePath;
     }
 
     private void processPageData(String html) {
-        Document doc = Jsoup.parse(html);
+        if(html != null) {
+            Document doc = Jsoup.parse(html);
 
-        Element userPageFlexItemUsernameH = doc.selectFirst("div.section-body :first-child > table :first-child > table");
-        comissionBody = userPageFlexItemUsernameH.html();
+            Element userPageFlexItemUsernameH = doc.selectFirst("div.section-body :first-child > table :first-child > table");
+            open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(userPageFlexItemUsernameH);
+            commissionBody = userPageFlexItemUsernameH.html();
+        }
     }
 
     @Override
@@ -33,7 +36,7 @@ public class commissions extends AsyncTask<webClient, Void, Void> {
         return null;
     }
 
-    public String getComissionBody() {
-        return comissionBody;
+    public String getCommissionBodyBody() {
+        return commissionBody;
     }
 }
