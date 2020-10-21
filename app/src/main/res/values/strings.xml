@@ -1,0 +1,120 @@
+<resources>
+    <string name="app_name">OpenFuraffinityClient</string>
+
+    <string name="siteUrl">www.furaffinity.net</string>
+
+    <string name="notLoaded">Not Loaded</string>
+    <string name="notImplementedYet">View not implemented yet.</string>
+
+    <string name="title_activity_navigation_drawer">@string/app_name</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">@string/app_name</string>
+    <string name="nav_header_subtitle">Built by Tyst Jal(ModdingFox)</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_browse">Browse</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_msg_submission">Submissions</string>
+    <string name="menu_msg_others">Notifications</string>
+    <string name="menu_msg_pms">Notes</string>
+
+    <string name="browseOptions">Browse Options</string>
+    <string name="browseCat">Category:</string>
+    <string name="browseAtype">Type:</string>
+    <string name="browseSpecies">Species:</string>
+    <string name="browseGender">Gender:</string>
+    <string name="browsePerpage">Results:</string>
+    <string name="browsePage">Page #:</string>
+    <string name="browseOptionsRating">Filter by Rating</string>
+    <string name="browseRatingGeneral">General</string>
+    <string name="browseRatingMature">Mature</string>
+    <string name="browseRatingAdult">Adult</string>
+
+    <string name="searchSearch">Search</string>
+    <string name="searchSortCriteria">Sort Criteria</string>
+    <string name="searchOrderBy">Order By:</string>
+    <string name="searchOrderDirection">Order Direction:</string>
+    <string name="searchSortByRange">Sort By Range</string>
+    <string name="searchDay">Day</string>
+    <string name="search3Days">3 Days</string>
+    <string name="searchWeek">Week</string>
+    <string name="searchMonth">Month</string>
+    <string name="searchAll">All</string>
+    <string name="searchSortByRating">Sort By Rating:</string>
+    <string name="searchRatingGeneral">General</string>
+    <string name="searchRatingMature">Mature</string>
+    <string name="searchRatingAdult">Adult</string>
+    <string name="searchSortByType">Sort By Type:</string>
+    <string name="searchTypeArt">Art</string>
+    <string name="searchTypeMusic">Music</string>
+    <string name="searchTypeFlash">Flash</string>
+    <string name="searchTypeStory">Story</string>
+    <string name="searchTypePhoto">Photo</string>
+    <string name="searchTypePoetry">Poetry</string>
+    <string name="searchSortByMatchingKeywords">Sort By Matching Keywords:</string>
+    <string name="searchAny">Any</string>
+    <string name="searchExtended">extended</string>
+
+    <string name="title_activity_view">@string/app_name</string>
+    <string name="viewTab0">Description</string>
+    <string name="viewTab1">Info</string>
+    <string name="viewTab2">Keywords</string>
+    <string name="viewTab3">Comments</string>
+
+    <string name="infoSubmissionComments">Comments:</string>
+    <string name="infoSubmissionFavorites">Favorites:</string>
+    <string name="infoSubmissionViews">Views:</string>
+    <string name="infoSubmissionRating">Rating:</string>
+    <string name="infoSubmissionCategory">Category:</string>
+    <string name="infoSubmissionSpecies">Species:</string>
+    <string name="infoSubmissionGender">Gender:</string>
+    <string name="infoSubmissionDate">Posted:</string>
+    <string name="infoSubmissionSize">Size:</string>
+
+    <string name="title_activity_user">@string/app_name</string>
+    <string name="userTab0">Profile</string>
+    <string name="userTab1">Gallery</string>
+    <string name="userTab2">Scraps</string>
+    <string name="userTab3">Favorites</string>
+    <string name="userTab4">Journals</string>
+    <string name="userTab5">Commission</string>
+    <string name="userTab6">Watched By</string>
+    <string name="userTab7">Watching</string>
+    <string name="userTab8">Shouts</string>
+
+    <string name="userViews">Views</string>
+    <string name="userSubmissions">Submissions</string>
+    <string name="userFavs">Favs</string>
+    <string name="userCommentsEarned">Comments Earned</string>
+    <string name="userCommentsMade">Comments Made</string>
+    <string name="userJournals">Journals</string>
+
+    <string name="title_activity_journal">@string/app_name</string>
+    <string name="journalTab0">Journal</string>
+    <string name="journalTab1">Comments</string>
+
+    <string name="loadMore">Load More</string>
+
+    <string name="msgSubmissionOrder">Newest First: </string>
+
+    <string name="msgOthersTab0">Watches</string>
+    <string name="msgOthersTab1">Submission Comments</string>
+    <string name="msgOthersTab2">Shouts</string>
+    <string name="msgOthersTab3">Favorites</string>
+    <string name="msgOthersTab4">Journals</string>
+
+    <string name="msgPmsFolder">Folder:</string>
+
+    <string name="title_activity_msgpmsmessage">@string/app_name</string>
+    <string name="msgPmsMessageTab0">Message</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="settingsFile">open.furaffinity.client</string>
+    <string name="webClientCookieA">cookieA</string>
+    <string name="webClientCookieB">cookieB</string>
+
+</resources>
