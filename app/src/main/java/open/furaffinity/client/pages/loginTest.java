@@ -2,6 +2,7 @@ package open.furaffinity.client.pages;
 
 import android.os.AsyncTask;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import open.furaffinity.client.utilities.webClient;
@@ -11,7 +12,7 @@ public class loginTest extends AsyncTask<webClient, Void, Void> {
 
     @Override
     protected Void doInBackground(webClient... webClients) {
-        Document doc = new Document(webClients[0].sendGetRequest(webClients[0].getBaseUrl()));
+        Document doc = Jsoup.parse(webClients[0].sendGetRequest(webClients[0].getBaseUrl()));
         if(doc.selectFirst("a[href=/login]") == null) { isLoggedIn = true; }
         return null;
     }

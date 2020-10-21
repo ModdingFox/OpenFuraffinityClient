@@ -66,12 +66,16 @@ public class mainActivity extends AppCompatActivity {
     }
 
     private void updateUIElements() {
-        if(!isLoggedIn) {
+        if(isLoggedIn) {
+            navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
+            navMenu.findItem(R.id.nav_msg_others).setVisible(true);
+            navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
+        }
+        else {
             navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
             navMenu.findItem(R.id.nav_msg_others).setVisible(false);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
         }
-
     }
 
     private void setupNavigationUI() {
@@ -82,6 +86,14 @@ public class mainActivity extends AppCompatActivity {
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initClientAndPage();
+        fetchPageData();
+        updateUIElements();
     }
 
     @Override
