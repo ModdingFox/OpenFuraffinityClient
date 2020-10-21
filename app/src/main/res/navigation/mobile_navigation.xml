@@ -42,6 +42,12 @@
         tools:layout="@layout/fragment_profile" />
 
     <fragment
+        android:id="@+id/nav_journal"
+        android:name="open.furaffinity.client.fragments.journal"
+        android:label="@string/menu_journal"
+        tools:layout="@layout/fragment_journal" />
+
+    <fragment
         android:id="@+id/nav_user"
         android:name="open.furaffinity.client.fragments.user"
         android:label="@string/menu_user"

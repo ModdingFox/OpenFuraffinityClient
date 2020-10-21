@@ -104,7 +104,9 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
             holder.actionText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.view.class.getName())) {
+                    if(mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.journal.class.getName())) {
+                        ((mainActivity)context).setJournalPath(mDataSet.get(position).get("postLink"));
+                    } else if(mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.view.class.getName())) {
                         ((mainActivity)context).setViewPath(mDataSet.get(position).get("postLink"));
                     } else {
                         try {

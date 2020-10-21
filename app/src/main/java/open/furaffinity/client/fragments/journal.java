@@ -1,15 +1,17 @@
-package open.furaffinity.client.activity;
+package open.furaffinity.client.fragments;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -18,13 +20,12 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.journalActivitySectionsPagerAdapter;
-import open.furaffinity.client.pages.journal;
-import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 
-public class journalActivity extends AppCompatActivity {
-    private static final String TAG = journalActivity.class.getName();
+public class journal extends Fragment {
+    private static final String TAG = journal.class.getName();
 
     private LinearLayout journalLinearLayout;
     private ImageView journalUserIcon;
@@ -32,36 +33,24 @@ public class journalActivity extends AppCompatActivity {
     private TextView journalTitle;
     private TextView journalDate;
     private ViewPager viewPager;
+    TabLayout tabs;
 
     private webClient webClient;
-    private journal page;
+    private open.furaffinity.client.pages.journal page;
 
-    private void getElements() {
-        journalLinearLayout = findViewById(R.id.journalLinearLayout);
-        journalUserIcon = findViewById(R.id.journalUserIcon);
-        journalUserName = findViewById(R.id.journalUserName);
-        journalTitle = findViewById(R.id.journalTitle);
-        journalDate = findViewById(R.id.journalDate);
-        viewPager = findViewById(R.id.view_pager);
-    }
-
-    private String getPagePath() {
-        String result = "";
-
-        Intent intent = getIntent();
-        Uri incomingPagePath = intent.getData();
-        if (incomingPagePath == null) {
-            result = intent.getStringExtra(messageIds.pagePath_MESSAGE);
-        } else {
-            result = incomingPagePath.getPath().toString();
-        }
-
-        return result;
+    private void getElements(View rootView) {
+        journalLinearLayout = rootView.findViewById(R.id.journalLinearLayout);
+        journalUserIcon = rootView.findViewById(R.id.journalUserIcon);
+        journalUserName = rootView.findViewById(R.id.journalUserName);
+        journalTitle = rootView.findViewById(R.id.journalTitle);
+        journalDate = rootView.findViewById(R.id.journalDate);
+        viewPager = rootView.findViewById(R.id.view_pager);
+        tabs = rootView.findViewById(R.id.tabs);
     }
 
     private void initClientAndPage(String pagePath) {
-        webClient = new webClient(this);
-        page = new journal(pagePath);
+        webClient = new webClient(this.getActivity());
+        page = new open.furaffinity.client.pages.journal(pagePath);
     }
 
     private void fetchPageData() {
@@ -87,31 +76,32 @@ public class journalActivity extends AppCompatActivity {
         journalLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), userActivity.class);
-                intent.putExtra(messageIds.pagePath_MESSAGE, page.getJournalUserLink());
-                v.getContext().startActivity(intent);
+                ((mainActivity)getActivity()).setUserPath(page.getJournalUserLink());
             }
         });
     }
 
     private void setupViewPager() {
-        journalActivitySectionsPagerAdapter sectionsPagerAdapter = new journalActivitySectionsPagerAdapter(this, getSupportFragmentManager(), page);
+        journalActivitySectionsPagerAdapter sectionsPagerAdapter = new journalActivitySectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_journal);
-        getElements();
-        initClientAndPage(getPagePath());
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_journal, container, false);
+        getElements(rootView);
+        initClientAndPage(((mainActivity)getActivity()).getJournalPath());
         fetchPageData();
         checkPageLoaded();
         updateUIElements();
         updateUIElementListeners();
         setupViewPager();
+        return rootView;
     }
 }

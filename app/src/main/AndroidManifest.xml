@@ -96,18 +96,6 @@
                     android:host="www.furaffinity.net"
                     android:pathPrefix="/watchlist/by"
                     android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.journalActivity"
-            android:label="@string/title_activity_journal"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="www.furaffinity.net"
                     android:pathPrefix="/journal"

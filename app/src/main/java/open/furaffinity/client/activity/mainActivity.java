@@ -39,6 +39,7 @@ public class mainActivity extends AppCompatActivity {
     private loginTest loginTest;
 
     private String searchQuery = null;
+    private String journalPath = null;
     private String userPath = null;
     private String viewPath = null;
 
@@ -49,7 +50,7 @@ public class mainActivity extends AppCompatActivity {
         if (incomingPagePath != null) {
             String pagePath = incomingPagePath.getPath().toString();
 
-            Matcher pathMatcher = Pattern.compile("^\\/(view|user|gallery|scraps|favorites|journals|commissions|watchlist\\/to|watchlist\\/by)\\/(.+)$").matcher(pagePath);
+            Matcher pathMatcher = Pattern.compile("^\\/(view|user|gallery|scraps|favorites|journals|commissions|watchlist\\/to|watchlist\\/by|journal)\\/(.+)$").matcher(pagePath);
 
             if (pathMatcher.find()) {
                 switch (pathMatcher.group(1)) {
@@ -65,6 +66,9 @@ public class mainActivity extends AppCompatActivity {
                     case "watchlist/to":
                     case "watchlist/by":
                         setUserPath(pagePath);
+                        break;
+                    case "journal":
+                        setJournalPath(pagePath);
                         break;
                 }
             }
@@ -109,6 +113,12 @@ public class mainActivity extends AppCompatActivity {
             navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
         }
 
+        if(journalPath == null) {
+            navMenu.findItem(R.id.nav_journal).setVisible(false);
+        } else {
+            navMenu.findItem(R.id.nav_journal).setVisible(true);
+        }
+
         if(userPath == null) {
             navMenu.findItem(R.id.nav_user).setVisible(false);
         } else {
@@ -125,7 +135,7 @@ public class mainActivity extends AppCompatActivity {
     private void setupNavigationUI() {
         setSupportActionBar(toolbar);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_user, R.id.nav_view, R.id.nav_login)
+                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_journal, R.id.nav_user, R.id.nav_view, R.id.nav_login)
                 .setDrawerLayout(drawer)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -147,6 +157,14 @@ public class mainActivity extends AppCompatActivity {
         updateUIElements();
         navigationView.setCheckedItem(R.id.nav_search);
         navigationView.getMenu().performIdentifierAction(R.id.nav_search, 0);
+    }
+
+    public String getJournalPath() { return journalPath; }
+    public void setJournalPath(String pathIn) {
+        journalPath = pathIn;
+        updateUIElements();
+        navigationView.setCheckedItem(R.id.nav_journal);
+        navigationView.getMenu().performIdentifierAction(R.id.nav_journal, 0);
     }
 
     public String getUserPath() { return userPath; }

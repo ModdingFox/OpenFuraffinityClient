@@ -1,5 +1,6 @@
 package open.furaffinity.client.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +15,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.utilities.messageIds;
 
 public class journalListAdapter extends RecyclerView.Adapter<journalListAdapter.ViewHolder> {
     private List<HashMap<String, String>> mDataSet;
+    private Context context;
 
-    public journalListAdapter(List<HashMap<String, String>> mDataSetIn) {
+    public journalListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
+        this.context = context;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,9 +55,7 @@ public class journalListAdapter extends RecyclerView.Adapter<journalListAdapter.
         holder.journalItemLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), open.furaffinity.client.activity.journalActivity.class);
-                intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("journalPath"));
-                v.getContext().startActivity(intent);
+                ((mainActivity)context).setJournalPath(mDataSet.get(position).get("journalPath"));
             }
         });
 
