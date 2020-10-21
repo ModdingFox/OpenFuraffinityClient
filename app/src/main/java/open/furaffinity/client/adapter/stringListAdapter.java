@@ -1,5 +1,6 @@
 package open.furaffinity.client.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,14 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.activity.mainActivity;
 
 public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.ViewHolder> {
     private static final String TAG = stringListAdapter.class.getName();
 
     private List<HashMap<String, String>> mDataSet;
+    private Context context;
 
-    public stringListAdapter(ArrayList<String> mDataSetIn) {
+    public stringListAdapter(ArrayList<String> mDataSetIn, Context context) {
         mDataSet = new ArrayList<>();
+        this.context = context;
 
         for (String currentItem : mDataSetIn) {
             HashMap<String, String> newDataItem = new HashMap<>();
@@ -31,8 +35,9 @@ public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.Vi
         }
     }
 
-    public stringListAdapter(List<HashMap<String, String>> mDataSetIn) {
+    public stringListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
+        this.context = context;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -61,12 +66,16 @@ public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.Vi
             holder.item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        Intent intent = new Intent(v.getContext(), Class.forName(mDataSet.get(position).get("class")));
-                        intent.putExtra(mDataSet.get(position).get("messageId"), mDataSet.get(position).get("path"));
-                        v.getContext().startActivity(intent);
-                    } catch (ClassNotFoundException e) {
-                        Log.e(TAG, "onClick: ", e);
+                    if(mDataSet.get(position).get("path").equals(open.furaffinity.client.fragments.user.class.getName())) {
+                        ((mainActivity)context).setUserPath(mDataSet.get(position).get("path"));
+                    } else {
+                        try {
+                            Intent intent = new Intent(v.getContext(), Class.forName(mDataSet.get(position).get("class")));
+                            intent.putExtra(mDataSet.get(position).get("messageId"), mDataSet.get(position).get("path"));
+                            v.getContext().startActivity(intent);
+                        } catch (ClassNotFoundException e) {
+                            Log.e(TAG, "onClick: ", e);
+                        }
                     }
                 }
             });

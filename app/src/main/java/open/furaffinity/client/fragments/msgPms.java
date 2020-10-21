@@ -82,7 +82,7 @@ public class msgPms extends Fragment {
     private void updateUIElements() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new msgPmsListAdapter(mDataSet);
+        mAdapter = new msgPmsListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
 

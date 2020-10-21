@@ -65,9 +65,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
                 holder.userIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), open.furaffinity.client.activity.userActivity.class);
-                        intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("userLink"));
-                        v.getContext().startActivity(intent);
+                        ((mainActivity)context).setUserPath(mDataSet.get(position).get("userLink"));
                     }
                 });
             }
@@ -82,9 +80,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
                 holder.userName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), open.furaffinity.client.activity.userActivity.class);
-                        intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("userLink"));
-                        v.getContext().startActivity(intent);
+                        ((mainActivity)context).setUserPath(mDataSet.get(position).get("userLink"));
                     }
                 });
             }

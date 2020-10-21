@@ -40,7 +40,7 @@ public class comments extends Fragment {
 
     private void updateUIElements() {
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new commentListAdapter(mDataSet);
+        mAdapter = new commentListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
 

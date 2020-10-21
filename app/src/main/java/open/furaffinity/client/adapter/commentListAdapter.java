@@ -1,5 +1,6 @@
 package open.furaffinity.client.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -21,13 +22,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.utilities.messageIds;
 
 public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.ViewHolder> {
     private List<HashMap<String, String>> mDataSet;
+    private Context context;
 
-    public commentListAdapter(List<HashMap<String, String>> mDataSetIn) {
+    public commentListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
+        this.context = context;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,9 +68,7 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
         holder.commentUserLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), open.furaffinity.client.activity.userActivity.class);
-                intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("userLink"));
-                v.getContext().startActivity(intent);
+                ((mainActivity)context).setUserPath(mDataSet.get(position).get("userLink"));
             }
         });
 

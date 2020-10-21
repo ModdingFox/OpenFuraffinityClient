@@ -43,7 +43,7 @@ public class watchList extends AsyncTask<webClient, Void, Void> {
             HashMap<String, String> newUser = new HashMap<>();
             newUser.put("item", currentElement.text());
             newUser.put("path", currentElement.selectFirst("a").attr("href"));
-            newUser.put("class", open.furaffinity.client.activity.userActivity.class.getName());
+            newUser.put("class", open.furaffinity.client.fragments.user.class.getName());
             newUser.put("messageId", messageIds.pagePath_MESSAGE);
             result.add(newUser);
         }

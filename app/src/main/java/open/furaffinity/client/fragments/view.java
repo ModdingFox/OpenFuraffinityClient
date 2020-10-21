@@ -95,9 +95,7 @@ public class view extends Fragment {
         submissionUserLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), userActivity.class);
-                intent.putExtra(messageIds.pagePath_MESSAGE, page.getSubmissionUserPage());
-                v.getContext().startActivity(intent);
+                ((mainActivity)getActivity()).setUserPath(page.getSubmissionUserPage());
             }
         });
 
