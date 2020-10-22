@@ -59,33 +59,36 @@ public class view extends AsyncTask<webClient, Void, Void> {
         Document doc = Jsoup.parse(html);
 
         Element favoriteNav = doc.selectFirst("div.favorite-nav");
-        Elements favoriteNavA = favoriteNav.select("a.button.standard");
 
-        for (Element currentElement : favoriteNavA) {
-            switch (currentElement.text()) {
-                case "Prev":
-                    prev = currentElement.attr("href");
-                    break;
-                case "+Fav":
-                    isFav = false;
-                    favUnFav = currentElement.attr("href");
-                    break;
-                case "-Fav":
-                    isFav = true;
-                    favUnFav = currentElement.attr("href");
-                    break;
-                case "Main Gallery":
-                    mainGallery = currentElement.attr("href");
-                    break;
-                case "Download":
-                    download = "https:" + currentElement.attr("href");
-                    break;
-                case "Note":
-                    note = currentElement.attr("href");
-                    break;
-                case "Next":
-                    next = currentElement.attr("href");
-                    break;
+        if(favoriteNav != null) {
+            Elements favoriteNavA = favoriteNav.select("a.button.standard");
+
+            for (Element currentElement : favoriteNavA) {
+                switch (currentElement.text()) {
+                    case "Prev":
+                        prev = currentElement.attr("href");
+                        break;
+                    case "+Fav":
+                        isFav = false;
+                        favUnFav = currentElement.attr("href");
+                        break;
+                    case "-Fav":
+                        isFav = true;
+                        favUnFav = currentElement.attr("href");
+                        break;
+                    case "Main Gallery":
+                        mainGallery = currentElement.attr("href");
+                        break;
+                    case "Download":
+                        download = "https:" + currentElement.attr("href");
+                        break;
+                    case "Note":
+                        note = currentElement.attr("href");
+                        break;
+                    case "Next":
+                        next = currentElement.attr("href");
+                        break;
+                }
             }
         }
 
