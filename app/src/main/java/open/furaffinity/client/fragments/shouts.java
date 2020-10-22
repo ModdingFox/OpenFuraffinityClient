@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +41,7 @@ public class shouts extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new commentListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
     @Override

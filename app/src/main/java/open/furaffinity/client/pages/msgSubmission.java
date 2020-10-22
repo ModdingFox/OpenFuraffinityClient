@@ -9,7 +9,6 @@ import org.jsoup.nodes.Element;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import open.furaffinity.client.utilities.webClient;
 
@@ -85,7 +84,7 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
     }
 
     public void setPerpage(String value) {
-        if(getPerpage().containsKey(value)) {
+        if (getPerpage().containsKey(value)) {
             pagePath.replace("@" + perPage, "@" + value);
             perPage = value;
         }

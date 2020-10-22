@@ -57,7 +57,7 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
                 return newUserProfileFragment;
             case 1:
                 userGallery newUserGalleryFragment = new userGallery();
-                if(currentPage.equals("gallery")) {
+                if (currentPage.equals("gallery")) {
                     bundle.putString(messageIds.pagePath_MESSAGE, currentPagePath);
                 } else {
                     bundle.putString(messageIds.pagePath_MESSAGE, user.getUserGalleryPath());
@@ -66,7 +66,7 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
                 return newUserGalleryFragment;
             case 2:
                 userGallery newUserScrapsFragment = new userGallery();
-                if(currentPage.equals("favorites")) {
+                if (currentPage.equals("favorites")) {
                     bundle.putString(messageIds.pagePath_MESSAGE, currentPagePath);
                 } else {
                     bundle.putString(messageIds.pagePath_MESSAGE, user.getUserScrapsPath());

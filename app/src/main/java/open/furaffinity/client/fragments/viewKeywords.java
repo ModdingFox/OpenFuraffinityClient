@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,6 +53,7 @@ public class viewKeywords extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new checkboxListAdapter(mDataSet);
         recyclerView.setAdapter(mAdapter);
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
     private void updateUIElementListeners(View rootView) {

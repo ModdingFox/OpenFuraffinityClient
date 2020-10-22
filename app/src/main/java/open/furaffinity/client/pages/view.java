@@ -8,7 +8,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.utilities.webClient;
@@ -164,13 +163,13 @@ public class view extends AsyncTask<webClient, Void, Void> {
         submissionComments = submissionCommentsList.html();
 
         Element folderListContainerSection = doc.selectFirst("section.folder-list-container");
-        if(folderListContainerSection != null) {
+        if (folderListContainerSection != null) {
             Elements folderListContainerSectionA = folderListContainerSection.select("a");
 
-            for(Element currentElement : folderListContainerSectionA) {
+            for (Element currentElement : folderListContainerSectionA) {
                 Element currentElementSpan = currentElement.selectFirst("span");
 
-                if(currentElementSpan != null) {
+                if (currentElementSpan != null) {
                     folderList.add(currentElementSpan.text() + "\n" + currentElement.attr("href"));
                 }
             }

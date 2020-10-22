@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.comments;

@@ -23,7 +23,7 @@ public class html {
                 rootElementImg.attr("src", "https:" + rootElementImg.attr("src"));
             }
 
-            if(rootElementImg.hasAttr("data-fullview-src") && rootElementImg.attr("data-fullview-src").startsWith("/")) {
+            if (rootElementImg.hasAttr("data-fullview-src") && rootElementImg.attr("data-fullview-src").startsWith("/")) {
                 rootElementImg.attr("data-fullview-src", "https:" + rootElementImg.attr("data-fullview-src"));
             }
         }

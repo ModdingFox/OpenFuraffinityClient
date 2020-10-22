@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -123,14 +122,14 @@ public class view extends Fragment {
         submissionDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DownloadManager downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+                DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
                 Uri uri = Uri.parse(page.getDownload());
 
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
 
                 Matcher fileNameMatcher = Pattern.compile("\\/([^\\/]+)\\/([^\\/]+)\\/([^\\/]+)\\/([^\\/]+)\\/([^\\/]+)$").matcher(page.getDownload());
 
-                if(fileNameMatcher.find()) {
+                if (fileNameMatcher.find()) {
                     String fileName = fileNameMatcher.group(5);
 
                     DownloadManager.Request request = new DownloadManager.Request(uri);

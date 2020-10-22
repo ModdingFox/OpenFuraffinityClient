@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -15,11 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.adapter.checkboxListAdapter;
 import open.furaffinity.client.adapter.stringListAdapter;
 import open.furaffinity.client.utilities.messageIds;
 
@@ -44,11 +40,11 @@ public class viewFolders extends Fragment {
     private void fetchPageData() {
         List<String> dataIn = getArguments().getStringArrayList(messageIds.SubmissionFolders_MESSAGE);
 
-        for(String currentElement : dataIn) {
+        for (String currentElement : dataIn) {
             HashMap<String, String> newDataElement = new HashMap<>();
-            String [] splitCurrentElement = currentElement.split("\n");
+            String[] splitCurrentElement = currentElement.split("\n");
 
-            if(splitCurrentElement.length == 2) {
+            if (splitCurrentElement.length == 2) {
                 newDataElement.put("item", splitCurrentElement[0]);
                 newDataElement.put("class", open.furaffinity.client.fragments.user.class.getName());
                 newDataElement.put("path", splitCurrentElement[1]);
