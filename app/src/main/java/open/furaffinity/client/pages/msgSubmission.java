@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import open.furaffinity.client.utilities.webClient;
 
@@ -20,6 +21,7 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
     private boolean isNewestFirst;
 
     private int page = 1;
+    private String perPage = "24";
 
     private String prevPage = null;
     private String nextPage = null;
@@ -30,9 +32,9 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
         this.isNewestFirst = isNewestFirst;
 
         if (isNewestFirst) {
-            pagePath = "/msg/submissions/new@72";
+            pagePath = "/msg/submissions/new@" + perPage;
         } else {
-            pagePath = "/msg/submissions/old@72";
+            pagePath = "/msg/submissions/old@" + perPage;
         }
     }
 
@@ -40,8 +42,9 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
         this.pagePath = msgSubmission.pagePath;
         this.isNewestFirst = msgSubmission.isNewestFirst;
         this.page = msgSubmission.page;
+        this.perPage = msgSubmission.perPage;
         this.prevPage = msgSubmission.prevPage;
-        this.prevPage = msgSubmission.prevPage;
+        this.nextPage = msgSubmission.nextPage;
     }
 
     private void processPageData(String html) {
@@ -67,6 +70,25 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
         html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         processPageData(html);
         return null;
+    }
+
+    public HashMap<String, String> getPerpage() {
+        HashMap<String, String> result = new HashMap<>();
+        result.put("24", "24");
+        result.put("48", "48");
+        result.put("72", "72");
+        return result;
+    }
+
+    public String getCurrentPerpage() {
+        return perPage;
+    }
+
+    public void setPerpage(String value) {
+        if(getPerpage().containsKey(value)) {
+            pagePath.replace("@" + perPage, "@" + value);
+            perPage = value;
+        }
     }
 
     public int getCurrentPage() {

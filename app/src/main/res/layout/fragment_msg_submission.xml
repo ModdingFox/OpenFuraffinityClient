@@ -18,6 +18,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/msgSubmissionOrder" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/msgSubmissionPerpage"
+                android:layout_gravity="center_vertical" />
+
+            <Spinner
+                android:id="@+id/msgSubmissionPerPageSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </TableRow>
 
     </TableLayout>

@@ -104,6 +104,7 @@
     <string name="loadMore">Load More</string>
 
     <string name="msgSubmissionOrder">Newest First: </string>
+    <string name="msgSubmissionPerpage">Results: </string>
 
     <string name="msgOthersTab0">Watches</string>
     <string name="msgOthersTab1">Submission Comments</string>

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
 
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.utilities.kvPair;
+import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
 public class msgSubmission extends Fragment {
@@ -36,6 +39,7 @@ public class msgSubmission extends Fragment {
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     private Switch msgSubmissionOrder;
+    private Spinner msgSubmissionPerPageSpinner;
 
     private FloatingActionButton fab;
 
@@ -51,6 +55,7 @@ public class msgSubmission extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
         msgSubmissionOrder = rootView.findViewById(R.id.msgSubmissionOrder);
+        msgSubmissionPerPageSpinner = rootView.findViewById(R.id.msgSubmissionPerPageSpinner);
 
         fab = rootView.findViewById(R.id.fab);
     }
@@ -98,6 +103,8 @@ public class msgSubmission extends Fragment {
         } else {
             msgSubmissionOrder.setChecked(false);
         }
+
+        uiControls.spinnerSetAdapter(requireContext(), msgSubmissionPerPageSpinner, page.getPerpage(), page.getCurrentPerpage(), true, true);
     }
 
     private void saveCurrentSettings() {
@@ -105,6 +112,12 @@ public class msgSubmission extends Fragment {
 
         if (page.getIsNewestFirst() != msgSubmissionOrder.isChecked()) {
             page = new open.furaffinity.client.pages.msgSubmission(msgSubmissionOrder.isChecked());
+            valueChanged = true;
+        }
+
+        String selectedPerpageValue = ((kvPair) msgSubmissionPerPageSpinner.getSelectedItem()).getKey();
+        if (!page.getCurrentPerpage().equals(selectedPerpageValue)) {
+            page.setPerpage(selectedPerpageValue);
             valueChanged = true;
         }
 
