@@ -69,6 +69,7 @@
     <string name="viewTab2">Keywords</string>
     <string name="viewTab3">Comments</string>
     <string name="viewTab4">Folders</string>
+    <string name="viewDownload">Download</string>
 
     <string name="infoSubmissionComments">Comments:</string>
     <string name="infoSubmissionFavorites">Favorites:</string>

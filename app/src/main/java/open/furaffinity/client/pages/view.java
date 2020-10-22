@@ -28,6 +28,8 @@ public class view extends AsyncTask<webClient, Void, Void> {
     private String note;
     private String next;
 
+    private String submissionImgLink;
+
     private String submissionUserIcon;
     private String submissionUser;
     private String submissionUserPage;
@@ -87,6 +89,10 @@ public class view extends AsyncTask<webClient, Void, Void> {
                     break;
             }
         }
+
+        Element submissionImgImg = doc.selectFirst("img[id=submissionImg]");
+        open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(submissionImgImg);
+        submissionImgLink = submissionImgImg.attr("data-fullview-src");
 
         Element submissionIdContainer = doc.selectFirst("div.submission-id-container");
 
@@ -212,6 +218,10 @@ public class view extends AsyncTask<webClient, Void, Void> {
 
     public String getNext() {
         return next;
+    }
+
+    public String getSubmissionImgLink() {
+        return submissionImgLink;
     }
 
     public String getSubmissionUserIcon() {

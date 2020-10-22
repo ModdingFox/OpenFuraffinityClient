@@ -2,12 +2,18 @@ package open.furaffinity.client.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -19,6 +25,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
@@ -36,6 +44,7 @@ public class view extends Fragment {
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
     private TextView submissionUser;
+    private Button submissionDownload;
     private WrapContentViewPager viewPager;
     private TabLayout tabs;
 
@@ -49,6 +58,7 @@ public class view extends Fragment {
         submissionUserLinearLayout = rootView.findViewById(R.id.submissionUserLinearLayout);
         submissionUserIcon = rootView.findViewById(R.id.submissionUserIcon);
         submissionUser = rootView.findViewById(R.id.submissionUser);
+        submissionDownload = rootView.findViewById(R.id.submissionDownload);
         viewPager = rootView.findViewById(R.id.view_pager);
         tabs = rootView.findViewById(R.id.tabs);
     }
@@ -82,7 +92,7 @@ public class view extends Fragment {
 
     private void updateUIElements() {
         submissionTitle.setText(page.getSubmissionTitle());
-        Glide.with(this).load(page.getDownload()).into(submissionImage);
+        Glide.with(this).load(page.getSubmissionImgLink()).into(submissionImage);
         Glide.with(this).load(page.getSubmissionUserIcon()).into(submissionUserIcon);
         submissionUser.setText(page.getSubmissionUser());
     }
@@ -106,6 +116,40 @@ public class view extends Fragment {
             public void onSwipeLeft() {
                 if (page.getPrev() != null) {
                     ((mainActivity) getActivity()).setViewPath(page.getPrev());
+                }
+            }
+        });
+
+        submissionDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DownloadManager downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri uri = Uri.parse(page.getDownload());
+
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
+
+                Matcher fileNameMatcher = Pattern.compile("\\/([^\\/]+)\\/([^\\/]+)\\/([^\\/]+)\\/([^\\/]+)\\/([^\\/]+)$").matcher(page.getDownload());
+
+                if(fileNameMatcher.find()) {
+                    String fileName = fileNameMatcher.group(5);
+
+                    DownloadManager.Request request = new DownloadManager.Request(uri);
+                    request.setTitle(page.getSubmissionTitle() + " by " + page.getSubmissionUser());
+                    request.setDescription("Downloading");
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    request.setVisibleInDownloadsUi(true);
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+                    downloadManager.enqueue(request);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("File naming error. Aborting download.")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 }
             }
         });
