@@ -55,7 +55,7 @@ public class historyList extends Fragment {
                 historyItemEntry.COLUMN_NAME_DATETIME
         };
 
-        String sortOrder = "rowid ASC";
+        String sortOrder = "rowid DESC";
 
         String tableName = "";
         String routableClass = "";
