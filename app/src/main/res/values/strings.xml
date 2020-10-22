@@ -20,6 +20,7 @@
     <string name="menu_msg_others">Notifications</string>
     <string name="menu_msg_pms">Notes</string>
     <string name="menu_journal">View Journal</string>
+    <string name="menu_msg_pms_message">View Message</string>
     <string name="menu_user">View User</string>
     <string name="menu_view">View Post</string>
     <string name="menu_login">Login</string>

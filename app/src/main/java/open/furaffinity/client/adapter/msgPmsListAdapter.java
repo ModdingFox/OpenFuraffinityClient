@@ -78,9 +78,7 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
             holder.messageText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), open.furaffinity.client.activity.msgPmsMessageActivity.class);
-                    intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("messageLink"));
-                    v.getContext().startActivity(intent);
+                    ((mainActivity)context).setMsgPmsPath(mDataSet.get(position).get("messageLink"));
                 }
             });
         }

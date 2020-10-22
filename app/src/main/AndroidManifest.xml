@@ -104,18 +104,6 @@
                     android:host="www.furaffinity.net"
                     android:pathPrefix="/journal"
                     android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.msgPmsMessageActivity"
-            android:label="@string/title_activity_msgpmsmessage"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="www.furaffinity.net"
                     android:pathPrefix="/msg/pms/"

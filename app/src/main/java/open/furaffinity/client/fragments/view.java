@@ -23,11 +23,9 @@ import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.activity.userActivity;
 import open.furaffinity.client.adapter.viewActivitySectionsPagerAdapter;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
 import open.furaffinity.client.utilities.WrapContentViewPager;
-import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 
 public class view extends Fragment {

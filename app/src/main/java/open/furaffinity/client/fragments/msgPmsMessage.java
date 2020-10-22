@@ -1,15 +1,17 @@
-package open.furaffinity.client.activity;
+package open.furaffinity.client.fragments;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -18,13 +20,13 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsMessageActivitySectionsPagerAdapter;
-import open.furaffinity.client.pages.msgPmsMessage;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 
-public class msgPmsMessageActivity extends AppCompatActivity {
-    private static final String TAG = msgPmsMessageActivity.class.getName();
+public class msgPmsMessage extends Fragment {
+    private static final String TAG = msgPmsMessage.class.getName();
 
     private TextView subject;
     private ImageView userIcon;
@@ -33,37 +35,25 @@ public class msgPmsMessageActivity extends AppCompatActivity {
     private TextView sentDate;
     private WebView webView;
     private ViewPager viewPager;
+    private TabLayout tabs;
 
     private webClient webClient;
-    private msgPmsMessage page;
+    private open.furaffinity.client.pages.msgPmsMessage page;
 
-    private void getElements() {
-        subject = findViewById(R.id.subject);
-        userIcon = findViewById(R.id.userIcon);
-        sentBy = findViewById(R.id.sentBy);
-        //sentTo = findViewById(R.id.sentTo);
-        sentDate = findViewById(R.id.sentDate);
-        webView = findViewById(R.id.webView);
-        viewPager = findViewById(R.id.view_pager);
-    }
-
-    private String getPagePath() {
-        String result = "";
-
-        Intent intent = getIntent();
-        Uri incomingPagePath = intent.getData();
-        if (incomingPagePath == null) {
-            result = intent.getStringExtra(messageIds.pagePath_MESSAGE);
-        } else {
-            result = incomingPagePath.getPath().toString();
-        }
-
-        return result;
+    private void getElements(View rootView) {
+        subject = rootView.findViewById(R.id.subject);
+        userIcon = rootView.findViewById(R.id.userIcon);
+        sentBy = rootView.findViewById(R.id.sentBy);
+        //sentTo = rootView.findViewById(R.id.sentTo);
+        sentDate = rootView.findViewById(R.id.sentDate);
+        webView = rootView.findViewById(R.id.webView);
+        viewPager = rootView.findViewById(R.id.view_pager);
+        tabs = rootView.findViewById(R.id.tabs);
     }
 
     private void initClientAndPage(String pagePath) {
-        webClient = new webClient(this);
-        page = new msgPmsMessage(pagePath);
+        webClient = new webClient(this.getActivity());
+        page = new open.furaffinity.client.pages.msgPmsMessage(pagePath);
     }
 
     private void fetchPageData() {
@@ -90,39 +80,39 @@ public class msgPmsMessageActivity extends AppCompatActivity {
         userIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), open.furaffinity.client.activity.userActivity.class);
-                intent.putExtra(messageIds.pagePath_MESSAGE, page.getMessageUserLink());
-                v.getContext().startActivity(intent);
+                ((mainActivity)getActivity()).setUserPath(page.getMessageUserLink());
             }
         });
 
         sentBy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), open.furaffinity.client.activity.userActivity.class);
-                intent.putExtra(messageIds.pagePath_MESSAGE, page.getMessageUserLink());
-                v.getContext().startActivity(intent);
+                ((mainActivity)getActivity()).setUserPath(page.getMessageUserLink());
             }
         });
     }
 
     private void setupViewPager() {
-        msgPmsMessageActivitySectionsPagerAdapter sectionsPagerAdapter = new msgPmsMessageActivitySectionsPagerAdapter(this, getSupportFragmentManager(), page);
+        msgPmsMessageActivitySectionsPagerAdapter sectionsPagerAdapter = new msgPmsMessageActivitySectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_msgpmsmessage);
-        getElements();
-        initClientAndPage(getPagePath());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_msgpmsmessage, container, false);
+        getElements(rootView);
+        initClientAndPage(((mainActivity)getActivity()).getMsgPmsPath());
         fetchPageData();
         checkPageLoaded();
         updateUIElements();
         updateUIElementListeners();
         setupViewPager();
+        return rootView;
     }
 }
