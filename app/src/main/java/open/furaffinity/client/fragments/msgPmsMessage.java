@@ -1,7 +1,5 @@
 package open.furaffinity.client.fragments;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsMessageActivitySectionsPagerAdapter;
-import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 
 public class msgPmsMessage extends Fragment {
@@ -80,14 +77,14 @@ public class msgPmsMessage extends Fragment {
         userIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((mainActivity)getActivity()).setUserPath(page.getMessageUserLink());
+                ((mainActivity) getActivity()).setUserPath(page.getMessageUserLink());
             }
         });
 
         sentBy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((mainActivity)getActivity()).setUserPath(page.getMessageUserLink());
+                ((mainActivity) getActivity()).setUserPath(page.getMessageUserLink());
             }
         });
     }
@@ -107,7 +104,7 @@ public class msgPmsMessage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_msgpmsmessage, container, false);
         getElements(rootView);
-        initClientAndPage(((mainActivity)getActivity()).getMsgPmsPath());
+        initClientAndPage(((mainActivity) getActivity()).getMsgPmsPath());
         fetchPageData();
         checkPageLoaded();
         updateUIElements();

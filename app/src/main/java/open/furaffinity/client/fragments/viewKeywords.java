@@ -1,6 +1,5 @@
 package open.furaffinity.client.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,16 +9,14 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.R;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.checkboxListAdapter;
 import open.furaffinity.client.utilities.messageIds;
 
@@ -61,7 +58,7 @@ public class viewKeywords extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((mainActivity)getActivity()).setSearchQuery("@keywords " + ((checkboxListAdapter)mAdapter).getCheckedItems().stream().collect(Collectors.joining(" ")));
+                ((mainActivity) getActivity()).setSearchQuery("@keywords " + ((checkboxListAdapter) mAdapter).getCheckedItems().stream().collect(Collectors.joining(" ")));
             }
         });
     }

@@ -67,7 +67,7 @@ public class login extends Fragment {
             editor.apply();
             editor.commit();
 
-            ((mainActivity)getActivity()).updateUILoginState();
+            ((mainActivity) getActivity()).updateUILoginState();
         } else {
             webView.setVisibility(View.VISIBLE);
             webSettings.setJavaScriptEnabled(true);
@@ -100,7 +100,7 @@ public class login extends Fragment {
                         editor.putString(getString(R.string.webClientCookieB), cookieMap.get("b"));
                         editor.apply();
                         editor.commit();
-                        ((mainActivity)getActivity()).updateUILoginState();
+                        ((mainActivity) getActivity()).updateUILoginState();
                     }
 
                     return;

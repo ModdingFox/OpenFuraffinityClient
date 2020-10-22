@@ -1,8 +1,6 @@
 package open.furaffinity.client.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,16 +64,14 @@ public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.Vi
             holder.item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mDataSet.get(position).get("path").equals(open.furaffinity.client.fragments.user.class.getName())) {
-                        ((mainActivity)context).setUserPath(mDataSet.get(position).get("path"));
-                    } else {
-                        try {
-                            Intent intent = new Intent(v.getContext(), Class.forName(mDataSet.get(position).get("class")));
-                            intent.putExtra(mDataSet.get(position).get("messageId"), mDataSet.get(position).get("path"));
-                            v.getContext().startActivity(intent);
-                        } catch (ClassNotFoundException e) {
-                            Log.e(TAG, "onClick: ", e);
-                        }
+                    if (mDataSet.get(position).get("path").equals(open.furaffinity.client.fragments.journal.class.getName())) {
+                        ((mainActivity) context).setJournalPath(mDataSet.get(position).get("path"));
+                    } else if (mDataSet.get(position).get("path").equals(open.furaffinity.client.fragments.msgPmsMessage.class.getName())) {
+                        ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("path"));
+                    } else if (mDataSet.get(position).get("path").equals(open.furaffinity.client.fragments.user.class.getName())) {
+                        ((mainActivity) context).setUserPath(mDataSet.get(position).get("path"));
+                    } else if (mDataSet.get(position).get("path").equals(open.furaffinity.client.fragments.view.class.getName())) {
+                        ((mainActivity) context).setViewPath(mDataSet.get(position).get("path"));
                     }
                 }
             });

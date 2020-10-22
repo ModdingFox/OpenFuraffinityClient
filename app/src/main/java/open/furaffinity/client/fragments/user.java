@@ -62,7 +62,7 @@ public class user extends Fragment {
     }
 
     private String getPagePath() {
-        String result = ((mainActivity)getActivity()).getUserPath();
+        String result = ((mainActivity) getActivity()).getUserPath();
 
         Matcher userMatcher = Pattern.compile("\\/(user|gallery|scraps|favorites|journals|commissions|watchlist\\/to|watchlist\\/by)\\/([^\\/]+)").matcher(result);
         if (userMatcher.find()) {

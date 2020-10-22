@@ -1,8 +1,6 @@
 package open.furaffinity.client.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +15,8 @@ import com.bumptech.glide.Glide;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.R;
-import open.furaffinity.client.utilities.messageIds;
+import open.furaffinity.client.activity.mainActivity;
 
 public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdapter.ViewHolder> {
     private static final String TAG = msgOthersListAdapter.class.getName();
@@ -65,7 +62,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
                 holder.userIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((mainActivity)context).setUserPath(mDataSet.get(position).get("userLink"));
+                        ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink"));
                     }
                 });
             }
@@ -80,7 +77,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
                 holder.userName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((mainActivity)context).setUserPath(mDataSet.get(position).get("userLink"));
+                        ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink"));
                     }
                 });
             }
@@ -104,18 +101,10 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
             holder.actionText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.journal.class.getName())) {
-                        ((mainActivity)context).setJournalPath(mDataSet.get(position).get("postLink"));
-                    } else if(mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.view.class.getName())) {
-                        ((mainActivity)context).setViewPath(mDataSet.get(position).get("postLink"));
-                    } else {
-                        try {
-                            Intent intent = new Intent(v.getContext(), Class.forName(mDataSet.get(position).get("postClass")));
-                            intent.putExtra(messageIds.pagePath_MESSAGE, mDataSet.get(position).get("postLink"));
-                            v.getContext().startActivity(intent);
-                        } catch (ClassNotFoundException e) {
-                            Log.e(TAG, "onClick: ", e);
-                        }
+                    if (mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.journal.class.getName())) {
+                        ((mainActivity) context).setJournalPath(mDataSet.get(position).get("postLink"));
+                    } else if (mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.view.class.getName())) {
+                        ((mainActivity) context).setViewPath(mDataSet.get(position).get("postLink"));
                     }
                 }
             });

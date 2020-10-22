@@ -1,7 +1,5 @@
 package open.furaffinity.client.fragments;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,7 +74,7 @@ public class journal extends Fragment {
         journalLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((mainActivity)getActivity()).setUserPath(page.getJournalUserLink());
+                ((mainActivity) getActivity()).setUserPath(page.getJournalUserLink());
             }
         });
     }
@@ -96,7 +94,7 @@ public class journal extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_journal, container, false);
         getElements(rootView);
-        initClientAndPage(((mainActivity)getActivity()).getJournalPath());
+        initClientAndPage(((mainActivity) getActivity()).getJournalPath());
         fetchPageData();
         checkPageLoaded();
         updateUIElements();

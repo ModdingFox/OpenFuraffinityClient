@@ -129,9 +129,9 @@ public class search extends Fragment {
     }
 
     private void loadCurrentSettings() {
-        if(!loadedMainActivitySearchQuery) {
-            String mainActivitySearchQuery = ((mainActivity)getActivity()).getSearchQuery();
-            if(mainActivitySearchQuery != null) {
+        if (!loadedMainActivitySearchQuery) {
+            String mainActivitySearchQuery = ((mainActivity) getActivity()).getSearchQuery();
+            if (mainActivitySearchQuery != null) {
                 searchEditText.setText(mainActivitySearchQuery);
             } else {
                 searchEditText.setText(page.getCurrentQuery());

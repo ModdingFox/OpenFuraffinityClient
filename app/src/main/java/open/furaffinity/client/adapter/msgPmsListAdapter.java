@@ -1,7 +1,6 @@
 package open.furaffinity.client.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.utilities.messageIds;
 
 public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.ViewHolder> {
     private List<HashMap<String, String>> mDataSet;
@@ -55,7 +53,7 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
                 holder.userName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((mainActivity)context).setUserPath(mDataSet.get(position).get("messageSenderLink"));
+                        ((mainActivity) context).setUserPath(mDataSet.get(position).get("messageSenderLink"));
                     }
                 });
             }
@@ -78,7 +76,7 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
             holder.messageText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((mainActivity)context).setMsgPmsPath(mDataSet.get(position).get("messageLink"));
+                    ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("messageLink"));
                 }
             });
         }

@@ -1,13 +1,10 @@
 package open.furaffinity.client.adapter;
 
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,17 +61,19 @@ public class checkboxListAdapter extends RecyclerView.Adapter<checkboxListAdapte
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     checkedItems.add(holder.item.getText().toString());
                 } else {
                     int removeIndex = -1;
-                    for(int i = 0; i < checkedItems.size(); i++) {
-                        if(checkedItems.get(i).equals(holder.item.getText().toString())) {
+                    for (int i = 0; i < checkedItems.size(); i++) {
+                        if (checkedItems.get(i).equals(holder.item.getText().toString())) {
                             removeIndex = i;
                             break;
                         }
                     }
-                    if(removeIndex > -1) { checkedItems.remove(removeIndex); }
+                    if (removeIndex > -1) {
+                        checkedItems.remove(removeIndex);
+                    }
                 }
             }
         });
@@ -85,5 +84,7 @@ public class checkboxListAdapter extends RecyclerView.Adapter<checkboxListAdapte
         return mDataSet.size();
     }
 
-    public List<String> getCheckedItems() { return checkedItems; }
+    public List<String> getCheckedItems() {
+        return checkedItems;
+    }
 }

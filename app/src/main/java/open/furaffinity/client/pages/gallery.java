@@ -41,13 +41,13 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
         Document doc = Jsoup.parse(html);
         Element folderListDiv = doc.selectFirst("div.folder-list");
 
-        if(folderListDiv != null) {
+        if (folderListDiv != null) {
             Element currentFolder = folderListDiv.selectFirst("li.active");
             folderResults.put(pagePath, currentFolder.text());
 
             Elements folderLinks = folderListDiv.select("a");
 
-            if(folderLinks != null) {
+            if (folderLinks != null) {
                 for (Element currentElement : folderLinks) {
                     folderResults.put(currentElement.attr("href"), currentElement.text());
                 }
@@ -63,7 +63,9 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
         return null;
     }
 
-    public String getPagePath() { return pagePath; }
+    public String getPagePath() {
+        return pagePath;
+    }
 
     public int getPage() {
         try {
@@ -93,5 +95,7 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
         return pageResults;
     }
 
-    public HashMap<String, String> getFolderResults() { return folderResults; }
+    public HashMap<String, String> getFolderResults() {
+        return folderResults;
+    }
 }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -90,7 +89,7 @@ public class userGallery extends Fragment {
     }
 
     private void updateUIElements() {
-        if(folderList.size() > 0) {
+        if (folderList.size() > 0) {
             folderSpinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, page.getPagePath(), true, false);
 
@@ -122,7 +121,7 @@ public class userGallery extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String newPagePath = ((kvPair) folderSpinner.getSelectedItem()).getKey();
-                if(newPagePath != pagePath) {
+                if (newPagePath != pagePath) {
                     pagePath = newPagePath;
                     mDataSet = new ArrayList<>();
                     folderList = new HashMap<>();

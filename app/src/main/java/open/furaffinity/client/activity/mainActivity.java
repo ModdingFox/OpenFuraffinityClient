@@ -117,25 +117,25 @@ public class mainActivity extends AppCompatActivity {
             navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
         }
 
-        if(journalPath == null) {
+        if (journalPath == null) {
             navMenu.findItem(R.id.nav_journal).setVisible(false);
         } else {
             navMenu.findItem(R.id.nav_journal).setVisible(true);
         }
 
-        if(msgPmsPath == null) {
+        if (msgPmsPath == null) {
             navMenu.findItem(R.id.nav_msg_pms_message).setVisible(false);
         } else {
             navMenu.findItem(R.id.nav_msg_pms_message).setVisible(true);
         }
 
-        if(userPath == null) {
+        if (userPath == null) {
             navMenu.findItem(R.id.nav_user).setVisible(false);
         } else {
             navMenu.findItem(R.id.nav_user).setVisible(true);
         }
 
-        if(viewPath == null) {
+        if (viewPath == null) {
             navMenu.findItem(R.id.nav_view).setVisible(false);
         } else {
             navMenu.findItem(R.id.nav_view).setVisible(true);
@@ -161,7 +161,10 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_browse, 0);
     }
 
-    public String getSearchQuery() { return searchQuery; }
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
     public void setSearchQuery(String searchQueryIn) {
         searchQuery = searchQueryIn;
         updateUIElements();
@@ -169,7 +172,10 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_search, 0);
     }
 
-    public String getJournalPath() { return journalPath; }
+    public String getJournalPath() {
+        return journalPath;
+    }
+
     public void setJournalPath(String pathIn) {
         journalPath = pathIn;
         updateUIElements();
@@ -177,7 +183,10 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_journal, 0);
     }
 
-    public String getMsgPmsPath() { return msgPmsPath; }
+    public String getMsgPmsPath() {
+        return msgPmsPath;
+    }
+
     public void setMsgPmsPath(String pathIn) {
         msgPmsPath = pathIn;
         updateUIElements();
@@ -185,7 +194,10 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_msg_pms_message, 0);
     }
 
-    public String getUserPath() { return userPath; }
+    public String getUserPath() {
+        return userPath;
+    }
+
     public void setUserPath(String pathIn) {
         userPath = pathIn;
         updateUIElements();
@@ -193,7 +205,10 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_user, 0);
     }
 
-    public String getViewPath() { return viewPath; }
+    public String getViewPath() {
+        return viewPath;
+    }
+
     public void setViewPath(String pathIn) {
         viewPath = pathIn;
         updateUIElements();

@@ -3,7 +3,6 @@ package open.furaffinity.client.fragments;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -93,20 +92,20 @@ public class view extends Fragment {
         submissionUserLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((mainActivity)getActivity()).setUserPath(page.getSubmissionUserPage());
+                ((mainActivity) getActivity()).setUserPath(page.getSubmissionUserPage());
             }
         });
 
         activityViewScrollView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
             public void onSwipeRight() {
                 if (page.getNext() != null) {
-                    ((mainActivity)getActivity()).setViewPath(page.getNext());
+                    ((mainActivity) getActivity()).setViewPath(page.getNext());
                 }
             }
 
             public void onSwipeLeft() {
                 if (page.getPrev() != null) {
-                    ((mainActivity)getActivity()).setViewPath(page.getPrev());
+                    ((mainActivity) getActivity()).setViewPath(page.getPrev());
                 }
             }
         });
@@ -129,7 +128,7 @@ public class view extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view, container, false);
         getElements(rootView);
-        initClientAndPage(((mainActivity)getActivity()).getViewPath());
+        initClientAndPage(((mainActivity) getActivity()).getViewPath());
         fetchPageData();
         checkPageLoaded();
         updateUIElements();
