@@ -127,4 +127,8 @@
     <string name="webClientCookieA">cookieA</string>
     <string name="webClientCookieB">cookieB</string>
 
+    <string name="historyTab0">Journal</string>
+    <string name="historyTab1">User</string>
+    <string name="historyTab2">View</string>
+
 </resources>

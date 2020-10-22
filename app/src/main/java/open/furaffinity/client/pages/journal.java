@@ -56,6 +56,8 @@ public class journal extends AsyncTask<webClient, Void, Void> {
         return null;
     }
 
+    public String getPagePath() { return pagePath; }
+
     public String getJournalUserIcon() {
         return journalUserIcon;
     }

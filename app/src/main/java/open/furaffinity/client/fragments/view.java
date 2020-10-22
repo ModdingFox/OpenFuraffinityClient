@@ -3,6 +3,7 @@ package open.furaffinity.client.fragments;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +34,8 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
+import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
+import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.WrapContentViewPager;
 import open.furaffinity.client.utilities.webClient;
 
@@ -52,10 +56,27 @@ public class view extends Fragment {
     private open.furaffinity.client.pages.view page;
 
     private void saveHistory() {
-        SQLiteDatabase mDatabase = getActivity().openOrCreateDatabase("viewHistroy", Context.MODE_PRIVATE,null);
-        mDatabase.execSQL("CREATE TABLE IF NOT EXISTS viewHistory(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT)");
-        mDatabase.execSQL("INSERT INTO viewHistory VALUES('" + page.getSubmissionTitle() + "','" + page.getPagePath() + "')");
-        mDatabase.execSQL("DELETE FROM viewHistory WHERE timestamp < (SELECT min(timestamp) FROM (SELECT distinct(timestamp) FROM viewHistory ORDER BY timestamp DESC LIMIT 5))");
+        historyDBHelper dbHelper = new historyDBHelper(getActivity());
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        //Delete previous versions from history
+        String selection = historyItemEntry.COLUMN_NAME_USER + " LIKE ? AND " + historyItemEntry.COLUMN_NAME_TITLE + " LIKE ?";
+        String[] selectionArgs = { page.getSubmissionUser(), page.getSubmissionTitle() };
+        db.delete(historyItemEntry.TABLE_NAME_VIEW, selection, selectionArgs);
+
+        //Insert into history
+        ContentValues values = new ContentValues();
+        values.put(historyItemEntry.COLUMN_NAME_USER, page.getSubmissionUser());
+        values.put(historyItemEntry.COLUMN_NAME_TITLE, page.getSubmissionTitle());
+        values.put(historyItemEntry.COLUMN_NAME_URL, page.getPagePath());
+        values.put(historyItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
+        db.insert(historyItemEntry.TABLE_NAME_VIEW, null, values);
+
+        //Limit history to 512 entries
+        db.execSQL("DELETE FROM " + historyItemEntry.TABLE_NAME_VIEW + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+
+        db.close();
     }
 
     private void getElements(View rootView) {

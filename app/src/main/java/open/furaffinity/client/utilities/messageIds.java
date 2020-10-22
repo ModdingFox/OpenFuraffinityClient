@@ -28,4 +28,6 @@ public class messageIds {
     public static String msgOthersType_MESSAGE = "open.furaffinity.client.msgOthersType";
     public static String msgOthersData_MESSAGE = "open.furaffinity.client.msgOthersData";
 
+    public static String historyListPage_MESSAGE = "open.furaffinity.client.historyListPage";
+
 }

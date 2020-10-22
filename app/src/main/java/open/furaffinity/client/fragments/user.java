@@ -1,7 +1,9 @@
 package open.furaffinity.client.fragments;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,6 +26,8 @@ import java.util.regex.Pattern;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
+import open.furaffinity.client.sqlite.historyContract;
+import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.webClient;
 
 public class user extends Fragment {
@@ -38,14 +43,38 @@ public class user extends Fragment {
     private TextView userCommentsEarned;
     private TextView userCommentsMade;
     private TextView userJournals;
-    ViewPager viewPager;
-    TabLayout tabs;
+    private ViewPager viewPager;
+    private TabLayout tabs;
 
     private String currentPage;
     private String currentPagePath = null;
 
     private webClient webClient;
     private open.furaffinity.client.pages.user page;
+
+    private void saveHistory() {
+        historyDBHelper dbHelper = new historyDBHelper(getActivity());
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        //Delete previous versions from history
+        String selection = historyContract.historyItemEntry.COLUMN_NAME_USER + " LIKE ?";
+        String[] selectionArgs = { page.getUserName() };
+        db.delete(historyContract.historyItemEntry.TABLE_NAME_USER, selection, selectionArgs);
+
+        //Insert into history
+        ContentValues values = new ContentValues();
+        values.put(historyContract.historyItemEntry.COLUMN_NAME_USER, page.getUserName());
+        values.put(historyContract.historyItemEntry.COLUMN_NAME_TITLE, "");
+        values.put(historyContract.historyItemEntry.COLUMN_NAME_URL, page.getPagePath());
+        values.put(historyContract.historyItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
+        db.insert(historyContract.historyItemEntry.TABLE_NAME_USER, null, values);
+
+        //Limit history to 512 entries
+        db.execSQL("DELETE FROM " + historyContract.historyItemEntry.TABLE_NAME_USER + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+
+        db.close();
+    }
 
     private void getElements(View rootView) {
         userName = rootView.findViewById(R.id.userName);
@@ -83,6 +112,7 @@ public class user extends Fragment {
     private void fetchPageData() {
         try {
             page.execute(webClient).get();
+            saveHistory();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
