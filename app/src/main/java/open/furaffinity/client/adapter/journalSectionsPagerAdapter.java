@@ -16,14 +16,14 @@ import open.furaffinity.client.fragments.webViewContent;
 import open.furaffinity.client.pages.journal;
 import open.furaffinity.client.utilities.messageIds;
 
-public class journalActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+public class journalSectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.journalTab0, R.string.journalTab1};
     private final Context mContext;
 
     private journal journal;
 
-    public journalActivitySectionsPagerAdapter(Context context, FragmentManager fm, journal journal) {
+    public journalSectionsPagerAdapter(Context context, FragmentManager fm, journal journal) {
         super(fm);
         mContext = context;
         this.journal = journal;

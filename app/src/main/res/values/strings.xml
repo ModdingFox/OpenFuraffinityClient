@@ -68,6 +68,7 @@
     <string name="viewTab1">Info</string>
     <string name="viewTab2">Keywords</string>
     <string name="viewTab3">Comments</string>
+    <string name="viewTab4">Folders</string>
 
     <string name="infoSubmissionComments">Comments:</string>
     <string name="infoSubmissionFavorites">Favorites:</string>

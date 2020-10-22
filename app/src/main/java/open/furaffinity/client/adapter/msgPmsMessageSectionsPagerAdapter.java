@@ -15,14 +15,14 @@ import open.furaffinity.client.fragments.webViewContent;
 import open.furaffinity.client.pages.msgPmsMessage;
 import open.furaffinity.client.utilities.messageIds;
 
-public class msgPmsMessageActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+public class msgPmsMessageSectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.msgPmsMessageTab0};
     private final Context mContext;
 
     private msgPmsMessage msgPmsMessage;
 
-    public msgPmsMessageActivitySectionsPagerAdapter(Context context, FragmentManager fm, msgPmsMessage msgPmsMessage) {
+    public msgPmsMessageSectionsPagerAdapter(Context context, FragmentManager fm, msgPmsMessage msgPmsMessage) {
         super(fm);
         mContext = context;
         this.msgPmsMessage = msgPmsMessage;

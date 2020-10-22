@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.utilities.webClient;
@@ -46,6 +47,8 @@ public class view extends AsyncTask<webClient, Void, Void> {
 
     private List<String> submissionTags = new ArrayList<>();
     private String submissionComments;
+
+    private List<String> folderList = new ArrayList<>();
 
     public view(String pagePath) {
         this.pagePath = pagePath;
@@ -153,6 +156,19 @@ public class view extends AsyncTask<webClient, Void, Void> {
 
         Element submissionCommentsList = doc.selectFirst("div.comments-list");
         submissionComments = submissionCommentsList.html();
+
+        Element folderListContainerSection = doc.selectFirst("section.folder-list-container");
+        if(folderListContainerSection != null) {
+            Elements folderListContainerSectionA = folderListContainerSection.select("a");
+
+            for(Element currentElement : folderListContainerSectionA) {
+                Element currentElementSpan = currentElement.selectFirst("span");
+
+                if(currentElementSpan != null) {
+                    folderList.add(currentElementSpan.text() + "\n" + currentElement.attr("href"));
+                }
+            }
+        }
     }
 
     @Override
@@ -262,4 +278,7 @@ public class view extends AsyncTask<webClient, Void, Void> {
         return submissionComments;
     }
 
+    public List<String> getFolderList() {
+        return folderList;
+    }
 }

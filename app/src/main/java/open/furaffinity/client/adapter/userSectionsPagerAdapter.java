@@ -25,19 +25,23 @@ import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 
-public class userActivitySectionsPagerAdapter extends FragmentPagerAdapter {
-    private static final String TAG = userActivitySectionsPagerAdapter.class.getName();
+public class userSectionsPagerAdapter extends FragmentPagerAdapter {
+    private static final String TAG = userSectionsPagerAdapter.class.getName();
 
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.userTab0, R.string.userTab1, R.string.userTab2, R.string.userTab3, R.string.userTab4, R.string.userTab5, R.string.userTab6, R.string.userTab7, R.string.userTab8};
     private final Context mContext;
 
     private user user;
+    private String currentPage;
+    private String currentPagePath;
 
-    public userActivitySectionsPagerAdapter(Context context, FragmentManager fm, user user) {
+    public userSectionsPagerAdapter(Context context, FragmentManager fm, user user, String currentPage, String currentPagePath) {
         super(fm);
         mContext = context;
         this.user = user;
+        this.currentPage = currentPage;
+        this.currentPagePath = currentPagePath;
     }
 
     @Override
@@ -53,12 +57,20 @@ public class userActivitySectionsPagerAdapter extends FragmentPagerAdapter {
                 return newUserProfileFragment;
             case 1:
                 userGallery newUserGalleryFragment = new userGallery();
-                bundle.putString(messageIds.pagePath_MESSAGE, user.getUserGalleryPath());
+                if(currentPage.equals("gallery")) {
+                    bundle.putString(messageIds.pagePath_MESSAGE, currentPagePath);
+                } else {
+                    bundle.putString(messageIds.pagePath_MESSAGE, user.getUserGalleryPath());
+                }
                 newUserGalleryFragment.setArguments(bundle);
                 return newUserGalleryFragment;
             case 2:
                 userGallery newUserScrapsFragment = new userGallery();
-                bundle.putString(messageIds.pagePath_MESSAGE, user.getUserScrapsPath());
+                if(currentPage.equals("favorites")) {
+                    bundle.putString(messageIds.pagePath_MESSAGE, currentPagePath);
+                } else {
+                    bundle.putString(messageIds.pagePath_MESSAGE, user.getUserScrapsPath());
+                }
                 newUserScrapsFragment.setArguments(bundle);
                 return newUserScrapsFragment;
             case 3:

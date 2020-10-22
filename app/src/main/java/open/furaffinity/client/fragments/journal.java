@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.adapter.journalActivitySectionsPagerAdapter;
+import open.furaffinity.client.adapter.journalSectionsPagerAdapter;
 import open.furaffinity.client.utilities.webClient;
 
 public class journal extends Fragment {
@@ -80,7 +80,7 @@ public class journal extends Fragment {
     }
 
     private void setupViewPager() {
-        journalActivitySectionsPagerAdapter sectionsPagerAdapter = new journalActivitySectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
+        journalSectionsPagerAdapter sectionsPagerAdapter = new journalSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);
         tabs.setupWithViewPager(viewPager);
     }

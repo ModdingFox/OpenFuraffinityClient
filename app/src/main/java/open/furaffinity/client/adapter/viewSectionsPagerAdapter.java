@@ -10,24 +10,26 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.comments;
 import open.furaffinity.client.fragments.notImplementedYet;
+import open.furaffinity.client.fragments.viewFolders;
 import open.furaffinity.client.fragments.viewInfo;
 import open.furaffinity.client.fragments.viewKeywords;
 import open.furaffinity.client.fragments.webViewContent;
 import open.furaffinity.client.pages.view;
 import open.furaffinity.client.utilities.messageIds;
 
-public class viewActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+public class viewSectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.viewTab0, R.string.viewTab1, R.string.viewTab2, R.string.viewTab3};
+    private static final int[] TAB_TITLES = new int[]{R.string.viewTab0, R.string.viewTab1, R.string.viewTab2, R.string.viewTab3, R.string.viewTab4};
     private final Context mContext;
 
     private view view;
 
-    public viewActivitySectionsPagerAdapter(Context context, FragmentManager fm, view view) {
+    public viewSectionsPagerAdapter(Context context, FragmentManager fm, view view) {
         super(fm);
         mContext = context;
         this.view = view;
@@ -66,6 +68,11 @@ public class viewActivitySectionsPagerAdapter extends FragmentPagerAdapter {
                 bundle.putString(messageIds.SubmissionComments_MESSAGE, view.getSubmissionComments());
                 newCommentsFragment.setArguments(bundle);
                 return newCommentsFragment;
+            case 4:
+                viewFolders nevViewFoldersFragment = new viewFolders();
+                bundle.putStringArrayList(messageIds.SubmissionFolders_MESSAGE, new ArrayList<>(view.getFolderList()));
+                nevViewFoldersFragment.setArguments(bundle);
+                return nevViewFoldersFragment;
             default:
                 return new notImplementedYet();
         }

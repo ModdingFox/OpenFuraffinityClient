@@ -16,6 +16,7 @@ public class messageIds {
     public static String submissionSize_MESSAGE = "open.furaffinity.client.submissionSize";
     public static String SubmissionTags_MESSAGE = "open.furaffinity.client.submissionTags";
     public static String SubmissionComments_MESSAGE = "open.furaffinity.client.submissionComments";
+    public static String SubmissionFolders_MESSAGE = "open.furaffinity.client.submissionFolders";
 
     public static String userPageProfile_MESSAGE = "open.furaffinity.client.userPageProfile";
     public static String userProfile_Message = "open.furaffinity.client.userProfile";

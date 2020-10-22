@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.adapter.viewActivitySectionsPagerAdapter;
+import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
 import open.furaffinity.client.utilities.WrapContentViewPager;
 import open.furaffinity.client.utilities.webClient;
@@ -113,7 +113,7 @@ public class view extends Fragment {
     }
 
     private void setupViewPager() {
-        viewActivitySectionsPagerAdapter sectionsPagerAdapter = new viewActivitySectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
+        viewSectionsPagerAdapter sectionsPagerAdapter = new viewSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);

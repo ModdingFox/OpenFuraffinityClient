@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.adapter.msgPmsMessageActivitySectionsPagerAdapter;
+import open.furaffinity.client.adapter.msgPmsMessageSectionsPagerAdapter;
 import open.furaffinity.client.utilities.webClient;
 
 public class msgPmsMessage extends Fragment {
@@ -90,7 +90,7 @@ public class msgPmsMessage extends Fragment {
     }
 
     private void setupViewPager() {
-        msgPmsMessageActivitySectionsPagerAdapter sectionsPagerAdapter = new msgPmsMessageActivitySectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
+        msgPmsMessageSectionsPagerAdapter sectionsPagerAdapter = new msgPmsMessageSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);
         tabs.setupWithViewPager(viewPager);
     }

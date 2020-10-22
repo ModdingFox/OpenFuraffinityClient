@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.adapter.userActivitySectionsPagerAdapter;
+import open.furaffinity.client.adapter.userSectionsPagerAdapter;
 import open.furaffinity.client.utilities.webClient;
 
 public class user extends Fragment {
@@ -42,6 +42,7 @@ public class user extends Fragment {
     TabLayout tabs;
 
     private String currentPage;
+    private String currentPagePath = null;
 
     private webClient webClient;
     private open.furaffinity.client.pages.user page;
@@ -62,7 +63,8 @@ public class user extends Fragment {
     }
 
     private String getPagePath() {
-        String result = ((mainActivity) getActivity()).getUserPath();
+        currentPagePath = ((mainActivity) getActivity()).getUserPath();
+        String result = currentPagePath;
 
         Matcher userMatcher = Pattern.compile("\\/(user|gallery|scraps|favorites|journals|commissions|watchlist\\/to|watchlist\\/by)\\/([^\\/]+)").matcher(result);
         if (userMatcher.find()) {
@@ -118,8 +120,8 @@ public class user extends Fragment {
     }
 
     private void setupViewPager() {
-        userActivitySectionsPagerAdapter userActivitySectionsPagerAdapter = new userActivitySectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
-        viewPager.setAdapter(userActivitySectionsPagerAdapter);
+        userSectionsPagerAdapter userSectionsPagerAdapter = new userSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page, currentPage, currentPagePath);
+        viewPager.setAdapter(userSectionsPagerAdapter);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);
 
