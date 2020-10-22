@@ -33,6 +33,11 @@
             android:title="@string/menu_msg_pms" />
 
         <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/menu_history" />
+
+        <item
             android:id="@+id/nav_journal"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_journal" />
@@ -56,5 +61,10 @@
             android:id="@+id/nav_login"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_login" />
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/menu_about" />
     </group>
 </menu>

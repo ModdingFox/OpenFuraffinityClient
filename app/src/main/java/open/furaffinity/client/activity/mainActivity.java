@@ -145,7 +145,9 @@ public class mainActivity extends AppCompatActivity {
     private void setupNavigationUI() {
         setSupportActionBar(toolbar);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_journal, R.id.nav_msg_pms_message, R.id.nav_user, R.id.nav_view, R.id.nav_login)
+                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_history,
+                R.id.nav_journal, R.id.nav_msg_pms_message, R.id.nav_user, R.id.nav_view,
+                R.id.nav_login, R.id.nav_about)
                 .setDrawerLayout(drawer)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);

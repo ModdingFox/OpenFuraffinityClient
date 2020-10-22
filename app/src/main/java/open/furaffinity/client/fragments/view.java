@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,6 +51,13 @@ public class view extends Fragment {
     private webClient webClient;
     private open.furaffinity.client.pages.view page;
 
+    private void saveHistory() {
+        SQLiteDatabase mDatabase = getActivity().openOrCreateDatabase("viewHistroy", Context.MODE_PRIVATE,null);
+        mDatabase.execSQL("CREATE TABLE IF NOT EXISTS viewHistory(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT)");
+        mDatabase.execSQL("INSERT INTO viewHistory VALUES('" + page.getSubmissionTitle() + "','" + page.getPagePath() + "')");
+        mDatabase.execSQL("DELETE FROM viewHistory WHERE timestamp < (SELECT min(timestamp) FROM (SELECT distinct(timestamp) FROM viewHistory ORDER BY timestamp DESC LIMIT 5))");
+    }
+
     private void getElements(View rootView) {
         activityViewScrollView = rootView.findViewById(R.id.activityViewScrollView);
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
@@ -70,6 +78,7 @@ public class view extends Fragment {
     private void fetchPageData() {
         try {
             page.execute(webClient).get();
+            saveHistory();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
