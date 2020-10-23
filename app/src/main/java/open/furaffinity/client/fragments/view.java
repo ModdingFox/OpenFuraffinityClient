@@ -57,7 +57,6 @@ public class view extends Fragment {
 
     private void saveHistory() {
         historyDBHelper dbHelper = new historyDBHelper(getActivity());
-
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         //Delete previous versions from history

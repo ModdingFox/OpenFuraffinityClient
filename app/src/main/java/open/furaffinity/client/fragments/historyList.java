@@ -45,7 +45,6 @@ public class historyList extends Fragment {
 
     private void fetchPageData() {
         historyDBHelper dbHelper = new historyDBHelper(getActivity());
-
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String[] projection = {

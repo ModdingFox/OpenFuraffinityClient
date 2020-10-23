@@ -64,6 +64,7 @@
     <string name="searchSortByMatchingKeywords">Sort By Matching Keywords:</string>
     <string name="searchAny">Any</string>
     <string name="searchExtended">extended</string>
+    <string name="searchSave">Save Current Search</string>
 
     <string name="title_activity_view">@string/app_name</string>
     <string name="viewTab0">Description</string>
@@ -130,5 +131,9 @@
     <string name="historyTab0">Journal</string>
     <string name="historyTab1">User</string>
     <string name="historyTab2">View</string>
+
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="notifications">Notify</string>
 
 </resources>

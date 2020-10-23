@@ -3,6 +3,7 @@ package open.furaffinity.client.utilities;
 public class messageIds {
     public static String pagePath_MESSAGE = "open.furaffinity.client.pagePath";
 
+    public static String searchSelected_MESSAGE = "open.furaffinity.client.searchSelected";
 
     public static String submissionDescription_MESSAGE = "open.furaffinity.client.submissionDescription";
     public static String submissionComments_MESSAGE = "open.furaffinity.client.submissionComments";

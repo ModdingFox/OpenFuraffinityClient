@@ -25,6 +25,8 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.utilities.webClient;
 
+import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
+
 public class mainActivity extends AppCompatActivity {
     private static final String TAG = mainActivity.class.getName();
     private AppBarConfiguration mAppBarConfiguration;
@@ -38,6 +40,7 @@ public class mainActivity extends AppCompatActivity {
     private webClient webClient;
     private loginTest loginTest;
 
+    private String searchSelected = null;
     private String searchQuery = null;
     private String journalPath = null;
     private String msgPmsPath = null;
@@ -47,6 +50,10 @@ public class mainActivity extends AppCompatActivity {
     private void getPagePath() {
         Intent intent = getIntent();
         Uri incomingPagePath = intent.getData();
+
+        if(intent.getStringExtra(searchSelected_MESSAGE) != null) {
+            setSearchSelected(intent.getStringExtra(searchSelected_MESSAGE));
+        }
 
         if (incomingPagePath != null) {
             String pagePath = incomingPagePath.getPath().toString();
@@ -161,6 +168,19 @@ public class mainActivity extends AppCompatActivity {
 
         navigationView.setCheckedItem(R.id.nav_browse);
         navigationView.getMenu().performIdentifierAction(R.id.nav_browse, 0);
+    }
+
+    public String getSearchSelected() {
+        String result = searchSelected;
+        searchSelected = null;
+        return result;
+    }
+
+    public void setSearchSelected(String searchSelectedIn) {
+        searchSelected = searchSelectedIn;
+        updateUIElements();
+        navigationView.setCheckedItem(R.id.nav_search);
+        navigationView.getMenu().performIdentifierAction(R.id.nav_search, 0);
     }
 
     public String getSearchQuery() {

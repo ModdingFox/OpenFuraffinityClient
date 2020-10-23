@@ -1,10 +1,12 @@
 package open.furaffinity.client.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -33,7 +35,9 @@ import open.furaffinity.client.utilities.webClient;
 public class browse extends Fragment {
     private static final String TAG = open.furaffinity.client.fragments.browse.class.getName();
 
-    LinearLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
+
+    private TableLayout settingsTableLayout;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -59,6 +63,8 @@ public class browse extends Fragment {
 
     private void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
+
+        settingsTableLayout = rootView.findViewById(R.id.settingsTableLayout);
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
@@ -219,16 +225,14 @@ public class browse extends Fragment {
 
         fab.setOnClickListener(view ->
         {
-            RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
-            TableLayout settingsTableLayout = rootView.findViewById(R.id.settingsTableLayout);
-            if (recyclerView.getVisibility() == View.VISIBLE) {
-                recyclerView.setVisibility(View.GONE);
-                loadCurrentSettings();
-                settingsTableLayout.setVisibility(View.VISIBLE);
-            } else {
+            if (settingsTableLayout.getVisibility() == View.VISIBLE) {
                 settingsTableLayout.setVisibility(View.GONE);
                 saveCurrentSettings();
                 recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                loadCurrentSettings();
+                settingsTableLayout.setVisibility(View.VISIBLE);
             }
         });
     }
