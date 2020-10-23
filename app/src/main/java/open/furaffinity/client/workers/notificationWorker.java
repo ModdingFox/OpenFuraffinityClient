@@ -1,6 +1,5 @@
 package open.furaffinity.client.workers;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.pages.msgPms;
 import open.furaffinity.client.utilities.webClient;
 
 public class notificationWorker extends Worker {
