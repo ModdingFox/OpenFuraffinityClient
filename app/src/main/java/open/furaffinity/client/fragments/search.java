@@ -151,6 +151,51 @@ public class search extends Fragment {
         newPostPaths.removeAll(oldPostPaths);
         pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
         mDataSet.addAll(pageResults);
+
+        if(page.getPageResults() != null && page.getPageResults().size() > 0) {
+            //Find any saved searches that meet the current search criteria and apply the most recent link to them
+            searchDBHelper dbHelper = new searchDBHelper(getActivity());
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, page.getPageResults().get(0).get("postPath"));
+
+            String selection = "";
+            selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_ORDERBY + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_ORDERDIRECTION + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_RANGE + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_RATINGGENERAL + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_RATINGMATURE + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_RATINGADULT + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_TYPEART + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_TYPEMUSIC + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_TYPEFLASH + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_TYPESTORY + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_TYPEPHOTO + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_TYPEPOETRY + " = ? AND ";
+            selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
+
+            String[] selectionArgs = {
+                    page.getCurrentQuery(),
+                    page.getCurrentOrderBy(),
+                    page.getCurrentOrderDirection(),
+                    page.getCurrentRange(),
+                    ((page.getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
+                    ((page.getCurrentRatingMature().equals("")) ? ("0") : ("1")),
+                    ((page.getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
+                    ((page.getCurrentTypeArt().equals("")) ? ("0") : ("1")),
+                    ((page.getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
+                    ((page.getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
+                    ((page.getCurrentTypeStory().equals("")) ? ("0") : ("1")),
+                    ((page.getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
+                    ((page.getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
+                    page.getCurrentMode()
+            };
+
+            int boop = db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
+            db.close();
+        }
     }
 
     private void loadSavedSearches() {
@@ -536,6 +581,7 @@ public class search extends Fragment {
             public void onClick(View v) {
                 saveCurrentSearch();
                 loadSavedSearches();
+                saveCurrentSettings();
                 updateUIElements();
             }
         });
