@@ -11,8 +11,8 @@ import open.furaffinity.client.utilities.webClient;
 public class commissions extends AsyncTask<webClient, Void, Void> {
     private static final String TAG = commissions.class.getName();
 
-    String pagePath;
-    String commissionBody = "";
+    private String pagePath;
+    private String commissionBody = "";
 
     public commissions(String pagePath) {
         this.pagePath = pagePath;

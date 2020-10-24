@@ -152,7 +152,7 @@ public class search extends Fragment {
         pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
         mDataSet.addAll(pageResults);
 
-        if(page.getPageResults() != null && page.getPageResults().size() > 0) {
+        if(page.getPageResults() != null && page.getPageResults().size() > 0 && page.getCurrentPage().equals("1")) {
             //Find any saved searches that meet the current search criteria and apply the most recent link to them
             searchDBHelper dbHelper = new searchDBHelper(getActivity());
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -193,7 +193,7 @@ public class search extends Fragment {
                     page.getCurrentMode()
             };
 
-            int boop = db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
+            db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
             db.close();
         }
     }

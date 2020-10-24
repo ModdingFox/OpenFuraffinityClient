@@ -64,11 +64,29 @@ public class webClient {
 
         try {
             URL url = new URL(urlIn);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setRequestProperty("Cookie", additionalCookies);
+            HttpURLConnection httpURLConnection;
+            int responseCode;
 
-            int responseCode = httpURLConnection.getResponseCode();
+            int retry = 3;
+            do {
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.setRequestProperty("Cookie", additionalCookies);
+                responseCode = httpURLConnection.getResponseCode();
+
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+                    break;
+                } else {
+                    retry--;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "sendGetRequest could not sleep: ", e);
+                    }
+                }
+            }while ( retry > 0);
+
+
             Log.i(TAG, "sendGetRequest: GET Response Code :: " + responseCode);
 
             if (responseCode == HttpURLConnection.HTTP_OK) {

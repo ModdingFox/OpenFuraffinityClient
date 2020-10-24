@@ -20,7 +20,7 @@ import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 public class gallery extends AsyncTask<webClient, Void, Void> {
     private static final String TAG = gallery.class.getName();
 
-    String pagePath;
+    private String pagePath;
     private String page;
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
     private HashMap<String, String> folderResults = new HashMap<>();

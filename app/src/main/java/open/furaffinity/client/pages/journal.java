@@ -11,14 +11,14 @@ import open.furaffinity.client.utilities.webClient;
 public class journal extends AsyncTask<webClient, Void, Void> {
     private static final String TAG = journal.class.getName();
 
-    String pagePath;
-    String journalUserIcon;
-    String journalUserLink;
-    String journalUserName;
-    String journalTitle;
-    String journalDate;
-    String journalContent;
-    String journalComments;
+    private String pagePath;
+    private String journalUserIcon;
+    private String journalUserLink;
+    private String journalUserName;
+    private String journalTitle;
+    private String journalDate;
+    private String journalContent;
+    private String journalComments;
 
     public journal(String pagePath) {
         this.pagePath = pagePath;

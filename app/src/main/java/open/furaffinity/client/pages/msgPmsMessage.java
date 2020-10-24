@@ -12,14 +12,14 @@ import open.furaffinity.client.utilities.webClient;
 public class msgPmsMessage extends AsyncTask<webClient, Void, Void> {
     private static final String TAG = msgPmsMessage.class.getName();
 
-    String pagePath;
-    String messageSubject;
-    String messageUserIcon;
-    String messageUserLink;
-    String messageSentBy;
-    String messageSentTo;
-    String messageSentDate;
-    String messageBody;
+    private String pagePath;
+    private String messageSubject;
+    private String messageUserIcon;
+    private String messageUserLink;
+    private String messageSentBy;
+    private String messageSentTo;
+    private String messageSentDate;
+    private String messageBody;
 
     public msgPmsMessage(String pagePath) {
         this.pagePath = pagePath;

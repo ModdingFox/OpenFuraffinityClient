@@ -15,7 +15,7 @@ import open.furaffinity.client.utilities.webClient;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class msgSubmission extends AsyncTask<webClient, Void, Void> {
-    String pagePath = "/msg/submissions";
+    private  String pagePath = "/msg/submissions";
 
     private boolean isNewestFirst;
 

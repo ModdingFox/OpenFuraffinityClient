@@ -38,9 +38,7 @@ public class msgPms extends AsyncTask<webClient, Void, Void> {
         public String getPrintableName() {
             return this.printableName;
         }
-    }
-
-    ;
+    };
 
     String pagePath = "/msg/pms";
     int currentPage = 1;
