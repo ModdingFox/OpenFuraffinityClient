@@ -12,6 +12,7 @@ import java.util.List;
 public class imageResultsTool {
     public static HashMap<String, String> getDropDownOptions(String name, String html) {
         HashMap<String, String> result = new HashMap<>();
+
         Document doc = Jsoup.parse(html);
         Element rootElement = doc.selectFirst(".listbox[name=" + name + "]");
         Elements optionElements = rootElement.select("option");
@@ -24,10 +25,10 @@ public class imageResultsTool {
     }
 
     public static List<HashMap<String, String>> getResultsData(String html) {
+        List<HashMap<String, String>> result = new ArrayList<>();
+
         Document doc = Jsoup.parse(html);
         Elements rootElements = doc.select("figure");
-
-        List<HashMap<String, String>> result = new ArrayList<>();
 
         for (Element rootElement : rootElements) {
             HashMap<String, String> currentPostData = new HashMap<>();

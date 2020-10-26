@@ -20,13 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.sqlite.searchContract;
 import open.furaffinity.client.sqlite.searchDBHelper;
-import open.furaffinity.client.utilities.notificationItem;
 import open.furaffinity.client.utilities.webClient;
 
 public class searchNotificationWorker extends Worker {
@@ -48,6 +46,9 @@ public class searchNotificationWorker extends Worker {
 
     private void fetchPageData() {
         try {
+            page.execute(webClient).get();
+            page = new open.furaffinity.client.pages.search(page);
+
             searchDBHelper dbHelper = new searchDBHelper(context);
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -119,6 +120,7 @@ public class searchNotificationWorker extends Worker {
                 page.setTypePhoto(COLUMN_TYPEPHOTO);
                 page.setTypePoetry(COLUMN_TYPEPOETRY);
                 page.setMode(COLUMN_MODE);
+                page.setPage("1");
 
                 boolean foundLastPosition = false;
                 int pageCount = 0;
@@ -176,7 +178,7 @@ public class searchNotificationWorker extends Worker {
     }
 
     @Override
-    public Result doWork() {
+   public Result doWork() {
         initClientAndPage();
         fetchPageData();
 
