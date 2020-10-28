@@ -54,7 +54,11 @@ public class search extends AsyncTask<webClient, Void, Void> {
         String html;
         String pagePath = "/search";
         html = webClient[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
-        processPageData(html);
+        if(html != null) {
+            processPageData(html);
+        } else {
+            Log.e(TAG, "doInBackground: did not get data back from server");
+        }
         return null;
     }
 

@@ -160,18 +160,36 @@ public class webClient {
 
         try {
             URL url = new URL(urlIn);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            httpURLConnection.setRequestProperty("charset", "utf-8");
-            httpURLConnection.setRequestProperty("Content-Length", Integer.toString(params.length));
-            httpURLConnection.setRequestProperty("Cookie", additionalCookies);
+            HttpURLConnection httpURLConnection;
+            int responseCode;
 
-            DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
-            outputStream.write(params);
+            int retry = 3;
+            do {
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                httpURLConnection.setRequestProperty("charset", "utf-8");
+                httpURLConnection.setRequestProperty("Content-Length", Integer.toString(params.length));
+                httpURLConnection.setRequestProperty("Cookie", additionalCookies);
 
-            int responseCode = httpURLConnection.getResponseCode();
-            Log.i(TAG, "sendGetRequest: GET Response Code :: " + responseCode);
+                DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
+                outputStream.write(params);
+
+                responseCode = httpURLConnection.getResponseCode();
+
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+                    break;
+                } else {
+                    retry--;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "sendPostRequest could not sleep: ", e);
+                    }
+                }
+            }while ( retry > 0);
+
+            Log.i(TAG, "sendPostRequest: POST Response Code :: " + responseCode);
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
