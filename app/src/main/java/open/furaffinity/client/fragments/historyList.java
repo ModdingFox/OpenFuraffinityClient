@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.adapter.historyListAdapter;
 import open.furaffinity.client.adapter.stringListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
@@ -112,7 +113,7 @@ public class historyList extends Fragment {
     private void updateUIElements() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new stringListAdapter(mDataSet, getActivity());
+        mAdapter = new historyListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
 
