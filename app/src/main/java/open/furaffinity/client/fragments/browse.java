@@ -108,7 +108,7 @@ public class browse extends Fragment {
     }
 
     private void updateUIElements() {
-        if (loginTest.getIsLoggedIn()) {
+        if (loginTest.getIsLoggedIn() && loginTest.getIsNSFWAllowed()) {
             browseRatingMatureSwitch.setVisibility(View.VISIBLE);
             browseRatingAdultSwitch.setVisibility(View.VISIBLE);
         } else {

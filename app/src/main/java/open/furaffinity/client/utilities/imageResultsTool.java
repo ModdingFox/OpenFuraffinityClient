@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class imageResultsTool {
     public static HashMap<String, String> getDropDownOptions(String name, String html) {
@@ -33,6 +34,17 @@ public class imageResultsTool {
         for (Element rootElement : rootElements) {
             HashMap<String, String> currentPostData = new HashMap<>();
 
+            Set<String> classes = rootElement.classNames();
+            String ratingCode = "U";
+
+            if(classes.contains("r-general")) {
+                ratingCode = "G";
+            } else if(classes.contains("r-mature")) {
+                ratingCode = "M";
+            } else if(classes.contains("r-adult")) {
+                ratingCode = "A";
+            }
+
             Element img = rootElement.selectFirst("img");
 
             Element figcaption = rootElement.selectFirst("figcaption");
@@ -44,6 +56,7 @@ public class imageResultsTool {
             currentPostData.put("postTitle", post.html());
             currentPostData.put("postUserPath", user.attr("href"));
             currentPostData.put("postUserName", user.html());
+            currentPostData.put("postRatingCode", ratingCode);
 
             result.add(currentPostData);
         }

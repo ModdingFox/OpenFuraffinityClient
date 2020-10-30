@@ -533,7 +533,7 @@ public class search extends Fragment {
     }
 
     private void updateUIElements() {
-        if (loginTest.getIsLoggedIn()) {
+        if (loginTest.getIsLoggedIn() && loginTest.getIsNSFWAllowed()) {
             searchRatingMatureSwitch.setVisibility(View.VISIBLE);
             searchRatingAdultSwitch.setVisibility(View.VISIBLE);
         } else {

@@ -30,12 +30,14 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView postImage;
         private final TextView postInfo;
+        private final TextView postRating;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             postImage = itemView.findViewById(R.id.imageListCardViewPostImage);
             postInfo = itemView.findViewById(R.id.imageListCardPostInfo);
+            postRating = itemView.findViewById(R.id.imageListCardPostRating);
         }
     }
 
@@ -51,6 +53,7 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Picasso.get().load("https:" + mDataSet.get(position).get("imgUrl")).into(holder.postImage);
         holder.postInfo.setText(String.format("%s by %s", mDataSet.get(position).get("postTitle"), mDataSet.get(position).get("postUserName")));
+        holder.postRating.setText(mDataSet.get(position).get("postRatingCode"));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
