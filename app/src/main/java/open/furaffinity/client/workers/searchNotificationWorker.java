@@ -197,7 +197,7 @@ public class searchNotificationWorker extends Worker {
             PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, context.getString(R.string.app_name));
-            mBuilder.setSmallIcon(R.drawable.ic_menu_gallery);
+            mBuilder.setSmallIcon(R.drawable.ic_menu_search);
             mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
             mBuilder.setContentIntent(pendingIntent);
             mBuilder.setAutoCancel(true);
