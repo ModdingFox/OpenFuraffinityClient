@@ -154,7 +154,9 @@ public class user extends AsyncTask<webClient, Void, Void> {
         return null;
     }
 
-    public String getPagePath() { return pagePath; }
+    public String getPagePath() {
+        return pagePath;
+    }
 
     public boolean getIsLoaded() {
         return isLoaded;

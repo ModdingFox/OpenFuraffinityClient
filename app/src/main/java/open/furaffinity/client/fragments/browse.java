@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -130,7 +129,7 @@ public class browse extends Fragment {
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if(sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
+        if (sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
             fetchPageData();
             mDataSet.clear();
             page = new open.furaffinity.client.pages.browse(page);
@@ -227,16 +226,16 @@ public class browse extends Fragment {
             Context context = getActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-            if(sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
+            if (sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.browseCatSetting), selectedCatValue);
                 editor.putString(getString(R.string.browseAtypeSetting), selectedAtypeValue);
                 editor.putString(getString(R.string.browseSpeciesSetting), selectedSpeciesValue);
                 editor.putString(getString(R.string.browseGenderSetting), selectedGenderValue);
                 editor.putString(getString(R.string.browsePerpageSetting), selectedPerpageValue);
-                editor.putBoolean(getString(R.string.browseRatingGeneralSetting), ((selectedRatingGeneralValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.browseRatingMatureSetting), ((selectedRatingMatureValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.browseRatingAdultSetting), ((selectedRatingAdultValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.browseRatingGeneralSetting), ((selectedRatingGeneralValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.browseRatingMatureSetting), ((selectedRatingMatureValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.browseRatingAdultSetting), ((selectedRatingAdultValue.equals("on")) ? (true) : (false)));
                 editor.apply();
                 editor.commit();
             }

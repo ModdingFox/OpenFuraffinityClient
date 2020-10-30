@@ -21,7 +21,6 @@ import java.util.TimeZone;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.historyListAdapter;
-import open.furaffinity.client.adapter.stringListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
@@ -60,8 +59,7 @@ public class historyList extends Fragment {
         String tableName = "";
         String routableClass = "";
 
-        switch(currentView)
-        {
+        switch (currentView) {
             case 0:
                 tableName = historyItemEntry.TABLE_NAME_JOURNAL;
                 routableClass = open.furaffinity.client.fragments.journal.class.getName();
@@ -86,7 +84,7 @@ public class historyList extends Fragment {
                 sortOrder
         );
 
-        while(cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             HashMap<String, String> newItem = new HashMap<>();
             String itemUser = cursor.getString(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_USER));
             String itemTitle = cursor.getString(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_TITLE));
@@ -99,7 +97,7 @@ public class historyList extends Fragment {
             newItem.put("class", routableClass);
             newItem.put("path", itemURL);
 
-            if(itemTitle == null || itemTitle.equals("")) {
+            if (itemTitle == null || itemTitle.equals("")) {
                 newItem.put("item", itemUser + " viewed on " + formatter.format(itemLocalDateTime));
             } else {
                 newItem.put("item", itemTitle + " by " + itemUser + " viewed on " + formatter.format(itemLocalDateTime));

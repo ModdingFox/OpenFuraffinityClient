@@ -22,7 +22,7 @@ public class loginTest extends AsyncTask<webClient, Void, Void> {
 
             Element nsfwToggle = doc.selectFirst("input.slider-toggle[id=sfw-toggle-mobile]");
 
-            if(nsfwToggle != null) {
+            if (nsfwToggle != null) {
                 isNSFWAllowed = true;
             }
 

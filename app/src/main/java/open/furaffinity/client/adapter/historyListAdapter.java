@@ -91,7 +91,7 @@ public class historyListAdapter extends RecyclerView.Adapter<historyListAdapter.
 
                 //Delete previous versions from history
                 String selection = historyContract.historyItemEntry.COLUMN_NAME_URL + " = ?";
-                String[] selectionArgs = { mDataSet.get(position).get("path") };
+                String[] selectionArgs = {mDataSet.get(position).get("path")};
 
                 if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragments.journal.class.getName())) {
                     db.delete(historyContract.historyItemEntry.TABLE_NAME_JOURNAL, selection, selectionArgs);

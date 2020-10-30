@@ -63,7 +63,7 @@ public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchList
         holder.nameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((mainActivity)context).setSearchSelected(Integer.toString(mDataSet.get(position).getRowId()));
+                ((mainActivity) context).setSearchSelected(Integer.toString(mDataSet.get(position).getRowId()));
             }
         });
 
@@ -74,10 +74,10 @@ public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchList
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                 ContentValues values = new ContentValues();
-                values.put(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE , ((isChecked)?(1):(0)));
+                values.put(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE, ((isChecked) ? (1) : (0)));
 
                 String selection = "rowid = ?";
-                String[] selectionArgs = { Integer.toString(mDataSet.get(position).getRowId()) };
+                String[] selectionArgs = {Integer.toString(mDataSet.get(position).getRowId())};
 
                 db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
                 db.close();
@@ -94,7 +94,7 @@ public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchList
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                 String selection = "rowid = ?";
-                String[] selectionArgs = { Integer.toString(mDataSet.get(position).getRowId()) };
+                String[] selectionArgs = {Integer.toString(mDataSet.get(position).getRowId())};
                 db.delete(searchItemEntry.TABLE_NAME, selection, selectionArgs);
                 db.close();
 

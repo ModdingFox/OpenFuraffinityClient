@@ -22,13 +22,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                app:tabMode="scrollable"/>
+                app:tabMode="scrollable" />
 
             <open.furaffinity.client.utilities.WrapContentViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </open.furaffinity.client.utilities.WrapContentViewPager>
+                android:layout_height="wrap_content"></open.furaffinity.client.utilities.WrapContentViewPager>
 
         </LinearLayout>
 

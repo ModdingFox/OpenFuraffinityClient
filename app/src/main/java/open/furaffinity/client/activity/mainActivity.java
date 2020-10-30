@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 import open.furaffinity.client.R;
 import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.utilities.webClient;
-import open.furaffinity.client.workers.searchNotificationWorker;
 
 import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
 
@@ -58,7 +57,7 @@ public class mainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Uri incomingPagePath = intent.getData();
 
-        if(intent.getStringExtra(searchSelected_MESSAGE) != null) {
+        if (intent.getStringExtra(searchSelected_MESSAGE) != null) {
             setSearchSelected(intent.getStringExtra(searchSelected_MESSAGE));
         }
 
@@ -145,7 +144,7 @@ public class mainActivity extends AppCompatActivity {
             navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
         }
 
-        if(!sharedPref.getBoolean(getString(R.string.trackHistorySetting), false)) {
+        if (!sharedPref.getBoolean(getString(R.string.trackHistorySetting), false)) {
             navMenu.findItem(R.id.nav_history).setVisible(false);
         } else {
             navMenu.findItem(R.id.nav_history).setVisible(true);

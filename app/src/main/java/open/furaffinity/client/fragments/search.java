@@ -156,7 +156,7 @@ public class search extends Fragment {
         pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
         mDataSet.addAll(pageResults);
 
-        if(page.getPageResults() != null && page.getPageResults().size() > 0 && page.getCurrentPage().equals("1")) {
+        if (page.getPageResults() != null && page.getPageResults().size() > 0 && page.getCurrentPage().equals("1")) {
             //Find any saved searches that meet the current search criteria and apply the most recent link to them
             searchDBHelper dbHelper = new searchDBHelper(getActivity());
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -206,7 +206,7 @@ public class search extends Fragment {
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if(sharedPref.getBoolean(getString(R.string.saveSearchState), open.furaffinity.client.fragments.settings.saveSearchStateDefault)) {
+        if (sharedPref.getBoolean(getString(R.string.saveSearchState), open.furaffinity.client.fragments.settings.saveSearchStateDefault)) {
             fetchPageData();
             mDataSet.clear();
             page = new open.furaffinity.client.pages.search(page);
@@ -251,9 +251,9 @@ public class search extends Fragment {
                 sortOrder
         );
 
-        while(cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             String itemName = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_NAME));
-            boolean itemNotificationState = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE)) > 0)?(true):(false));
+            boolean itemNotificationState = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE)) > 0) ? (true) : (false));
             int rowId = cursor.getInt(cursor.getColumnIndexOrThrow("rowid"));
             savedMDataSet.add(new notificationItem(itemName, itemNotificationState, rowId));
         }
@@ -265,7 +265,7 @@ public class search extends Fragment {
         searchDBHelper dbHelper = new searchDBHelper(getActivity());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String name = ((saveSearchEditText.getText().toString().length() > 0)?(saveSearchEditText.getText().toString()):("No Name Set"));
+        String name = ((saveSearchEditText.getText().toString().length() > 0) ? (saveSearchEditText.getText().toString()) : ("No Name Set"));
         String selectedQueryValue = searchEditText.getText().toString();
         String selectedOrderByValue = ((kvPair) searchOrderBySpinner.getSelectedItem()).getKey();
         String selectedOrderDirectionValue = ((kvPair) searchOrderDirectionSpinner.getSelectedItem()).getKey();
@@ -288,23 +288,23 @@ public class search extends Fragment {
         selectedModeValue = (searchExtendedRadioButton.isChecked()) ? ("extended") : (selectedModeValue);
 
         ContentValues values = new ContentValues();
-        values.put(searchItemEntry.COLUMN_NAME_NAME , name);
-        values.put(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE , 0);
-        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM , "");
-        values.put(searchItemEntry.COLUMN_NAME_Q , selectedQueryValue);
-        values.put(searchItemEntry.COLUMN_NAME_ORDERBY , selectedOrderByValue);
-        values.put(searchItemEntry.COLUMN_NAME_ORDERDIRECTION , selectedOrderDirectionValue);
-        values.put(searchItemEntry.COLUMN_NAME_RANGE , selectedRangeValue);
-        values.put(searchItemEntry.COLUMN_NAME_RATINGGENERAL , selectedRatingGeneralValue);
-        values.put(searchItemEntry.COLUMN_NAME_RATINGMATURE , selectedRatingMatureValue);
-        values.put(searchItemEntry.COLUMN_NAME_RATINGADULT , selectedRatingAdultValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEART , selectedTypeArtValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEMUSIC , selectedTypeMusicValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEFLASH , selectedTypeFlashValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPESTORY , selectedTypeStoryValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEPHOTO , selectedTypePhotoValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEPOETRY , selectedTypePoetryValue);
-        values.put(searchItemEntry.COLUMN_NAME_MODE , selectedModeValue);
+        values.put(searchItemEntry.COLUMN_NAME_NAME, name);
+        values.put(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE, 0);
+        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, "");
+        values.put(searchItemEntry.COLUMN_NAME_Q, selectedQueryValue);
+        values.put(searchItemEntry.COLUMN_NAME_ORDERBY, selectedOrderByValue);
+        values.put(searchItemEntry.COLUMN_NAME_ORDERDIRECTION, selectedOrderDirectionValue);
+        values.put(searchItemEntry.COLUMN_NAME_RANGE, selectedRangeValue);
+        values.put(searchItemEntry.COLUMN_NAME_RATINGGENERAL, selectedRatingGeneralValue);
+        values.put(searchItemEntry.COLUMN_NAME_RATINGMATURE, selectedRatingMatureValue);
+        values.put(searchItemEntry.COLUMN_NAME_RATINGADULT, selectedRatingAdultValue);
+        values.put(searchItemEntry.COLUMN_NAME_TYPEART, selectedTypeArtValue);
+        values.put(searchItemEntry.COLUMN_NAME_TYPEMUSIC, selectedTypeMusicValue);
+        values.put(searchItemEntry.COLUMN_NAME_TYPEFLASH, selectedTypeFlashValue);
+        values.put(searchItemEntry.COLUMN_NAME_TYPESTORY, selectedTypeStoryValue);
+        values.put(searchItemEntry.COLUMN_NAME_TYPEPHOTO, selectedTypePhotoValue);
+        values.put(searchItemEntry.COLUMN_NAME_TYPEPOETRY, selectedTypePoetryValue);
+        values.put(searchItemEntry.COLUMN_NAME_MODE, selectedModeValue);
 
         db.insert(searchItemEntry.TABLE_NAME, null, values);
         db.close();
@@ -312,7 +312,7 @@ public class search extends Fragment {
 
     private void loadCurrentSettings() {
         String selectedSearch = ((mainActivity) getActivity()).getSearchSelected();
-        if(selectedSearch != null) {
+        if (selectedSearch != null) {
             searchDBHelper dbHelper = new searchDBHelper(getActivity());
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -334,7 +334,7 @@ public class search extends Fragment {
             };
 
             String selection = "rowid = ?";
-            String[] selectionArgs = { selectedSearch };
+            String[] selectionArgs = {selectedSearch};
 
             String sortOrder = "rowid DESC";
 
@@ -348,20 +348,20 @@ public class search extends Fragment {
                     sortOrder
             );
 
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 String COLUMN_Q = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_Q));
                 String COLUMN_ORDERBY = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_ORDERBY));
                 String COLUMN_ORDERDIRECTION = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_ORDERDIRECTION));
                 String COLUMN_RANGE = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RANGE));
-                boolean COLUMN_RATINGGENERAL = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0)?(true):(false));
-                boolean COLUMN_RATINGMATURE = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0)?(true):(false));
-                boolean COLUMN_RATINGADULT = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0)?(true):(false));
-                boolean COLUMN_TYPEART = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEART)) > 0)?(true):(false));
-                boolean COLUMN_TYPEMUSIC = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0)?(true):(false));
-                boolean COLUMN_TYPEFLASH = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0)?(true):(false));
-                boolean COLUMN_TYPESTORY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0)?(true):(false));
-                boolean COLUMN_TYPEPHOTO = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0)?(true):(false));
-                boolean COLUMN_TYPEPOETRY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0)?(true):(false));
+                boolean COLUMN_RATINGGENERAL = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0) ? (true) : (false));
+                boolean COLUMN_RATINGMATURE = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0) ? (true) : (false));
+                boolean COLUMN_RATINGADULT = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEART = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEART)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEMUSIC = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEFLASH = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPESTORY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEPHOTO = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEPOETRY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0) ? (true) : (false));
                 String COLUMN_MODE = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_MODE));
 
                 page.setQuery(COLUMN_Q);
@@ -555,20 +555,20 @@ public class search extends Fragment {
             Context context = getActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-            if(sharedPref.getBoolean(getString(R.string.saveSearchState), settings.saveSearchStateDefault)) {
+            if (sharedPref.getBoolean(getString(R.string.saveSearchState), settings.saveSearchStateDefault)) {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.searchOrderBySetting), selectedOrderByValue);
                 editor.putString(getString(R.string.searchOrderDirectionSetting), selectedOrderDirectionValue);
                 editor.putString(getString(R.string.searchRangeSetting), selectedRangeValue);
-                editor.putBoolean(getString(R.string.searchRatingGeneralSetting), ((selectedRatingGeneralValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.searchRatingMatureSetting), ((selectedRatingMatureValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.searchRatingAdultSetting), ((selectedRatingAdultValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.searchTypeArtSetting), ((selectedTypeArtValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.searchTypeMusicSetting), ((selectedTypeMusicValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.searchTypeFlashSetting), ((selectedTypeFlashValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.searchTypeStorySetting), ((selectedTypeStoryValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.searchTypePhotoSetting), ((selectedTypePhotoValue.equals("on"))?(true):(false)));
-                editor.putBoolean(getString(R.string.searchTypePoetrySetting), ((selectedTypePoetryValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchRatingGeneralSetting), ((selectedRatingGeneralValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.searchRatingMatureSetting), ((selectedRatingMatureValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.searchRatingAdultSetting), ((selectedRatingAdultValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.searchTypeArtSetting), ((selectedTypeArtValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.searchTypeMusicSetting), ((selectedTypeMusicValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.searchTypeFlashSetting), ((selectedTypeFlashValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.searchTypeStorySetting), ((selectedTypeStoryValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.searchTypePhotoSetting), ((selectedTypePhotoValue.equals("on")) ? (true) : (false)));
+                editor.putBoolean(getString(R.string.searchTypePoetrySetting), ((selectedTypePoetryValue.equals("on")) ? (true) : (false)));
                 editor.putString(getString(R.string.searchModeSetting), selectedModeValue);
                 editor.apply();
                 editor.commit();
@@ -655,7 +655,7 @@ public class search extends Fragment {
 
         fab.setOnClickListener(view ->
         {
-            if(savedSearchRecyclerView.getVisibility() == View.VISIBLE) {
+            if (savedSearchRecyclerView.getVisibility() == View.VISIBLE) {
                 savedSearchRecyclerView.setVisibility(View.GONE);
                 swipeRefreshLayout.setVisibility(View.GONE);
                 searchOptionsScrollView.setVisibility(View.VISIBLE);
@@ -676,7 +676,7 @@ public class search extends Fragment {
 
         fab.setOnLongClickListener(view ->
         {
-            if(savedSearchRecyclerView.getVisibility() != View.VISIBLE) {
+            if (savedSearchRecyclerView.getVisibility() != View.VISIBLE) {
                 searchOptionsScrollView.setVisibility(View.GONE);
                 swipeRefreshLayout.setVisibility(View.GONE);
                 loadSavedSearches();

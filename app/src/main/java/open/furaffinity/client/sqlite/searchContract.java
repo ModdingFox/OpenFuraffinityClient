@@ -3,7 +3,8 @@ package open.furaffinity.client.sqlite;
 import android.provider.BaseColumns;
 
 public final class searchContract {
-    private searchContract() {}
+    private searchContract() {
+    }
 
     public static class searchItemEntry implements BaseColumns {
         public static final String TABLE_NAME = "savedSearches";

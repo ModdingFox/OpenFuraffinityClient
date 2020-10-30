@@ -73,7 +73,7 @@ public class searchNotificationWorker extends Worker {
 
             String selection = searchContract.searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE + " = ?";
 
-            String[] selectionArgs = { "1" };
+            String[] selectionArgs = {"1"};
 
             String sortOrder = "rowid DESC";
 
@@ -87,7 +87,7 @@ public class searchNotificationWorker extends Worker {
                     sortOrder
             );
 
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 String COLUMN_NAME = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_NAME));
                 String COLUMN_MOSTRECENTITEM = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_MOSTRECENTITEM));
 
@@ -95,15 +95,15 @@ public class searchNotificationWorker extends Worker {
                 String COLUMN_ORDERBY = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_ORDERBY));
                 String COLUMN_ORDERDIRECTION = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_ORDERDIRECTION));
                 String COLUMN_RANGE = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RANGE));
-                boolean COLUMN_RATINGGENERAL = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0)?(true):(false));
-                boolean COLUMN_RATINGMATURE = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0)?(true):(false));
-                boolean COLUMN_RATINGADULT = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0)?(true):(false));
-                boolean COLUMN_TYPEART = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEART)) > 0)?(true):(false));
-                boolean COLUMN_TYPEMUSIC = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0)?(true):(false));
-                boolean COLUMN_TYPEFLASH = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0)?(true):(false));
-                boolean COLUMN_TYPESTORY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0)?(true):(false));
-                boolean COLUMN_TYPEPHOTO = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0)?(true):(false));
-                boolean COLUMN_TYPEPOETRY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0)?(true):(false));
+                boolean COLUMN_RATINGGENERAL = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0) ? (true) : (false));
+                boolean COLUMN_RATINGMATURE = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0) ? (true) : (false));
+                boolean COLUMN_RATINGADULT = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEART = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEART)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEMUSIC = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEFLASH = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPESTORY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEPHOTO = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEPOETRY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0) ? (true) : (false));
                 String COLUMN_MODE = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_MODE));
 
                 page.setQuery(COLUMN_Q);
@@ -131,11 +131,11 @@ public class searchNotificationWorker extends Worker {
 
                     List<HashMap<String, String>> currentPageResults = page.getPageResults();
 
-                    if(currentPageResults == null || currentPageResults.size() == 0) {
+                    if (currentPageResults == null || currentPageResults.size() == 0) {
                         foundLastPosition = true;
                     } else {
-                        for(HashMap<String, String> currentResult : currentPageResults) {
-                            if(currentResult.get("postPath").equals(COLUMN_MOSTRECENTITEM)) {
+                        for (HashMap<String, String> currentResult : currentPageResults) {
+                            if (currentResult.get("postPath").equals(COLUMN_MOSTRECENTITEM)) {
                                 foundLastPosition = true;
                                 break;
                             } else {
@@ -147,17 +147,17 @@ public class searchNotificationWorker extends Worker {
                     }
                     page = new open.furaffinity.client.pages.search(page);
                     pageCount++;
-                    if(pageCount > maxPagesToCheck) {
+                    if (pageCount > maxPagesToCheck) {
                         foundLastPosition = true;
                     }
-                }while (!foundLastPosition);
+                } while (!foundLastPosition);
 
-                if(postCount > 0) {
+                if (postCount > 0) {
                     HashMap<String, String> newItem = new HashMap<>();
                     newItem.put("name", COLUMN_NAME);
                     newItem.put("newPosts", Integer.toString(postCount));
 
-                    if(pageCount > maxPagesToCheck) {
+                    if (pageCount > maxPagesToCheck) {
                         newItem.put("newPosts", newItem.get("newPosts") + "+");
                     }
 
@@ -178,19 +178,19 @@ public class searchNotificationWorker extends Worker {
     }
 
     @Override
-   public Result doWork() {
+    public Result doWork() {
         initClientAndPage();
         fetchPageData();
 
         String contentText = "";
-        for(HashMap<String,String> currentElement : mDataset) {
-            if(contentText.length() > 0) {
+        for (HashMap<String, String> currentElement : mDataset) {
+            if (contentText.length() > 0) {
                 contentText += "\n";
             }
             contentText += currentElement.get("name") + " has " + currentElement.get("newPosts") + " new results";
         }
 
-        if(contentText.length() > 0) {
+        if (contentText.length() > 0) {
             Intent intent = new Intent(context, mainActivity.class);
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
             stackBuilder.addNextIntentWithParentStack(intent);

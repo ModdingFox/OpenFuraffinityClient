@@ -60,7 +60,7 @@ public class view extends AsyncTask<webClient, Void, Void> {
 
         Element favoriteNav = doc.selectFirst("div.favorite-nav");
 
-        if(favoriteNav != null) {
+        if (favoriteNav != null) {
             Elements favoriteNavA = favoriteNav.select("a.button.standard");
 
             for (Element currentElement : favoriteNavA) {
@@ -94,7 +94,7 @@ public class view extends AsyncTask<webClient, Void, Void> {
 
         Element submissionImgImg = doc.selectFirst("img[id=submissionImg]");
 
-        if(submissionImgImg != null) {
+        if (submissionImgImg != null) {
             open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(submissionImgImg);
             submissionImgLink = submissionImgImg.attr("data-fullview-src");
         }
@@ -193,7 +193,9 @@ public class view extends AsyncTask<webClient, Void, Void> {
         return null;
     }
 
-    public String getPagePath() { return pagePath; }
+    public String getPagePath() {
+        return pagePath;
+    }
 
     public boolean getIsLoaded() {
         return isLoaded;

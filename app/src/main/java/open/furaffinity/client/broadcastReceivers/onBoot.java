@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -28,12 +27,12 @@ public class onBoot extends BroadcastReceiver {
 
             WorkManager.getInstance(context).cancelAllWork();
 
-            if(sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), settings.notificationsEnabledDefault)) {
+            if (sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), settings.notificationsEnabledDefault)) {
                 PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), settings.notificationsIntervalDefault), TimeUnit.MINUTES).build();
                 WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
             }
 
-            if(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), settings.searchNotificationsEnabledDefault)) {
+            if (sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), settings.searchNotificationsEnabledDefault)) {
                 PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), settings.searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
                 WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
             }

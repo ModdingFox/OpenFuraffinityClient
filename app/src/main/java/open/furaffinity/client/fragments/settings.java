@@ -85,7 +85,7 @@ public class settings extends Fragment {
 
                 WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACNotification));
 
-                if(isChecked) {
+                if (isChecked) {
                     PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault), TimeUnit.MINUTES).build();
                     WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
                 }
@@ -108,7 +108,7 @@ public class settings extends Fragment {
                 try {
                     int value = Integer.parseInt(notificationsInterval.getText().toString());
 
-                    if(value > 0) {
+                    if (value > 0) {
                         Context context = getActivity();
                         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
@@ -141,7 +141,7 @@ public class settings extends Fragment {
 
                 WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
 
-                if(isChecked) {
+                if (isChecked) {
                     PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
                     WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
                 }
@@ -164,7 +164,7 @@ public class settings extends Fragment {
                 try {
                     int value = Integer.parseInt(searchNotificationsInterval.getText().toString());
 
-                    if(value > 0) {
+                    if (value > 0) {
                         Context context = getActivity();
                         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();

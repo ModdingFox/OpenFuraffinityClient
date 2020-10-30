@@ -37,11 +37,11 @@ public class imageResultsTool {
             Set<String> classes = rootElement.classNames();
             String ratingCode = "U";
 
-            if(classes.contains("r-general")) {
+            if (classes.contains("r-general")) {
                 ratingCode = "G";
-            } else if(classes.contains("r-mature")) {
+            } else if (classes.contains("r-mature")) {
                 ratingCode = "M";
-            } else if(classes.contains("r-adult")) {
+            } else if (classes.contains("r-adult")) {
                 ratingCode = "A";
             }
 

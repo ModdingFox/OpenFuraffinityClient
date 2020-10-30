@@ -74,7 +74,7 @@ public class webClient {
                 httpURLConnection.setRequestProperty("Cookie", additionalCookies);
                 responseCode = httpURLConnection.getResponseCode();
 
-                if(responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     break;
                 } else {
                     retry--;
@@ -84,7 +84,7 @@ public class webClient {
                         Log.e(TAG, "sendGetRequest could not sleep: ", e);
                     }
                 }
-            }while ( retry > 0);
+            } while (retry > 0);
 
 
             Log.i(TAG, "sendGetRequest: GET Response Code :: " + responseCode);
@@ -177,7 +177,7 @@ public class webClient {
 
                 responseCode = httpURLConnection.getResponseCode();
 
-                if(responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     break;
                 } else {
                     retry--;
@@ -187,7 +187,7 @@ public class webClient {
                         Log.e(TAG, "sendPostRequest could not sleep: ", e);
                     }
                 }
-            }while ( retry > 0);
+            } while (retry > 0);
 
             Log.i(TAG, "sendPostRequest: POST Response Code :: " + responseCode);
 

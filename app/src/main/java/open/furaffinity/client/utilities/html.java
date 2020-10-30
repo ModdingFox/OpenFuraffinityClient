@@ -11,7 +11,7 @@ import java.util.List;
 
 public class html {
     public static void correctHtmlAHrefAndImgScr(Element rootElementIn) {
-        if(rootElementIn != null) {
+        if (rootElementIn != null) {
             Elements rootElementsA = rootElementIn.select("a");
             for (Element rootElementA : rootElementsA) {
                 if (rootElementA.attr("href").startsWith("/")) {

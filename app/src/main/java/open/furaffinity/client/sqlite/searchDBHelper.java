@@ -3,6 +3,7 @@ package open.furaffinity.client.sqlite;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
 
 public class searchDBHelper extends SQLiteOpenHelper {

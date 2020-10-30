@@ -51,7 +51,7 @@ public class notificationWorker extends Worker {
     private void fetchPageData() {
         try {
             loginTest.execute(webClient).get();
-            if(loginTest.getIsLoggedIn()) {
+            if (loginTest.getIsLoggedIn()) {
                 msgOthers.execute(webClient).get();
 
                 do {
@@ -91,7 +91,7 @@ public class notificationWorker extends Worker {
         initClientAndPage();
         fetchPageData();
 
-        if(loginTest.getIsLoggedIn()) {
+        if (loginTest.getIsLoggedIn()) {
             List<HashMap<String, String>> watches = open.furaffinity.client.pages.msgOthers.processWatchNotifications(msgOthers.getWatches(), "");
             List<HashMap<String, String>> comments = open.furaffinity.client.utilities.html.commentsToListHash(msgOthers.getSubmissionComments());
             List<HashMap<String, String>> shouts = open.furaffinity.client.pages.msgOthers.processShoutNotifications(msgOthers.getShouts(), "");
