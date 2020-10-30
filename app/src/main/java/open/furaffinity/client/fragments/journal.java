@@ -1,6 +1,8 @@
 package open.furaffinity.client.fragments;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,27 +44,31 @@ public class journal extends Fragment {
     private open.furaffinity.client.pages.journal page;
 
     private void saveHistory() {
-        historyDBHelper dbHelper = new historyDBHelper(getActivity());
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        if(sharedPref.getBoolean(getActivity().getString(R.string.trackHistorySetting), false)) {
+            historyDBHelper dbHelper = new historyDBHelper(getActivity());
 
-        //Delete previous versions from history
-        String selection = historyContract.historyItemEntry.COLUMN_NAME_USER + " LIKE ?";
-        String[] selectionArgs = { page.getJournalUserName() };
-        db.delete(historyContract.historyItemEntry.TABLE_NAME_JOURNAL, selection, selectionArgs);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        //Insert into history
-        ContentValues values = new ContentValues();
-        values.put(historyContract.historyItemEntry.COLUMN_NAME_USER, page.getJournalUserName());
-        values.put(historyContract.historyItemEntry.COLUMN_NAME_TITLE, page.getJournalTitle());
-        values.put(historyContract.historyItemEntry.COLUMN_NAME_URL, page.getPagePath());
-        values.put(historyContract.historyItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
-        db.insert(historyContract.historyItemEntry.TABLE_NAME_JOURNAL, null, values);
+            //Delete previous versions from history
+            String selection = historyContract.historyItemEntry.COLUMN_NAME_USER + " LIKE ?";
+            String[] selectionArgs = {page.getJournalUserName()};
+            db.delete(historyContract.historyItemEntry.TABLE_NAME_JOURNAL, selection, selectionArgs);
 
-        //Limit history to 512 entries
-        db.execSQL("DELETE FROM " + historyContract.historyItemEntry.TABLE_NAME_JOURNAL + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+            //Insert into history
+            ContentValues values = new ContentValues();
+            values.put(historyContract.historyItemEntry.COLUMN_NAME_USER, page.getJournalUserName());
+            values.put(historyContract.historyItemEntry.COLUMN_NAME_TITLE, page.getJournalTitle());
+            values.put(historyContract.historyItemEntry.COLUMN_NAME_URL, page.getPagePath());
+            values.put(historyContract.historyItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
+            db.insert(historyContract.historyItemEntry.TABLE_NAME_JOURNAL, null, values);
 
-        db.close();
+            //Limit history to 512 entries
+            db.execSQL("DELETE FROM " + historyContract.historyItemEntry.TABLE_NAME_JOURNAL + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+
+            db.close();
+        }
     }
 
     private void getElements(View rootView) {

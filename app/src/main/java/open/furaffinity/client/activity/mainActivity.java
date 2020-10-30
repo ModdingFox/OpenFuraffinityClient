@@ -1,6 +1,8 @@
 package open.furaffinity.client.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -112,7 +114,9 @@ public class mainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUIElements() {
+    public void updateUIElements() {
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
         if (loginTest.getIsLoggedIn()) {
             navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
             navMenu.findItem(R.id.nav_msg_others).setVisible(true);
@@ -123,6 +127,12 @@ public class mainActivity extends AppCompatActivity {
             navMenu.findItem(R.id.nav_msg_others).setVisible(false);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
             navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
+        }
+
+        if(!sharedPref.getBoolean(getString(R.string.trackHistorySetting), false)) {
+            navMenu.findItem(R.id.nav_history).setVisible(false);
+        } else {
+            navMenu.findItem(R.id.nav_history).setVisible(true);
         }
 
         if (journalPath == null) {
@@ -155,7 +165,7 @@ public class mainActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_history,
                 R.id.nav_journal, R.id.nav_msg_pms_message, R.id.nav_user, R.id.nav_view,
-                R.id.nav_login, R.id.nav_about)
+                R.id.nav_settings, R.id.nav_login, R.id.nav_about)
                 .setDrawerLayout(drawer)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);

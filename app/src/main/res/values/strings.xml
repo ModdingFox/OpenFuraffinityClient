@@ -24,6 +24,7 @@
     <string name="menu_msg_pms_message">View Message</string>
     <string name="menu_user">View User</string>
     <string name="menu_view">View Post</string>
+    <string name="menu_settings">Settings</string>
     <string name="menu_login">Login</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_about">About</string>
@@ -135,5 +136,21 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="notifications">Notify</string>
+
+    <string name="notificationsSwitch">Standard Notifications</string>
+    <string name="notificationsInterval">Standard Notification Interval(Min):</string>
+    <string name="searchNotificationsSwitch">Search Notifications</string>
+    <string name="searchNotificationsInterval">Search Notification Interval(Min):</string>
+    <string name="trackHistory">Keep History</string>
+    <string name="clearHistory">Clear History</string>
+
+    <string name="OFACNotification">OFACNotification</string>
+    <string name="OFACSearchNotification">OFACSearchNotification</string>
+
+    <string name="notificationsEnabledSetting">notificationsEnabledSetting</string>
+    <string name="notificationsIntervalSetting">notificationsIntervalSetting</string>
+    <string name="searchNotificationsEnabledSetting">searchNotificationsEnabledSetting</string>
+    <string name="searchNotificationsIntervalSetting">searchNotificationsIntervalSetting</string>
+    <string name="trackHistorySetting">trackHistorySetting</string>
 
 </resources>

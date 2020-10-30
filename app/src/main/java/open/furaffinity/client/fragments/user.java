@@ -2,7 +2,9 @@ package open.furaffinity.client.fragments;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,27 +55,31 @@ public class user extends Fragment {
     private open.furaffinity.client.pages.user page;
 
     private void saveHistory() {
-        historyDBHelper dbHelper = new historyDBHelper(getActivity());
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        if(sharedPref.getBoolean(getActivity().getString(R.string.trackHistorySetting), false)) {
+            historyDBHelper dbHelper = new historyDBHelper(getActivity());
 
-        //Delete previous versions from history
-        String selection = historyContract.historyItemEntry.COLUMN_NAME_USER + " LIKE ?";
-        String[] selectionArgs = { page.getUserName() };
-        db.delete(historyContract.historyItemEntry.TABLE_NAME_USER, selection, selectionArgs);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        //Insert into history
-        ContentValues values = new ContentValues();
-        values.put(historyContract.historyItemEntry.COLUMN_NAME_USER, page.getUserName());
-        values.put(historyContract.historyItemEntry.COLUMN_NAME_TITLE, "");
-        values.put(historyContract.historyItemEntry.COLUMN_NAME_URL, page.getPagePath());
-        values.put(historyContract.historyItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
-        db.insert(historyContract.historyItemEntry.TABLE_NAME_USER, null, values);
+            //Delete previous versions from history
+            String selection = historyContract.historyItemEntry.COLUMN_NAME_USER + " LIKE ?";
+            String[] selectionArgs = {page.getUserName()};
+            db.delete(historyContract.historyItemEntry.TABLE_NAME_USER, selection, selectionArgs);
 
-        //Limit history to 512 entries
-        db.execSQL("DELETE FROM " + historyContract.historyItemEntry.TABLE_NAME_USER + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+            //Insert into history
+            ContentValues values = new ContentValues();
+            values.put(historyContract.historyItemEntry.COLUMN_NAME_USER, page.getUserName());
+            values.put(historyContract.historyItemEntry.COLUMN_NAME_TITLE, "");
+            values.put(historyContract.historyItemEntry.COLUMN_NAME_URL, page.getPagePath());
+            values.put(historyContract.historyItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
+            db.insert(historyContract.historyItemEntry.TABLE_NAME_USER, null, values);
 
-        db.close();
+            //Limit history to 512 entries
+            db.execSQL("DELETE FROM " + historyContract.historyItemEntry.TABLE_NAME_USER + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+
+            db.close();
+        }
     }
 
     private void getElements(View rootView) {

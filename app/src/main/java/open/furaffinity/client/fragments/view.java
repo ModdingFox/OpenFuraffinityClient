@@ -6,6 +6,7 @@ import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,26 +57,30 @@ public class view extends Fragment {
     private open.furaffinity.client.pages.view page;
 
     private void saveHistory() {
-        historyDBHelper dbHelper = new historyDBHelper(getActivity());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        //Delete previous versions from history
-        String selection = historyItemEntry.COLUMN_NAME_USER + " LIKE ? AND " + historyItemEntry.COLUMN_NAME_TITLE + " LIKE ?";
-        String[] selectionArgs = { page.getSubmissionUser(), page.getSubmissionTitle() };
-        db.delete(historyItemEntry.TABLE_NAME_VIEW, selection, selectionArgs);
+        if(sharedPref.getBoolean(getActivity().getString(R.string.trackHistorySetting), false)) {
+            historyDBHelper dbHelper = new historyDBHelper(getActivity());
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        //Insert into history
-        ContentValues values = new ContentValues();
-        values.put(historyItemEntry.COLUMN_NAME_USER, page.getSubmissionUser());
-        values.put(historyItemEntry.COLUMN_NAME_TITLE, page.getSubmissionTitle());
-        values.put(historyItemEntry.COLUMN_NAME_URL, page.getPagePath());
-        values.put(historyItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
-        db.insert(historyItemEntry.TABLE_NAME_VIEW, null, values);
+            //Delete previous versions from history
+            String selection = historyItemEntry.COLUMN_NAME_USER + " LIKE ? AND " + historyItemEntry.COLUMN_NAME_TITLE + " LIKE ?";
+            String[] selectionArgs = {page.getSubmissionUser(), page.getSubmissionTitle()};
+            db.delete(historyItemEntry.TABLE_NAME_VIEW, selection, selectionArgs);
 
-        //Limit history to 512 entries
-        db.execSQL("DELETE FROM " + historyItemEntry.TABLE_NAME_VIEW + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+            //Insert into history
+            ContentValues values = new ContentValues();
+            values.put(historyItemEntry.COLUMN_NAME_USER, page.getSubmissionUser());
+            values.put(historyItemEntry.COLUMN_NAME_TITLE, page.getSubmissionTitle());
+            values.put(historyItemEntry.COLUMN_NAME_URL, page.getPagePath());
+            values.put(historyItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
+            db.insert(historyItemEntry.TABLE_NAME_VIEW, null, values);
 
-        db.close();
+            //Limit history to 512 entries
+            db.execSQL("DELETE FROM " + historyItemEntry.TABLE_NAME_VIEW + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+
+            db.close();
+        }
     }
 
     private void getElements(View rootView) {
