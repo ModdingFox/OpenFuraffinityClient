@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,6 +21,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -115,14 +119,26 @@ public class mainActivity extends AppCompatActivity {
     }
 
     public void updateUIElements() {
+        View headerView = navigationView.getHeaderView(0);
+        ImageView imageView = headerView.findViewById(R.id.imageView);
+        TextView userName = headerView.findViewById(R.id.userName);
+        TextView notifications = headerView.findViewById(R.id.notifications);
+
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
         if (loginTest.getIsLoggedIn()) {
+            Picasso.get().load(loginTest.getUserIcon()).into(imageView);
+            userName.setText(loginTest.getUserName());
+
             navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
             navMenu.findItem(R.id.nav_msg_others).setVisible(true);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
             navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_logout);
         } else {
+            imageView.setImageResource(R.drawable.ic_launcher_foreground);
+            userName.setText(getString(R.string.app_name));
+            notifications.setText("");
+
             navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
             navMenu.findItem(R.id.nav_msg_others).setVisible(false);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(false);

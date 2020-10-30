@@ -11,6 +11,8 @@ import open.furaffinity.client.utilities.webClient;
 public class loginTest extends AsyncTask<webClient, Void, Void> {
     private boolean isLoggedIn = false;
     private boolean isNSFWAllowed = false;
+    private String userIcon = "";
+    private String userName = "";
 
     @Override
     protected Void doInBackground(webClient... webClients) {
@@ -23,6 +25,12 @@ public class loginTest extends AsyncTask<webClient, Void, Void> {
             if(nsfwToggle != null) {
                 isNSFWAllowed = true;
             }
+
+            Element userIconImg = doc.selectFirst("img.loggedin_user_avatar");
+            open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(userIconImg);
+
+            userIcon = userIconImg.attr("src");
+            userName = userIconImg.attr("alt");
         }
         return null;
     }
@@ -33,5 +41,13 @@ public class loginTest extends AsyncTask<webClient, Void, Void> {
 
     public boolean getIsNSFWAllowed() {
         return isNSFWAllowed;
+    }
+
+    public String getUserIcon() {
+        return userIcon;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 };
