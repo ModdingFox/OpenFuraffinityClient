@@ -31,18 +31,30 @@ import open.furaffinity.client.workers.searchNotificationWorker;
 public class settings extends Fragment {
     private static final String TAG = settings.class.getName();
 
-    Switch notificationsSwitch;
-    EditText notificationsInterval;
-    Switch searchNotificationsSwitch;
-    EditText searchNotificationsInterval;
-    Switch trackHistory;
-    Button clearHistory;
+    private Switch notificationsSwitch;
+    private EditText notificationsInterval;
+    private Switch searchNotificationsSwitch;
+    private EditText searchNotificationsInterval;
+    private Switch saveBrowseStateSwitch;
+    private Switch saveSearchStateSwitch;
+    private Switch trackHistory;
+    private Button clearHistory;
+
+    public static boolean notificationsEnabledDefault = false;
+    public static int notificationsIntervalDefault = 15;
+    public static boolean searchNotificationsEnabledDefault = false;
+    public static int searchNotificationsIntervalDefault = 15;
+    public static boolean trackHistoryDefault = false;
+    public static boolean saveBrowseStateDefault = true;
+    public static boolean saveSearchStateDefault = true;
 
     private void getElements(View rootView) {
         notificationsSwitch = rootView.findViewById(R.id.notificationsSwitch);
         notificationsInterval = rootView.findViewById(R.id.notificationsInterval);
         searchNotificationsSwitch = rootView.findViewById(R.id.searchNotificationsSwitch);
         searchNotificationsInterval = rootView.findViewById(R.id.searchNotificationsInterval);
+        saveBrowseStateSwitch = rootView.findViewById(R.id.saveBrowseStateSwitch);
+        saveSearchStateSwitch = rootView.findViewById(R.id.saveSearchStateSwitch);
         trackHistory = rootView.findViewById(R.id.trackHistory);
         clearHistory = rootView.findViewById(R.id.clearHistory);
     }
@@ -51,11 +63,13 @@ public class settings extends Fragment {
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        notificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), false));
-        notificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), 15)));
-        searchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), false));
-        searchNotificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), 15)));
-        trackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackHistorySetting), false));
+        notificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), notificationsEnabledDefault));
+        notificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault)));
+        searchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), searchNotificationsEnabledDefault));
+        searchNotificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault)));
+        saveBrowseStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.saveBrowseState), saveBrowseStateDefault));
+        saveSearchStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.saveSearchState), saveSearchStateDefault));
+        trackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackHistorySetting), trackHistoryDefault));
     }
 
     private void updateUIElementListeners(View rootView) {
@@ -72,7 +86,7 @@ public class settings extends Fragment {
                 WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACNotification));
 
                 if(isChecked) {
-                    PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), 15), TimeUnit.MINUTES).build();
+                    PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault), TimeUnit.MINUTES).build();
                     WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
                 }
             }
@@ -104,8 +118,8 @@ public class settings extends Fragment {
 
                         WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACNotification));
 
-                        if (sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), false)) {
-                            PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), 15), TimeUnit.MINUTES).build();
+                        if (sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), notificationsEnabledDefault)) {
+                            PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault), TimeUnit.MINUTES).build();
                             WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
                         }
                     }
@@ -128,7 +142,7 @@ public class settings extends Fragment {
                 WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
 
                 if(isChecked) {
-                    PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), 15), TimeUnit.MINUTES).build();
+                    PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
                     WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
                 }
             }
@@ -160,14 +174,38 @@ public class settings extends Fragment {
 
                         WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
 
-                        if (sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), false)) {
-                            PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), 15), TimeUnit.MINUTES).build();
+                        if (sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), searchNotificationsEnabledDefault)) {
+                            PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
                             WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
                         }
                     }
                 } catch (NumberFormatException e) {
 
                 }
+            }
+        });
+
+        saveBrowseStateSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Context context = getActivity();
+                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(context.getString(R.string.saveBrowseState), isChecked);
+                editor.apply();
+                editor.commit();
+            }
+        });
+
+        saveSearchStateSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Context context = getActivity();
+                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(context.getString(R.string.saveSearchState), isChecked);
+                editor.apply();
+                editor.commit();
             }
         });
 

@@ -41,6 +41,16 @@
     <string name="browseRatingMature">Mature</string>
     <string name="browseRatingAdult">Adult</string>
 
+    <string name="saveBrowseState">saveBrowseState</string>
+    <string name="browseCatSetting">browseCat</string>
+    <string name="browseAtypeSetting">browseAtype</string>
+    <string name="browseSpeciesSetting">browseSpecies</string>
+    <string name="browseGenderSetting">browseGender</string>
+    <string name="browsePerpageSetting">browsePerpage</string>
+    <string name="browseRatingGeneralSetting">browseRatingGeneral</string>
+    <string name="browseRatingMatureSetting">browseRatingMature</string>
+    <string name="browseRatingAdultSetting">browseRatingAdult</string>
+
     <string name="searchSearch">Search</string>
     <string name="searchSortCriteria">Sort Criteria</string>
     <string name="searchOrderBy">Order By:</string>
@@ -66,6 +76,21 @@
     <string name="searchAny">Any</string>
     <string name="searchExtended">extended</string>
     <string name="searchSave">Save Current Search</string>
+
+    <string name="saveSearchState">saveSearchState</string>
+    <string name="searchOrderBySetting">searchOrderBySetting</string>
+    <string name="searchOrderDirectionSetting">searchOrderDirectionSetting</string>
+    <string name="searchRangeSetting">searchRangeSetting</string>
+    <string name="searchRatingGeneralSetting">searchRatingGeneralSetting</string>
+    <string name="searchRatingMatureSetting">searchRatingMatureSetting</string>
+    <string name="searchRatingAdultSetting">searchRatingAdultSetting</string>
+    <string name="searchTypeArtSetting">searchTypeArtSetting</string>
+    <string name="searchTypeMusicSetting">searchTypeMusicSetting</string>
+    <string name="searchTypeFlashSetting">searchTypeFlashSetting</string>
+    <string name="searchTypeStorySetting">searchTypeStorySetting</string>
+    <string name="searchTypePhotoSetting">searchTypePhotoSetting</string>
+    <string name="searchTypePoetrySetting">searchTypePoetrySetting</string>
+    <string name="searchModeSetting">searchModeSetting</string>
 
     <string name="title_activity_view">@string/app_name</string>
     <string name="viewTab0">Description</string>
@@ -141,6 +166,8 @@
     <string name="notificationsInterval">Standard Notification Interval(Min):</string>
     <string name="searchNotificationsSwitch">Search Notifications</string>
     <string name="searchNotificationsInterval">Search Notification Interval(Min):</string>
+    <string name="saveBrowseStateSwitch">Persist browse options</string>
+    <string name="saveSearchStateSwitch">Persist search options</string>
     <string name="trackHistory">Keep History</string>
     <string name="clearHistory">Clear History</string>
 
@@ -152,5 +179,6 @@
     <string name="searchNotificationsEnabledSetting">searchNotificationsEnabledSetting</string>
     <string name="searchNotificationsIntervalSetting">searchNotificationsIntervalSetting</string>
     <string name="trackHistorySetting">trackHistorySetting</string>
+
 
 </resources>

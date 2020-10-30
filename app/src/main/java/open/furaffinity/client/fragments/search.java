@@ -2,6 +2,7 @@ package open.furaffinity.client.fragments;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.Switch;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -50,6 +52,7 @@ public class search extends Fragment {
 
     private ScrollView searchOptionsScrollView;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
@@ -98,6 +101,7 @@ public class search extends Fragment {
 
         searchOptionsScrollView = rootView.findViewById(R.id.searchOptionsScrollView);
 
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
         savedSearchRecyclerView = rootView.findViewById(R.id.savedSearchRecyclerView);
 
@@ -195,6 +199,31 @@ public class search extends Fragment {
 
             db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
             db.close();
+        }
+    }
+
+    private void initCurrentSettings() {
+        Context context = getActivity();
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+        if(sharedPref.getBoolean(getString(R.string.saveSearchState), open.furaffinity.client.fragments.settings.saveSearchStateDefault)) {
+            fetchPageData();
+            mDataSet.clear();
+            page = new open.furaffinity.client.pages.search(page);
+
+            page.setOrderBy(sharedPref.getString(getString(R.string.searchOrderBySetting), ""));
+            page.setOrderDirection(sharedPref.getString(getString(R.string.searchOrderDirectionSetting), ""));
+            page.setRange(sharedPref.getString(getString(R.string.searchRangeSetting), ""));
+            page.setRatingGeneral(sharedPref.getBoolean(getString(R.string.searchRatingGeneralSetting), true));
+            page.setRatingMature(sharedPref.getBoolean(getString(R.string.searchRatingMatureSetting), false));
+            page.setRatingAdult(sharedPref.getBoolean(getString(R.string.searchRatingAdultSetting), false));
+            page.setTypeArt(sharedPref.getBoolean(getString(R.string.searchTypeArtSetting), true));
+            page.setTypeMusic(sharedPref.getBoolean(getString(R.string.searchTypeMusicSetting), false));
+            page.setTypeFlash(sharedPref.getBoolean(getString(R.string.searchTypeFlashSetting), false));
+            page.setTypeStory(sharedPref.getBoolean(getString(R.string.searchTypeStorySetting), false));
+            page.setTypePhoto(sharedPref.getBoolean(getString(R.string.searchTypePhotoSetting), false));
+            page.setTypePoetry(sharedPref.getBoolean(getString(R.string.searchTypePoetrySetting), false));
+            page.setMode(sharedPref.getString(getString(R.string.searchModeSetting), ""));
         }
     }
 
@@ -523,6 +552,28 @@ public class search extends Fragment {
         }
 
         if (valueChanged) {
+            Context context = getActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+            if(sharedPref.getBoolean(getString(R.string.saveSearchState), settings.saveSearchStateDefault)) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.searchOrderBySetting), selectedOrderByValue);
+                editor.putString(getString(R.string.searchOrderDirectionSetting), selectedOrderDirectionValue);
+                editor.putString(getString(R.string.searchRangeSetting), selectedRangeValue);
+                editor.putBoolean(getString(R.string.searchRatingGeneralSetting), ((selectedRatingGeneralValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchRatingMatureSetting), ((selectedRatingMatureValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchRatingAdultSetting), ((selectedRatingAdultValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchTypeArtSetting), ((selectedTypeArtValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchTypeMusicSetting), ((selectedTypeMusicValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchTypeFlashSetting), ((selectedTypeFlashValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchTypeStorySetting), ((selectedTypeStoryValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchTypePhotoSetting), ((selectedTypePhotoValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.searchTypePoetrySetting), ((selectedTypePoetryValue.equals("on"))?(true):(false)));
+                editor.putString(getString(R.string.searchModeSetting), selectedModeValue);
+                editor.apply();
+                editor.commit();
+            }
+
             recyclerView.scrollTo(0, 0);
             mDataSet.clear();
             mAdapter.notifyDataSetChanged();
@@ -553,6 +604,22 @@ public class search extends Fragment {
     }
 
     private void updateUIElementListeners(View rootView) {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page.setPage(Integer.toString(1));
+
+                recyclerView.scrollTo(0, 0);
+                mDataSet.clear();
+                mAdapter.notifyDataSetChanged();
+                endlessRecyclerViewScrollListener.resetState();
+                page = new open.furaffinity.client.pages.search(page);
+                fetchPageData();
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
@@ -590,16 +657,16 @@ public class search extends Fragment {
         {
             if(savedSearchRecyclerView.getVisibility() == View.VISIBLE) {
                 savedSearchRecyclerView.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.GONE);
+                swipeRefreshLayout.setVisibility(View.GONE);
                 searchOptionsScrollView.setVisibility(View.VISIBLE);
             } else if (searchOptionsScrollView.getVisibility() == View.VISIBLE) {
                 searchOptionsScrollView.setVisibility(View.GONE);
                 savedSearchRecyclerView.setVisibility(View.GONE);
                 saveCurrentSettings();
                 ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(rootView.getWindowToken(), 0);
-                recyclerView.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
             } else {
-                recyclerView.setVisibility(View.GONE);
+                swipeRefreshLayout.setVisibility(View.GONE);
                 savedSearchRecyclerView.setVisibility(View.GONE);
                 loadCurrentSettings();
                 updateUIElements();
@@ -611,7 +678,7 @@ public class search extends Fragment {
         {
             if(savedSearchRecyclerView.getVisibility() != View.VISIBLE) {
                 searchOptionsScrollView.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.GONE);
+                swipeRefreshLayout.setVisibility(View.GONE);
                 loadSavedSearches();
                 savedSearchRecyclerView.setVisibility(View.VISIBLE);
             }
@@ -628,6 +695,7 @@ public class search extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         getElements(rootView);
         initClientAndPage();
+        initCurrentSettings();
         fetchPageData();
         loadSavedSearches();
         loadCurrentSettings();

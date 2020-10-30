@@ -57,7 +57,7 @@ public class user extends Fragment {
     private void saveHistory() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if(sharedPref.getBoolean(getActivity().getString(R.string.trackHistorySetting), false)) {
+        if(sharedPref.getBoolean(getActivity().getString(R.string.trackHistorySetting), settings.trackHistoryDefault)) {
             historyDBHelper dbHelper = new historyDBHelper(getActivity());
 
             SQLiteDatabase db = dbHelper.getWritableDatabase();

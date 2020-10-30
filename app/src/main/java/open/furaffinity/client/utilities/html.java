@@ -11,20 +11,22 @@ import java.util.List;
 
 public class html {
     public static void correctHtmlAHrefAndImgScr(Element rootElementIn) {
-        Elements rootElementsA = rootElementIn.select("a");
-        for (Element rootElementA : rootElementsA) {
-            if (rootElementA.attr("href").startsWith("/")) {
-                rootElementA.attr("href", webClient.getBaseUrl() + rootElementA.attr("href"));
+        if(rootElementIn != null) {
+            Elements rootElementsA = rootElementIn.select("a");
+            for (Element rootElementA : rootElementsA) {
+                if (rootElementA.attr("href").startsWith("/")) {
+                    rootElementA.attr("href", webClient.getBaseUrl() + rootElementA.attr("href"));
+                }
             }
-        }
-        Elements rootElementsImg = rootElementIn.select("img");
-        for (Element rootElementImg : rootElementsImg) {
-            if (rootElementImg.attr("src").startsWith("/")) {
-                rootElementImg.attr("src", "https:" + rootElementImg.attr("src"));
-            }
+            Elements rootElementsImg = rootElementIn.select("img");
+            for (Element rootElementImg : rootElementsImg) {
+                if (rootElementImg.attr("src").startsWith("/")) {
+                    rootElementImg.attr("src", "https:" + rootElementImg.attr("src"));
+                }
 
-            if (rootElementImg.hasAttr("data-fullview-src") && rootElementImg.attr("data-fullview-src").startsWith("/")) {
-                rootElementImg.attr("data-fullview-src", "https:" + rootElementImg.attr("data-fullview-src"));
+                if (rootElementImg.hasAttr("data-fullview-src") && rootElementImg.attr("data-fullview-src").startsWith("/")) {
+                    rootElementImg.attr("data-fullview-src", "https:" + rootElementImg.attr("data-fullview-src"));
+                }
             }
         }
     }

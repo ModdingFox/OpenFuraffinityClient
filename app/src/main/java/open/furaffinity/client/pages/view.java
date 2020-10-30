@@ -93,8 +93,11 @@ public class view extends AsyncTask<webClient, Void, Void> {
         }
 
         Element submissionImgImg = doc.selectFirst("img[id=submissionImg]");
-        open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(submissionImgImg);
-        submissionImgLink = submissionImgImg.attr("data-fullview-src");
+
+        if(submissionImgImg != null) {
+            open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(submissionImgImg);
+            submissionImgLink = submissionImgImg.attr("data-fullview-src");
+        }
 
         Element submissionIdContainer = doc.selectFirst("div.submission-id-container");
 

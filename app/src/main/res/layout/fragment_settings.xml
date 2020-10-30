@@ -57,6 +57,18 @@
                 android:inputType="number" />
 
             <Switch
+                android:id="@+id/saveBrowseStateSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/saveBrowseStateSwitch" />
+
+            <Switch
+                android:id="@+id/saveSearchStateSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/saveSearchStateSwitch" />
+
+            <Switch
                 android:id="@+id/trackHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

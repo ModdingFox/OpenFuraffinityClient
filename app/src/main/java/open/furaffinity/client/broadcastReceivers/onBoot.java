@@ -13,6 +13,7 @@ import androidx.work.WorkManager;
 import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
@@ -27,13 +28,13 @@ public class onBoot extends BroadcastReceiver {
 
             WorkManager.getInstance(context).cancelAllWork();
 
-            if(sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), false)) {
-                PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), 15), TimeUnit.MINUTES).build();
+            if(sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), settings.notificationsEnabledDefault)) {
+                PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), settings.notificationsIntervalDefault), TimeUnit.MINUTES).build();
                 WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
             }
 
-            if(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), false)) {
-                PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), 15), TimeUnit.MINUTES).build();
+            if(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), settings.searchNotificationsEnabledDefault)) {
+                PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), settings.searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
                 WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
             }
         }

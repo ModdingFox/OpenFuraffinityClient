@@ -1,6 +1,7 @@
 package open.furaffinity.client.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.TableLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -39,6 +41,7 @@ public class browse extends Fragment {
 
     private TableLayout settingsTableLayout;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
@@ -66,6 +69,7 @@ public class browse extends Fragment {
 
         settingsTableLayout = rootView.findViewById(R.id.settingsTableLayout);
 
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
         browseCatSpinner = rootView.findViewById(R.id.browseCatSpinner);
@@ -120,6 +124,26 @@ public class browse extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+    }
+
+    private void initCurrentSettings() {
+        Context context = getActivity();
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+        if(sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
+            fetchPageData();
+            mDataSet.clear();
+            page = new open.furaffinity.client.pages.browse(page);
+
+            page.setCat(sharedPref.getString(getString(R.string.browseCatSetting), ""));
+            page.setAtype(sharedPref.getString(getString(R.string.browseAtypeSetting), ""));
+            page.setSpecies(sharedPref.getString(getString(R.string.browseSpeciesSetting), ""));
+            page.setGender(sharedPref.getString(getString(R.string.browseGenderSetting), ""));
+            page.setPerpage(sharedPref.getString(getString(R.string.browsePerpageSetting), ""));
+            page.setRatingGeneral(sharedPref.getBoolean(getString(R.string.browseRatingGeneralSetting), true));
+            page.setRatingMature(sharedPref.getBoolean(getString(R.string.browseRatingMatureSetting), false));
+            page.setRatingAdult(sharedPref.getBoolean(getString(R.string.browseRatingAdultSetting), false));
+        }
     }
 
     private void loadCurrentSettings() {
@@ -200,6 +224,23 @@ public class browse extends Fragment {
         }
 
         if (valueChanged) {
+            Context context = getActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+            if(sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.browseCatSetting), selectedCatValue);
+                editor.putString(getString(R.string.browseAtypeSetting), selectedAtypeValue);
+                editor.putString(getString(R.string.browseSpeciesSetting), selectedSpeciesValue);
+                editor.putString(getString(R.string.browseGenderSetting), selectedGenderValue);
+                editor.putString(getString(R.string.browsePerpageSetting), selectedPerpageValue);
+                editor.putBoolean(getString(R.string.browseRatingGeneralSetting), ((selectedRatingGeneralValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.browseRatingMatureSetting), ((selectedRatingMatureValue.equals("on"))?(true):(false)));
+                editor.putBoolean(getString(R.string.browseRatingAdultSetting), ((selectedRatingAdultValue.equals("on"))?(true):(false)));
+                editor.apply();
+                editor.commit();
+            }
+
             recyclerView.scrollTo(0, 0);
             mDataSet.clear();
             mAdapter.notifyDataSetChanged();
@@ -210,6 +251,23 @@ public class browse extends Fragment {
     }
 
     private void updateUIElementListeners(View rootView) {
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page.setPage(Integer.toString(1));
+
+                recyclerView.scrollTo(0, 0);
+                mDataSet.clear();
+                mAdapter.notifyDataSetChanged();
+                endlessRecyclerViewScrollListener.resetState();
+                page = new open.furaffinity.client.pages.browse(page);
+                fetchPageData();
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
@@ -228,9 +286,9 @@ public class browse extends Fragment {
             if (settingsTableLayout.getVisibility() == View.VISIBLE) {
                 settingsTableLayout.setVisibility(View.GONE);
                 saveCurrentSettings();
-                recyclerView.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
             } else {
-                recyclerView.setVisibility(View.GONE);
+                swipeRefreshLayout.setVisibility(View.GONE);
                 loadCurrentSettings();
                 settingsTableLayout.setVisibility(View.VISIBLE);
             }
@@ -246,6 +304,7 @@ public class browse extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_browse, container, false);
         getElements(rootView);
         initClientAndPage();
+        initCurrentSettings();
         fetchPageData();
         updateUIElements();
         updateUIElementListeners(rootView);
