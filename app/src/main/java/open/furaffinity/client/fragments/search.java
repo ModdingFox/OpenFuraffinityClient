@@ -392,7 +392,7 @@ public class search extends Fragment {
 
             searchOptionsScrollView.setVisibility(View.GONE);
             savedSearchRecyclerView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
 
         if (!loadedMainActivitySearchQuery) {
@@ -619,7 +619,7 @@ public class search extends Fragment {
                 endlessRecyclerViewScrollListener.resetState();
                 page = new open.furaffinity.client.pages.search(page);
                 fetchPageData();
-
+                loadCurrentSettings();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -637,7 +637,7 @@ public class search extends Fragment {
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        savedEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+        savedEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(saveLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
 
@@ -666,7 +666,10 @@ public class search extends Fragment {
             } else if (searchOptionsScrollView.getVisibility() == View.VISIBLE) {
                 searchOptionsScrollView.setVisibility(View.GONE);
                 savedSearchRecyclerView.setVisibility(View.GONE);
+                getElements(rootView);
                 saveCurrentSettings();
+                updateUIElements();
+                updateUIElementListeners(rootView);
                 ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(rootView.getWindowToken(), 0);
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
             } else {
