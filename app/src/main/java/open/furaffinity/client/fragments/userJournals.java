@@ -79,7 +79,6 @@ public class userJournals extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new journalListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
     private void updateUIElementListeners(View rootView) {

@@ -21,6 +21,7 @@ import android.widget.Switch;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,7 +48,7 @@ import open.furaffinity.client.utilities.webClient;
 public class search extends Fragment {
     private static final String TAG = search.class.getName();
 
-    private LinearLayoutManager layoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private LinearLayoutManager saveLayoutManager;
 
     private ScrollView searchOptionsScrollView;
@@ -96,7 +97,10 @@ public class search extends Fragment {
     private List<notificationItem> savedMDataSet = new ArrayList<>();
 
     private void getElements(View rootView) {
-        layoutManager = new LinearLayoutManager(getActivity());
+        Context context = getActivity();
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
         saveLayoutManager = new LinearLayoutManager(getActivity());
 
         searchOptionsScrollView = rootView.findViewById(R.id.searchOptionsScrollView);
@@ -593,7 +597,7 @@ public class search extends Fragment {
         }
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
@@ -620,7 +624,7 @@ public class search extends Fragment {
             }
         });
 
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setPage(Integer.toString(page.getPage() + 1));
@@ -633,7 +637,7 @@ public class search extends Fragment {
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        savedEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        savedEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
 

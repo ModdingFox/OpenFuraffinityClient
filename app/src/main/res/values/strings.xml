@@ -162,6 +162,9 @@
     <string name="delete">Delete</string>
     <string name="notifications">Notify</string>
 
+    <string name="imageListColumns">imageListColumns</string>
+    <string name="imageListOrientation">imageListOrientation</string>
+    <string name="imageListInfo">imageListInfo</string>
     <string name="notificationsSwitch">Standard Notifications</string>
     <string name="notificationsInterval">Standard Notification Interval(Min):</string>
     <string name="searchNotificationsSwitch">Search Notifications</string>

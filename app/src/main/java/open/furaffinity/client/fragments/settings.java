@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -40,6 +41,10 @@ public class settings extends Fragment {
     private Switch trackHistory;
     private Button clearHistory;
 
+    public static int recyclerPreloadDefault = 16;
+    public static int imageListColumnsDefault = 1;
+    public static boolean imageListInfoDefault = true;
+    public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;//Likely not gunna expose this as some views break with it as HORIZONTAL though the option would be nice
     public static boolean notificationsEnabledDefault = false;
     public static int notificationsIntervalDefault = 15;
     public static boolean searchNotificationsEnabledDefault = false;

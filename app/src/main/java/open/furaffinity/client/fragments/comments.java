@@ -43,7 +43,6 @@ public class comments extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new commentListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
     @Override

@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.Objects;
 
+import open.furaffinity.client.fragments.settings;
+
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
-    private int visibleThreshold = 16;
+    private int visibleThreshold = settings.recyclerPreloadDefault;
     private int currentPage = 0;
     private int previousTotalItemCount = 0;
     private boolean loading = true;
@@ -22,12 +24,10 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     protected EndlessRecyclerViewScrollListener(GridLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
-        visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
     protected EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
-        visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
     private int getLastVisibleItem(int[] lastVisibleItemPositions) {

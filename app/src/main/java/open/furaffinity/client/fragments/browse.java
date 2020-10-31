@@ -15,6 +15,7 @@ import android.widget.TableLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,7 +37,7 @@ import open.furaffinity.client.utilities.webClient;
 public class browse extends Fragment {
     private static final String TAG = open.furaffinity.client.fragments.browse.class.getName();
 
-    private LinearLayoutManager layoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private TableLayout settingsTableLayout;
 
@@ -64,8 +65,10 @@ public class browse extends Fragment {
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     private void getElements(View rootView) {
-        layoutManager = new LinearLayoutManager(getActivity());
+        Context context = getActivity();
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
         settingsTableLayout = rootView.findViewById(R.id.settingsTableLayout);
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
@@ -120,7 +123,7 @@ public class browse extends Fragment {
         }
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
@@ -267,7 +270,7 @@ public class browse extends Fragment {
             }
         });
 
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setPage(Integer.toString(page.getPage() + 1));

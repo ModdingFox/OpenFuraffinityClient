@@ -22,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
@@ -43,14 +44,13 @@ import open.furaffinity.client.utilities.webClient;
 public class view extends Fragment {
     private static final String TAG = view.class.getName();
 
-    private ScrollView activityViewScrollView;
     private TextView submissionTitle;
     private ImageView submissionImage;
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
     private TextView submissionUser;
     private Button submissionDownload;
-    private WrapContentViewPager viewPager;
+    private ViewPager viewPager;
     private TabLayout tabs;
 
     private webClient webClient;
@@ -84,7 +84,6 @@ public class view extends Fragment {
     }
 
     private void getElements(View rootView) {
-        activityViewScrollView = rootView.findViewById(R.id.activityViewScrollView);
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
         submissionUserLinearLayout = rootView.findViewById(R.id.submissionUserLinearLayout);
@@ -139,7 +138,7 @@ public class view extends Fragment {
             }
         });
 
-        activityViewScrollView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+        submissionImage.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
             public void onSwipeRight() {
                 if (page.getNext() != null) {
                     ((mainActivity) getActivity()).setViewPath(page.getNext());

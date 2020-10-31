@@ -1,5 +1,7 @@
 package open.furaffinity.client.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,8 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,8 +36,9 @@ import open.furaffinity.client.utilities.webClient;
 public class userGallery extends Fragment {
     private static final String TAG = userGallery.class.getName();
 
-    private LinearLayoutManager layoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
@@ -50,8 +55,12 @@ public class userGallery extends Fragment {
     private HashMap<String, String> folderList = new HashMap<>();
 
     private void getElements(View rootView) {
-        layoutManager = new LinearLayoutManager(getActivity());
+        Context context = getActivity();
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
+
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
         controls = rootView.findViewById(R.id.controls);
@@ -99,14 +108,29 @@ public class userGallery extends Fragment {
         }
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
     private void updateUIElementListeners(View rootView) {
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page.setPage(Integer.toString(1));
+
+                recyclerView.scrollTo(0, 0);
+                mDataSet.clear();
+                mAdapter.notifyDataSetChanged();
+                endlessRecyclerViewScrollListener.resetState();
+                page = new open.furaffinity.client.pages.gallery(pagePath);
+                fetchPageData();
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setPage(Integer.toString(page.getPage() + 1));
@@ -147,7 +171,7 @@ public class userGallery extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view, container, false);
         pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
         getElements(rootView);
         initClientAndPage();
