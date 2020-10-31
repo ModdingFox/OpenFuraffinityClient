@@ -52,8 +52,8 @@ public class journal extends Fragment {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             //Delete previous versions from history
-            String selection = historyContract.historyItemEntry.COLUMN_NAME_USER + " LIKE ?";
-            String[] selectionArgs = {page.getJournalUserName()};
+            String selection = historyContract.historyItemEntry.COLUMN_NAME_URL + " LIKE ?";
+            String[] selectionArgs = {page.getPagePath()};
             db.delete(historyContract.historyItemEntry.TABLE_NAME_JOURNAL, selection, selectionArgs);
 
             //Insert into history

@@ -64,8 +64,8 @@ public class view extends Fragment {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             //Delete previous versions from history
-            String selection = historyItemEntry.COLUMN_NAME_USER + " LIKE ? AND " + historyItemEntry.COLUMN_NAME_TITLE + " LIKE ?";
-            String[] selectionArgs = {page.getSubmissionUser(), page.getSubmissionTitle()};
+            String selection = historyItemEntry.COLUMN_NAME_URL + " LIKE ?";
+            String[] selectionArgs = { page.getPagePath()};
             db.delete(historyItemEntry.TABLE_NAME_VIEW, selection, selectionArgs);
 
             //Insert into history
