@@ -1,5 +1,7 @@
 package open.furaffinity.client.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -32,11 +36,14 @@ import open.furaffinity.client.utilities.webClient;
 public class msgSubmission extends Fragment {
     private static final String TAG = msgSubmission.class.getName();
 
-    private LinearLayoutManager layoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+
+    TableLayout settingsTableLayout;
 
     private Switch msgSubmissionOrder;
     private Spinner msgSubmissionPerPageSpinner;
@@ -50,9 +57,15 @@ public class msgSubmission extends Fragment {
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     private void getElements(View rootView) {
-        layoutManager = new LinearLayoutManager(getActivity());
+        Context context = getActivity();
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
+
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        settingsTableLayout = rootView.findViewById(R.id.settingsTableLayout);
 
         msgSubmissionOrder = rootView.findViewById(R.id.msgSubmissionOrder);
         msgSubmissionPerPageSpinner = rootView.findViewById(R.id.msgSubmissionPerPageSpinner);
@@ -92,7 +105,7 @@ public class msgSubmission extends Fragment {
 
     private void updateUIElements() {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
@@ -132,7 +145,21 @@ public class msgSubmission extends Fragment {
     }
 
     private void updateUIElementListeners(View rootView) {
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recyclerView.scrollTo(0, 0);
+                mDataSet.clear();
+                mAdapter.notifyDataSetChanged();
+                endlessRecyclerViewScrollListener.resetState();
+                page = new open.furaffinity.client.pages.msgSubmission(page);
+                fetchPageData();
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 if (page.setNextPage()) {
@@ -148,16 +175,14 @@ public class msgSubmission extends Fragment {
 
         fab.setOnClickListener(view ->
         {
-            RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
-            TableLayout settingsTableLayout = rootView.findViewById(R.id.settingsTableLayout);
-            if (recyclerView.getVisibility() == View.VISIBLE) {
-                recyclerView.setVisibility(View.GONE);
+            if (swipeRefreshLayout.getVisibility() == View.VISIBLE) {
+                swipeRefreshLayout.setVisibility(View.GONE);
                 loadCurrentSettings();
                 settingsTableLayout.setVisibility(View.VISIBLE);
             } else {
                 settingsTableLayout.setVisibility(View.GONE);
                 saveCurrentSettings();
-                recyclerView.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
             }
         });
     }

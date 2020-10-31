@@ -11,7 +11,7 @@ import java.util.Objects;
 import open.furaffinity.client.fragments.settings;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
-    private int visibleThreshold = settings.recyclerPreloadDefault;
+    private int visibleThreshold = settings.recyclerVisibleThresholdDefault;
     private int currentPage = 0;
     private int previousTotalItemCount = 0;
     private boolean loading = true;

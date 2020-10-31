@@ -41,7 +41,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/searchNotificationsSwitch" />
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,6 +54,48 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/recyclerVisibleThresholdCount" />
+
+            <EditText
+                android:id="@+id/recyclerVisibleThresholdCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/imageListColumnsCount" />
+
+            <EditText
+                android:id="@+id/imageListColumnsCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number" />
+
+            <Switch
+                android:id="@+id/imageListOrientation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/imageListOrientationLabel" />
+
+            <Switch
+                android:id="@+id/enablePostLabels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/enablePostLabels" />
+
+
 
             <Switch
                 android:id="@+id/saveBrowseStateSwitch"

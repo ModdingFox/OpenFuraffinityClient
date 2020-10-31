@@ -16,6 +16,7 @@ import android.widget.Switch;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -36,19 +37,23 @@ public class settings extends Fragment {
     private EditText notificationsInterval;
     private Switch searchNotificationsSwitch;
     private EditText searchNotificationsInterval;
+    private EditText recyclerVisibleThresholdCount;
+    private EditText imageListColumnsCount;
+    private Switch imageListOrientation;
+    private Switch enablePostLabels;
     private Switch saveBrowseStateSwitch;
     private Switch saveSearchStateSwitch;
     private Switch trackHistory;
     private Button clearHistory;
 
-    public static int recyclerPreloadDefault = 16;
-    public static int imageListColumnsDefault = 1;
-    public static boolean imageListInfoDefault = true;
-    public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;//Likely not gunna expose this as some views break with it as HORIZONTAL though the option would be nice
     public static boolean notificationsEnabledDefault = false;
     public static int notificationsIntervalDefault = 15;
     public static boolean searchNotificationsEnabledDefault = false;
     public static int searchNotificationsIntervalDefault = 15;
+    public static int recyclerVisibleThresholdDefault = 16;
+    public static int imageListColumnsDefault = 1;
+    public static boolean imageListInfoDefault = true;
+    public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;//Likely not gunna expose this as some views break with it as HORIZONTAL though the option would be nice
     public static boolean trackHistoryDefault = false;
     public static boolean saveBrowseStateDefault = true;
     public static boolean saveSearchStateDefault = true;
@@ -58,6 +63,10 @@ public class settings extends Fragment {
         notificationsInterval = rootView.findViewById(R.id.notificationsInterval);
         searchNotificationsSwitch = rootView.findViewById(R.id.searchNotificationsSwitch);
         searchNotificationsInterval = rootView.findViewById(R.id.searchNotificationsInterval);
+        recyclerVisibleThresholdCount = rootView.findViewById(R.id.recyclerVisibleThresholdCount);
+        imageListColumnsCount = rootView.findViewById(R.id.imageListColumnsCount);
+        imageListOrientation = rootView.findViewById(R.id.imageListOrientation);
+        enablePostLabels = rootView.findViewById(R.id.enablePostLabels);
         saveBrowseStateSwitch = rootView.findViewById(R.id.saveBrowseStateSwitch);
         saveSearchStateSwitch = rootView.findViewById(R.id.saveSearchStateSwitch);
         trackHistory = rootView.findViewById(R.id.trackHistory);
@@ -72,6 +81,10 @@ public class settings extends Fragment {
         notificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault)));
         searchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), searchNotificationsEnabledDefault));
         searchNotificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault)));
+        recyclerVisibleThresholdCount.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.recyclerVisibleThreshold), recyclerVisibleThresholdDefault)));
+        imageListColumnsCount.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.imageListColumns), imageListColumnsDefault)));
+        imageListOrientation.setChecked(sharedPref.getInt(context.getString(R.string.imageListOrientation), imageListOrientationDefault) == StaggeredGridLayoutManager.VERTICAL);
+        enablePostLabels.setChecked(sharedPref.getBoolean(context.getString(R.string.imageListInfo), imageListInfoDefault));
         saveBrowseStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.saveBrowseState), saveBrowseStateDefault));
         saveSearchStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.saveSearchState), saveSearchStateDefault));
         trackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackHistorySetting), trackHistoryDefault));
@@ -187,6 +200,90 @@ public class settings extends Fragment {
                 } catch (NumberFormatException e) {
 
                 }
+            }
+        });
+
+        recyclerVisibleThresholdCount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int value = Integer.parseInt(recyclerVisibleThresholdCount.getText().toString());
+
+                    if (value > 0) {
+                        Context context = getActivity();
+                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt(context.getString(R.string.recyclerVisibleThreshold), value);
+                        editor.apply();
+                        editor.commit();
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+            }
+        });
+
+        imageListColumnsCount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int value = Integer.parseInt(imageListColumnsCount.getText().toString());
+
+                    if (value > 0) {
+                        Context context = getActivity();
+                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt(context.getString(R.string.imageListColumns), value);
+                        editor.apply();
+                        editor.commit();
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+            }
+        });
+
+        imageListOrientation.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Context context = getActivity();
+                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(context.getString(R.string.imageListOrientation), ((isChecked)?(StaggeredGridLayoutManager.VERTICAL):(StaggeredGridLayoutManager.HORIZONTAL)));
+                editor.apply();
+                editor.commit();
+            }
+        });
+
+        enablePostLabels.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Context context = getActivity();
+                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(context.getString(R.string.imageListInfo), isChecked);
+                editor.apply();
+                editor.commit();
             }
         });
 
