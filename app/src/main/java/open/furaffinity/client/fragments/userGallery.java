@@ -146,14 +146,16 @@ public class userGallery extends Fragment {
         folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String newPagePath = ((kvPair) folderSpinner.getSelectedItem()).getKey();
+                String newPagePath = ((kvPair) folderSpinner.getItemAtPosition(position)).getKey();
                 if (newPagePath != pagePath) {
                     pagePath = newPagePath;
                     mDataSet = new ArrayList<>();
                     folderList = new HashMap<>();
+                    getElements(rootView);
                     initClientAndPage();
                     fetchPageData();
                     updateUIElements();
+                    updateUIElementListeners(rootView);
                 }
             }
 
