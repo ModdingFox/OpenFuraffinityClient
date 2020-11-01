@@ -86,7 +86,7 @@ public class watch extends Fragment {
     }
 
     private void updateUIElements() {
-        recyclerView.setHasFixedSize(true);
+//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new stringListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);

@@ -596,12 +596,12 @@ public class search extends Fragment {
             searchRatingAdultSwitch.setVisibility(View.GONE);
         }
 
-        recyclerView.setHasFixedSize(true);
+//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        savedSearchRecyclerView.setHasFixedSize(true);
+//        savedSearchRecyclerView.setHasFixedSize(true);
         savedSearchRecyclerView.setLayoutManager(saveLayoutManager);
         savedMAdapter = new savedSearchListAdapter(savedMDataSet, getActivity());
         savedSearchRecyclerView.setAdapter(savedMAdapter);
@@ -636,6 +636,13 @@ public class search extends Fragment {
 
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
+
+        savedSearchRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                savedMAdapter.notifyDataSetChanged();
+            }
+        });
 
         savedEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(saveLayoutManager) {
             @Override

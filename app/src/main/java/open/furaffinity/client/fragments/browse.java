@@ -122,7 +122,7 @@ public class browse extends Fragment {
             browseRatingAdultSwitch.setVisibility(View.GONE);
         }
 
-        recyclerView.setHasFixedSize(true);
+//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
