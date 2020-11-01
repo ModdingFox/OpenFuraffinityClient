@@ -83,7 +83,6 @@ public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchList
                 db.close();
 
                 mDataSet.get(position).setState(isChecked);
-                notifyDataSetChanged();
             }
         });
 
@@ -98,8 +97,12 @@ public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchList
                 db.delete(searchItemEntry.TABLE_NAME, selection, selectionArgs);
                 db.close();
 
-                mDataSet.remove(position);
-                notifyDataSetChanged();
+                //This is cheap but it works
+                ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+                layoutParams.height = 0;
+                holder.itemView.setLayoutParams(layoutParams);
+
+                holder.itemView.setVisibility(View.GONE);
             }
         });
     }
