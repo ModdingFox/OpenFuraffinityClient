@@ -134,7 +134,7 @@ public class mainActivity extends AppCompatActivity {
             navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
             navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_logout);
         } else {
-            imageView.setImageResource(R.drawable.ic_launcher_foreground);
+            imageView.setImageResource(R.mipmap.ic_launcher);
             userName.setText(getString(R.string.app_name));
             notifications.setText("");
 
