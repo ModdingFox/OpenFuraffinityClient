@@ -92,8 +92,10 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
         floatingActionButton.setLayoutParams(this.getLayoutParams());
         floatingActionButton.setTranslationX(this.getTranslationX());
         floatingActionButton.setTranslationY(this.getTranslationY());
-        floatingActionButton.setVisibility(GONE);
-        floatingActionButtons.add(new FloatingActionButtonContainer(floatingActionButton, radiusMultiplier, angle));
+        floatingActionButton.setVisibility(((isVisible)?(VISIBLE):(GONE)));
+        FloatingActionButtonContainer newFloatingActionButtonContainer = new FloatingActionButtonContainer(floatingActionButton, radiusMultiplier, angle);
+        newFloatingActionButtonContainer.setPosition(this.getWidth());
+        floatingActionButtons.add(newFloatingActionButtonContainer);
     }
 
     public boolean removeButton(FloatingActionButton floatingActionButton) {

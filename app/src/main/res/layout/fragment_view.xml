@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/cardview_dark_background"
-        app:srcCompat="@android:drawable/ic_menu_edit"
+        app:srcCompat="@drawable/ic_menu_add"
         android:layout_gravity="bottom|right"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

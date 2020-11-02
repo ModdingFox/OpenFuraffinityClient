@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -41,6 +42,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
+import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.WrapContentViewPager;
@@ -63,6 +65,7 @@ public class view extends Fragment {
     private FloatingActionButton submissionDownload;
 
     private webClient webClient;
+    private open.furaffinity.client.pages.loginTest loginTest;
     private open.furaffinity.client.pages.view page;
 
     private void saveHistory() {
@@ -116,17 +119,19 @@ public class view extends Fragment {
         coordinatorLayout.addView(submissionFavorite);
         coordinatorLayout.addView(submissionDownload);
 
-        fab.addButton(submissionFavorite, 1.5f, 180);
         fab.addButton(submissionDownload, 1.5f, 270);
     }
 
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
+        loginTest = new loginTest();
         page = new open.furaffinity.client.pages.view(pagePath);
     }
 
     private void fetchPageData() {
+        loginTest = new loginTest();
         try {
+            loginTest.execute(webClient).get();
             page.execute(webClient).get();
             saveHistory();
         } catch (ExecutionException | InterruptedException e) {
@@ -153,6 +158,17 @@ public class view extends Fragment {
         Glide.with(this).load(page.getSubmissionImgLink()).into(submissionImage);
         Glide.with(this).load(page.getSubmissionUserIcon()).into(submissionUserIcon);
         submissionUser.setText(page.getSubmissionUser());
+
+        fab.removeButton(submissionFavorite);
+        if(loginTest.getIsLoggedIn()) {
+            fab.addButton(submissionFavorite, 1.5f, 180);
+
+            if(page.getIsFav()) {
+                submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
+            } else {
+                submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
+            }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -208,6 +224,30 @@ public class view extends Fragment {
                             });
                     AlertDialog alert = builder.create();
                     alert.show();
+                }
+            }
+        });
+
+        submissionFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getFavUnFav());
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    page = new open.furaffinity.client.pages.view(page.getPagePath());
+                    fetchPageData();
+                    checkPageLoaded();
+                    updateUIElements();
+                    updateUIElementListeners(rootView);
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not fav post: ", e);
                 }
             }
         });
