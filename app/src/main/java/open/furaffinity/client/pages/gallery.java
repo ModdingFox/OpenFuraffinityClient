@@ -25,6 +25,7 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
     private HashMap<String, String> folderResults = new HashMap<>();
 
+    private HashMap<String, String> assignFolderId;
     private String assignFolderSubmit;
     private String createFolderSubmit;
     private String removeFromFoldersSubmit;
@@ -56,6 +57,23 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
             if (folderLinks != null) {
                 for (Element currentElement : folderLinks) {
                     folderResults.put(currentElement.attr("href"), currentElement.text());
+                }
+            }
+        }
+
+        assignFolderId = new HashMap<>();
+
+        Element assignFolderIdElement = doc.selectFirst("select[name=assign_folder_id]");
+
+        if(assignFolderIdElement != null) {
+            Elements assignFolderIdOptionElements = assignFolderIdElement.select("option");
+
+            if(assignFolderIdOptionElements != null) {
+                for (Element assignFolderIdOptionElement : assignFolderIdOptionElements) {
+                    String value = assignFolderIdOptionElement.attr("value");
+                    if(!value.equals("0")) {
+                        assignFolderId.put(value, assignFolderIdOptionElement.text());
+                    }
                 }
             }
         }
@@ -129,6 +147,10 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
 
     public HashMap<String, String> getFolderResults() {
         return folderResults;
+    }
+
+    public HashMap<String, String> getAssignFolderId() {
+        return assignFolderId;
     }
 
     public String getAssignFolderSubmit() {

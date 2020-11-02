@@ -1,7 +1,5 @@
 package open.furaffinity.client.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,6 +31,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
+import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.webClient;
 
 public class manageSubmissions extends Fragment {
@@ -178,18 +177,139 @@ public class manageSubmissions extends Fragment {
         assignSelectedToFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                spinnerDialog spinnerDialog = new spinnerDialog();
+                spinnerDialog.setListener(new spinnerDialog.dialogListener() {
+                    @Override
+                    public void onDialogPositiveClick(DialogFragment dialog) {
+                        List<String> elements = ((manageImageListAdapter)mAdapter).getCheckedItems();
+
+                        HashMap<String, String> params = new HashMap<>();
+
+                        for(int i = 0; i < elements.size(); i++) {
+                            params.put("submission_ids[" + Integer.toString(i) + "]", elements.get(i));
+                        }
+
+                        try {
+                            new AsyncTask<webClient, Void, Void>() {
+                                @Override
+                                protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                                    params.put("assign_folder_id", spinnerDialog.getSpinnerSelection());
+                                    params.put("assign_folder_submit", page.getAssignFolderSubmit());
+                                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+
+                                    return null;
+                                }
+                            }.execute(webClient).get();
+
+                            recyclerView.scrollTo(0, 0);
+                            mDataSet.clear();
+                            ((manageImageListAdapter)mAdapter).clearChecked();
+                            mAdapter.notifyDataSetChanged();
+                            endlessRecyclerViewScrollListener.resetState();
+
+                            initClientAndPage();
+                            fetchPageData();
+                            updateUIElements();
+                        } catch (ExecutionException | InterruptedException e) {
+                            Log.e(TAG, "Could not assign submission folder: ", e);
+                        }
+                    }
+
+                    @Override
+                    public void onDialogNegativeClick(DialogFragment dialog) {
+                        dialog.dismiss();
+                    }
+                });
+                spinnerDialog.setTitleText("Select Folder To Assign Submissions To");
+                spinnerDialog.setData(page.getAssignFolderId());
+                spinnerDialog.show(getChildFragmentManager(), "assignFolder");
             }
         });
 
         assignSelectedToNewFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                textDialog textDialog = new textDialog();
+                textDialog.setListener(new textDialog.dialogListener() {
+                    @Override
+                    public void onDialogPositiveClick(DialogFragment dialog) {
+                        List<String> elements = ((manageImageListAdapter)mAdapter).getCheckedItems();
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put("create_folder_name", ((textDialog)dialog).getText());
+                        params.put("create_folder_submit", page.getCreateFolderSubmit());
+
+                        for(int i = 0; i < elements.size(); i++) {
+                            params.put("submission_ids[" + Integer.toString(i) + "]", elements.get(i));
+                        }
+
+                        try {
+                            new AsyncTask<webClient, Void, Void>() {
+                                @Override
+                                protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+                                    return null;
+                                }
+                            }.execute(webClient).get();
+
+                            recyclerView.scrollTo(0, 0);
+                            mDataSet.clear();
+                            ((manageImageListAdapter)mAdapter).clearChecked();
+                            mAdapter.notifyDataSetChanged();
+                            endlessRecyclerViewScrollListener.resetState();
+
+                            initClientAndPage();
+                            fetchPageData();
+                            updateUIElements();
+                        } catch (ExecutionException | InterruptedException e) {
+                            Log.e(TAG, "Could not move submission to new folder: ", e);
+                        }
+                    }
+
+                    @Override
+                    public void onDialogNegativeClick(DialogFragment dialog) {
+
+                    }
+                });
+
+                textDialog.setTitleText("Enter New Folder Name");
+                textDialog.show(getChildFragmentManager(), "newFolder");
             }
         });
 
         unassignSelectedFromFolders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<String> elements = ((manageImageListAdapter)mAdapter).getCheckedItems();
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put("remove_from_folders_submit", page.getRemoveFromFoldersSubmit());
+
+                for(int i = 0; i < elements.size(); i++) {
+                    params.put("submission_ids[" + Integer.toString(i) + "]", elements.get(i));
+                }
+
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    recyclerView.scrollTo(0, 0);
+                    mDataSet.clear();
+                    ((manageImageListAdapter)mAdapter).clearChecked();
+                    mAdapter.notifyDataSetChanged();
+                    endlessRecyclerViewScrollListener.resetState();
+
+                    initClientAndPage();
+                    fetchPageData();
+                    updateUIElements();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not move submission to scraps: ", e);
+                }
             }
         });
 
@@ -268,8 +388,8 @@ public class manageSubmissions extends Fragment {
         removeSelected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                passwordDialog passwordDialog = new passwordDialog();
-                passwordDialog.setListener(new passwordDialog.dialogListener() {
+                textDialog textDialog = new textDialog();
+                textDialog.setListener(new textDialog.dialogListener() {
                     @Override
                     public void onDialogPositiveClick(DialogFragment dialog) {
                         List<String> elements = ((manageImageListAdapter)mAdapter).getCheckedItems();
@@ -293,7 +413,7 @@ public class manageSubmissions extends Fragment {
                                     if(confirmButton != null) {
                                         String confirmationCode = confirmButton.attr("value");
                                         params.put("confirm", confirmationCode);
-                                        params.put("password", ((passwordDialog)dialog).getPassword());
+                                        params.put("password", ((textDialog)dialog).getText());
                                         webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
                                     }
 
@@ -320,8 +440,9 @@ public class manageSubmissions extends Fragment {
                         dialog.dismiss();
                     }
                 });
-                passwordDialog.setText("Confirm Password To Delete Submissions");
-                passwordDialog.show(getChildFragmentManager(), "passwordConfirm");
+                textDialog.setTitleText("Confirm Password To Delete Submissions");
+                textDialog.setIsPassword();
+                textDialog.show(getChildFragmentManager(), "passwordConfirm");
             }
         });
     }

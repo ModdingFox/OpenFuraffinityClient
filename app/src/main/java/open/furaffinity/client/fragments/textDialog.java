@@ -2,10 +2,9 @@ package open.furaffinity.client.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -17,11 +16,11 @@ import androidx.fragment.app.DialogFragment;
 
 import open.furaffinity.client.R;
 
-public class passwordDialog extends DialogFragment {
-    private String TAG = passwordDialog.class.getName();
+public class textDialog extends DialogFragment {
+    private String TAG = textDialog.class.getName();
 
     private TextView dialogText;
-    private EditText editTextTextPassword;
+    private EditText editText;
 
     private String text = null;
 
@@ -42,10 +41,10 @@ public class passwordDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
-        View rootView = inflater.inflate(R.layout.confirm_password_dialog, null);
+        View rootView = inflater.inflate(R.layout.get_text_from_user, null);
 
         dialogText = rootView.findViewById(R.id.dialogText);
-        editTextTextPassword = rootView.findViewById(R.id.editTextTextPassword);
+        editText = rootView.findViewById(R.id.editText);
 
         dialogText.setText(text);
 
@@ -53,24 +52,28 @@ public class passwordDialog extends DialogFragment {
         builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogPositiveClick(passwordDialog.this);
+                listener.onDialogPositiveClick(textDialog.this);
             }
         });
         builder.setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogNegativeClick(passwordDialog.this);
+                listener.onDialogNegativeClick(textDialog.this);
             }
         });
 
         return builder.create();
     }
 
-    public void setText(String text) {
+    public void setTitleText(String text) {
         this.text = text;
     }
 
-    public String getPassword() {
-        return editTextTextPassword.getText().toString();
+    public void setIsPassword() {
+        editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+    }
+
+    public String getText() {
+        return editText.getText().toString();
     }
 }
