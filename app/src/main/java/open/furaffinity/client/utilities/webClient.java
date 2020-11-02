@@ -208,7 +208,7 @@ public class webClient {
                 Element body = doc.selectFirst("body");
                 Element sectionHeader = body.selectFirst("div.section-header");
 
-                if (!title.text().equals("System Error") && !sectionHeader.text().equals("System Error")) {
+                if (!title.text().equals("System Error") && (sectionHeader == null || !sectionHeader.text().equals("System Error"))) {
                     lastPageLoaded = true;
                 }
 

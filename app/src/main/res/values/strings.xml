@@ -204,5 +204,6 @@
     <string name="searchNotificationsIntervalSetting">searchNotificationsIntervalSetting</string>
     <string name="trackHistorySetting">trackHistorySetting</string>
 
-
+    <string name="acceptButton">Accept</string>
+    <string name="cancelButton">Cancel</string>
 </resources>

@@ -71,7 +71,7 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Picasso.get().load("https:" + mDataSet.get(position).get("imgUrl")).into(holder.postImage);
         holder.postName.setText(String.format("%s", mDataSet.get(position).get("postTitle")));
-        holder.postUser.setText(String.format("By: %s", mDataSet.get(position).get("postUserName")));
+        holder.postUser.setText("");//Setting this as empty as the submissions page does not return the user name in the listing
         holder.postRating.setText(mDataSet.get(position).get("postRatingCode"));
 
         if(checkedItems.contains(mDataSet.get(position).get("postId"))) {
