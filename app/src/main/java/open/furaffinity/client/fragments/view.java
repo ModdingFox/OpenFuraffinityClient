@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,13 +19,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
@@ -39,6 +44,7 @@ import open.furaffinity.client.listener.OnSwipeTouchListener;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.WrapContentViewPager;
+import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
 public class view extends Fragment {
@@ -49,9 +55,12 @@ public class view extends Fragment {
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
     private TextView submissionUser;
-    private Button submissionDownload;
     private ViewPager viewPager;
     private TabLayout tabs;
+
+    private fabCircular fab;
+    private FloatingActionButton submissionFavorite;
+    private FloatingActionButton submissionDownload;
 
     private webClient webClient;
     private open.furaffinity.client.pages.view page;
@@ -84,14 +93,31 @@ public class view extends Fragment {
     }
 
     private void getElements(View rootView) {
+        CoordinatorLayout coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
+
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
         submissionUserLinearLayout = rootView.findViewById(R.id.submissionUserLinearLayout);
         submissionUserIcon = rootView.findViewById(R.id.submissionUserIcon);
         submissionUser = rootView.findViewById(R.id.submissionUser);
-        submissionDownload = rootView.findViewById(R.id.submissionDownload);
         viewPager = rootView.findViewById(R.id.view_pager);
         tabs = rootView.findViewById(R.id.tabs);
+        fab = rootView.findViewById(R.id.fab);
+
+        submissionFavorite = new FloatingActionButton(getContext());
+        submissionDownload = new FloatingActionButton(getContext());
+
+        submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
+        submissionDownload.setImageResource(R.drawable.ic_menu_download);
+
+        submissionFavorite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        submissionDownload.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+
+        coordinatorLayout.addView(submissionFavorite);
+        coordinatorLayout.addView(submissionDownload);
+
+        fab.addButton(submissionFavorite, 1.5f, 180);
+        fab.addButton(submissionDownload, 1.5f, 270);
     }
 
     private void initClientAndPage(String pagePath) {

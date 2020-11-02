@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/coordinatorLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -68,15 +69,6 @@
                     android:text="@string/notLoaded" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/submissionDownload"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/viewDownload"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.tabs.TabLayout
@@ -93,5 +85,14 @@
         android:layout_height="fill_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_below="@+id/appBarLayout"></androidx.viewpager.widget.ViewPager>
+
+    <open.furaffinity.client.utilities.fabCircular
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/cardview_dark_background"
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        android:layout_gravity="bottom|right"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
