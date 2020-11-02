@@ -6,23 +6,34 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.adapter.profileSectionsPagerAdapter;
+import open.furaffinity.client.adapter.userSectionsPagerAdapter;
 
 public class profile extends Fragment {
 
-    private FloatingActionButton fab;
+    private TabLayout tabs;
+    private ViewPager viewPager;
 
     private void getElements(View rootView) {
-        fab = rootView.findViewById(R.id.fabProfile);
+        tabs = rootView.findViewById(R.id.tabs);
+        viewPager = rootView.findViewById(R.id.view_pager);
     }
 
     private void updateUIElementListeners(View rootView) {
-        fab.setOnClickListener(view ->
-        {
-        });
+
+    }
+
+    private void setupViewPager() {
+        profileSectionsPagerAdapter profileSectionsPagerAdapter = new profileSectionsPagerAdapter(this.getActivity(), getChildFragmentManager());
+        viewPager.setAdapter(profileSectionsPagerAdapter);
+        tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tabs.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -34,6 +45,7 @@ public class profile extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         getElements(rootView);
         updateUIElementListeners(rootView);
+        setupViewPager();
         return rootView;
     }
 }

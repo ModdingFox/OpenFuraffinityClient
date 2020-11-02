@@ -7,8 +7,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -18,13 +20,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
@@ -36,24 +42,32 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
+import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.WrapContentViewPager;
+import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
 public class view extends Fragment {
     private static final String TAG = view.class.getName();
+
+    private CoordinatorLayout coordinatorLayout;
 
     private TextView submissionTitle;
     private ImageView submissionImage;
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
     private TextView submissionUser;
-    private Button submissionDownload;
     private ViewPager viewPager;
     private TabLayout tabs;
 
+    private fabCircular fab;
+    private FloatingActionButton submissionFavorite;
+    private FloatingActionButton submissionDownload;
+
     private webClient webClient;
+    private open.furaffinity.client.pages.loginTest loginTest;
     private open.furaffinity.client.pages.view page;
 
     private void saveHistory() {
@@ -84,23 +98,42 @@ public class view extends Fragment {
     }
 
     private void getElements(View rootView) {
+        coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
+
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
         submissionUserLinearLayout = rootView.findViewById(R.id.submissionUserLinearLayout);
         submissionUserIcon = rootView.findViewById(R.id.submissionUserIcon);
         submissionUser = rootView.findViewById(R.id.submissionUser);
-        submissionDownload = rootView.findViewById(R.id.submissionDownload);
         viewPager = rootView.findViewById(R.id.view_pager);
         tabs = rootView.findViewById(R.id.tabs);
+        fab = rootView.findViewById(R.id.fab);
+
+        submissionFavorite = new FloatingActionButton(getContext());
+        submissionDownload = new FloatingActionButton(getContext());
+
+        submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
+        submissionDownload.setImageResource(R.drawable.ic_menu_download);
+
+        submissionFavorite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        submissionDownload.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+
+        coordinatorLayout.addView(submissionFavorite);
+        coordinatorLayout.addView(submissionDownload);
+
+        fab.addButton(submissionDownload, 1.5f, 270);
     }
 
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
+        loginTest = new loginTest();
         page = new open.furaffinity.client.pages.view(pagePath);
     }
 
     private void fetchPageData() {
+        loginTest = new loginTest();
         try {
+            loginTest.execute(webClient).get();
             page.execute(webClient).get();
             saveHistory();
         } catch (ExecutionException | InterruptedException e) {
@@ -127,6 +160,17 @@ public class view extends Fragment {
         Glide.with(this).load(page.getSubmissionImgLink()).into(submissionImage);
         Glide.with(this).load(page.getSubmissionUserIcon()).into(submissionUserIcon);
         submissionUser.setText(page.getSubmissionUser());
+
+        fab.removeButton(submissionFavorite);
+        if(loginTest.getIsLoggedIn()) {
+            fab.addButton(submissionFavorite, 1.5f, 180);
+
+            if(page.getIsFav()) {
+                submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
+            } else {
+                submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
+            }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -182,6 +226,29 @@ public class view extends Fragment {
                             });
                     AlertDialog alert = builder.create();
                     alert.show();
+                }
+            }
+        });
+
+        submissionFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getFavUnFav());
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    page = new open.furaffinity.client.pages.view(page.getPagePath());
+                    fetchPageData();
+                    checkPageLoaded();
+                    updateUIElements();
+                    updateUIElementListeners(rootView);
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not fav post: ", e);
                 }
             }
         });

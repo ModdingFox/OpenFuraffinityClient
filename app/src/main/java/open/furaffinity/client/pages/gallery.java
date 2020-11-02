@@ -83,7 +83,7 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
 
     public void setPage(String value) {
         try {
-            if (Integer.parseInt(value) > 0) {
+            if (Integer.parseInt(value) >= 0) {
                 page = value;
             }
         } catch (NumberFormatException e) {

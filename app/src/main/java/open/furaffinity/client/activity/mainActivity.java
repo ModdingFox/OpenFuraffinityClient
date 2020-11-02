@@ -99,7 +99,6 @@ public class mainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
 
         navMenu = navigationView.getMenu();
-        navMenu.findItem(R.id.nav_profile).setVisible(false);//Hiding this until its ready
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
     }
@@ -129,6 +128,7 @@ public class mainActivity extends AppCompatActivity {
             Picasso.get().load(loginTest.getUserIcon()).into(imageView);
             userName.setText(loginTest.getUserName());
 
+            navMenu.findItem(R.id.nav_profile).setVisible(true);
             navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
             navMenu.findItem(R.id.nav_msg_others).setVisible(true);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
@@ -138,6 +138,7 @@ public class mainActivity extends AppCompatActivity {
             userName.setText(getString(R.string.app_name));
             notifications.setText("");
 
+            navMenu.findItem(R.id.nav_profile).setVisible(false);
             navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
             navMenu.findItem(R.id.nav_msg_others).setVisible(false);
             navMenu.findItem(R.id.nav_msg_pms).setVisible(false);

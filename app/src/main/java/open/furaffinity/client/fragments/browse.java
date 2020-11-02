@@ -253,7 +253,6 @@ public class browse extends Fragment {
     }
 
     private void updateUIElementListeners(View rootView) {
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

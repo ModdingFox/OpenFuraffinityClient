@@ -121,6 +121,21 @@
     <string name="userTab7">Watching</string>
     <string name="userTab8">Shouts</string>
 
+    <string name="title_activity_profile">@string/app_name</string>
+    <string name="profileAccountSettings">Account Settings</string>
+    <string name="profileSiteSettings">Site Settings</string>
+    <string name="profileUserSettings">User Settings</string>
+    <string name="profileUserPageAndProfile">User Page &amp; Profile Information</string>
+    <string name="profileContactInfo">Edit Contact Info</string>
+    <string name="profileAvatar">Upload and Change Avatar</string>
+    <string name="profileSubmissions">Manage Submissions</string>
+    <string name="profileFolders">Manage Folders</string>
+    <string name="profileJournals">Manage Journals</string>
+    <string name="profileFavorites">Manage Favorites</string>
+    <string name="profileWatches">Manage Watches</string>
+    <string name="profileShouts">Manage Shouts</string>
+    <string name="profileBadges">Manage Badges</string>
+
     <string name="userViews">Views</string>
     <string name="userSubmissions">Submissions</string>
     <string name="userFavs">Favs</string>
