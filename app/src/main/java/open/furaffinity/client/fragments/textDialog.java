@@ -23,6 +23,7 @@ public class textDialog extends DialogFragment {
     private EditText editText;
 
     private String text = null;
+    private boolean isPassword = false;
 
     public interface dialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
@@ -48,6 +49,10 @@ public class textDialog extends DialogFragment {
 
         dialogText.setText(text);
 
+        if(isPassword) {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+
         builder.setView(rootView);
         builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
             @Override
@@ -70,7 +75,7 @@ public class textDialog extends DialogFragment {
     }
 
     public void setIsPassword() {
-        editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        isPassword = true;
     }
 
     public String getText() {
