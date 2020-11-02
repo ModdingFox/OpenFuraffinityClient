@@ -196,12 +196,72 @@ public class manageSubmissions extends Fragment {
         moveSelectedToScraps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<String> elements = ((manageImageListAdapter)mAdapter).getCheckedItems();
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put("move_to_scraps_submit", page.getMoveToScrapsSubmit());
+
+                for(int i = 0; i < elements.size(); i++) {
+                    params.put("submission_ids[" + Integer.toString(i) + "]", elements.get(i));
+                }
+
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    recyclerView.scrollTo(0, 0);
+                    mDataSet.clear();
+                    ((manageImageListAdapter)mAdapter).clearChecked();
+                    mAdapter.notifyDataSetChanged();
+                    endlessRecyclerViewScrollListener.resetState();
+
+                    initClientAndPage();
+                    fetchPageData();
+                    updateUIElements();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not move submission to scraps: ", e);
+                }
             }
         });
 
         moveSelectedToGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<String> elements = ((manageImageListAdapter)mAdapter).getCheckedItems();
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put("move_from_scraps_submit", page.getMoveFromScrapsSubmit());
+
+                for(int i = 0; i < elements.size(); i++) {
+                    params.put("submission_ids[" + Integer.toString(i) + "]", elements.get(i));
+                }
+
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    recyclerView.scrollTo(0, 0);
+                    mDataSet.clear();
+                    ((manageImageListAdapter)mAdapter).clearChecked();
+                    mAdapter.notifyDataSetChanged();
+                    endlessRecyclerViewScrollListener.resetState();
+
+                    initClientAndPage();
+                    fetchPageData();
+                    updateUIElements();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not move submission to gallery: ", e);
+                }
             }
         });
 
@@ -251,7 +311,7 @@ public class manageSubmissions extends Fragment {
                             fetchPageData();
                             updateUIElements();
                         } catch (ExecutionException | InterruptedException e) {
-                            Log.e(TAG, "Could not fav post: ", e);
+                            Log.e(TAG, "Could not delete submission: ", e);
                         }
                     }
 

@@ -166,7 +166,7 @@ public class manageFavorites extends Fragment {
                     fetchPageData();
                     updateUIElements();
                 } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not fav post: ", e);
+                    Log.e(TAG, "Could not un fav post: ", e);
                 }
             }
         });
