@@ -52,6 +52,8 @@ import open.furaffinity.client.utilities.webClient;
 public class view extends Fragment {
     private static final String TAG = view.class.getName();
 
+    private CoordinatorLayout coordinatorLayout;
+
     private TextView submissionTitle;
     private ImageView submissionImage;
     private LinearLayout submissionUserLinearLayout;
@@ -96,7 +98,7 @@ public class view extends Fragment {
     }
 
     private void getElements(View rootView) {
-        CoordinatorLayout coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
+        coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
 
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
@@ -231,7 +233,6 @@ public class view extends Fragment {
         submissionFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
                     new AsyncTask<webClient, Void, Void>() {
                         @Override

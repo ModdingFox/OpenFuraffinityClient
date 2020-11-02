@@ -48,10 +48,16 @@ public class imageResultsTool {
             Element img = rootElement.selectFirst("img");
 
             Element figcaption = rootElement.selectFirst("figcaption");
+            Element checkbox = figcaption.selectFirst("input");
             Element post = figcaption.select("a").get(0);
             Element user = figcaption.select("a").get(1);
 
             currentPostData.put("imgUrl", img.attr("src"));
+
+            if(checkbox != null) {
+                currentPostData.put("postId", checkbox.attr("value"));
+            }
+
             currentPostData.put("postPath", post.attr("href"));
             currentPostData.put("postTitle", post.html());
             currentPostData.put("postUserPath", user.attr("href"));
