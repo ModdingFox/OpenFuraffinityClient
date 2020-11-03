@@ -178,7 +178,7 @@ public class user extends Fragment {
     }
 
     private void updateUIElements() {
-        if(loginTest.getIsLoggedIn()) {
+        if(loginTest.getIsLoggedIn() && page.getBlockUnBlock() != null && page.getWatchUnWatch() != null) {
             fab.setVisibility(View.VISIBLE);
 
             if(page.getIsWatching()) {
