@@ -110,7 +110,7 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
                 return newUserWatchingFragment;
             case 8:
                 shouts newUserShoutsFragment = new shouts();
-                bundle.putString(messageIds.userShouts_MESSAGE, user.getUserShouts());
+                bundle.putString(messageIds.pagePath_MESSAGE, user.getPagePath());
                 newUserShoutsFragment.setArguments(bundle);
                 return newUserShoutsFragment;
             default:

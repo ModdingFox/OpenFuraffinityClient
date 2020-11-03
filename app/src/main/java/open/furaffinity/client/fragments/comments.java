@@ -62,7 +62,6 @@ public class comments extends Fragment {
         comment.setShowSoftInputOnFocus(false);
         controls.addView(comment);
 
-
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
     }
