@@ -56,6 +56,11 @@ public class user extends AsyncTask<webClient, Void, Void> {
     private String shoutKey;
     private String shoutName;
 
+    private boolean isWatching;
+    private String watchUnWatch;
+    private boolean isBlocked;
+    private String blockUnBlock;
+
     public user(String pagePath) {
         this.pagePath = pagePath;
     }
@@ -150,6 +155,38 @@ public class user extends AsyncTask<webClient, Void, Void> {
             if (keyInput != null && nameInput != null) {
                 shoutKey = keyInput.attr("value");
                 shoutName = nameInput.attr("value");
+            }
+        }
+
+        Element userNavControlsDiv = doc.selectFirst("div.user-nav-controls");
+
+        if(userNavControlsDiv != null) {
+            Elements userNavControlsDivElements = userNavControlsDiv.select("a");
+
+            if(userNavControlsDivElements != null) {
+                for (Element userNavControlsDivElement : userNavControlsDivElements) {
+                    switch (userNavControlsDivElement.text()) {
+                        case "+Watch":
+                            isWatching = false;
+                            watchUnWatch = userNavControlsDivElement.attr("href");
+                            break;
+                        case "-Watch":
+                            isWatching = true;
+                            watchUnWatch = userNavControlsDivElement.attr("href");
+                            break;
+                        case "Note":
+                            //Currently just skipping it
+                            break;
+                        case "Block":
+                            isBlocked = false;
+                            blockUnBlock = userNavControlsDivElement.attr("href");
+                            break;
+                        case "Unblock":
+                            isBlocked = true;
+                            blockUnBlock = userNavControlsDivElement.attr("href");
+                            break;
+                    }
+                }
             }
         }
 
@@ -306,5 +343,21 @@ public class user extends AsyncTask<webClient, Void, Void> {
 
     public String getShoutName() {
         return shoutName;
+    }
+
+    public boolean getIsWatching() {
+        return isWatching;
+    }
+
+    public String getWatchUnWatch() {
+        return watchUnWatch;
+    }
+
+    public boolean getIsBlocked() {
+        return isBlocked;
+    }
+
+    public String getBlockUnBlock() {
+        return blockUnBlock;
     }
 }
