@@ -206,4 +206,5 @@
 
     <string name="acceptButton">Accept</string>
     <string name="cancelButton">Cancel</string>
+    <string name="replyButton">Reply</string>
 </resources>

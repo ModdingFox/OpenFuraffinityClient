@@ -41,7 +41,9 @@ public class journalSectionsPagerAdapter extends FragmentPagerAdapter {
                 return newJournalWebViewContentFragment;
             case 1:
                 comments newJournalCommentsFragment = new comments();
+                bundle.putString(messageIds.pagePath_MESSAGE, journal.getPagePath());
                 bundle.putString(messageIds.submissionComments_MESSAGE, journal.getJournalComments());
+                bundle.putString(messageIds.SubmissionCommentsType_MESSAGE, "journal");
                 newJournalCommentsFragment.setArguments(bundle);
                 return newJournalCommentsFragment;
             default:

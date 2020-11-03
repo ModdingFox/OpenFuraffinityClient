@@ -24,12 +24,26 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 
 public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.ViewHolder> {
+    private static String TAG = commentListAdapter.class.getName();
+
     private List<HashMap<String, String>> mDataSet;
     private Context context;
+    private boolean isLoggedIn;
 
-    public commentListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
+    public interface refreshListener {
+        public void reply(String replyToLink, String userName);
+    }
+
+    refreshListener listener;
+
+    public void setListener(refreshListener listener) {
+        this.listener = listener;
+    }
+
+    public commentListAdapter(List<HashMap<String, String>> mDataSetIn, Context context, boolean isLoggedIn) {
         mDataSet = mDataSetIn;
         this.context = context;
+        this.isLoggedIn = isLoggedIn;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,6 +53,7 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
         private final TextView commentUserName;
         private final TextView commentDate;
         private final WebView comment;
+        private final TextView replyButton;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -50,6 +65,7 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
             commentDate = itemView.findViewById(R.id.commentDate);
             comment = itemView.findViewById(R.id.comment);
             comment.setBackgroundColor(Color.TRANSPARENT);
+            replyButton = itemView.findViewById(R.id.replyButton);
         }
     }
 
@@ -84,6 +100,17 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
         }
 
         holder.comment.loadData("<font color='white'>" + mDataSet.get(position).get("comment") + "</font>", "text/html; charset=utf-8", "UTF-8");
+
+        if(isLoggedIn && mDataSet.get(position).containsKey("replyToLink")) {
+            holder.replyButton.setVisibility(View.VISIBLE);
+
+            holder.replyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.reply(mDataSet.get(position).get("replyToLink"), mDataSet.get(position).get("userName"));
+                }
+            });
+        }
 
         if (mDataSet.get(position).containsKey("parentCommentId")) {
             for (int i = 0; i < position; i++) {
