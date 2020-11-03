@@ -5,7 +5,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,27 +16,36 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
+import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
+import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
+import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
 public class user extends Fragment {
     private static final String TAG = user.class.getName();
+
+    androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
 
     private TextView userName;
     private TextView userAccountStatus;
@@ -49,10 +60,16 @@ public class user extends Fragment {
     private ViewPager viewPager;
     private TabLayout tabs;
 
+    private fabCircular fab;
+    private FloatingActionButton watchUser;
+    private FloatingActionButton blockUser;
+
+
     private String currentPage;
     private String currentPagePath = null;
 
     private webClient webClient;
+    private open.furaffinity.client.pages.loginTest loginTest;
     private open.furaffinity.client.pages.user page;
 
     private void saveHistory() {
@@ -84,6 +101,8 @@ public class user extends Fragment {
     }
 
     private void getElements(View rootView) {
+        coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
+
         userName = rootView.findViewById(R.id.userName);
         userAccountStatus = rootView.findViewById(R.id.userAccountStatus);
         userAccountStatusLine = rootView.findViewById(R.id.userAccountStatusLine);
@@ -96,6 +115,22 @@ public class user extends Fragment {
         userJournals = rootView.findViewById(R.id.userJournals);
         viewPager = rootView.findViewById(R.id.view_pager);
         tabs = rootView.findViewById(R.id.tabs);
+
+        fab = rootView.findViewById(R.id.fab);
+        watchUser = new FloatingActionButton(getContext());
+        blockUser = new FloatingActionButton(getContext());
+
+        watchUser.setImageResource(R.drawable.ic_menu_user_add);
+        blockUser.setImageResource(R.drawable.ic_menu_user_block);
+
+        watchUser.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        blockUser.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+
+        coordinatorLayout.addView(watchUser);
+        coordinatorLayout.addView(blockUser);
+
+        fab.addButton(watchUser, 1.5f, 180);
+        fab.addButton(blockUser, 1.5f, 270);
     }
 
     private String getPagePath() {
@@ -114,10 +149,13 @@ public class user extends Fragment {
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
         page = new open.furaffinity.client.pages.user(pagePath);
+        loginTest = new loginTest();
     }
 
     private void fetchPageData() {
+        loginTest = new loginTest();
         try {
+            loginTest.execute(webClient).get();
             page.execute(webClient).get();
             saveHistory();
         } catch (ExecutionException | InterruptedException e) {
@@ -140,6 +178,24 @@ public class user extends Fragment {
     }
 
     private void updateUIElements() {
+        if(loginTest.getIsLoggedIn()) {
+            fab.setVisibility(View.VISIBLE);
+
+            if(page.getIsWatching()) {
+                watchUser.setImageResource(R.drawable.ic_menu_user_remove);
+            } else {
+                watchUser.setImageResource(R.drawable.ic_menu_user_add);
+            }
+
+            if(page.getIsBlocked()) {
+                blockUser.setImageResource(R.drawable.ic_menu_user_unblock);
+            } else {
+                blockUser.setImageResource(R.drawable.ic_menu_user_block);
+            }
+        } else {
+            fab.setVisibility(View.GONE);
+        }
+
         userName.setText(page.getUserName());
         userAccountStatus.setText(page.getUserAccountStatus());
         userAccountStatusLine.setText(page.getUserAccountStatusLine());
@@ -153,7 +209,47 @@ public class user extends Fragment {
     }
 
     private void updateUIElementListeners(View rootView) {
+        watchUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getWatchUnWatch());
+                            return null;
+                        }
+                    }.execute(webClient).get();
 
+                    initClientAndPage(page.getPagePath());
+                    fetchPageData();
+                    updateUIElements();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not watch/unwatch user: ", e);
+                }
+            }
+        });
+
+        blockUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getBlockUnBlock());
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    initClientAndPage(page.getPagePath());
+                    fetchPageData();
+                    updateUIElements();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not block/unblock user: ", e);
+                }
+            }
+        });
     }
 
     private void setupViewPager() {
