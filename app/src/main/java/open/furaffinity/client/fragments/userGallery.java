@@ -115,7 +115,7 @@ public class userGallery extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page.setPage(Integer.toString(1));
+                initClientAndPage();
 
                 recyclerView.scrollTo(0, 0);
                 mDataSet.clear();
@@ -131,7 +131,7 @@ public class userGallery extends Fragment {
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
-                page.setPage(Integer.toString(page.getPage() + 1));
+                page.setNextPage();
                 int curSize = mAdapter.getItemCount();
                 fetchPageData();
                 mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);

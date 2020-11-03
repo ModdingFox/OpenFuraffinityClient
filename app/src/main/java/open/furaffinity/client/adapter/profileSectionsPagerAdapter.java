@@ -43,6 +43,8 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
+            case 6:
+                return new open.furaffinity.client.fragments.manageSubmissions();
             case 9:
                 return new open.furaffinity.client.fragments.manageFavorites();
             default:
