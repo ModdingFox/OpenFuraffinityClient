@@ -113,7 +113,6 @@ public class manageSubmissions extends Fragment {
     private void initClientAndPage() {
         webClient = new webClient(requireContext());
         page = new open.furaffinity.client.pages.gallery(pagePath);
-        page.setPage("0");
     }
 
     private void fetchPageData() {
@@ -167,12 +166,14 @@ public class manageSubmissions extends Fragment {
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
-                page.setPage(Integer.toString(page.getPage() + 1));
+                page.setNextPage();
                 int curSize = mAdapter.getItemCount();
                 fetchPageData();
                 mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
+
+        recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
         assignSelectedToFolder.setOnClickListener(new View.OnClickListener() {
             @Override

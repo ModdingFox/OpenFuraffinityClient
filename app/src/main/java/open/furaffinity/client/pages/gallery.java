@@ -21,7 +21,8 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
     private static final String TAG = gallery.class.getName();
 
     private String pagePath;
-    private String page;
+    private String nextPage;
+//    private String page;
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
     private HashMap<String, String> folderResults = new HashMap<>();
 
@@ -34,12 +35,12 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
 
     public gallery(String pagePath) {
         this.pagePath = pagePath;
-        setPage("1");
+//        setPage("1");
     }
 
     public gallery(gallery gallery) {
         this.pagePath = gallery.pagePath;
-        this.page = gallery.page;
+//        this.page = gallery.page;
     }
 
     private void processPageData(String html) {
@@ -57,6 +58,30 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
             if (folderLinks != null) {
                 for (Element currentElement : folderLinks) {
                     folderResults.put(currentElement.attr("href"), currentElement.text());
+                }
+            }
+        }
+
+        Elements buttonElements = doc.select("a.button");
+
+        if(buttonElements != null) {
+            for(Element currentButton : buttonElements) {
+                if(currentButton.text().startsWith("Next")) {
+                    nextPage = currentButton.attr("href");
+                    break;
+                }
+            }
+        }
+
+        if(nextPage == null){
+            buttonElements = doc.select("button.button");
+
+            if(buttonElements != null) {
+                for(Element currentButton : buttonElements) {
+                    if(currentButton.text().startsWith("Next")) {
+                        nextPage = currentButton.parent().attr("action");
+                        break;
+                    }
                 }
             }
         }
@@ -108,7 +133,7 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
     @Override
     protected Void doInBackground(webClient... webClient) {
         String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
+        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         processPageData(html);
         return null;
     }
@@ -116,7 +141,7 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
     public String getPagePath() {
         return pagePath;
     }
-
+/*
     public int getPage() {
         try {
             return Integer.parseInt(Objects.requireNonNull(page));
@@ -138,6 +163,13 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
             }
         } catch (NumberFormatException e) {
             Log.e(TAG, "setPage: ", e);
+        }
+    }
+*/
+
+    public void setNextPage() {
+        if(this.nextPage != null) {
+            this.pagePath = this.nextPage;
         }
     }
 
