@@ -68,7 +68,10 @@ public class html {
                 currentCommentData.put("userLink", currentElementAvatarDesktopA.attr("href"));
                 currentCommentData.put("commentDate", currentElement.attr("data-timestamp"));
                 currentCommentData.put("comment", currentElementCommentDiv.html());
-                currentCommentData.put("replyToLink", currentElementReplyToLinkDiv.attr("href"));
+
+                if(currentElementReplyToLinkDiv != null) {
+                    currentCommentData.put("replyToLink", currentElementReplyToLinkDiv.attr("href"));
+                }
 
                 if (currentElementParentCommentIdDiv != null) {
                     String ParentCommentId = currentElementParentCommentIdDiv.attr("href");

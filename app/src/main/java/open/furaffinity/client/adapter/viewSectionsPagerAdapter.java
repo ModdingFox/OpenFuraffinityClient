@@ -64,7 +64,9 @@ public class viewSectionsPagerAdapter extends FragmentPagerAdapter {
                 return newViewKeywordsFragment;
             case 3:
                 comments newCommentsFragment = new comments();
+                bundle.putString(messageIds.pagePath_MESSAGE, view.getPagePath());
                 bundle.putString(messageIds.SubmissionComments_MESSAGE, view.getSubmissionComments());
+                bundle.putString(messageIds.SubmissionCommentsType_MESSAGE, "view");
                 newCommentsFragment.setArguments(bundle);
                 return newCommentsFragment;
             case 4:

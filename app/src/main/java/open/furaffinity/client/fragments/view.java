@@ -162,6 +162,7 @@ public class view extends Fragment {
         submissionUser.setText(page.getSubmissionUser());
 
         fab.removeButton(submissionFavorite);
+        submissionFavorite.setVisibility(View.GONE);
         if(loginTest.getIsLoggedIn()) {
             fab.addButton(submissionFavorite, 1.5f, 180);
 

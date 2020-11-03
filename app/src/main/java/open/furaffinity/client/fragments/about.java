@@ -105,7 +105,7 @@ public class about extends Fragment {
     private void updateUIElements() {
 //        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new commentListAdapter(mDataSet, getActivity());
+        mAdapter = new commentListAdapter(mDataSet, getActivity(), false);
         recyclerView.setAdapter(mAdapter);
     }
 
