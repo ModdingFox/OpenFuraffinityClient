@@ -23,28 +23,12 @@ public class msgOthers extends Fragment {
 
     private ViewPager viewPager;
 
-    private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.msgOthers page;
-
     private void getElements(View rootView) {
         viewPager = rootView.findViewById(R.id.view_pager);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(this.getActivity());
-        page = new open.furaffinity.client.pages.msgOthers();
-    }
-
-    private void fetchPageData() {
-        try {
-            page.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
-        }
-    }
-
     private void setupViewPager(View rootView) {
-        msgOthersSectionsPagerAdapter msgOthersSectionsPagerAdapter = new msgOthersSectionsPagerAdapter(rootView.getContext(), getChildFragmentManager(), page);
+        msgOthersSectionsPagerAdapter msgOthersSectionsPagerAdapter = new msgOthersSectionsPagerAdapter(rootView.getContext(), getChildFragmentManager());
         viewPager.setAdapter(msgOthersSectionsPagerAdapter);
         TabLayout tabs = rootView.findViewById(R.id.tabs);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -60,8 +44,6 @@ public class msgOthers extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_msg_others, container, false);
         getElements(rootView);
-        initClientAndPage();
-        fetchPageData();
         setupViewPager(rootView);
         return rootView;
     }

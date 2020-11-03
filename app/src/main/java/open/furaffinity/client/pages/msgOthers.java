@@ -14,7 +14,7 @@ import java.util.List;
 import open.furaffinity.client.utilities.webClient;
 
 public class msgOthers extends AsyncTask<webClient, Void, Void> {
-    String pagePath = "/msg/others";
+    private String pagePath = "/msg/others";
 
     private String watches = "";
     private String submissionComments = "";
@@ -205,5 +205,9 @@ public class msgOthers extends AsyncTask<webClient, Void, Void> {
         }
 
         return result;
+    }
+
+    public String getPagePath() {
+        return pagePath;
     }
 }

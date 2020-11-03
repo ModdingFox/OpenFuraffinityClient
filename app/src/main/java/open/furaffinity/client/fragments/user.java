@@ -129,8 +129,8 @@ public class user extends Fragment {
         coordinatorLayout.addView(watchUser);
         coordinatorLayout.addView(blockUser);
 
-        fab.addButton(watchUser, 1.5f, 180);
-        fab.addButton(blockUser, 1.5f, 270);
+        fab.addButton(watchUser, 1.5f, 270);
+        fab.addButton(blockUser, 1.5f, 180);
     }
 
     private String getPagePath() {

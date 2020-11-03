@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,17 +25,21 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
     private static final String TAG = msgOthersListAdapter.class.getName();
 
     private List<HashMap<String, String>> mDataSet;
+    private List<String> checkedItems;
+
     private Context context;
 
     public msgOthersListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
         this.context = context;
+        checkedItems = new ArrayList<>();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView userIcon;
         private final TextView userName;
         private final TextView actionText;
+        private final CheckBox checkBox;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -40,6 +47,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
             userIcon = itemView.findViewById(R.id.userIcon);
             userName = itemView.findViewById(R.id.userName);
             actionText = itemView.findViewById(R.id.actionText);
+            checkBox = itemView.findViewById(R.id.checkBox);
         }
     }
 
@@ -109,6 +117,29 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
                 }
             });
         }
+
+        if(checkedItems.contains(mDataSet.get(position).get("notificationId"))) {
+            holder.checkBox.setChecked(true);
+        }
+
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    checkedItems.add(mDataSet.get(position).get("notificationId"));
+                } else {
+                    checkedItems.remove(mDataSet.get(position).get("notificationId"));
+                }
+            }
+        });
+    }
+
+    public List<String> getCheckedItems() {
+        return checkedItems;
+    }
+
+    public void clearChecked() {
+        checkedItems = new ArrayList<>();
     }
 
     @Override

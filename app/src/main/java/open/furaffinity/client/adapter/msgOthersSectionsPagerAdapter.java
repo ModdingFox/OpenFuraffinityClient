@@ -20,45 +20,18 @@ public class msgOthersSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final int[] TAB_TITLES = new int[]{R.string.msgOthersTab0, R.string.msgOthersTab1, R.string.msgOthersTab2, R.string.msgOthersTab3, R.string.msgOthersTab4};
     private final Context mContext;
 
-    private msgOthers msgOthers;
-
-    public msgOthersSectionsPagerAdapter(Context context, FragmentManager fm, msgOthers msgOthers) {
+    public msgOthersSectionsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
-        this.msgOthers = msgOthers;
     }
 
     @Override
     public Fragment getItem(int position) {
         Bundle bundle = new Bundle();
         bundle.putInt(messageIds.msgOthersType_MESSAGE, position);
-
         msgOthersList newMsgOthersListFragment = new msgOthersList();
-
-        switch (position) {
-            case 0:
-                bundle.putString(messageIds.msgOthersData_MESSAGE, msgOthers.getWatches());
-                newMsgOthersListFragment.setArguments(bundle);
-                return newMsgOthersListFragment;
-            case 1:
-                bundle.putString(messageIds.msgOthersData_MESSAGE, msgOthers.getSubmissionComments());
-                newMsgOthersListFragment.setArguments(bundle);
-                return newMsgOthersListFragment;
-            case 2:
-                bundle.putString(messageIds.msgOthersData_MESSAGE, msgOthers.getShouts());
-                newMsgOthersListFragment.setArguments(bundle);
-                return newMsgOthersListFragment;
-            case 3:
-                bundle.putString(messageIds.msgOthersData_MESSAGE, msgOthers.getFavorites());
-                newMsgOthersListFragment.setArguments(bundle);
-                return newMsgOthersListFragment;
-            case 4:
-                bundle.putString(messageIds.msgOthersData_MESSAGE, msgOthers.getJournals());
-                newMsgOthersListFragment.setArguments(bundle);
-                return newMsgOthersListFragment;
-            default:
-                return new notImplementedYet();
-        }
+        newMsgOthersListFragment.setArguments(bundle);
+        return newMsgOthersListFragment;
     }
 
     @Nullable

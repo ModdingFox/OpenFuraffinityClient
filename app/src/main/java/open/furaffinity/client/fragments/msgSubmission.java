@@ -2,6 +2,8 @@ package open.furaffinity.client.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +14,8 @@ import android.widget.Switch;
 import android.widget.TableLayout;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,14 +29,17 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.adapter.imageListAdapter;
+import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
 public class msgSubmission extends Fragment {
     private static final String TAG = msgSubmission.class.getName();
+
+    private ConstraintLayout constraintLayout;
 
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
@@ -48,7 +53,10 @@ public class msgSubmission extends Fragment {
     private Switch msgSubmissionOrder;
     private Spinner msgSubmissionPerPageSpinner;
 
-    private FloatingActionButton fab;
+    private fabCircular fab;
+    private FloatingActionButton pageSettings;
+    private FloatingActionButton deleteSelected;
+    private FloatingActionButton deleteAll;
 
     private webClient webClient;
     private open.furaffinity.client.pages.msgSubmission page;
@@ -59,6 +67,8 @@ public class msgSubmission extends Fragment {
     private void getElements(View rootView) {
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+        constraintLayout = rootView.findViewById(R.id.constraintLayout);
 
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
 
@@ -71,10 +81,30 @@ public class msgSubmission extends Fragment {
         msgSubmissionPerPageSpinner = rootView.findViewById(R.id.msgSubmissionPerPageSpinner);
 
         fab = rootView.findViewById(R.id.fab);
+
+        pageSettings = new FloatingActionButton(getContext());
+        deleteSelected = new FloatingActionButton(getContext());
+        deleteAll = new FloatingActionButton(getContext());
+
+        pageSettings.setImageResource(R.drawable.ic_menu_settings);
+        deleteSelected.setImageResource(R.drawable.ic_menu_delete);
+        deleteAll.setImageResource(R.drawable.ic_menu_delete_all);
+
+        pageSettings.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        deleteSelected.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        deleteAll.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+
+        constraintLayout.addView(pageSettings);
+        constraintLayout.addView(deleteSelected);
+        constraintLayout.addView(deleteAll);
+
+        fab.addButton(pageSettings, 1.5f, 270);
+        fab.addButton(deleteSelected, 1.5f, 180);
+        fab.addButton(deleteAll, 1.5f, 225);
     }
 
     private void initClientAndPage() {
-        webClient = new webClient(this.getActivity());
+        webClient = new webClient(getActivity());
         page = new open.furaffinity.client.pages.msgSubmission(true);
     }
 
@@ -104,9 +134,8 @@ public class msgSubmission extends Fragment {
     }
 
     private void updateUIElements() {
-//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new imageListAdapter(mDataSet, getActivity());
+        mAdapter = new manageImageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -150,9 +179,9 @@ public class msgSubmission extends Fragment {
             public void onRefresh() {
                 recyclerView.scrollTo(0, 0);
                 mDataSet.clear();
+                ((manageImageListAdapter)mAdapter).clearChecked();
                 mAdapter.notifyDataSetChanged();
                 endlessRecyclerViewScrollListener.resetState();
-                page = new open.furaffinity.client.pages.msgSubmission(page);
                 fetchPageData();
 
                 swipeRefreshLayout.setRefreshing(false);
@@ -173,7 +202,40 @@ public class msgSubmission extends Fragment {
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        fab.setOnClickListener(view ->
+        ((manageImageListAdapter)mAdapter).setListener(new manageImageListAdapter.manageImageListAdapterListener() {
+            @Override
+            public void onSwipeLeft(String postId) {
+
+            }
+
+            @Override
+            public void onSwipeRight(String postId) {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("messagecenter-action", "remove_checked");
+                params.put("submissions[]", postId);
+
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    recyclerView.scrollTo(0, 0);
+                    mDataSet.clear();
+                    ((manageImageListAdapter)mAdapter).clearChecked();
+                    mAdapter.notifyDataSetChanged();
+                    endlessRecyclerViewScrollListener.resetState();
+                    fetchPageData();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not delete selected msgSubmissions: ", e);
+                }
+            }
+        });
+
+        pageSettings.setOnClickListener(view ->
         {
             if (swipeRefreshLayout.getVisibility() == View.VISIBLE) {
                 swipeRefreshLayout.setVisibility(View.GONE);
@@ -183,6 +245,66 @@ public class msgSubmission extends Fragment {
                 settingsTableLayout.setVisibility(View.GONE);
                 saveCurrentSettings();
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        deleteSelected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> elements = ((manageImageListAdapter)mAdapter).getCheckedItems();
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put("messagecenter-action", "remove_checked");
+
+                for(int i = 0; i < elements.size(); i++) {
+                    params.put("submissions[" + Integer.toString(i) + "]", elements.get(i));
+                }
+
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    recyclerView.scrollTo(0, 0);
+                    mDataSet.clear();
+                    ((manageImageListAdapter)mAdapter).clearChecked();
+                    mAdapter.notifyDataSetChanged();
+                    endlessRecyclerViewScrollListener.resetState();
+                    fetchPageData();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not delete selected msgSubmissions: ", e);
+                }
+            }
+        });
+
+        deleteAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("messagecenter-action", "nuke_notifications");
+
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    recyclerView.scrollTo(0, 0);
+                    mDataSet.clear();
+                    ((manageImageListAdapter)mAdapter).clearChecked();
+                    mAdapter.notifyDataSetChanged();
+                    endlessRecyclerViewScrollListener.resetState();
+                    fetchPageData();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not delete all msgSubmissions: ", e);
+                }
             }
         });
     }

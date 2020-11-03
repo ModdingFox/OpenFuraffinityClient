@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -23,6 +24,8 @@ import java.util.List;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragments.settings;
+import open.furaffinity.client.fragments.textDialog;
+import open.furaffinity.client.listener.OnSwipeTouchListener;
 
 public class manageImageListAdapter extends RecyclerView.Adapter<manageImageListAdapter.ViewHolder> {
     private List<HashMap<String, String>> mDataSet;
@@ -30,6 +33,17 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
 
     private Context context;
     private boolean showPostInfo = true;
+
+    public interface manageImageListAdapterListener {
+        public void onSwipeRight(String postId);
+        public void onSwipeLeft(String postId);
+    }
+
+    manageImageListAdapterListener listener;
+
+    public void setListener(manageImageListAdapterListener manageImageListAdapterListener) {
+        listener = manageImageListAdapterListener;
+    }
 
     public manageImageListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
@@ -82,9 +96,24 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
             holder.imageListPostInfo.setVisibility(View.GONE);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+        holder.itemView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
-            public void onClick(View v) {
+            public void onSwipeRight() {
+                if(listener != null) {
+                    listener.onSwipeRight(mDataSet.get(position).get("postId"));
+                }
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                if(listener != null) {
+                    listener.onSwipeLeft(mDataSet.get(position).get("postId"));
+                }
+            }
+
+            @Override
+            public void onClick() {
                 ((mainActivity) context).setViewPath(mDataSet.get(position).get("postPath"));
             }
         });
