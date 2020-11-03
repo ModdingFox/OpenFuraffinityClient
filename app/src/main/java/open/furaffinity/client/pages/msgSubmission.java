@@ -119,4 +119,8 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
     public List<HashMap<String, String>> getPageResults() {
         return pageResults;
     }
+
+    public String getPagePath() {
+        return pagePath;
+    }
 }
