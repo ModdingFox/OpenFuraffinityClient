@@ -53,6 +53,8 @@ public class user extends AsyncTask<webClient, Void, Void> {
     private String userWatchingPath;
 
     private String userShouts;
+    private String shoutKey;
+    private String shoutName;
 
     public user(String pagePath) {
         this.pagePath = pagePath;
@@ -135,9 +137,20 @@ public class user extends AsyncTask<webClient, Void, Void> {
 
         Element aShout = doc.selectFirst("a[id^=shout]");
 
-
         if (aShout != null && aShout.hasParent() && aShout.parent().hasParent()) {
             userShouts = aShout.parent().parent().html();
+        }
+
+        Element jsFormShout = doc.selectFirst("form[name=JSForm]");
+
+        if(jsFormShout != null) {
+            Element keyInput = jsFormShout.selectFirst("input[name=key]");
+            Element nameInput = jsFormShout.selectFirst("input[name=name]");
+
+            if (keyInput != null && nameInput != null) {
+                shoutKey = keyInput.attr("value");
+                shoutName = nameInput.attr("value");
+            }
         }
 
         return;
@@ -285,5 +298,13 @@ public class user extends AsyncTask<webClient, Void, Void> {
         }
 
         return result;
+    }
+
+    public String getShoutKey() {
+        return shoutKey;
+    }
+
+    public String getShoutName() {
+        return shoutName;
     }
 }

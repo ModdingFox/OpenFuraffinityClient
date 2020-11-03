@@ -25,8 +25,6 @@ public class messageIds {
 
     public static String userWatchRecent_MESSAGE = "open.furaffinity.client.userWatchRecent";
 
-    public static String userShouts_MESSAGE = "open.furaffinity.client.userShouts";
-
     public static String msgOthersType_MESSAGE = "open.furaffinity.client.msgOthersType";
     public static String msgOthersData_MESSAGE = "open.furaffinity.client.msgOthersData";
 
