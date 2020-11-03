@@ -42,9 +42,7 @@ public class profile extends Fragment {
         ((LinearLayout)tabs.getTabAt(3).view).setVisibility(View.GONE);
         ((LinearLayout)tabs.getTabAt(4).view).setVisibility(View.GONE);
         ((LinearLayout)tabs.getTabAt(5).view).setVisibility(View.GONE);
-        ((LinearLayout)tabs.getTabAt(7).view).setVisibility(View.GONE);
         ((LinearLayout)tabs.getTabAt(8).view).setVisibility(View.GONE);
-        ((LinearLayout)tabs.getTabAt(10).view).setVisibility(View.GONE);
         ((LinearLayout)tabs.getTabAt(11).view).setVisibility(View.GONE);
         ((LinearLayout)tabs.getTabAt(12).view).setVisibility(View.GONE);
         tabs.selectTab(tabs.getTabAt(6));
