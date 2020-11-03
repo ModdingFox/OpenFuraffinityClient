@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -34,6 +35,19 @@ public class profile extends Fragment {
         viewPager.setAdapter(profileSectionsPagerAdapter);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);
+
+        ((LinearLayout)tabs.getTabAt(0).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(1).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(2).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(3).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(4).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(5).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(7).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(8).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(10).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(11).view).setVisibility(View.GONE);
+        ((LinearLayout)tabs.getTabAt(12).view).setVisibility(View.GONE);
+        tabs.selectTab(tabs.getTabAt(6));
     }
 
     @Override
