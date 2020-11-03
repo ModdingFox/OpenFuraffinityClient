@@ -43,10 +43,32 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
+            case 0:
+                return new open.furaffinity.client.fragments.manageAccountSettings();
+            case 1:
+                return new open.furaffinity.client.fragments.manageSiteSettings();
+            case 2:
+                return new open.furaffinity.client.fragments.manageUserSettings();
+            case 3:
+                return new open.furaffinity.client.fragments.manageUserPageAndProfileInformation();
+            case 4:
+                return new open.furaffinity.client.fragments.manageContactInfo();
+            case 5:
+                return new open.furaffinity.client.fragments.manageAvatar();
             case 6:
                 return new open.furaffinity.client.fragments.manageSubmissions();
+            case 7:
+                return new open.furaffinity.client.fragments.manageFolders();
+            case 8:
+                return new open.furaffinity.client.fragments.manageJournals();
             case 9:
                 return new open.furaffinity.client.fragments.manageFavorites();
+            case 10:
+                return new open.furaffinity.client.fragments.manageWatches();
+            case 11:
+                return new open.furaffinity.client.fragments.manageShouts();
+            case 12:
+                return new open.furaffinity.client.fragments.manageBadges();
             default:
                 return new notImplementedYet();
         }
