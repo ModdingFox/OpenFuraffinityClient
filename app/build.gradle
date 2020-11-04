@@ -64,4 +64,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+    compile 'com.google.android.gms:play-services-safetynet:17.0.0'
 }

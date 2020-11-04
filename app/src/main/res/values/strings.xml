@@ -158,6 +158,10 @@
     <string name="msgOthersTab3">Favorites</string>
     <string name="msgOthersTab4">Journals</string>
 
+    <string name="msgPmsUserNameTextView">User</string>
+    <string name="msgPmsSubjectTextView">Subject</string>
+    <string name="msgPmsMessageTextView">Message</string>
+
     <string name="msgPmsFolder">Folder:</string>
 
     <string name="title_activity_msgpmsmessage">@string/app_name</string>
@@ -207,4 +211,5 @@
     <string name="acceptButton">Accept</string>
     <string name="cancelButton">Cancel</string>
     <string name="replyButton">Reply</string>
+    <string name="sendButton">Send</string>
 </resources>

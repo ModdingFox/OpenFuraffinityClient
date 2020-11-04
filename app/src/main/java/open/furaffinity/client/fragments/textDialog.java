@@ -30,7 +30,7 @@ public class textDialog extends DialogFragment {
         public void onDialogNegativeClick(DialogFragment dialog);
     }
 
-    dialogListener listener;
+    private dialogListener listener;
 
     public void setListener(dialogListener dialogListener) {
         listener = dialogListener;
