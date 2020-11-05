@@ -6,16 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +31,8 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
     private static String TAG = commentListAdapter.class.getName();
 
     private List<HashMap<String, String>> mDataSet;
+    private List<String> checkedItems;
+
     private Context context;
     private boolean isLoggedIn;
 
@@ -44,28 +50,31 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
         mDataSet = mDataSetIn;
         this.context = context;
         this.isLoggedIn = isLoggedIn;
+        checkedItems = new ArrayList<>();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final LinearLayout commentItemLinearLayout;
-        private final LinearLayout commentUserLinearLayout;
+        private final ConstraintLayout commentUserConstraintLayout;
         private final ImageView commentUserIcon;
         private final TextView commentUserName;
         private final TextView commentDate;
         private final WebView comment;
         private final TextView replyButton;
+        private final CheckBox checkBox;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             commentItemLinearLayout = itemView.findViewById(R.id.commentItemLinearLayout);
-            commentUserLinearLayout = itemView.findViewById(R.id.commentUserLinearLayout);
+            commentUserConstraintLayout = itemView.findViewById(R.id.commentUserConstraintLayout);
             commentUserIcon = itemView.findViewById(R.id.commentUserIcon);
             commentUserName = itemView.findViewById(R.id.commentUserName);
             commentDate = itemView.findViewById(R.id.commentDate);
             comment = itemView.findViewById(R.id.comment);
             comment.setBackgroundColor(Color.TRANSPARENT);
             replyButton = itemView.findViewById(R.id.replyButton);
+            checkBox = itemView.findViewById(R.id.checkBox);
         }
     }
 
@@ -79,7 +88,7 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.commentUserLinearLayout.setOnClickListener(new View.OnClickListener() {
+        holder.commentUserConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink"));
@@ -125,6 +134,33 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
         } else {
             mDataSet.get(position).put("padding", "0");
         }
+
+        if(mDataSet.get(position).containsKey("checkId")) {
+            holder.checkBox.setVisibility(View.VISIBLE);
+
+            if(checkedItems.contains(mDataSet.get(position).get("checkId"))) {
+                holder.checkBox.setChecked(true);
+            }
+
+            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked) {
+                        checkedItems.add(mDataSet.get(position).get("checkId"));
+                    } else {
+                        checkedItems.remove(mDataSet.get(position).get("checkId"));
+                    }
+                }
+            });
+        }
+    }
+
+    public List<String> getCheckedItems() {
+        return checkedItems;
+    }
+
+    public void clearChecked() {
+        checkedItems = new ArrayList<>();
     }
 
     @Override

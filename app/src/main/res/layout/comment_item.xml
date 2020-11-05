@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -8,56 +9,65 @@
         android:id="@+id/commentItemLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="WebViewLayout">
 
-        <LinearLayout
-            android:id="@+id/commentUserLinearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/commentUserConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/commentUserIcon"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/loading" />
+                android:src="@drawable/loading"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/commentUserName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/commentUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_gravity="center_vertical"
+                android:text="@string/notLoaded"
+                app:layout_constraintStart_toEndOf="@id/commentUserIcon"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-                <TextView
-                    android:id="@+id/commentUserName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/notLoaded" />
+            <TextView
+                android:id="@+id/commentDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/notLoaded"
+                app:layout_constraintStart_toEndOf="@id/commentUserIcon"
+                app:layout_constraintTop_toBottomOf="@id/commentUserName" />
 
-                <TextView
-                    android:id="@+id/commentDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/notLoaded" />
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="gone"/>
 
-            </LinearLayout>
-
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <WebView
             android:id="@+id/comment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="WebViewLayout" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/replyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/replyButton"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 
