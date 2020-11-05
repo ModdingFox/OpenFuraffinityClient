@@ -3,6 +3,7 @@ package open.furaffinity.client.fragments;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +43,7 @@ import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
 import open.furaffinity.client.sqlite.searchDBHelper;
+import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.notificationItem;
 import open.furaffinity.client.utilities.uiControls;
@@ -47,6 +51,8 @@ import open.furaffinity.client.utilities.webClient;
 
 public class search extends Fragment {
     private static final String TAG = search.class.getName();
+
+    private ConstraintLayout constraintLayout;
 
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private LinearLayoutManager saveLayoutManager;
@@ -82,10 +88,12 @@ public class search extends Fragment {
     private RadioButton searchAllRadioButtonKeywords;
     private RadioButton searchAnyRadioButton;
     private RadioButton searchExtendedRadioButton;
-    private EditText saveSearchEditText;
-    private Button saveSearchButton;
 
-    private FloatingActionButton fab;
+    private fabCircular fab;
+    private FloatingActionButton search;
+    private FloatingActionButton savedSearches;
+    private FloatingActionButton searchSettings;
+    private FloatingActionButton saveSearch;
 
     private webClient webClient;
     private loginTest loginTest;
@@ -97,6 +105,8 @@ public class search extends Fragment {
     private List<notificationItem> savedMDataSet = new ArrayList<>();
 
     private void getElements(View rootView) {
+        constraintLayout = rootView.findViewById(R.id.constraintLayout);
+
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
@@ -129,10 +139,37 @@ public class search extends Fragment {
         searchAllRadioButtonKeywords = rootView.findViewById(R.id.searchAllRadioButtonKeywords);
         searchAnyRadioButton = rootView.findViewById(R.id.searchAnyRadioButton);
         searchExtendedRadioButton = rootView.findViewById(R.id.searchExtendedRadioButton);
-        saveSearchEditText = rootView.findViewById(R.id.saveSearchEditText);
-        saveSearchButton = rootView.findViewById(R.id.saveSearchButton);
 
         fab = rootView.findViewById(R.id.fab);
+
+        search = new FloatingActionButton(getContext());
+        savedSearches = new FloatingActionButton(getContext());
+        searchSettings = new FloatingActionButton(getContext());
+        saveSearch = new FloatingActionButton(getContext());
+
+        search.setImageResource(R.drawable.ic_menu_search);
+        savedSearches.setImageResource(R.drawable.ic_menu_galleryfolder);
+        searchSettings.setImageResource(R.drawable.ic_menu_settings);
+        saveSearch.setImageResource(R.drawable.ic_menu_save);
+
+        search.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        savedSearches.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        searchSettings.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        saveSearch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+
+        search.setVisibility(View.GONE);
+        savedSearches.setVisibility(View.GONE);
+        searchSettings.setVisibility(View.GONE);
+        saveSearch.setVisibility(View.GONE);
+
+        constraintLayout.addView(search);
+        constraintLayout.addView(savedSearches);
+        constraintLayout.addView(searchSettings);
+        constraintLayout.addView(saveSearch);
+
+        fab.addButton(search, 1.5f, 270);
+        fab.addButton(savedSearches, 1.5f, 225);
+        fab.addButton(saveSearch, 1.5f, 180);
     }
 
     private void initClientAndPage() {
@@ -266,52 +303,66 @@ public class search extends Fragment {
     }
 
     private void saveCurrentSearch() {
-        searchDBHelper dbHelper = new searchDBHelper(getActivity());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String name = ((saveSearchEditText.getText().toString().length() > 0) ? (saveSearchEditText.getText().toString()) : ("No Name Set"));
-        String selectedQueryValue = searchEditText.getText().toString();
-        String selectedOrderByValue = ((kvPair) searchOrderBySpinner.getSelectedItem()).getKey();
-        String selectedOrderDirectionValue = ((kvPair) searchOrderDirectionSpinner.getSelectedItem()).getKey();
-        String selectedRangeValue = (searchDayRadioButton.isChecked()) ? ("day") : ("all");
-        selectedRangeValue = (search3DaysRadioButton.isChecked()) ? ("3days") : (selectedRangeValue);
-        selectedRangeValue = (searchWeekRadioButton.isChecked()) ? ("week") : (selectedRangeValue);
-        selectedRangeValue = (searchMonthRadioButton.isChecked()) ? ("month") : (selectedRangeValue);
-        selectedRangeValue = (searchAllRadioButtonRange.isChecked()) ? ("all") : (selectedRangeValue);
-        int selectedRatingGeneralValue = (searchRatingGeneralSwitch.isChecked() ? (1) : (0));
-        int selectedRatingMatureValue = (searchRatingMatureSwitch.isChecked() ? (1) : (0));
-        int selectedRatingAdultValue = (searchRatingAdultSwitch.isChecked() ? (1) : (0));
-        int selectedTypeArtValue = (searchTypeArtSwitch.isChecked() ? (1) : (0));
-        int selectedTypeMusicValue = (searchTypeMusicSwitch.isChecked() ? (1) : (0));
-        int selectedTypeFlashValue = (searchTypeFlashSwitch.isChecked() ? (1) : (0));
-        int selectedTypeStoryValue = (searchTypeStorySwitch.isChecked() ? (1) : (0));
-        int selectedTypePhotoValue = (searchTypePhotoSwitch.isChecked() ? (1) : (0));
-        int selectedTypePoetryValue = (searchTypePoetrySwitch.isChecked() ? (1) : (0));
-        String selectedModeValue = (searchAllRadioButtonKeywords.isChecked()) ? ("all") : ("all");
-        selectedModeValue = (searchAnyRadioButton.isChecked()) ? ("any") : (selectedModeValue);
-        selectedModeValue = (searchExtendedRadioButton.isChecked()) ? ("extended") : (selectedModeValue);
+        textDialog textDialog = new textDialog();
+        textDialog.setTitleText("Enter name for search:");
+        textDialog.setListener(new textDialog.dialogListener() {
+            @Override
+            public void onDialogPositiveClick(DialogFragment dialog) {
+                searchDBHelper dbHelper = new searchDBHelper(getActivity());
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(searchItemEntry.COLUMN_NAME_NAME, name);
-        values.put(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE, 0);
-        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, "");
-        values.put(searchItemEntry.COLUMN_NAME_Q, selectedQueryValue);
-        values.put(searchItemEntry.COLUMN_NAME_ORDERBY, selectedOrderByValue);
-        values.put(searchItemEntry.COLUMN_NAME_ORDERDIRECTION, selectedOrderDirectionValue);
-        values.put(searchItemEntry.COLUMN_NAME_RANGE, selectedRangeValue);
-        values.put(searchItemEntry.COLUMN_NAME_RATINGGENERAL, selectedRatingGeneralValue);
-        values.put(searchItemEntry.COLUMN_NAME_RATINGMATURE, selectedRatingMatureValue);
-        values.put(searchItemEntry.COLUMN_NAME_RATINGADULT, selectedRatingAdultValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEART, selectedTypeArtValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEMUSIC, selectedTypeMusicValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEFLASH, selectedTypeFlashValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPESTORY, selectedTypeStoryValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEPHOTO, selectedTypePhotoValue);
-        values.put(searchItemEntry.COLUMN_NAME_TYPEPOETRY, selectedTypePoetryValue);
-        values.put(searchItemEntry.COLUMN_NAME_MODE, selectedModeValue);
+                String name = ((textDialog)dialog).getText();
+                String selectedQueryValue = searchEditText.getText().toString();
+                String selectedOrderByValue = ((kvPair) searchOrderBySpinner.getSelectedItem()).getKey();
+                String selectedOrderDirectionValue = ((kvPair) searchOrderDirectionSpinner.getSelectedItem()).getKey();
+                String selectedRangeValue = (searchDayRadioButton.isChecked()) ? ("day") : ("all");
+                selectedRangeValue = (search3DaysRadioButton.isChecked()) ? ("3days") : (selectedRangeValue);
+                selectedRangeValue = (searchWeekRadioButton.isChecked()) ? ("week") : (selectedRangeValue);
+                selectedRangeValue = (searchMonthRadioButton.isChecked()) ? ("month") : (selectedRangeValue);
+                selectedRangeValue = (searchAllRadioButtonRange.isChecked()) ? ("all") : (selectedRangeValue);
+                int selectedRatingGeneralValue = (searchRatingGeneralSwitch.isChecked() ? (1) : (0));
+                int selectedRatingMatureValue = (searchRatingMatureSwitch.isChecked() ? (1) : (0));
+                int selectedRatingAdultValue = (searchRatingAdultSwitch.isChecked() ? (1) : (0));
+                int selectedTypeArtValue = (searchTypeArtSwitch.isChecked() ? (1) : (0));
+                int selectedTypeMusicValue = (searchTypeMusicSwitch.isChecked() ? (1) : (0));
+                int selectedTypeFlashValue = (searchTypeFlashSwitch.isChecked() ? (1) : (0));
+                int selectedTypeStoryValue = (searchTypeStorySwitch.isChecked() ? (1) : (0));
+                int selectedTypePhotoValue = (searchTypePhotoSwitch.isChecked() ? (1) : (0));
+                int selectedTypePoetryValue = (searchTypePoetrySwitch.isChecked() ? (1) : (0));
+                String selectedModeValue = (searchAllRadioButtonKeywords.isChecked()) ? ("all") : ("all");
+                selectedModeValue = (searchAnyRadioButton.isChecked()) ? ("any") : (selectedModeValue);
+                selectedModeValue = (searchExtendedRadioButton.isChecked()) ? ("extended") : (selectedModeValue);
 
-        db.insert(searchItemEntry.TABLE_NAME, null, values);
-        db.close();
+                ContentValues values = new ContentValues();
+                values.put(searchItemEntry.COLUMN_NAME_NAME, name);
+                values.put(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE, 0);
+                values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, "");
+                values.put(searchItemEntry.COLUMN_NAME_Q, selectedQueryValue);
+                values.put(searchItemEntry.COLUMN_NAME_ORDERBY, selectedOrderByValue);
+                values.put(searchItemEntry.COLUMN_NAME_ORDERDIRECTION, selectedOrderDirectionValue);
+                values.put(searchItemEntry.COLUMN_NAME_RANGE, selectedRangeValue);
+                values.put(searchItemEntry.COLUMN_NAME_RATINGGENERAL, selectedRatingGeneralValue);
+                values.put(searchItemEntry.COLUMN_NAME_RATINGMATURE, selectedRatingMatureValue);
+                values.put(searchItemEntry.COLUMN_NAME_RATINGADULT, selectedRatingAdultValue);
+                values.put(searchItemEntry.COLUMN_NAME_TYPEART, selectedTypeArtValue);
+                values.put(searchItemEntry.COLUMN_NAME_TYPEMUSIC, selectedTypeMusicValue);
+                values.put(searchItemEntry.COLUMN_NAME_TYPEFLASH, selectedTypeFlashValue);
+                values.put(searchItemEntry.COLUMN_NAME_TYPESTORY, selectedTypeStoryValue);
+                values.put(searchItemEntry.COLUMN_NAME_TYPEPHOTO, selectedTypePhotoValue);
+                values.put(searchItemEntry.COLUMN_NAME_TYPEPOETRY, selectedTypePoetryValue);
+                values.put(searchItemEntry.COLUMN_NAME_MODE, selectedModeValue);
+
+                db.insert(searchItemEntry.TABLE_NAME, null, values);
+                db.close();
+            }
+
+            @Override
+            public void onDialogNegativeClick(DialogFragment dialog) {
+                dialog.dismiss();
+            }
+        });
+        textDialog.show(getChildFragmentManager(), "getSearchName");
     }
 
     private void loadCurrentSettings() {
@@ -596,12 +647,10 @@ public class search extends Fragment {
             searchRatingAdultSwitch.setVisibility(View.GONE);
         }
 
-//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-//        savedSearchRecyclerView.setHasFixedSize(true);
         savedSearchRecyclerView.setLayoutManager(saveLayoutManager);
         savedMAdapter = new savedSearchListAdapter(savedMDataSet, getActivity());
         savedSearchRecyclerView.setAdapter(savedMAdapter);
@@ -654,23 +703,9 @@ public class search extends Fragment {
         //noinspection deprecation
         savedSearchRecyclerView.setOnScrollListener(savedEndlessRecyclerViewScrollListener);
 
-        saveSearchButton.setOnClickListener(new View.OnClickListener() {
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveCurrentSearch();
-                loadSavedSearches();
-                saveCurrentSettings();
-                updateUIElements();
-            }
-        });
-
-        fab.setOnClickListener(view ->
-        {
-            if (savedSearchRecyclerView.getVisibility() == View.VISIBLE) {
-                savedSearchRecyclerView.setVisibility(View.GONE);
-                swipeRefreshLayout.setVisibility(View.GONE);
-                searchOptionsScrollView.setVisibility(View.VISIBLE);
-            } else if (searchOptionsScrollView.getVisibility() == View.VISIBLE) {
                 searchOptionsScrollView.setVisibility(View.GONE);
                 savedSearchRecyclerView.setVisibility(View.GONE);
                 getElements(rootView);
@@ -679,24 +714,68 @@ public class search extends Fragment {
                 updateUIElementListeners(rootView);
                 ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(rootView.getWindowToken(), 0);
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
-            } else {
+
+                fab.removeButton(search);
+                fab.removeButton(savedSearches);
+                fab.removeButton(searchSettings);
+                fab.removeButton(saveSearch);
+
+                fab.addButton(searchSettings, 1.5f, 270);
+                fab.addButton(savedSearches, 1.5f, 225);
+                fab.addButton(saveSearch, 1.5f, 180);
+            }
+        });
+
+        savedSearches.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                searchOptionsScrollView.setVisibility(View.GONE);
+                swipeRefreshLayout.setVisibility(View.GONE);
+                loadSavedSearches();
+                updateUIElements();
+                updateUIElementListeners(rootView);
+                savedSearchRecyclerView.setVisibility(View.VISIBLE);
+
+                fab.removeButton(search);
+                fab.removeButton(savedSearches);
+                fab.removeButton(searchSettings);
+                fab.removeButton(saveSearch);
+
+                fab.addButton(searchSettings, 1.5f, 270);
+                fab.addButton(search, 1.5f, 225);
+            }
+        });
+
+        searchSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 swipeRefreshLayout.setVisibility(View.GONE);
                 savedSearchRecyclerView.setVisibility(View.GONE);
                 loadCurrentSettings();
                 updateUIElements();
+                updateUIElementListeners(rootView);
                 searchOptionsScrollView.setVisibility(View.VISIBLE);
+
+                fab.removeButton(search);
+                fab.removeButton(savedSearches);
+                fab.removeButton(searchSettings);
+                fab.removeButton(saveSearch);
+
+                fab.addButton(search, 1.5f, 270);
+                fab.addButton(savedSearches, 1.5f, 225);
+                fab.addButton(saveSearch, 1.5f, 180);
             }
         });
 
-        fab.setOnLongClickListener(view ->
-        {
-            if (savedSearchRecyclerView.getVisibility() != View.VISIBLE) {
-                searchOptionsScrollView.setVisibility(View.GONE);
-                swipeRefreshLayout.setVisibility(View.GONE);
+        saveSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveCurrentSearch();
                 loadSavedSearches();
-                savedSearchRecyclerView.setVisibility(View.VISIBLE);
+                saveCurrentSettings();
+                updateUIElements();
             }
-            return true;
         });
     }
 

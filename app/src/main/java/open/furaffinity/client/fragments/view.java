@@ -174,6 +174,7 @@ public class view extends Fragment {
 
         submissionFavorite.setVisibility(View.GONE);
         sendNote.setVisibility(View.GONE);
+
         if(loginTest.getIsLoggedIn()) {
             fab.addButton(submissionFavorite, 1.5f, 180);
             fab.addButton(sendNote, 1.5f, 225);

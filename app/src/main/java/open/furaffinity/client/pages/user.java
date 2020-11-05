@@ -327,12 +327,17 @@ public class user extends AsyncTask<webClient, Void, Void> {
                 HashMap<String, String> currentShoutData = new HashMap<>();
 
                 Element shoutAvatarDiv = currentElement.selectFirst("div.shout-avatar");
+                Element checkboxInput = currentElement.selectFirst("input[type=checkbox]");
 
-                currentShoutData.put("userName", currentElement.selectFirst("div.comment_username").text());
+                currentShoutData.put("userName", currentElement.selectFirst(".comment_username").text());
                 currentShoutData.put("userIcon", "https:" + shoutAvatarDiv.selectFirst("img").attr("src"));
                 currentShoutData.put("userLink", shoutAvatarDiv.selectFirst("a").attr("href"));
-                currentShoutData.put("commentDate", currentElement.selectFirst("div.shout-date").text());
-                currentShoutData.put("comment", currentElement.selectFirst("div.body.comment_text").html());
+                currentShoutData.put("commentDate", currentElement.selectFirst(".popup_date").text());
+                currentShoutData.put("comment", currentElement.selectFirst(".comment_text").html());
+
+                if(checkboxInput != null) {
+                    currentShoutData.put("checkId", checkboxInput.attr("value"));
+                }
 
                 result.add(currentShoutData);
             }
