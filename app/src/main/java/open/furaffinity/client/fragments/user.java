@@ -42,6 +42,8 @@ import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
+import static open.furaffinity.client.utilities.sendPm.sendPM;
+
 public class user extends Fragment {
     private static final String TAG = user.class.getName();
 
@@ -63,6 +65,7 @@ public class user extends Fragment {
     private fabCircular fab;
     private FloatingActionButton watchUser;
     private FloatingActionButton blockUser;
+    private FloatingActionButton sendNote;
 
 
     private String currentPage;
@@ -119,17 +122,22 @@ public class user extends Fragment {
         fab = rootView.findViewById(R.id.fab);
         watchUser = new FloatingActionButton(getContext());
         blockUser = new FloatingActionButton(getContext());
+        sendNote = new FloatingActionButton(getContext());
 
         watchUser.setImageResource(R.drawable.ic_menu_user_add);
         blockUser.setImageResource(R.drawable.ic_menu_user_block);
+        sendNote.setImageResource(R.drawable.ic_menu_newmessage);
 
         watchUser.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         blockUser.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        sendNote.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         coordinatorLayout.addView(watchUser);
         coordinatorLayout.addView(blockUser);
+        coordinatorLayout.addView(sendNote);
 
         fab.addButton(watchUser, 1.5f, 270);
+        fab.addButton(sendNote, 1.5f, 225);
         fab.addButton(blockUser, 1.5f, 180);
     }
 
@@ -148,8 +156,8 @@ public class user extends Fragment {
 
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
-        page = new open.furaffinity.client.pages.user(pagePath);
         loginTest = new loginTest();
+        page = new open.furaffinity.client.pages.user(pagePath);
     }
 
     private void fetchPageData() {
@@ -178,7 +186,7 @@ public class user extends Fragment {
     }
 
     private void updateUIElements() {
-        if(loginTest.getIsLoggedIn() && page.getBlockUnBlock() != null && page.getWatchUnWatch() != null) {
+        if(loginTest.getIsLoggedIn() && page.getBlockUnBlock() != null && page.getWatchUnWatch() != null && page.getNoteUser() != null) {
             fab.setVisibility(View.VISIBLE);
 
             if(page.getIsWatching()) {
@@ -248,6 +256,13 @@ public class user extends Fragment {
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not block/unblock user: ", e);
                 }
+            }
+        });
+
+        sendNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser());
             }
         });
     }

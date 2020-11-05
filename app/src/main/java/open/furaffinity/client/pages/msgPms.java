@@ -40,12 +40,40 @@ public class msgPms extends AsyncTask<webClient, Void, Void> {
         }
     }
 
+    public static enum priorities {
+        high("high", "High"), medium("medium", "Medium"), low("low", "Low"), none("none", "None"), archive("archive", "Archive"), unread("unread", "Mark Unread");
+
+        private String value;
+        private String printableName;
+
+        priorities(String value) {
+            this.value = value;
+            this.printableName = value;
+        }
+
+        priorities(String value, String printableName) {
+            this.value = value;
+            this.printableName = printableName;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        public String getPrintableName() {
+            return this.printableName;
+        }
+    }
+
     private String pagePath = "/msg/pms";
     private static String sendPath = "/msg/send";
+    private static String notePathPrefix = "/newpm/";
     private int currentPage = 1;
 
     private mailFolders selectedFolder = mailFolders.inbox;
     private String postKey;
+    private boolean recaptchaRequired;
 
     List<HashMap<String, String>> messages;
 
@@ -101,6 +129,13 @@ public class msgPms extends AsyncTask<webClient, Void, Void> {
                 postKey = keyInput.attr("value");
             }
         }
+
+        Element gRecaptcha = doc.selectFirst("[id=g-recaptcha]");
+        if(gRecaptcha == null) {
+            recaptchaRequired = false;
+        } else {
+            recaptchaRequired = true;
+        }
     }
 
     @Override
@@ -144,5 +179,11 @@ public class msgPms extends AsyncTask<webClient, Void, Void> {
 
     public static String getSendPath() {
         return sendPath;
+    }
+
+    public static String getNotePathPrefix() { return notePathPrefix; }
+
+    public boolean isRecaptchaRequired() {
+        return recaptchaRequired;
     }
 }

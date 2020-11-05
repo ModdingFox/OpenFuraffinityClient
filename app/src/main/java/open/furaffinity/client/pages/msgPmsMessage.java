@@ -90,4 +90,9 @@ public class msgPmsMessage extends AsyncTask<webClient, Void, Void> {
     public String getMessageBody() {
         return messageBody;
     }
+
+    public String getMessageUser() {
+        String user = messageUserLink.replace(open.furaffinity.client.pages.user.getPagePrefix(), "");
+        return user.substring(0, user.length() - 1);
+    }
 }

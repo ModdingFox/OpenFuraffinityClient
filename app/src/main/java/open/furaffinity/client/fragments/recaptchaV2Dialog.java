@@ -94,10 +94,11 @@ public class recaptchaV2Dialog extends DialogFragment {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                webView.evaluateJavascript("document.body.innerHTML = '<div id=\"g-recaptcha\" style=\"display: none;\" class=\"g-recaptcha\" data-sitekey=\"6LcQyPMUAAAAAN-wUp7pQ81ex5U7BpnG2bQHKClm\" data-size=\"invisible\"></div>'; " +
+                webView.evaluateJavascript("if(document.getElementById(\"g-recaptcha\") == null) { Android.passGRecaptchaResponse(\"\"); } else { " +
+                        "document.body.innerHTML = '<div id=\"g-recaptcha\" style=\"display: none;\" class=\"g-recaptcha\" data-sitekey=\"6LcQyPMUAAAAAN-wUp7pQ81ex5U7BpnG2bQHKClm\" data-size=\"invisible\"></div>'; " +
                         "grecaptcha.render('g-recaptcha', { 'sitekey' : '6LcQyPMUAAAAAN-wUp7pQ81ex5U7BpnG2bQHKClm', 'badge'   : 'bottomright', 'size'    : 'invisible', 'theme'   : 'dark', 'callback': function(){ Android.passGRecaptchaResponse(document.getElementsByClassName('g-recaptcha-response')[0].value); }, 'expired-callback': window['recaptcha_error_callback'], 'error-callback'  : window['recaptcha_error_callback']}); " +
                         "grecaptcha.execute(); " +
-                        "Android.setWebViewVisible();", null);
+                        "Android.setWebViewVisible(); }", null);
                 return;
             }
         });

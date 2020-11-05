@@ -22,6 +22,8 @@ import open.furaffinity.client.R;
 public class msgPmsDialog extends DialogFragment {
     private String TAG = msgPmsDialog.class.getName();
 
+    private String user;
+
     public interface msgPmsDialogListener {
         public void userMessageData(String user, String subject, String body);
     }
@@ -44,6 +46,10 @@ public class msgPmsDialog extends DialogFragment {
         EditText subjectEditText = rootView.findViewById(R.id.subjectEditText);
         EditText messageEditText = rootView.findViewById(R.id.messageEditText);
 
+        if(this.user != null) {
+            userNameEditText.setText(this.user);
+        }
+
         builder.setPositiveButton(R.string.sendButton, (dialog, which) -> {
             listener.userMessageData(userNameEditText.getText().toString(), subjectEditText.getText().toString(), messageEditText.getText().toString());
         });
@@ -55,5 +61,9 @@ public class msgPmsDialog extends DialogFragment {
         builder.setView(rootView);
 
         return builder.create();
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

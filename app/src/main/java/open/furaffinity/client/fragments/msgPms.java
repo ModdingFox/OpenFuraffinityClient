@@ -12,6 +12,7 @@ import android.widget.TableLayout;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.manageImageListAdapter;
+import open.furaffinity.client.adapter.msgOthersListAdapter;
 import open.furaffinity.client.adapter.msgPmsListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
@@ -43,11 +45,12 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
+import static open.furaffinity.client.utilities.sendPm.sendPM;
+
 public class msgPms extends Fragment {
     private static final String TAG = open.furaffinity.client.fragments.msgPms.class.getName();
 
     private ConstraintLayout constraintLayout;
-    private TableLayout settingsTableLayout;
 
     private LinearLayoutManager layoutManager;
 
@@ -55,8 +58,6 @@ public class msgPms extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
-    private Spinner msgPmsFolderSpinner;
 
     private fabCircular fab;
     private FloatingActionButton newMessage;
@@ -73,12 +74,9 @@ public class msgPms extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
 
         constraintLayout = rootView.findViewById(R.id.constraintLayout);
-        settingsTableLayout = rootView.findViewById(R.id.settingsTableLayout);
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
-
-        msgPmsFolderSpinner = rootView.findViewById(R.id.msgPmsFolderSpinner);
 
         fab = rootView.findViewById(R.id.fab);
 
@@ -88,8 +86,8 @@ public class msgPms extends Fragment {
         messageListOptions = new FloatingActionButton(getContext());
 
         newMessage.setImageResource(R.drawable.ic_menu_newmessage);
-        deleteSelectedMessages.setImageResource(R.drawable.ic_menu_inbox);
-        setSelectedMessagesPriority.setImageResource(R.drawable.ic_menu_delete);
+        deleteSelectedMessages.setImageResource(R.drawable.ic_menu_delete);
+        setSelectedMessagesPriority.setImageResource(R.drawable.ic_menu_inbox);
         messageListOptions.setImageResource(R.drawable.ic_menu_settings);
 
         newMessage.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
@@ -138,48 +136,13 @@ public class msgPms extends Fragment {
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void loadCurrentSettings() {
-        HashMap<String, String> foldersList = new HashMap<>();
-        for (open.furaffinity.client.pages.msgPms.mailFolders currentMailFolder : open.furaffinity.client.pages.msgPms.mailFolders.values()) {
-            foldersList.put(currentMailFolder.toString(), currentMailFolder.getPrintableName());
-        }
-        uiControls.spinnerSetAdapter(requireContext(), msgPmsFolderSpinner, foldersList, page.getSelectedFolder().toString(), true, false);
-    }
-
-    private void saveCurrentSettings() {
-        boolean valueChanged = false;
-
-        String selectedFolderValue = ((kvPair) msgPmsFolderSpinner.getSelectedItem()).getKey();
-        if (!page.getSelectedFolder().toString().equals(selectedFolderValue)) {
-            HashMap<String, open.furaffinity.client.pages.msgPms.mailFolders> foldersList = new HashMap<>();
-            for (open.furaffinity.client.pages.msgPms.mailFolders currentMailFolder : open.furaffinity.client.pages.msgPms.mailFolders.values()) {
-                foldersList.put(currentMailFolder.toString(), currentMailFolder);
-            }
-
-            page.setSelectedFolder(foldersList.get(selectedFolderValue));
-            valueChanged = true;
-        }
-
-        if (valueChanged) {
-            recyclerView.scrollTo(0, 0);
-            mDataSet.clear();
-            mAdapter.notifyDataSetChanged();
-            endlessRecyclerViewScrollListener.resetState();
-
-            page.setPage(1);
-
-            page = new open.furaffinity.client.pages.msgPms(page);
-            fetchPageData();
-        }
-    }
-
     private void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 recyclerView.scrollTo(0, 0);
                 mDataSet.clear();
-//                ((manageImageListAdapter)mAdapter).clearChecked();
+                ((msgPmsListAdapter)mAdapter).clearChecked();
                 mAdapter.notifyDataSetChanged();
                 endlessRecyclerViewScrollListener.resetState();
 
@@ -208,60 +171,150 @@ public class msgPms extends Fragment {
 
         newMessage.setOnClickListener(view ->
         {
-            msgPmsDialog msgPmsDialog = new msgPmsDialog();
-            msgPmsDialog.setListener((user, subject, body) -> {
-                recaptchaV2Dialog recaptchaV2Dialog = new recaptchaV2Dialog();
-                recaptchaV2Dialog.setPagePath(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath());
-                recaptchaV2Dialog.setListener(new recaptchaV2Dialog.recaptchaV2DialogListener() {
-                    @Override
-                    public void gRecaptchaResponseFound(String gRecaptchaResponse) {
-                        HashMap<String, String> params = new HashMap<>();
-                        params.put("key", page.getPostKey());
-                        params.put("to", user);
-                        params.put("subject", subject);
-                        params.put("message", body);
-                        params.put("g-recaptcha-response", gRecaptchaResponse);
-
-                        try {
-                            new AsyncTask<webClient, Void, Void>() {
-                                @Override
-                                protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pages.msgPms.getSendPath(), params);
-                                    return null;
-                                }
-                            }.execute(webClient).get();
-                        } catch (ExecutionException | InterruptedException e) {
-                            Log.e(TAG, "Could not reply to message: ", e);
-                        }
-                    }
-                });
-                recaptchaV2Dialog.show(getChildFragmentManager(), "recaptchaV2");
-            });
-
-            msgPmsDialog.show(getChildFragmentManager(), "msgPmsDialog");
+            sendPM(getActivity(), getChildFragmentManager(), null);
         });
 
         deleteSelectedMessages.setOnClickListener(view ->
         {
+            List<String> itemIds = ((msgPmsListAdapter)mAdapter).getCheckedItems();
 
+            HashMap<String, String> params = new HashMap<>();
+            params.put("manage_notes", "1");
+            params.put("move_to", "trash");
+
+            for(int i = 0; i < itemIds.size(); i++) {
+                params.put("items[" + Integer.toString(i) + "]", itemIds.get(i));
+            }
+
+            try {
+                new AsyncTask<webClient, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                        webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
+                        return null;
+                    }
+                }.execute(webClient).get();
+
+                recyclerView.scrollTo(0, 0);
+                mDataSet.clear();
+                ((msgPmsListAdapter)mAdapter).clearChecked();
+                mAdapter.notifyDataSetChanged();
+                endlessRecyclerViewScrollListener.resetState();
+
+                page.setPage(1);
+
+                page = new open.furaffinity.client.pages.msgPms(page);
+                fetchPageData();
+                updateUIElements();
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e(TAG, "Could not remove notification: ", e);
+            }
         });
 
         setSelectedMessagesPriority.setOnClickListener(view ->
         {
+            HashMap<String, String> prioritiesList = new HashMap<>();
+            for (open.furaffinity.client.pages.msgPms.priorities currentPriority : open.furaffinity.client.pages.msgPms.priorities.values()) {
+                prioritiesList.put(currentPriority.toString(), currentPriority.getPrintableName());
+            }
 
+            spinnerDialog spinnerDialog = new spinnerDialog();
+            spinnerDialog.setTitleText("Select Priority");
+            spinnerDialog.setData(prioritiesList);
+            spinnerDialog.setListener(new spinnerDialog.dialogListener() {
+                @Override
+                public void onDialogPositiveClick(DialogFragment dialog) {
+                    List<String> itemIds = ((msgPmsListAdapter)mAdapter).getCheckedItems();
+
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("manage_notes", "1");
+
+                    if(spinnerDialog.getSpinnerSelection().equals(open.furaffinity.client.pages.msgPms.priorities.archive.toString())) {
+                        params.put("move_to", spinnerDialog.getSpinnerSelection());
+                    } else {
+                        params.put("set_prio", spinnerDialog.getSpinnerSelection());
+                    }
+
+                    for(int i = 0; i < itemIds.size(); i++) {
+                        params.put("items[" + Integer.toString(i) + "]", itemIds.get(i));
+                    }
+
+                    try {
+                        new AsyncTask<webClient, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                                webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
+                                return null;
+                            }
+                        }.execute(webClient).get();
+
+                        recyclerView.scrollTo(0, 0);
+                        mDataSet.clear();
+                        ((msgPmsListAdapter)mAdapter).clearChecked();
+                        mAdapter.notifyDataSetChanged();
+                        endlessRecyclerViewScrollListener.resetState();
+
+                        page.setPage(1);
+
+                        page = new open.furaffinity.client.pages.msgPms(page);
+                        fetchPageData();
+                        updateUIElements();
+                    } catch (ExecutionException | InterruptedException e) {
+                        Log.e(TAG, "Could not remove notification: ", e);
+                    }
+
+                }
+
+                @Override
+                public void onDialogNegativeClick(DialogFragment dialog) {
+                    dialog.dismiss();
+                }
+            });
+            spinnerDialog.show(getChildFragmentManager(), "selectPriority");
         });
 
         messageListOptions.setOnClickListener(view ->
         {
-            if (swipeRefreshLayout.getVisibility() == View.VISIBLE) {
-                swipeRefreshLayout.setVisibility(View.GONE);
-                loadCurrentSettings();
-                settingsTableLayout.setVisibility(View.VISIBLE);
-            } else {
-                settingsTableLayout.setVisibility(View.GONE);
-                saveCurrentSettings();
-                swipeRefreshLayout.setVisibility(View.VISIBLE);
+            HashMap<String, String> foldersList = new HashMap<>();
+            for (open.furaffinity.client.pages.msgPms.mailFolders currentMailFolder : open.furaffinity.client.pages.msgPms.mailFolders.values()) {
+                foldersList.put(currentMailFolder.toString(), currentMailFolder.getPrintableName());
             }
+
+            spinnerDialog spinnerDialog = new spinnerDialog();
+            spinnerDialog.setTitleText("Select Folder");
+            spinnerDialog.setData(foldersList);
+            spinnerDialog.setListener(new spinnerDialog.dialogListener() {
+                @Override
+                public void onDialogPositiveClick(DialogFragment dialog) {
+                    String selectedFolderValue = spinnerDialog.getSpinnerSelection();
+                    if (!page.getSelectedFolder().toString().equals(selectedFolderValue)) {
+                        HashMap<String, open.furaffinity.client.pages.msgPms.mailFolders> foldersList = new HashMap<>();
+                        for (open.furaffinity.client.pages.msgPms.mailFolders currentMailFolder : open.furaffinity.client.pages.msgPms.mailFolders.values()) {
+                            foldersList.put(currentMailFolder.toString(), currentMailFolder);
+                        }
+
+                        page.setSelectedFolder(foldersList.get(selectedFolderValue));
+
+                        recyclerView.scrollTo(0, 0);
+                        mDataSet.clear();
+                        ((msgPmsListAdapter)mAdapter).clearChecked();
+                        mAdapter.notifyDataSetChanged();
+                        endlessRecyclerViewScrollListener.resetState();
+
+                        page.setPage(1);
+
+                        page = new open.furaffinity.client.pages.msgPms(page);
+                        fetchPageData();
+                        updateUIElements();
+                    }
+                }
+
+                @Override
+                public void onDialogNegativeClick(DialogFragment dialog) {
+                    dialog.dismiss();
+                }
+            });
+            spinnerDialog.show(getChildFragmentManager(), "selectPriority");
         });
     }
 
@@ -271,7 +324,7 @@ public class msgPms extends Fragment {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_msg_pms, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
         getElements(rootView);
         initClientAndPage();
         fetchPageData();
