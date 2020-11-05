@@ -14,6 +14,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import open.furaffinity.client.R;
@@ -53,9 +55,9 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
 
         public void setVisibility(boolean visible) {
             if(visible) {
-                this.floatingActionButton.setVisibility(VISIBLE);
+                this.floatingActionButton.show();
             } else {
-                this.floatingActionButton.setVisibility(GONE);
+                this.floatingActionButton.hide();
             }
         }
     }
@@ -99,6 +101,26 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
     }
 
     public void removeButton(FloatingActionButton floatingActionButton) {
-        floatingActionButtons.remove(floatingActionButton);
+        for(FloatingActionButtonContainer currentFloatingActionButton : floatingActionButtons) {
+            currentFloatingActionButton.setPosition(this.getWidth());
+            currentFloatingActionButton.setVisibility(false);
+        }
+
+        isVisible = false;
+
+        List<Integer> positions = new ArrayList<>();
+
+        for(int i = 0; i < floatingActionButtons.size(); i++) {
+            if(floatingActionButtons.get(i).getFloatingActionButton().equals(floatingActionButton)) {
+                positions.add(i);
+            }
+        }
+
+        Collections.reverse(positions);
+
+        for(int i : positions) {
+            floatingActionButtons.get(i).setVisibility(false);
+            floatingActionButtons.remove(i);
+        }
     }
 }

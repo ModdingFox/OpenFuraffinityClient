@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.search">
@@ -243,26 +244,6 @@
                     android:text="@string/searchExtended" />
             </RadioGroup>
 
-            <TableRow>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/searchSave"
-                    android:textSize="18sp" />
-            </TableRow>
-
-            <EditText
-                android:id="@+id/saveSearchEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/saveSearchButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/save" />
-
         </TableLayout>
     </ScrollView>
 
@@ -287,14 +268,14 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <open.furaffinity.client.utilities.fabCircular
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/cardview_dark_background"
+        app:srcCompat="@drawable/ic_menu_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
