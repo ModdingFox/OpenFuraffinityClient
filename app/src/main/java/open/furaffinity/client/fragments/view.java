@@ -34,6 +34,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +49,8 @@ import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.WrapContentViewPager;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
+
+import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class view extends Fragment {
     private static final String TAG = view.class.getName();
@@ -65,6 +68,7 @@ public class view extends Fragment {
     private fabCircular fab;
     private FloatingActionButton submissionFavorite;
     private FloatingActionButton submissionDownload;
+    private FloatingActionButton sendNote;
 
     private webClient webClient;
     private open.furaffinity.client.pages.loginTest loginTest;
@@ -111,15 +115,19 @@ public class view extends Fragment {
 
         submissionFavorite = new FloatingActionButton(getContext());
         submissionDownload = new FloatingActionButton(getContext());
+        sendNote = new FloatingActionButton(getContext());
 
         submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
         submissionDownload.setImageResource(R.drawable.ic_menu_download);
+        sendNote.setImageResource(R.drawable.ic_menu_newmessage);
 
         submissionFavorite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         submissionDownload.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        sendNote.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         coordinatorLayout.addView(submissionFavorite);
         coordinatorLayout.addView(submissionDownload);
+        coordinatorLayout.addView(sendNote);
 
         fab.addButton(submissionDownload, 1.5f, 270);
     }
@@ -162,9 +170,13 @@ public class view extends Fragment {
         submissionUser.setText(page.getSubmissionUser());
 
         fab.removeButton(submissionFavorite);
+        fab.removeButton(sendNote);
+
         submissionFavorite.setVisibility(View.GONE);
+        sendNote.setVisibility(View.GONE);
         if(loginTest.getIsLoggedIn()) {
             fab.addButton(submissionFavorite, 1.5f, 180);
+            fab.addButton(sendNote, 1.5f, 225);
 
             if(page.getIsFav()) {
                 submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
@@ -251,6 +263,13 @@ public class view extends Fragment {
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not fav post: ", e);
                 }
+            }
+        });
+
+        sendNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendPM(getActivity(), getChildFragmentManager(), page.getNote());
             }
         });
     }

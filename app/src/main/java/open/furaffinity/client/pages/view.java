@@ -83,7 +83,8 @@ public class view extends AsyncTask<webClient, Void, Void> {
                         download = "https:" + currentElement.attr("href");
                         break;
                     case "Note":
-                        note = currentElement.attr("href");
+                        note = currentElement.attr("href").replace(open.furaffinity.client.pages.msgPms.getNotePathPrefix(), "");
+                        note = note.substring(0, note.length() -1);
                         break;
                     case "Next":
                         next = currentElement.attr("href");

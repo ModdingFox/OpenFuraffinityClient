@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import open.furaffinity.client.utilities.webClient;
 
@@ -19,6 +20,10 @@ public class journal extends AsyncTask<webClient, Void, Void> {
     private String journalDate;
     private String journalContent;
     private String journalComments;
+
+    private boolean isWatching;
+    private String watchUnWatch;
+    private String noteUser;
 
     public journal(String pagePath) {
         this.pagePath = pagePath;
@@ -46,6 +51,31 @@ public class journal extends AsyncTask<webClient, Void, Void> {
 
         Element journalCommentsList = doc.selectFirst("div.comments-list");
         journalComments = journalCommentsList.html();
+
+        Element userNavControlsDiv = doc.selectFirst("div.user-nav-controls");
+
+        if(userNavControlsDiv != null) {
+            Elements userNavControlsDivElements = userNavControlsDiv.select("a");
+
+            if(userNavControlsDivElements != null) {
+                for (Element userNavControlsDivElement : userNavControlsDivElements) {
+                    switch (userNavControlsDivElement.text()) {
+                        case "+Watch":
+                            isWatching = false;
+                            watchUnWatch = userNavControlsDivElement.attr("href");
+                            break;
+                        case "-Watch":
+                            isWatching = true;
+                            watchUnWatch = userNavControlsDivElement.attr("href");
+                            break;
+                        case "Note":
+                            noteUser = userNavControlsDivElement.attr("href").replace(open.furaffinity.client.pages.msgPms.getNotePathPrefix(), "");
+                            noteUser = noteUser.substring(0, noteUser.length() -1);
+                            break;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -86,6 +116,18 @@ public class journal extends AsyncTask<webClient, Void, Void> {
 
     public String getJournalComments() {
         return journalComments;
+    }
+
+    public boolean getIsWatching() {
+        return isWatching;
+    }
+
+    public String getWatchUnWatch() {
+        return watchUnWatch;
+    }
+
+    public String getNoteUser() {
+        return noteUser;
     }
 
 }

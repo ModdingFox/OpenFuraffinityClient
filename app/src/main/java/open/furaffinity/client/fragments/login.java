@@ -27,8 +27,8 @@ import open.furaffinity.client.utilities.webClient;
 public class login extends Fragment {
     private static final String TAG = login.class.getName();
 
-    WebView webView;
-    WebSettings webSettings;
+    private WebView webView;
+    private WebSettings webSettings;
 
     private static final String loginPath = "/login";
 

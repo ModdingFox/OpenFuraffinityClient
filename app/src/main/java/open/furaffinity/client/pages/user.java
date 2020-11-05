@@ -18,6 +18,8 @@ import open.furaffinity.client.utilities.webClient;
 public class user extends AsyncTask<webClient, Void, Void> {
     private static final String TAG = user.class.getName();
 
+    private static String pagePrefix = "/user/";
+
     private boolean isLoaded = false;
 
     private String pagePath;
@@ -60,6 +62,7 @@ public class user extends AsyncTask<webClient, Void, Void> {
     private String watchUnWatch;
     private boolean isBlocked;
     private String blockUnBlock;
+    private String noteUser;
 
     public user(String pagePath) {
         this.pagePath = pagePath;
@@ -175,7 +178,8 @@ public class user extends AsyncTask<webClient, Void, Void> {
                             watchUnWatch = userNavControlsDivElement.attr("href");
                             break;
                         case "Note":
-                            //Currently just skipping it
+                            noteUser = userNavControlsDivElement.attr("href").replace(open.furaffinity.client.pages.msgPms.getNotePathPrefix(), "");
+                            noteUser = noteUser.substring(0, noteUser.length() -1);
                             break;
                         case "Block":
                             isBlocked = false;
@@ -360,4 +364,10 @@ public class user extends AsyncTask<webClient, Void, Void> {
     public String getBlockUnBlock() {
         return blockUnBlock;
     }
+
+    public String getNoteUser() {
+        return noteUser;
+    }
+
+    public static String getPagePrefix() { return pagePrefix; }
 }
