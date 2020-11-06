@@ -64,5 +64,4 @@ public class uiControls {
             inputSpinner.setSelection(spinnerAdapter.getPosition(selectedItem));
         }
     }
-
 }

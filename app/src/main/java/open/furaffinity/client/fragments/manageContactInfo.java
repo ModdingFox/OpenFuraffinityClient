@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
+import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
 public class manageContactInfo extends Fragment {
@@ -35,45 +37,7 @@ public class manageContactInfo extends Fragment {
 
     private int loadingStopCounter = 3;
 
-    private class editItem {
-        private LinearLayout linearLayout;
-        private TextView textView;
-        private EditText editText;
-        private String name;
-
-        public editItem(Context context, LinearLayout linearLayout, String label, String value, String name, String placeholder) {
-            textView = new TextView(context);
-            editText = new EditText(context);
-
-            textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            editText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-            textView.setText(label);
-            editText.setText(value);
-            editText.setHint(placeholder);
-
-            this.name = name;
-
-            this.linearLayout = linearLayout;
-            linearLayout.addView(textView);
-            linearLayout.addView(editText);
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getValue(){
-            return editText.getText().toString();
-        }
-
-        public void removeFromView() {
-            this.linearLayout.removeView(textView);
-            this.linearLayout.removeView(editText);
-        }
-    }
-
-    List<editItem> uiElementList;
+    List<dynamicEditItem> uiElementList;
 
     private void getElements(View rootView) {
         linearLayout = rootView.findViewById(R.id.linearLayout);
@@ -97,7 +61,7 @@ public class manageContactInfo extends Fragment {
             }
 
             if(uiElementList != null){
-                for(editItem currentItem : uiElementList){
+                for(dynamicEditItem currentItem : uiElementList){
                     currentItem.removeFromView();
                 }
             }
@@ -111,7 +75,7 @@ public class manageContactInfo extends Fragment {
                     String name = ((currentItem.containsKey("name"))?(currentItem.get("name")):(""));
                     String placeholder = ((currentItem.containsKey("placeholder"))?(currentItem.get("placeholder")):(""));
 
-                    uiElementList.add(new editItem(getContext(), linearLayout, label, value, name, placeholder));
+                    uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, name, label, value, placeholder));
                 }
             }
         }
@@ -125,7 +89,7 @@ public class manageContactInfo extends Fragment {
                 params.put("do", "update");
                 params.put("key", page.getKey());
 
-                for(editItem currentItem : uiElementList) {
+                for(dynamicEditItem currentItem : uiElementList) {
                     params.put(currentItem.getName(), currentItem.getValue());
                 }
 
