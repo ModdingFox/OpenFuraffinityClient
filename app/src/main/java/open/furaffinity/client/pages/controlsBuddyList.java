@@ -22,9 +22,6 @@ public class controlsBuddyList extends AsyncTask<webClient, Void, Void> {
     public controlsBuddyList() {
     }
 
-    public controlsBuddyList(gallery gallery) {
-    }
-
     private void processPageData(String html) {
         Document doc = Jsoup.parse(html);
 

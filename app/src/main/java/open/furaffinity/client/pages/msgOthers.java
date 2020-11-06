@@ -133,10 +133,15 @@ public class msgOthers extends AsyncTask<webClient, Void, Void> {
                 Element currentElementSpan = currentElement.selectFirst("span.popup_date");
 
                 currentElementResult.put("notificationId", currentElementInputCheckbox.attr("value"));
-                currentElementResult.put("userLink", currentElementAHref.attr("href"));
-                currentElementResult.put("userName", currentElementStrong.text());
-                currentElementResult.put("time", currentElementSpan.text());
-                currentElementResult.put("actionText", actionText);
+
+                if(currentElementAHref != null && currentElementStrong != null && currentElementSpan != null) {
+                    currentElementResult.put("userLink", currentElementAHref.attr("href"));
+                    currentElementResult.put("userName", currentElementStrong.text());
+                    currentElementResult.put("time", currentElementSpan.text());
+                    currentElementResult.put("actionText", actionText);
+                } else {
+                    currentElementResult.put("actionText", "Shout has been removed from your page.");
+                }
 
                 result.add(currentElementResult);
             }
