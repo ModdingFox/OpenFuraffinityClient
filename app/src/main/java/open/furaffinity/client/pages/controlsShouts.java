@@ -22,9 +22,6 @@ public class controlsShouts extends AsyncTask<webClient, Void, Void> {
     public controlsShouts() {
     }
 
-    public controlsShouts(gallery gallery) {
-    }
-
     private void processPageData(String html) {
         Document doc = Jsoup.parse(html);
 

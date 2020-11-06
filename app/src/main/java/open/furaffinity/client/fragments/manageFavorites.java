@@ -47,7 +47,6 @@ public class manageFavorites extends Fragment {
     private webClient webClient;
     private open.furaffinity.client.pages.gallery page;
 
-
     private int loadingStopCounter = 3;
     private String pagePath = null;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
