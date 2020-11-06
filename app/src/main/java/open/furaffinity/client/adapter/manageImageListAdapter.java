@@ -90,6 +90,8 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
 
         if(checkedItems.contains(mDataSet.get(position).get("postId"))) {
             holder.postName.setChecked(true);
+        } else {
+            holder.postName.setChecked(false);
         }
 
         if(!showPostInfo) {

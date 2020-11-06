@@ -140,6 +140,8 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
 
             if(checkedItems.contains(mDataSet.get(position).get("checkId"))) {
                 holder.checkBox.setChecked(true);
+            } else {
+                holder.checkBox.setChecked(false);
             }
 
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

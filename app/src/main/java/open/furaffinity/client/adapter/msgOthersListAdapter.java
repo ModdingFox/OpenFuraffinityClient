@@ -120,6 +120,8 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
 
         if(checkedItems.contains(mDataSet.get(position).get("notificationId"))) {
             holder.checkBox.setChecked(true);
+        } else {
+            holder.checkBox.setChecked(false);
         }
 
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

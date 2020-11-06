@@ -91,6 +91,8 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
 
         if(checkedItems.contains(mDataSet.get(position).get("messageid"))) {
             holder.checkBox.setChecked(true);
+        } else {
+            holder.checkBox.setChecked(false);
         }
 
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
