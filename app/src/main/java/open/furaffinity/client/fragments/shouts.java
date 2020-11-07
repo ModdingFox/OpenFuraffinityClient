@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.commentListAdapter;
-import open.furaffinity.client.pages.loginTest;
+import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 

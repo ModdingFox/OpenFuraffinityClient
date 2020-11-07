@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragments;
+package open.furaffinity.client.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,26 +8,22 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.util.HashMap;
-
 import open.furaffinity.client.R;
-import open.furaffinity.client.utilities.kvPair;
 
-public class spinnerDialog extends DialogFragment {
-    private String TAG = spinnerDialog.class.getName();
+public class textDialog extends DialogFragment {
+    private String TAG = textDialog.class.getName();
 
     private TextView dialogText;
-    private Spinner spinner;
+    private EditText editText;
 
     private String text = null;
-    private HashMap<String, String> data;
+    private boolean isPassword = false;
 
     public interface dialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
@@ -46,25 +42,28 @@ public class spinnerDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
-        View rootView = inflater.inflate(R.layout.get_selection_from_user, null);
+        View rootView = inflater.inflate(R.layout.get_text_from_user, null);
 
         dialogText = rootView.findViewById(R.id.dialogText);
-        spinner = rootView.findViewById(R.id.spinner);
+        editText = rootView.findViewById(R.id.editText);
 
         dialogText.setText(text);
-        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data, "", true, false);
+
+        if(isPassword) {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
 
         builder.setView(rootView);
         builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogPositiveClick(spinnerDialog.this);
+                listener.onDialogPositiveClick(textDialog.this);
             }
         });
         builder.setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogNegativeClick(spinnerDialog.this);
+                listener.onDialogNegativeClick(textDialog.this);
             }
         });
 
@@ -75,11 +74,11 @@ public class spinnerDialog extends DialogFragment {
         this.text = text;
     }
 
-    public void setData(HashMap<String, String> data) {
-        this.data = data;
+    public void setIsPassword() {
+        isPassword = true;
     }
 
-    public String getSpinnerSelection() {
-        return ((kvPair)spinner.getSelectedItem()).getKey();
+    public String getText() {
+        return editText.getText().toString();
     }
 }
