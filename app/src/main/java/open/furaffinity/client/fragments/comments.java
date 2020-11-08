@@ -4,14 +4,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,8 +22,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.commentListAdapter;
+import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.utilities.html;
 import open.furaffinity.client.utilities.messageIds;

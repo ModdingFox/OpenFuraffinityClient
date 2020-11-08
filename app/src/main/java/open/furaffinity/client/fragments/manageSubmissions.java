@@ -29,9 +29,10 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.manageImageListAdapter;
+import open.furaffinity.client.dialogs.spinnerDialog;
+import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.webClient;
 
 public class manageSubmissions extends Fragment {

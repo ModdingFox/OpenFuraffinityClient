@@ -7,10 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
-import android.widget.TableLayout;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -18,31 +15,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.safetynet.SafetyNet;
-import com.google.android.gms.safetynet.SafetyNetApi;
-import com.google.android.gms.safetynet.SafetyNetClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.adapter.manageImageListAdapter;
-import open.furaffinity.client.adapter.msgOthersListAdapter;
 import open.furaffinity.client.adapter.msgPmsListAdapter;
+import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.kvPair;
-import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;

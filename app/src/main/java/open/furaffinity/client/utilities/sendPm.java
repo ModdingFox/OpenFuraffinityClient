@@ -4,15 +4,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import open.furaffinity.client.fragments.msgPmsDialog;
-import open.furaffinity.client.fragments.recaptchaV2Dialog;
+import open.furaffinity.client.dialogs.msgPmsDialog;
+import open.furaffinity.client.dialogs.recaptchaV2Dialog;
 
 public class sendPm {
     private static String TAG = sendPm.class.getName();

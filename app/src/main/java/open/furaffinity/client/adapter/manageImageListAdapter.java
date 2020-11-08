@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -24,7 +23,6 @@ import java.util.List;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragments.settings;
-import open.furaffinity.client.fragments.textDialog;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
 
 public class manageImageListAdapter extends RecyclerView.Adapter<manageImageListAdapter.ViewHolder> {
