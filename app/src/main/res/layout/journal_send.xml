@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/msgPmsSubjectTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userNameEditText"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
         android:id="@+id/subjectEditText"
