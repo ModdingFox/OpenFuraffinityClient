@@ -76,6 +76,38 @@ public class manageSiteSettings extends Fragment {
     }
 
     private void updateUIElements() {
+        if(page.getDisableAvatars()) {
+            disable_avatars_yes.setChecked(true);
+        } else {
+            disable_avatars_no.setChecked(true);
+        }
+
+        switch(page.getDateFormat()){
+            case "full":
+                switch_date_format_full.setChecked(true);
+                break;
+            case "fuzzy":
+                switch_date_format_fuzzy.setChecked(true);
+                break;
+        }
+
+        uiControls.spinnerSetAdapter(requireContext(), select_preferred_perpage, page.getPerPage(), page.getPerPageCurrent(), true, false);
+        uiControls.spinnerSetAdapter(requireContext(), select_newsubmissions_direction, page.getNewSubmissionsDirection(), page.getNewSubmissionsDirectionCurrent(), true, false);
+        uiControls.spinnerSetAdapter(requireContext(), select_thumbnail_size, page.getThumbnailSize(), page.getThumbnailSizeCurrent(), true, false);
+
+        switch(page.getGalleryNavigation()){
+            case "minigallery":
+                gallery_navigation_minigallery.setChecked(true);
+                break;
+            case "links":
+                gallery_navigation_links.setChecked(true);
+                break;
+        }
+
+        uiControls.spinnerSetAdapter(requireContext(), hide_favorites, page.getHideFavorites(), page.getHideFavoritesCurrent(), true, false);
+        uiControls.spinnerSetAdapter(requireContext(), no_guests, page.getNoGuests(), page.getNoGuestsCurrent(), true, false);
+        uiControls.spinnerSetAdapter(requireContext(), no_search_engines, page.getNoSearchEngines(), page.getNoSearchEnginesCurrent(), true, false);
+        uiControls.spinnerSetAdapter(requireContext(), no_notes, page.getNoNotes(), page.getNoNotesCurrent(), true, false);
     }
 
     private void updateUIElementListeners(View rootView) {
@@ -83,6 +115,42 @@ public class manageSiteSettings extends Fragment {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> params = new HashMap<>();
+                params.put("do", "update");
+
+                if(disable_avatars_yes.isChecked()) {
+                    params.put("disable_avatars", "1");
+                }
+
+                if(disable_avatars_no.isChecked()) {
+                    params.put("disable_avatars", "0");
+                }
+
+                if(switch_date_format_full.isChecked()) {
+                    params.put("date_format", "full");
+                }
+
+                if(switch_date_format_fuzzy.isChecked())
+                {
+                    params.put("date_format", "fuzzy");
+                }
+
+                params.put("perpage", ((kvPair)select_preferred_perpage.getSelectedItem()).getKey());
+                params.put("newsubmissions_direction", ((kvPair)select_newsubmissions_direction.getSelectedItem()).getKey());
+                params.put("thumbnail_size", ((kvPair)select_thumbnail_size.getSelectedItem()).getKey());
+
+                if(gallery_navigation_minigallery.isChecked()){
+                    params.put("gallery_navigation", "minigallery");
+                }
+
+                if(gallery_navigation_links.isChecked()){
+                    params.put("gallery_navigation", "links");
+                }
+
+                params.put("hide_favorites", ((kvPair)hide_favorites.getSelectedItem()).getKey());
+                params.put("no_guests", ((kvPair)no_guests.getSelectedItem()).getKey());
+                params.put("no_search_engines", ((kvPair)no_search_engines.getSelectedItem()).getKey());
+                params.put("no_notes", ((kvPair)no_notes.getSelectedItem()).getKey());
+                params.put("save_settings", "Save Settings");
 
                 try {
                     new AsyncTask<webClient, Void, Void>() {
