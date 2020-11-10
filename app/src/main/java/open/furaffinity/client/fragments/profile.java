@@ -36,12 +36,8 @@ public class profile extends Fragment {
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);
 
-        ((LinearLayout)tabs.getTabAt(1).view).setVisibility(View.GONE);
-        ((LinearLayout)tabs.getTabAt(2).view).setVisibility(View.GONE);
         ((LinearLayout)tabs.getTabAt(5).view).setVisibility(View.GONE);
-        ((LinearLayout)tabs.getTabAt(7).view).setVisibility(View.GONE);
         ((LinearLayout)tabs.getTabAt(12).view).setVisibility(View.GONE);
-        tabs.selectTab(tabs.getTabAt(0));
     }
 
     @Override
