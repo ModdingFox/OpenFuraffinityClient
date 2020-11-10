@@ -39,29 +39,31 @@ public class uiControls {
     }
 
     public static void spinnerSetAdapter(Context context, Spinner inputSpinner, HashMap<String, String> inputData, String currentValue, boolean sortKeys, boolean isNumeric) {
-        ArrayList<kvPair> spinnerData = new ArrayList<>();
-        kvPair selectedItem = null;
+        if(inputData != null) {
+            ArrayList<kvPair> spinnerData = new ArrayList<>();
+            kvPair selectedItem = null;
 
-        for (String key : inputData.keySet()) {
-            kvPair newKVPair = new kvPair(key, inputData.get(key));
-            if (key.equals(currentValue)) {
-                selectedItem = newKVPair;
+            for (String key : inputData.keySet()) {
+                kvPair newKVPair = new kvPair(key, inputData.get(key));
+                if (key.equals(currentValue)) {
+                    selectedItem = newKVPair;
+                }
+                spinnerData.add(newKVPair);
             }
-            spinnerData.add(newKVPair);
-        }
 
-        if (sortKeys) {
-            if (isNumeric) {
-                Collections.sort(spinnerData, (o1, o2) -> Integer.compare(Integer.parseInt(o1.getKey()), Integer.parseInt(o2.getKey())));
-            } else {
-                Collections.sort(spinnerData, (o1, o2) -> compareStrings(o1.getKey(), o2.getKey()));
+            if (sortKeys) {
+                if (isNumeric) {
+                    Collections.sort(spinnerData, (o1, o2) -> Integer.compare(Integer.parseInt(o1.getKey()), Integer.parseInt(o2.getKey())));
+                } else {
+                    Collections.sort(spinnerData, (o1, o2) -> compareStrings(o1.getKey(), o2.getKey()));
+                }
             }
-        }
 
-        ArrayAdapter<kvPair> spinnerAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, spinnerData);
-        inputSpinner.setAdapter(spinnerAdapter);
-        if (selectedItem != null) {
-            inputSpinner.setSelection(spinnerAdapter.getPosition(selectedItem));
+            ArrayAdapter<kvPair> spinnerAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, spinnerData);
+            inputSpinner.setAdapter(spinnerAdapter);
+            if (selectedItem != null) {
+                inputSpinner.setSelection(spinnerAdapter.getPosition(selectedItem));
+            }
         }
     }
 }
