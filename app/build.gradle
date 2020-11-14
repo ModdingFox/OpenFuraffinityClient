@@ -65,5 +65,5 @@ dependencies {
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
-    compile 'com.google.android.gms:play-services-safetynet:17.0.0'
+    implementation 'com.nbsp:materialfilepicker:1.9.1'
 }

@@ -86,4 +86,19 @@ public class html {
         return result;
     }
 
+    public static HashMap<String, String> getDropDownOptions(Element selectIn) {
+        HashMap<String, String> result = new HashMap<>();
+
+        if(selectIn != null) {
+            Elements options = selectIn.select("option");
+
+            for(Element option : options) {
+                if(option.hasAttr("value")) {
+                    result.put(option.attr("value"), option.text());
+                }
+            }
+        }
+
+        return result;
+    }
 }

@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_search" />
 
     <fragment
+        android:id="@+id/nav_upload"
+        android:name="open.furaffinity.client.fragments.upload"
+        android:label="@string/menu_upload"
+        tools:layout="@layout/fragment_scrollview_with_fab" />
+
+    <fragment
         android:id="@+id/nav_msg_submission"
         android:name="open.furaffinity.client.fragments.msgSubmission"
         android:label="@string/menu_msg_submission"

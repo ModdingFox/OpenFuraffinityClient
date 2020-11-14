@@ -18,6 +18,11 @@
             android:title="@string/menu_profile" />
 
         <item
+            android:id="@+id/nav_upload"
+            android:icon="@drawable/ic_menu_upload"
+            android:title="@string/menu_upload" />
+
+        <item
             android:id="@+id/nav_msg_submission"
             android:icon="@drawable/ic_menu_notifications"
             android:title="@string/menu_msg_submission" />
