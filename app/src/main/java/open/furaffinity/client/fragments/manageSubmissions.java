@@ -55,10 +55,8 @@ public class manageSubmissions extends Fragment {
     private FloatingActionButton moveSelectedToGallery;
     private FloatingActionButton removeSelected;
 
-
     private webClient webClient;
     private open.furaffinity.client.pages.gallery page;
-
 
     private int loadingStopCounter = 3;
     private String pagePath = null;

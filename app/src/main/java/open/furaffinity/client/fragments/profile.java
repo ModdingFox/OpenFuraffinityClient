@@ -35,9 +35,6 @@ public class profile extends Fragment {
         viewPager.setAdapter(profileSectionsPagerAdapter);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);
-
-        ((LinearLayout)tabs.getTabAt(5).view).setVisibility(View.GONE);
-        ((LinearLayout)tabs.getTabAt(12).view).setVisibility(View.GONE);
     }
 
     @Override

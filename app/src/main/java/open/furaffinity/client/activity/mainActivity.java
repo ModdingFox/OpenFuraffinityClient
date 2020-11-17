@@ -128,6 +128,7 @@ public class mainActivity extends AppCompatActivity {
             Picasso.get().load(loginTest.getUserIcon()).into(imageView);
             userName.setText(loginTest.getUserName());
 
+            navMenu.findItem(R.id.nav_upload).setVisible(true);
             navMenu.findItem(R.id.nav_profile).setVisible(true);
             navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
             navMenu.findItem(R.id.nav_msg_others).setVisible(true);
@@ -138,6 +139,7 @@ public class mainActivity extends AppCompatActivity {
             userName.setText(getString(R.string.app_name));
             notifications.setText("");
 
+            navMenu.findItem(R.id.nav_upload).setVisible(false);
             navMenu.findItem(R.id.nav_profile).setVisible(false);
             navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
             navMenu.findItem(R.id.nav_msg_others).setVisible(false);
@@ -179,7 +181,7 @@ public class mainActivity extends AppCompatActivity {
     private void setupNavigationUI() {
         setSupportActionBar(toolbar);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_browse, R.id.nav_search, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_history,
+                R.id.nav_browse, R.id.nav_search, R.id.nav_upload, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_history,
                 R.id.nav_journal, R.id.nav_msg_pms_message, R.id.nav_user, R.id.nav_view,
                 R.id.nav_settings, R.id.nav_login, R.id.nav_about)
                 .setDrawerLayout(drawer)
