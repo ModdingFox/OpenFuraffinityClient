@@ -1,16 +1,20 @@
-package open.furaffinity.client.fragments;
+package open.furaffinity.client.dialogs;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +27,8 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
-public class upload extends Fragment {
-    private static final String TAG = upload.class.getName();
+public class uploadFinalizeDialog extends DialogFragment {
+    private static final String TAG = uploadFinalizeDialog.class.getName();
 
     private Spinner cat;
     private Spinner aType;
@@ -37,12 +41,10 @@ public class upload extends Fragment {
     private Switch disableComments;
     private Switch putInScraps;
 
-    private fabCircular fab;
-
     private webClient webClient;
     private open.furaffinity.client.pages.submitSubmissionPart3 page;
 
-    public upload(open.furaffinity.client.pages.submitSubmissionPart3 page) {
+    public uploadFinalizeDialog(open.furaffinity.client.pages.submitSubmissionPart3 page) {
         super();
         this.page = page;
     }
@@ -59,9 +61,6 @@ public class upload extends Fragment {
         disableComments = rootView.findViewById(R.id.disableComments);
         putInScraps = rootView.findViewById(R.id.putInScraps);
 
-        fab = rootView.findViewById(R.id.fab);
-
-        fab.setImageResource(R.drawable.ic_menu_upload);
     }
 
     private void initClientAndPage() {
@@ -90,10 +89,21 @@ public class upload extends Fragment {
         return result;
     }
 
-    private void updateUIElementListeners(View rootView) {
-        fab.setOnClickListener(new View.OnClickListener() {
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+
+        View rootView = inflater.inflate(R.layout.dialog_fragment_uploadfinalizedialog, null);
+        getElements(rootView);
+        initClientAndPage();
+        updateUIElements();
+
+        builder.setView(rootView);
+        builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(DialogInterface dialog, int which) {
                 try {
                     List<HashMap<String, String>> params = new ArrayList<>();
 
@@ -127,7 +137,7 @@ public class upload extends Fragment {
                         putInScrapsHashMap.put("value", "1");
                         params.add(putInScrapsHashMap);
                     }
-                    
+
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
@@ -135,27 +145,18 @@ public class upload extends Fragment {
                             return null;
                         }
                     }.execute(webClient).get();
-
-                    getChildFragmentManager().popBackStack();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not upload submission user: ", e);
                 }
             }
         });
-    }
+        builder.setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+            }
+        });
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_upload, container, false);
-        getElements(rootView);
-        initClientAndPage();
-        updateUIElements();
-        updateUIElementListeners(rootView);
-        return rootView;
+        return builder.create();
     }
 }

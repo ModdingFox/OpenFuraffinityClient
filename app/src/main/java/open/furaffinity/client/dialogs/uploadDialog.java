@@ -108,15 +108,13 @@ public class uploadDialog extends DialogFragment {
         });
     }
 
-    private View rootView;
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
-        rootView = inflater.inflate(R.layout.dialog_fragment_uploaddialog, null);
+        View rootView = inflater.inflate(R.layout.dialog_fragment_uploaddialog, null);
         getElements(rootView);
         initClientAndPage();
         fetchPageData();
@@ -133,7 +131,9 @@ public class uploadDialog extends DialogFragment {
 
                     open.furaffinity.client.pages.submitSubmissionPart3 page3 = new open.furaffinity.client.pages.submitSubmissionPart3(page2, sourceFilePath.getText().toString(), thumbnailFilePath.getText().toString());
                     page3.execute(webClient).get();
-                    getParentFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, new open.furaffinity.client.fragments.upload(page3), "upload").addToBackStack("upload").commit();
+
+                    uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(page3);
+                    uploadFinalizeDialog.show(getParentFragmentManager(), "uploadFinalizeDialog");
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "loadPage: ", e);
                 }
