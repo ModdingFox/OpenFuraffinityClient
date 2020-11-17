@@ -11,6 +11,8 @@ import org.jsoup.nodes.Element;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -298,11 +300,13 @@ public class webClient {
                                 outputStream.writeBytes("Content-Type: " + ((contentType != null) ? (contentType) : ("application/octet-stream")) + LINE_FEED + LINE_FEED);
 
                                 FileInputStream inputStream = new FileInputStream(currentFile);
+
                                 byte[] buffer = new byte[4096];
                                 int bytesRead = -1;
                                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                                     outputStream.write(buffer, 0, bytesRead);
                                 }
+                                outputStream.flush();
                                 inputStream.close();
                             } else {
                                 outputStream.writeBytes("; filename=\"\"" + LINE_FEED);

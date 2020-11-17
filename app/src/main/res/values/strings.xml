@@ -128,7 +128,7 @@
     <string name="profileUserSettings">User Settings</string>
     <string name="profileUserPageAndProfile">User Page &amp; Profile Information</string>
     <string name="profileContactInfo">Edit Contact Info</string>
-    <string name="profileAvatar">Upload and Change Avatar</string>
+    <string name="profileAvatar"><!--Upload and -->Change Avatar</string>
     <string name="profileSubmissions">Manage Submissions</string>
     <string name="profileFolders">Manage Folders</string>
     <string name="profileJournals">Manage Journals</string>
@@ -214,6 +214,7 @@
     <string name="replyButton">Reply</string>
     <string name="sendButton">Send</string>
     <string name="updateButton">Update</string>
+    <string name="setButton">Set</string>
     <string name="lockComments">Lock Comments</string>
     <string name="makeFeatured">Make Featured</string>
     <string name="notSelected">Not Selected</string>
