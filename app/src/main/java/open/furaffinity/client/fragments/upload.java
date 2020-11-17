@@ -105,13 +105,6 @@ public class upload extends Fragment {
         return result;
     }
 
-    private HashMap<String, String> getSwitch(Switch switchIn, String name, String onState, String offState) {
-        HashMap<String, String> result = new HashMap<>();
-        result.put("name", name);
-        result.put("value", ((switchIn.isChecked())?(onState):(offState)));
-        return result;
-    }
-
     private void updateUIElementListeners(View rootView) {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,9 +129,20 @@ public class upload extends Fragment {
                     params.add(getText(description, "message"));
                     params.add(getText(keywords, "keywords"));
 
-                    params.add(getSwitch(disableComments, "lock_comments", "off", "on"));
-                    params.add(getSwitch(putInScraps, "scrap", "1", "0"));
+                    if(disableComments.isChecked()) {
+                        HashMap<String, String> disableCommentsHashMap = new HashMap<>();
+                        disableCommentsHashMap.put("name", "lock_comments");
+                        disableCommentsHashMap.put("value", "on");
+                        params.add(disableCommentsHashMap);
+                    }
 
+                    if(putInScraps.isChecked()) {
+                        HashMap<String, String> putInScrapsHashMap = new HashMap<>();
+                        putInScrapsHashMap.put("name", "scrap");
+                        putInScrapsHashMap.put("value", "1");
+                        params.add(putInScrapsHashMap);
+                    }
+                    
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
