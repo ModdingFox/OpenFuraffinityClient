@@ -1,5 +1,6 @@
 package open.furaffinity.client.pages;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,7 +15,7 @@ import open.furaffinity.client.utilities.webClient;
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
-public class browse extends AsyncTask<webClient, Void, Void> {
+public class browse extends open.furaffinity.client.abstractClasses.page {
     private static final String TAG = browse.class.getName();
 
     private HashMap<String, String> requestParameters = new HashMap<>();
@@ -27,12 +28,16 @@ public class browse extends AsyncTask<webClient, Void, Void> {
 
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public browse() {
+    public browse(Context context, pageListener pageListener) {
+        super(context, pageListener);
+
         setPage("1");
         setRatingGeneral(true);
     }
 
     public browse(browse browse) {
+        super(browse);
+
         this.cat = browse.cat;
         this.atype = browse.atype;
         this.species = browse.species;
@@ -42,7 +47,7 @@ public class browse extends AsyncTask<webClient, Void, Void> {
         this.pageResults = browse.pageResults;
     }
 
-    private void processPageData(String html) {
+    protected void processPageData(String html) {
         cat = getDropDownOptions("cat", html);
         atype = getDropDownOptions("atype", html);
         species = getDropDownOptions("species", html);
@@ -52,12 +57,17 @@ public class browse extends AsyncTask<webClient, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
+    protected Boolean doInBackground(Void... voids) {
         String html;
         String pagePath = "/browse";
-        html = webClient[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
-        processPageData(html);
-        return null;
+        html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
+
+        if(html != null) {
+            processPageData(html);
+            return true;
+        }
+
+        return false;
     }
 
     private void setRestrictedKeyValuePairState(String key, String value, HashMap<String, String> AllowMap) {

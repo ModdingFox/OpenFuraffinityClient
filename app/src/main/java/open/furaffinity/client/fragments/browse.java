@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.page;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.loginTest;
@@ -88,29 +90,46 @@ public class browse extends Fragment {
     }
 
     private void initClientAndPage() {
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        mAdapter = new imageListAdapter(mDataSet, getActivity());
+        recyclerView.setAdapter(mAdapter);
+
         webClient = new webClient(this.getActivity());
         loginTest = new loginTest();
-        page = new open.furaffinity.client.pages.browse();
+
+        page = new open.furaffinity.client.pages.browse(this.getActivity(), new page.pageListener() {
+            @Override
+            public void requestSucceeded() {
+                List<HashMap<String, String>> pageResults = page.getPageResults();
+
+                int curSize = mAdapter.getItemCount();
+
+                //Deduplicate results
+                List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                newPostPaths.removeAll(oldPostPaths);
+                pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+                mDataSet.addAll(pageResults);
+                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+            }
+
+            @Override
+            public void requestFailed() {
+                Toast.makeText(getActivity(), "Failed to load data from browse page", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void fetchPageData() {
         loginTest = new loginTest();
-        page = new open.furaffinity.client.pages.browse(page);
         try {
             loginTest.execute(webClient).get();
-            page.execute(webClient).get();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
 
-        List<HashMap<String, String>> pageResults = page.getPageResults();
-
-        //Deduplicate results
-        List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-        List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-        newPostPaths.removeAll(oldPostPaths);
-        pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-        mDataSet.addAll(pageResults);
+        page = new open.furaffinity.client.pages.browse(page);
+        page.execute();
     }
 
     private void updateUIElements() {
@@ -121,11 +140,6 @@ public class browse extends Fragment {
             browseRatingMatureSwitch.setVisibility(View.GONE);
             browseRatingAdultSwitch.setVisibility(View.GONE);
         }
-
-//        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new imageListAdapter(mDataSet, getActivity());
-        recyclerView.setAdapter(mAdapter);
     }
 
     private void initCurrentSettings() {
@@ -262,9 +276,8 @@ public class browse extends Fragment {
                 mDataSet.clear();
                 mAdapter.notifyDataSetChanged();
                 endlessRecyclerViewScrollListener.resetState();
-                page = new open.furaffinity.client.pages.browse(page);
+                initClientAndPage();
                 fetchPageData();
-
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -273,9 +286,7 @@ public class browse extends Fragment {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setPage(Integer.toString(page.getPage() + 1));
-                int curSize = mAdapter.getItemCount();
                 fetchPageData();
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
 
