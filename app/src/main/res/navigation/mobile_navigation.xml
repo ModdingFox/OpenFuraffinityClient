@@ -17,11 +17,10 @@
         android:label="@string/menu_search"
         tools:layout="@layout/fragment_search" />
 
-    <fragment
+    <dialog
         android:id="@+id/nav_upload"
-        android:name="open.furaffinity.client.fragments.upload"
-        android:label="@string/menu_upload"
-        tools:layout="@layout/fragment_scrollview_with_fab" />
+        android:name="open.furaffinity.client.dialogs.uploadDialog"
+        android:label="@string/menu_upload" />
 
     <fragment
         android:id="@+id/nav_msg_submission"
