@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragmentsOld.comments;
 import open.furaffinity.client.fragments.notImplementedYet;
-import open.furaffinity.client.fragments.webViewContent;
+import open.furaffinity.client.fragmentsMidMigration.webViewContent;
 import open.furaffinity.client.pagesOld.journal;
 import open.furaffinity.client.utilities.messageIds;
 

@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -21,6 +22,8 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.manageAvatarListAdapter;
 import open.furaffinity.client.dialogs.uploadAvatarDialog;
+import open.furaffinity.client.pages.abstractPage;
+import open.furaffinity.client.pages.controlsAvatar;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
@@ -37,9 +40,10 @@ public class manageAvatar extends Fragment {
 
     private fabCircular fab;
 
-    private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pagesOld.controlsAvatar page;
+    private webClient webClient;
+    private controlsAvatar page;
 
+    private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     private void getElements(View rootView) {
@@ -55,41 +59,51 @@ public class manageAvatar extends Fragment {
         fab.setVisibility(View.GONE);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pagesOld.controlsAvatar();
-    }
-
     private void fetchPageData() {
-        page = new open.furaffinity.client.pagesOld.controlsAvatar();
-        try {
-            page.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "loadNextPage: ", e);
+        if(!isLoading) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new controlsAvatar(page);
+            page.execute();
         }
-
-        mDataSet = page.getPageResults();
     }
 
-    private void updateUIElements() {
+    private void resetRecycler() {
+        recyclerView.scrollTo(0, 0);
+        fetchPageData();
+    }
+
+    private void initPages() {
+        webClient = new webClient(getActivity());
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageAvatarListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+
+        page = new controlsAvatar(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded() {
+                mDataSet.clear();
+                mDataSet.addAll(page.getPageResults());
+                mAdapter.notifyDataSetChanged();
+                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void requestFailed() {
+                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Failed to load data for avatars", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                mAdapter.notifyDataSetChanged();
-
-                initClientAndPage();
-                fetchPageData();
-                updateUIElements();
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
@@ -105,9 +119,7 @@ public class manageAvatar extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    fetchPageData();
-                    updateUIElements();
-                    updateUIElementListeners(rootView);
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not set avatar: ", e);
                 }
@@ -124,9 +136,7 @@ public class manageAvatar extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    fetchPageData();
-                    updateUIElements();
-                    updateUIElementListeners(rootView);
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not delete avatar: ", e);
                 }
@@ -156,14 +166,12 @@ public class manageAvatar extends Fragment {
                             new AsyncTask<webClient, Void, Void>() {
                                 @Override
                                 protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pagesOld.controlsAvatar.getPagePath(), params);
+                                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsAvatar.getPagePath(), params);
                                     return null;
                                 }
                             }.execute(webClient).get();
 
-                            fetchPageData();
-                            updateUIElements();
-                            updateUIElementListeners(rootView);
+                            resetRecycler();
                         } catch (ExecutionException | InterruptedException e) {
                             Log.e(TAG, "Could not upload new avatar: ", e);
                         }
@@ -182,9 +190,8 @@ public class manageAvatar extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

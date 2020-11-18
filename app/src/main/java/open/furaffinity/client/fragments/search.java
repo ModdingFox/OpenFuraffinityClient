@@ -464,8 +464,8 @@ public class search extends Fragment {
                         db.close();
                     }
 
-                    swipeRefreshLayout.setRefreshing(false);
                     isLoading = false;
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
 

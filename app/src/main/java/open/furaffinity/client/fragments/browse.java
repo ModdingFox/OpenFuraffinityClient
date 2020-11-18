@@ -173,8 +173,8 @@ public class browse extends Fragment {
                     mDataSet.addAll(pageResults);
                     mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
 
-                    swipeRefreshLayout.setRefreshing(false);
                     isLoading = false;
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
 

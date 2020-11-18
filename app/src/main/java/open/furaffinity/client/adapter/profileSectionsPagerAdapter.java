@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.notImplementedYet;
+import open.furaffinity.client.fragments.manageAvatar;
+import open.furaffinity.client.fragments.manageWatches;
 
 public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = profileSectionsPagerAdapter.class.getName();
@@ -40,7 +42,7 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
             case 4:
                 return new open.furaffinity.client.fragmentsOld.manageContactInfo();
             case 5:
-                return new open.furaffinity.client.fragmentsOld.manageAvatar();
+                return new manageAvatar();
             case 6:
                 return new open.furaffinity.client.fragmentsOld.manageSubmissions();
             case 7:
@@ -50,7 +52,7 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
             case 9:
                 return new open.furaffinity.client.fragmentsOld.manageFavorites();
             case 10:
-                return new open.furaffinity.client.fragmentsOld.manageWatches();
+                return new manageWatches();
             case 11:
                 return new open.furaffinity.client.fragmentsOld.manageShouts();
             case 12:

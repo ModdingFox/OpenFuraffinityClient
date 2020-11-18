@@ -17,7 +17,7 @@ import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.fragmentsOld.viewFolders;
 import open.furaffinity.client.fragments.viewInfo;
 import open.furaffinity.client.fragments.viewKeywords;
-import open.furaffinity.client.fragments.webViewContent;
+import open.furaffinity.client.fragmentsMidMigration.webViewContent;
 import open.furaffinity.client.pagesOld.view;
 import open.furaffinity.client.utilities.messageIds;
 

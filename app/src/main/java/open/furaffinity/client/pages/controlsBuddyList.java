@@ -1,6 +1,6 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,18 +11,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
-
-public class controlsBuddyList extends AsyncTask<webClient, Void, Void> {
+public class controlsBuddyList extends abstractPage {
     private static final String TAG = controlsBuddyList.class.getName();
 
     private static String pagePath = "/controls/buddylist/";
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public controlsBuddyList() {
+    public controlsBuddyList(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageData(String html) {
+    public controlsBuddyList(controlsBuddyList controlsBuddyList) {
+        super(controlsBuddyList);
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements flexItemWatchList = doc.select("div.flex-item-watchlist");
@@ -50,15 +53,21 @@ public class controlsBuddyList extends AsyncTask<webClient, Void, Void> {
                     }
                 }
             }
+
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+
+        return false;
     }
 
     public static String getPagePath() {

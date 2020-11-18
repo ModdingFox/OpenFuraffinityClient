@@ -1,6 +1,6 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,16 +11,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
-
-public class controlsAvatar extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = controlsAvatar.class.getName();
-
+public class controlsAvatar extends abstractPage {
     private static String pagePath = "/controls/avatar/";
 
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    private void processPageData(String html) {
+    public controlsAvatar(Context context, pageListener pageListener) {
+        super(context, pageListener);
+    }
+
+    public controlsAvatar(controlsAvatar controlsAvatar) {
+        super(controlsAvatar);
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element avatarListDiv = doc.selectFirst("div.avatar-list");
@@ -55,15 +59,20 @@ public class controlsAvatar extends AsyncTask<webClient, Void, Void> {
                     }
                 }
             }
+
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClients) {
-        String html;
-        html = webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {
