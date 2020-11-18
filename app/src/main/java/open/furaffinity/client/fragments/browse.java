@@ -25,9 +25,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.page;
+import open.furaffinity.client.pages.abstractPage;
 import open.furaffinity.client.adapter.imageListAdapter;
-import open.furaffinity.client.fragmentsOld.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.utilities.kvPair;
@@ -108,7 +107,7 @@ public class browse extends Fragment {
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragmentsOld.settings.saveBrowseStateDefault)) {
+        if (sharedPref.getBoolean(getString(R.string.saveBrowseState), settings.saveBrowseStateDefault)) {
             page.setCat(sharedPref.getString(getString(R.string.browseCatSetting), ""));
             page.setAtype(sharedPref.getString(getString(R.string.browseAtypeSetting), ""));
             page.setSpecies(sharedPref.getString(getString(R.string.browseSpeciesSetting), ""));
@@ -128,7 +127,7 @@ public class browse extends Fragment {
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        loginCheck = new loginCheck(getActivity(), new page.pageListener() {
+        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             private void updateUIElements() {
                 if (loginCheck.getIsLoggedIn() && loginCheck.getIsNSFWAllowed()) {
                     browseRatingMatureSwitch.setVisibility(View.VISIBLE);
@@ -153,7 +152,7 @@ public class browse extends Fragment {
 
         loginCheck.execute();
 
-        page = new open.furaffinity.client.pages.browse(this.getActivity(), new page.pageListener() {
+        page = new open.furaffinity.client.pages.browse(this.getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded() {
                 if (!isInitialized) {
@@ -265,7 +264,7 @@ public class browse extends Fragment {
             Context context = getActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-            if (sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragmentsOld.settings.saveBrowseStateDefault)) {
+            if (sharedPref.getBoolean(getString(R.string.saveBrowseState), settings.saveBrowseStateDefault)) {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.browseCatSetting), selectedCatValue);
                 editor.putString(getString(R.string.browseAtypeSetting), selectedAtypeValue);

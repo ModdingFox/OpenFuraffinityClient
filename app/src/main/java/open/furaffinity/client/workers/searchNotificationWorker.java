@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.page;
+import open.furaffinity.client.pages.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.pages.search;
 import open.furaffinity.client.sqlite.searchContract;
@@ -40,7 +40,7 @@ public class searchNotificationWorker extends Worker {
     private static final int maxPagesToCheck = 3;
 
     private void initClientAndPage() {
-        page = new search(context, new page.pageListener() {
+        page = new search(context, new abstractPage.pageListener() {
             @Override
             public void requestSucceeded() {
 

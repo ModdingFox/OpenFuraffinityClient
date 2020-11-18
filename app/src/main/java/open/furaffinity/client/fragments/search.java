@@ -34,12 +34,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.page;
+import open.furaffinity.client.pages.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.adapter.savedSearchListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
-import open.furaffinity.client.fragmentsOld.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
@@ -195,7 +194,7 @@ public class search extends Fragment {
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(getString(R.string.saveSearchState), open.furaffinity.client.fragmentsOld.settings.saveSearchStateDefault)) {
+        if (sharedPref.getBoolean(getString(R.string.saveSearchState), settings.saveSearchStateDefault)) {
             page.setOrderBy(sharedPref.getString(getString(R.string.searchOrderBySetting), ""));
             page.setOrderDirection(sharedPref.getString(getString(R.string.searchOrderDirectionSetting), ""));
             page.setRange(sharedPref.getString(getString(R.string.searchRangeSetting), ""));
@@ -373,7 +372,7 @@ public class search extends Fragment {
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        loginCheck = new loginCheck(getActivity(), new page.pageListener() {
+        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             private void updateUIElements() {
                 if (loginCheck.getIsLoggedIn() && loginCheck.getIsNSFWAllowed()) {
                     searchRatingMatureSwitch.setVisibility(View.VISIBLE);
@@ -396,7 +395,7 @@ public class search extends Fragment {
             }
         });
 
-        page = new open.furaffinity.client.pages.search(getActivity(), new page.pageListener() {
+        page = new open.furaffinity.client.pages.search(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded() {
                 if (!isInitialized) {

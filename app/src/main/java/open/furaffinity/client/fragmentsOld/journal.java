@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.journalSectionsPagerAdapter;
+import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.pagesOld.loginTest;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;

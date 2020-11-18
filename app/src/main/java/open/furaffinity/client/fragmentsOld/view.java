@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
+import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
 import open.furaffinity.client.pagesOld.loginTest;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;

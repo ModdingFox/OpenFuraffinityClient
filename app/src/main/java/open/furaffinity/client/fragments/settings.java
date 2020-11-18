@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -30,8 +30,6 @@ import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
 public class settings extends Fragment {
-    private static final String TAG = settings.class.getName();
-
     private Switch notificationsSwitch;
     private EditText notificationsInterval;
     private Switch searchNotificationsSwitch;

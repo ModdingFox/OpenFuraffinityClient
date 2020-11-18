@@ -12,7 +12,7 @@ import java.util.Optional;
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
-public class browse extends open.furaffinity.client.abstractClasses.page {
+public class browse extends abstractPage {
     private static String pagePath = "/browse";
 
     private HashMap<String, String> requestParameters = new HashMap<>();

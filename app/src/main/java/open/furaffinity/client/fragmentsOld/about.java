@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragments;
+package open.furaffinity.client.fragmentsOld;
 
 import android.os.Bundle;
 import android.util.Log;

@@ -10,8 +10,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragmentsOld.historyList;
-import open.furaffinity.client.fragmentsOld.notImplementedYet;
+import open.furaffinity.client.fragments.historyList;
+import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.utilities.messageIds;
 
 public class historySectionsPagerAdapter extends FragmentPagerAdapter {

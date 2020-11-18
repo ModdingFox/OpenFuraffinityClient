@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.imageListAdapter;
+import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.messageIds;

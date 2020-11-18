@@ -13,13 +13,13 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragmentsOld.notImplementedYet;
+import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.fragmentsOld.shouts;
 import open.furaffinity.client.fragmentsOld.userGallery;
 import open.furaffinity.client.fragmentsOld.userJournals;
 import open.furaffinity.client.fragmentsOld.userProfile;
 import open.furaffinity.client.fragmentsOld.watch;
-import open.furaffinity.client.fragmentsOld.webViewContent;
+import open.furaffinity.client.fragments.webViewContent;
 import open.furaffinity.client.pagesOld.commissions;
 import open.furaffinity.client.pagesOld.user;
 import open.furaffinity.client.utilities.messageIds;

@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,7 +31,6 @@ public class historyList extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
@@ -109,7 +108,6 @@ public class historyList extends Fragment {
     }
 
     private void updateUIElements() {
-//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new historyListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);

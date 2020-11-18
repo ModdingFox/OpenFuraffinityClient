@@ -1,12 +1,12 @@
-package open.furaffinity.client.abstractClasses;
+package open.furaffinity.client.pages;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
 import open.furaffinity.client.utilities.webClient;
 
-public abstract class page extends AsyncTask<Void, Void, Boolean> {
-    protected static final String TAG = page.class.getName();
+public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
+    protected static final String TAG = abstractPage.class.getName();
 
     protected Context context;
     protected webClient webClient;
@@ -19,16 +19,16 @@ public abstract class page extends AsyncTask<Void, Void, Boolean> {
 
     protected pageListener pageListener;
 
-    public page(Context context, pageListener pageListener) {
+    public abstractPage(Context context, pageListener pageListener) {
         this.context = context;
         this.webClient = new webClient(context);
         this.pageListener = pageListener;
     }
 
-    public page(page page) {
-        this.context = page.context;
-        this.webClient = page.webClient;
-        this.pageListener = page.pageListener;
+    public abstractPage(abstractPage abstractPage) {
+        this.context = abstractPage.context;
+        this.webClient = abstractPage.webClient;
+        this.pageListener = abstractPage.pageListener;
     }
 
     protected abstract Boolean processPageData(String html);

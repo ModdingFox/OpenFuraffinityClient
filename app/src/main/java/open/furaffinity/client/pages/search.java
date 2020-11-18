@@ -13,7 +13,7 @@ import java.util.Optional;
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
-public class search extends open.furaffinity.client.abstractClasses.page {
+public class search extends abstractPage {
     private static String pagePath = "/search";
 
     private static List<String> rangeAllowedKeys = Arrays.asList("day", "3days", "week", "month", "all");
