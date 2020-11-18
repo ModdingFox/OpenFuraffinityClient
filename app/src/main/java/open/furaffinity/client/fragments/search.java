@@ -395,6 +395,8 @@ public class search extends Fragment {
             }
         });
 
+        loginCheck.execute();
+
         page = new open.furaffinity.client.pages.search(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded() {
