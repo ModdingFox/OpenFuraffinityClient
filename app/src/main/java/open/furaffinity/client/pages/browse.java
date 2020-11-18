@@ -1,7 +1,6 @@
 package open.furaffinity.client.pages;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,13 +9,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import open.furaffinity.client.utilities.webClient;
-
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class browse extends open.furaffinity.client.abstractClasses.page {
-    private static final String TAG = browse.class.getName();
+    private static String pagePath = "/browse";
 
     private HashMap<String, String> requestParameters = new HashMap<>();
 
@@ -47,26 +44,25 @@ public class browse extends open.furaffinity.client.abstractClasses.page {
         this.pageResults = browse.pageResults;
     }
 
-    protected void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         cat = getDropDownOptions("cat", html);
         atype = getDropDownOptions("atype", html);
         species = getDropDownOptions("species", html);
         gender = getDropDownOptions("gender", html);
         perpage = getDropDownOptions("perpage", html);
         pageResults = getResultsData(html);
+
+        if(cat != null && atype != null && species != null && gender != null && perpage != null && pageResults != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     protected Boolean doInBackground(Void... voids) {
-        String html;
-        String pagePath = "/browse";
-        html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
-
-        if(html != null) {
-            processPageData(html);
-            return true;
-        }
-
+        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
+        if(webClient.getLastPageLoaded() && html != null) { return processPageData(html); }
         return false;
     }
 

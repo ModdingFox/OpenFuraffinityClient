@@ -30,7 +30,7 @@ public abstract class page extends AsyncTask<Void, Void, Boolean> {
         this.pageListener = page.pageListener;
     }
 
-    protected abstract void processPageData(String html);
+    protected abstract Boolean processPageData(String html);
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {

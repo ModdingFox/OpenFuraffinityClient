@@ -15,14 +15,22 @@ public class imageResultsTool {
         HashMap<String, String> result = new HashMap<>();
 
         Document doc = Jsoup.parse(html);
-        Element rootElement = doc.selectFirst(".listbox[name=" + name + "]");
-        Elements optionElements = rootElement.select("option");
 
-        for (Element optionElement : optionElements) {
-            result.put(optionElement.attr("value"), optionElement.html());
+        if(doc != null) {
+            Element rootElement = doc.selectFirst(".listbox[name=" + name + "]");
+
+            if(rootElement != null ) {
+                Elements optionElements = rootElement.select("option");
+
+                for (Element optionElement : optionElements) {
+                    result.put(optionElement.attr("value"), optionElement.html());
+                }
+
+                return result;
+            }
         }
 
-        return result;
+        return null;
     }
 
     public static List<HashMap<String, String>> getResultsData(String html) {
