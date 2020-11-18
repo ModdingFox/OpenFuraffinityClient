@@ -212,6 +212,160 @@ public class search extends Fragment {
         isInitialized = true;
     }
 
+    private void setFabSearchMode() {
+        fab.removeButton(search);
+        fab.removeButton(savedSearches);
+        fab.removeButton(searchSettings);
+        fab.removeButton(saveSearch);
+
+        fab.addButton(searchSettings, 1.5f, 270);
+        fab.addButton(savedSearches, 1.5f, 225);
+        fab.addButton(saveSearch, 1.5f, 180);
+    }
+
+    private void loadCurrentSettings() {
+        String selectedSearch = ((mainActivity) getActivity()).getSearchSelected();
+        if (selectedSearch != null) {
+            searchDBHelper dbHelper = new searchDBHelper(getActivity());
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+            String[] projection = {
+                    searchItemEntry.COLUMN_NAME_Q,
+                    searchItemEntry.COLUMN_NAME_ORDERBY,
+                    searchItemEntry.COLUMN_NAME_ORDERDIRECTION,
+                    searchItemEntry.COLUMN_NAME_RANGE,
+                    searchItemEntry.COLUMN_NAME_RATINGGENERAL,
+                    searchItemEntry.COLUMN_NAME_RATINGMATURE,
+                    searchItemEntry.COLUMN_NAME_RATINGADULT,
+                    searchItemEntry.COLUMN_NAME_TYPEART,
+                    searchItemEntry.COLUMN_NAME_TYPEMUSIC,
+                    searchItemEntry.COLUMN_NAME_TYPEFLASH,
+                    searchItemEntry.COLUMN_NAME_TYPESTORY,
+                    searchItemEntry.COLUMN_NAME_TYPEPHOTO,
+                    searchItemEntry.COLUMN_NAME_TYPEPOETRY,
+                    searchItemEntry.COLUMN_NAME_MODE
+            };
+
+            String selection = "rowid = ?";
+            String[] selectionArgs = {selectedSearch};
+
+            String sortOrder = "rowid DESC";
+
+            Cursor cursor = db.query(
+                    searchItemEntry.TABLE_NAME,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    sortOrder
+            );
+
+            while (cursor.moveToNext()) {
+                String COLUMN_Q = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_Q));
+                String COLUMN_ORDERBY = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_ORDERBY));
+                String COLUMN_ORDERDIRECTION = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_ORDERDIRECTION));
+                String COLUMN_RANGE = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RANGE));
+                boolean COLUMN_RATINGGENERAL = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0) ? (true) : (false));
+                boolean COLUMN_RATINGMATURE = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0) ? (true) : (false));
+                boolean COLUMN_RATINGADULT = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEART = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEART)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEMUSIC = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEFLASH = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPESTORY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEPHOTO = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0) ? (true) : (false));
+                boolean COLUMN_TYPEPOETRY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0) ? (true) : (false));
+                String COLUMN_MODE = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_MODE));
+
+                page.setQuery(COLUMN_Q);
+                page.setOrderBy(COLUMN_ORDERBY);
+                page.setOrderDirection(COLUMN_ORDERDIRECTION);
+                page.setRange(COLUMN_RANGE);
+                page.setRatingGeneral(COLUMN_RATINGGENERAL);
+                page.setRatingMature(COLUMN_RATINGMATURE);
+                page.setRatingAdult(COLUMN_RATINGADULT);
+                page.setTypeArt(COLUMN_TYPEART);
+                page.setTypeMusic(COLUMN_TYPEMUSIC);
+                page.setTypeFlash(COLUMN_TYPEFLASH);
+                page.setTypeStory(COLUMN_TYPESTORY);
+                page.setTypePhoto(COLUMN_TYPEPHOTO);
+                page.setTypePoetry(COLUMN_TYPEPOETRY);
+                page.setMode(COLUMN_MODE);
+            }
+
+            db.close();
+
+            loadedMainActivitySearchQuery = true;
+            setFabSearchMode();
+
+            searchOptionsScrollView.setVisibility(View.GONE);
+            savedSearchRecyclerView.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
+
+        if (!loadedMainActivitySearchQuery) {
+            String mainActivitySearchQuery = ((mainActivity) getActivity()).getSearchQuery();
+            if (mainActivitySearchQuery != null) {
+                searchEditText.setText(mainActivitySearchQuery);
+            } else {
+                searchEditText.setText(page.getCurrentQuery());
+            }
+            loadedMainActivitySearchQuery = true;
+        } else {
+            searchEditText.setText(page.getCurrentQuery());
+        }
+
+        uiControls.spinnerSetAdapter(requireContext(), searchOrderBySpinner, page.getOrderBy(), page.getCurrentOrderBy(), false, false);
+        uiControls.spinnerSetAdapter(requireContext(), searchOrderDirectionSpinner, page.getOrderDirection(), page.getCurrentOrderDirection(), false, false);
+
+        switch (page.getCurrentRange()) {
+            case "day":
+                searchDayRadioButton.setChecked(true);
+                break;
+            case "3days":
+                search3DaysRadioButton.setChecked(true);
+                break;
+            case "week":
+                searchWeekRadioButton.setChecked(true);
+                break;
+            case "month":
+                searchMonthRadioButton.setChecked(true);
+                break;
+            case "all":
+            default:
+                searchAllRadioButtonRange.setChecked(true);
+                break;
+
+        }
+
+        searchRatingGeneralSwitch.setChecked((!page.getCurrentRatingGeneral().equals("")));
+
+        //fa will ignore these in sfw mode anyways
+        searchRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
+        searchRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
+
+        searchTypeArtSwitch.setChecked((!page.getCurrentTypeArt().equals("")));
+        searchTypeMusicSwitch.setChecked((!page.getCurrentTypeMusic().equals("")));
+        searchTypeFlashSwitch.setChecked((!page.getCurrentTypeFlash().equals("")));
+        searchTypeStorySwitch.setChecked((!page.getCurrentTypeStory().equals("")));
+        searchTypePhotoSwitch.setChecked((!page.getCurrentTypePhoto().equals("")));
+        searchTypePoetrySwitch.setChecked((!page.getCurrentTypePoetry().equals("")));
+
+        switch (page.getCurrentMode()) {
+            case "all":
+                searchAllRadioButtonKeywords.setChecked(true);
+                break;
+            case "any":
+                searchAnyRadioButton.setChecked(true);
+                break;
+            case "extended":
+            default:
+                searchExtendedRadioButton.setChecked(true);
+                break;
+        }
+
+    }
+
     private void initPages() {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
@@ -417,160 +571,6 @@ public class search extends Fragment {
         textDialog.show(getChildFragmentManager(), "getSearchName");
     }
 
-    private void setFabSearchMode() {
-        fab.removeButton(search);
-        fab.removeButton(savedSearches);
-        fab.removeButton(searchSettings);
-        fab.removeButton(saveSearch);
-
-        fab.addButton(searchSettings, 1.5f, 270);
-        fab.addButton(savedSearches, 1.5f, 225);
-        fab.addButton(saveSearch, 1.5f, 180);
-    }
-
-    private void loadCurrentSettings() {
-        String selectedSearch = ((mainActivity) getActivity()).getSearchSelected();
-        if (selectedSearch != null) {
-            searchDBHelper dbHelper = new searchDBHelper(getActivity());
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-            String[] projection = {
-                    searchItemEntry.COLUMN_NAME_Q,
-                    searchItemEntry.COLUMN_NAME_ORDERBY,
-                    searchItemEntry.COLUMN_NAME_ORDERDIRECTION,
-                    searchItemEntry.COLUMN_NAME_RANGE,
-                    searchItemEntry.COLUMN_NAME_RATINGGENERAL,
-                    searchItemEntry.COLUMN_NAME_RATINGMATURE,
-                    searchItemEntry.COLUMN_NAME_RATINGADULT,
-                    searchItemEntry.COLUMN_NAME_TYPEART,
-                    searchItemEntry.COLUMN_NAME_TYPEMUSIC,
-                    searchItemEntry.COLUMN_NAME_TYPEFLASH,
-                    searchItemEntry.COLUMN_NAME_TYPESTORY,
-                    searchItemEntry.COLUMN_NAME_TYPEPHOTO,
-                    searchItemEntry.COLUMN_NAME_TYPEPOETRY,
-                    searchItemEntry.COLUMN_NAME_MODE
-            };
-
-            String selection = "rowid = ?";
-            String[] selectionArgs = {selectedSearch};
-
-            String sortOrder = "rowid DESC";
-
-            Cursor cursor = db.query(
-                    searchItemEntry.TABLE_NAME,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                    null,
-                    sortOrder
-            );
-
-            while (cursor.moveToNext()) {
-                String COLUMN_Q = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_Q));
-                String COLUMN_ORDERBY = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_ORDERBY));
-                String COLUMN_ORDERDIRECTION = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_ORDERDIRECTION));
-                String COLUMN_RANGE = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RANGE));
-                boolean COLUMN_RATINGGENERAL = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0) ? (true) : (false));
-                boolean COLUMN_RATINGMATURE = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0) ? (true) : (false));
-                boolean COLUMN_RATINGADULT = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEART = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEART)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEMUSIC = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEFLASH = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPESTORY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEPHOTO = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEPOETRY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0) ? (true) : (false));
-                String COLUMN_MODE = cursor.getString(cursor.getColumnIndexOrThrow(searchItemEntry.COLUMN_NAME_MODE));
-
-                page.setQuery(COLUMN_Q);
-                page.setOrderBy(COLUMN_ORDERBY);
-                page.setOrderDirection(COLUMN_ORDERDIRECTION);
-                page.setRange(COLUMN_RANGE);
-                page.setRatingGeneral(COLUMN_RATINGGENERAL);
-                page.setRatingMature(COLUMN_RATINGMATURE);
-                page.setRatingAdult(COLUMN_RATINGADULT);
-                page.setTypeArt(COLUMN_TYPEART);
-                page.setTypeMusic(COLUMN_TYPEMUSIC);
-                page.setTypeFlash(COLUMN_TYPEFLASH);
-                page.setTypeStory(COLUMN_TYPESTORY);
-                page.setTypePhoto(COLUMN_TYPEPHOTO);
-                page.setTypePoetry(COLUMN_TYPEPOETRY);
-                page.setMode(COLUMN_MODE);
-            }
-
-            db.close();
-
-            loadedMainActivitySearchQuery = true;
-            setFabSearchMode();
-
-            searchOptionsScrollView.setVisibility(View.GONE);
-            savedSearchRecyclerView.setVisibility(View.GONE);
-            swipeRefreshLayout.setVisibility(View.VISIBLE);
-        }
-
-        if (!loadedMainActivitySearchQuery) {
-            String mainActivitySearchQuery = ((mainActivity) getActivity()).getSearchQuery();
-            if (mainActivitySearchQuery != null) {
-                searchEditText.setText(mainActivitySearchQuery);
-            } else {
-                searchEditText.setText(page.getCurrentQuery());
-            }
-            loadedMainActivitySearchQuery = true;
-        } else {
-            searchEditText.setText(page.getCurrentQuery());
-        }
-
-        uiControls.spinnerSetAdapter(requireContext(), searchOrderBySpinner, page.getOrderBy(), page.getCurrentOrderBy(), false, false);
-        uiControls.spinnerSetAdapter(requireContext(), searchOrderDirectionSpinner, page.getOrderDirection(), page.getCurrentOrderDirection(), false, false);
-
-        switch (page.getCurrentRange()) {
-            case "day":
-                searchDayRadioButton.setChecked(true);
-                break;
-            case "3days":
-                search3DaysRadioButton.setChecked(true);
-                break;
-            case "week":
-                searchWeekRadioButton.setChecked(true);
-                break;
-            case "month":
-                searchMonthRadioButton.setChecked(true);
-                break;
-            case "all":
-            default:
-                searchAllRadioButtonRange.setChecked(true);
-                break;
-
-        }
-
-        searchRatingGeneralSwitch.setChecked((!page.getCurrentRatingGeneral().equals("")));
-
-        //fa will ignore these in sfw mode anyways
-        searchRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
-        searchRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
-
-        searchTypeArtSwitch.setChecked((!page.getCurrentTypeArt().equals("")));
-        searchTypeMusicSwitch.setChecked((!page.getCurrentTypeMusic().equals("")));
-        searchTypeFlashSwitch.setChecked((!page.getCurrentTypeFlash().equals("")));
-        searchTypeStorySwitch.setChecked((!page.getCurrentTypeStory().equals("")));
-        searchTypePhotoSwitch.setChecked((!page.getCurrentTypePhoto().equals("")));
-        searchTypePoetrySwitch.setChecked((!page.getCurrentTypePoetry().equals("")));
-
-        switch (page.getCurrentMode()) {
-            case "all":
-                searchAllRadioButtonKeywords.setChecked(true);
-                break;
-            case "any":
-                searchAnyRadioButton.setChecked(true);
-                break;
-            case "extended":
-            default:
-                searchExtendedRadioButton.setChecked(true);
-                break;
-        }
-
-    }
-
     private void saveCurrentSettings() {
         boolean valueChanged = false;
 
@@ -728,7 +728,6 @@ public class search extends Fragment {
             public void onClick(View v) {
                 searchOptionsScrollView.setVisibility(View.GONE);
                 savedSearchRecyclerView.setVisibility(View.GONE);
-                getElements(rootView);
                 saveCurrentSettings();
                 updateUIElements();
                 updateUIElementListeners(rootView);
