@@ -22,8 +22,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 
@@ -226,16 +226,16 @@ public class webClient {
 
                 DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
 
-                for(HashMap<String, String> currentParams : paramsIn) {
-                    if(currentParams.containsKey("name")  && (currentParams.containsKey("value") || currentParams.containsKey("filePath"))) {
+                for (HashMap<String, String> currentParams : paramsIn) {
+                    if (currentParams.containsKey("name") && (currentParams.containsKey("value") || currentParams.containsKey("filePath"))) {
                         outputStream.writeBytes("--" + boundry + LINE_FEED);
                         outputStream.writeBytes("Content-Disposition: form-data; " + "name=\"" + currentParams.get("name") + "\"");
 
-                        if(currentParams.containsKey("filePath")){
+                        if (currentParams.containsKey("filePath")) {
                             File currentFile = new File(currentParams.get("filePath"));
                             String contentType = URLConnection.guessContentTypeFromName(currentFile.getName());
 
-                            if(currentFile.exists()) {
+                            if (currentFile.exists()) {
                                 outputStream.writeBytes("; filename=\"" + currentFile.getName() + "\"" + LINE_FEED);
                                 outputStream.writeBytes("Content-Type: " + ((contentType != null) ? (contentType) : ("application/octet-stream")) + LINE_FEED + LINE_FEED);
 

@@ -64,13 +64,13 @@ public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.Vi
             holder.item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragments.journal.class.getName())) {
+                    if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.journal.class.getName())) {
                         ((mainActivity) context).setJournalPath(mDataSet.get(position).get("path"));
-                    } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragments.msgPmsMessage.class.getName())) {
+                    } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.msgPmsMessage.class.getName())) {
                         ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("path"));
-                    } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragments.user.class.getName())) {
+                    } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.user.class.getName())) {
                         ((mainActivity) context).setUserPath(mDataSet.get(position).get("path"));
-                    } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragments.view.class.getName())) {
+                    } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.view.class.getName())) {
                         ((mainActivity) context).setViewPath(mDataSet.get(position).get("path"));
                     }
                 }

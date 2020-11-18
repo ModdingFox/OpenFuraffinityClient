@@ -53,11 +53,12 @@ public class loginCheck extends open.furaffinity.client.abstractClasses.page {
 
         return false;
     }
+
     @Override
     protected Boolean doInBackground(Void... voids) {
         String html = webClient.sendGetRequest(webClient.getBaseUrl());
 
-        if(html != null && webClient.getLastPageLoaded()) {
+        if (html != null && webClient.getLastPageLoaded()) {
             return processPageData(webClient.sendGetRequest(webClient.getBaseUrl()));
         }
 

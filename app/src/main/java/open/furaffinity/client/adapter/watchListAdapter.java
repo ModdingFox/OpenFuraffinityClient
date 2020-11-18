@@ -85,7 +85,7 @@ public class watchListAdapter extends RecyclerView.Adapter<watchListAdapter.View
             });
         }
 
-        holder.deleteButton.setOnClickListener(new View.OnClickListener(){
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {

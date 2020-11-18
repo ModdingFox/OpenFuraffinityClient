@@ -26,7 +26,9 @@ public class journalDialog extends DialogFragment {
 
     private journalDialogListener listener;
 
-    public void setListener(journalDialogListener journalDialogListener) { listener = journalDialogListener; }
+    public void setListener(journalDialogListener journalDialogListener) {
+        listener = journalDialogListener;
+    }
 
     @NonNull
     @Override
@@ -41,11 +43,11 @@ public class journalDialog extends DialogFragment {
         Switch lockCommentsSwitch = rootView.findViewById(R.id.lockCommentsSwitch);
         Switch makeFeaturedSwitch = rootView.findViewById(R.id.makeFeaturedSwitch);
 
-        if(this.subject != null) {
+        if (this.subject != null) {
             subjectEditText.setText(this.subject);
         }
 
-        if(this.body != null) {
+        if (this.body != null) {
             messageEditText.setText(this.body);
         }
 

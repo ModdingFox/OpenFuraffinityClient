@@ -13,6 +13,7 @@ public abstract class page extends AsyncTask<Void, Void, Boolean> {
 
     public interface pageListener {
         public void requestSucceeded();
+
         public void requestFailed();
     }
 
@@ -36,7 +37,7 @@ public abstract class page extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
 
-        if(aBoolean) {
+        if (aBoolean) {
             this.pageListener.requestSucceeded();
         } else {
             this.pageListener.requestFailed();

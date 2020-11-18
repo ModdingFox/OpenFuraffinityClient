@@ -50,7 +50,7 @@ public class browse extends open.furaffinity.client.abstractClasses.page {
         perpage = getDropDownOptions("perpage", html);
         pageResults = getResultsData(html);
 
-        if(cat != null && atype != null && species != null && gender != null && perpage != null && pageResults != null) {
+        if (cat != null && atype != null && species != null && gender != null && perpage != null && pageResults != null) {
             return true;
         }
 
@@ -60,7 +60,9 @@ public class browse extends open.furaffinity.client.abstractClasses.page {
     @Override
     protected Boolean doInBackground(Void... voids) {
         String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
-        if(webClient.getLastPageLoaded() && html != null) { return processPageData(html); }
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
         return false;
     }
 

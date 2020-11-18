@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.page;
 import open.furaffinity.client.activity.mainActivity;
+import open.furaffinity.client.pages.search;
 import open.furaffinity.client.sqlite.searchContract;
 import open.furaffinity.client.sqlite.searchDBHelper;
 
@@ -32,14 +33,14 @@ public class searchNotificationWorker extends Worker {
 
     private Context context;
 
-    private open.furaffinity.client.pages.search page;
+    private search page;
 
     private List<HashMap<String, String>> mDataset = new ArrayList<>();
 
     private static final int maxPagesToCheck = 3;
 
     private void initClientAndPage() {
-        page = new open.furaffinity.client.pages.search(context, new page.pageListener() {
+        page = new search(context, new page.pageListener() {
             @Override
             public void requestSucceeded() {
 
@@ -55,7 +56,7 @@ public class searchNotificationWorker extends Worker {
     private void fetchPageData() {
         try {
             page.execute().get();
-            page = new open.furaffinity.client.pages.search(page);
+            page = new search(page);
 
             searchDBHelper dbHelper = new searchDBHelper(context);
             SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -153,7 +154,7 @@ public class searchNotificationWorker extends Worker {
                         page.setPage(Integer.toString(Integer.parseInt(page.getCurrentPage()) + 1));
                         Thread.sleep(1000);
                     }
-                    page = new open.furaffinity.client.pages.search(page);
+                    page = new search(page);
                     pageCount++;
                     if (pageCount > maxPagesToCheck) {
                         foundLastPosition = true;

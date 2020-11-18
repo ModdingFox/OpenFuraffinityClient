@@ -39,7 +39,9 @@ import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.adapter.savedSearchListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
+import open.furaffinity.client.fragmentsOld.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
 import open.furaffinity.client.sqlite.searchDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
@@ -172,7 +174,7 @@ public class search extends Fragment {
     }
 
     private void fetchPageData() {
-        if(!isLoading) {
+        if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new open.furaffinity.client.pages.search(page);
@@ -193,7 +195,7 @@ public class search extends Fragment {
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(getString(R.string.saveSearchState), open.furaffinity.client.fragments.settings.saveSearchStateDefault)) {
+        if (sharedPref.getBoolean(getString(R.string.saveSearchState), open.furaffinity.client.fragmentsOld.settings.saveSearchStateDefault)) {
             page.setOrderBy(sharedPref.getString(getString(R.string.searchOrderBySetting), ""));
             page.setOrderDirection(sharedPref.getString(getString(R.string.searchOrderDirectionSetting), ""));
             page.setRange(sharedPref.getString(getString(R.string.searchRangeSetting), ""));
@@ -371,7 +373,7 @@ public class search extends Fragment {
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        loginCheck = new open.furaffinity.client.pages.loginCheck(getActivity(), new page.pageListener() {
+        loginCheck = new loginCheck(getActivity(), new page.pageListener() {
             private void updateUIElements() {
                 if (loginCheck.getIsLoggedIn() && loginCheck.getIsNSFWAllowed()) {
                     searchRatingMatureSwitch.setVisibility(View.VISIBLE);
@@ -397,7 +399,7 @@ public class search extends Fragment {
         page = new open.furaffinity.client.pages.search(getActivity(), new page.pageListener() {
             @Override
             public void requestSucceeded() {
-                if(!isInitialized) {
+                if (!isInitialized) {
                     isLoading = false;
                     initCurrentSettings();
                     loadCurrentSettings();
@@ -518,7 +520,7 @@ public class search extends Fragment {
                 searchDBHelper dbHelper = new searchDBHelper(getActivity());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                String name = ((textDialog)dialog).getText();
+                String name = ((textDialog) dialog).getText();
                 String selectedQueryValue = searchEditText.getText().toString();
                 String selectedOrderByValue = ((kvPair) searchOrderBySpinner.getSelectedItem()).getKey();
                 String selectedOrderDirectionValue = ((kvPair) searchOrderDirectionSpinner.getSelectedItem()).getKey();
@@ -738,8 +740,7 @@ public class search extends Fragment {
             }
         });
 
-        savedSearches.setOnClickListener(new View.OnClickListener()
-        {
+        savedSearches.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 searchOptionsScrollView.setVisibility(View.GONE);

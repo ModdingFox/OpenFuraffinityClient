@@ -27,6 +27,7 @@ public class textDialog extends DialogFragment {
 
     public interface dialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
+
         public void onDialogNegativeClick(DialogFragment dialog);
     }
 
@@ -49,7 +50,7 @@ public class textDialog extends DialogFragment {
 
         dialogText.setText(text);
 
-        if(isPassword) {
+        if (isPassword) {
             editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         }
 

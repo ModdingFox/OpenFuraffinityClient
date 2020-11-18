@@ -48,7 +48,7 @@ public class search extends open.furaffinity.client.abstractClasses.page {
         orderDirection = getDropDownOptions("order-direction", html);
         pageResults = getResultsData(html);
 
-        if(orderBy != null && orderDirection != null && pageResults != null) {
+        if (orderBy != null && orderDirection != null && pageResults != null) {
             return true;
         }
 
@@ -58,7 +58,9 @@ public class search extends open.furaffinity.client.abstractClasses.page {
     @Override
     protected Boolean doInBackground(Void... voids) {
         String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
-        if (webClient.getLastPageLoaded() && html != null) { return processPageData(html); }
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
         return false;
     }
 

@@ -22,7 +22,7 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.fragments.settings;
+import open.furaffinity.client.fragmentsOld.settings;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
 
 public class manageImageListAdapter extends RecyclerView.Adapter<manageImageListAdapter.ViewHolder> {
@@ -34,6 +34,7 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
 
     public interface manageImageListAdapterListener {
         public void onSwipeRight(String postId);
+
         public void onSwipeLeft(String postId);
     }
 
@@ -86,13 +87,13 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
         holder.postUser.setText("");//Setting this as empty as the submissions page does not return the user name in the listing
         holder.postRating.setText(mDataSet.get(position).get("postRatingCode"));
 
-        if(checkedItems.contains(mDataSet.get(position).get("postId"))) {
+        if (checkedItems.contains(mDataSet.get(position).get("postId"))) {
             holder.postName.setChecked(true);
         } else {
             holder.postName.setChecked(false);
         }
 
-        if(!showPostInfo) {
+        if (!showPostInfo) {
             holder.imageListPostInfo.setVisibility(View.GONE);
         }
 
@@ -100,14 +101,14 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
         holder.itemView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void onSwipeRight() {
-                if(listener != null) {
+                if (listener != null) {
                     listener.onSwipeRight(mDataSet.get(position).get("postId"));
                 }
             }
 
             @Override
             public void onSwipeLeft() {
-                if(listener != null) {
+                if (listener != null) {
                     listener.onSwipeLeft(mDataSet.get(position).get("postId"));
                 }
             }
@@ -121,7 +122,7 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
         holder.postName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     checkedItems.add(mDataSet.get(position).get("postId"));
                 } else {
                     checkedItems.remove(mDataSet.get(position).get("postId"));

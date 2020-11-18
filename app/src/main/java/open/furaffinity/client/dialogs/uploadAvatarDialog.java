@@ -6,12 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,11 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
-import java.util.concurrent.ExecutionException;
-
 import open.furaffinity.client.R;
-import open.furaffinity.client.utilities.kvPair;
-import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
 public class uploadAvatarDialog extends DialogFragment {
@@ -44,7 +37,9 @@ public class uploadAvatarDialog extends DialogFragment {
 
     private uploadAvatarDialogListener listener;
 
-    public void setListener(uploadAvatarDialogListener uploadAvatarDialogListener) { listener = uploadAvatarDialogListener; }
+    public void setListener(uploadAvatarDialogListener uploadAvatarDialogListener) {
+        listener = uploadAvatarDialogListener;
+    }
 
     private void getElements(View rootView) {
         selectSourceFile = rootView.findViewById(R.id.selectSourceFile);
@@ -105,7 +100,7 @@ public class uploadAvatarDialog extends DialogFragment {
 
         switch (requestCode) {
             case submissionFileRequestCode:
-                if(resultCode == FilePickerActivity.RESULT_OK) {
+                if (resultCode == FilePickerActivity.RESULT_OK) {
                     sourceFilePath.setText(data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH));
                 } else {
                     sourceFilePath.setText("");

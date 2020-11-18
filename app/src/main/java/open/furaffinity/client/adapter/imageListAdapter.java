@@ -19,7 +19,7 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.fragments.settings;
+import open.furaffinity.client.fragmentsOld.settings;
 
 public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.ViewHolder> {
     private List<HashMap<String, String>> mDataSet;
@@ -67,7 +67,7 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
         holder.postUser.setText(String.format("By: %s", mDataSet.get(position).get("postUserName")));
         holder.postRating.setText(mDataSet.get(position).get("postRatingCode"));
 
-        if(!showPostInfo) {
+        if (!showPostInfo) {
             holder.imageListPostInfo.setVisibility(View.GONE);
         }
 

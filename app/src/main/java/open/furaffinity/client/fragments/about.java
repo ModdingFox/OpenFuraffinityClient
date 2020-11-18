@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pages.user;
+import open.furaffinity.client.pagesOld.user;
 import open.furaffinity.client.utilities.webClient;
 
 public class about extends Fragment {
@@ -82,7 +82,7 @@ public class about extends Fragment {
 
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
-        page = new open.furaffinity.client.pages.user(pagePath);
+        page = new open.furaffinity.client.pagesOld.user(pagePath);
     }
 
     private void fetchPageData(contributor contributor) {
@@ -103,7 +103,6 @@ public class about extends Fragment {
     }
 
     private void updateUIElements() {
-//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new commentListAdapter(mDataSet, getActivity(), false);
         recyclerView.setAdapter(mAdapter);

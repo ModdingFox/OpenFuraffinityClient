@@ -16,10 +16,10 @@ public class imageResultsTool {
 
         Document doc = Jsoup.parse(html);
 
-        if(doc != null) {
+        if (doc != null) {
             Element rootElement = doc.selectFirst(".listbox[name=" + name + "]");
 
-            if(rootElement != null ) {
+            if (rootElement != null) {
                 Elements optionElements = rootElement.select("option");
 
                 for (Element optionElement : optionElements) {
@@ -59,7 +59,7 @@ public class imageResultsTool {
             Element checkbox = figcaption.selectFirst("input");
             Element post = figcaption.select("a").get(0);
 
-            if(figcaption.select("a").size() > 1) {
+            if (figcaption.select("a").size() > 1) {
                 Element user = figcaption.select("a").get(1);
 
                 currentPostData.put("postUserPath", user.attr("href"));
@@ -68,7 +68,7 @@ public class imageResultsTool {
 
             currentPostData.put("imgUrl", img.attr("src"));
 
-            if(checkbox != null) {
+            if (checkbox != null) {
                 currentPostData.put("postId", checkbox.attr("value"));
             }
 

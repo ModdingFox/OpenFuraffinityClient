@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    >
+    android:paddingBottom="4dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/imageListCardView"
@@ -37,8 +35,7 @@
 
                 app:layout_constraintBottom_toBottomOf="@+id/imageListCardViewPostImage"
                 app:layout_constraintStart_toStartOf="parent"
-                android:background="@drawable/image_list_text_background"
-                >
+                android:background="@drawable/image_list_text_background">
 
                 <CheckBox
                     android:id="@+id/imageListCardPostName"
@@ -50,7 +47,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/imageListCardPostRating"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"/>
+                    app:layout_constraintHorizontal_bias="0.0" />
 
                 <TextView
                     android:id="@+id/imageListCardPostUser"
@@ -73,7 +70,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:paddingRight="8dp"/>
+                    android:paddingRight="8dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

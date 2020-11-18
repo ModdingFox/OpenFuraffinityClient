@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.pages.loginTest;
+import open.furaffinity.client.pagesOld.loginTest;
 import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;

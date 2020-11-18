@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.journal">
+    tools:context=".fragmentsOld.journal">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -85,6 +85,6 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/cardview_dark_background"
         app:srcCompat="@drawable/ic_menu_add"
-        android:layout_gravity="bottom|right"/>
+        android:layout_gravity="bottom|right" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
@@ -42,9 +41,9 @@ public class uploadFinalizeDialog extends DialogFragment {
     private Switch putInScraps;
 
     private webClient webClient;
-    private open.furaffinity.client.pages.submitSubmissionPart3 page;
+    private open.furaffinity.client.pagesOld.submitSubmissionPart3 page;
 
-    public uploadFinalizeDialog(open.furaffinity.client.pages.submitSubmissionPart3 page) {
+    public uploadFinalizeDialog(open.furaffinity.client.pagesOld.submitSubmissionPart3 page) {
         super();
         this.page = page;
     }
@@ -78,7 +77,7 @@ public class uploadFinalizeDialog extends DialogFragment {
     private HashMap<String, String> getSelected(Spinner spinnerIn, String name) {
         HashMap<String, String> result = new HashMap<>();
         result.put("name", name);
-        result.put("value", ((kvPair)spinnerIn.getSelectedItem()).getKey());
+        result.put("value", ((kvPair) spinnerIn.getSelectedItem()).getKey());
         return result;
     }
 
@@ -107,7 +106,7 @@ public class uploadFinalizeDialog extends DialogFragment {
                 try {
                     List<HashMap<String, String>> params = new ArrayList<>();
 
-                    for(String key : page.getParams().keySet()){
+                    for (String key : page.getParams().keySet()) {
                         HashMap<String, String> newParam = new HashMap<>();
                         newParam.put("name", key);
                         newParam.put("value", page.getParams().get(key));
@@ -124,14 +123,14 @@ public class uploadFinalizeDialog extends DialogFragment {
                     params.add(getText(description, "message"));
                     params.add(getText(keywords, "keywords"));
 
-                    if(disableComments.isChecked()) {
+                    if (disableComments.isChecked()) {
                         HashMap<String, String> disableCommentsHashMap = new HashMap<>();
                         disableCommentsHashMap.put("name", "lock_comments");
                         disableCommentsHashMap.put("value", "on");
                         params.add(disableCommentsHashMap);
                     }
 
-                    if(putInScraps.isChecked()) {
+                    if (putInScraps.isChecked()) {
                         HashMap<String, String> putInScrapsHashMap = new HashMap<>();
                         putInScrapsHashMap.put("name", "scrap");
                         putInScrapsHashMap.put("value", "1");
@@ -141,7 +140,7 @@ public class uploadFinalizeDialog extends DialogFragment {
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pages.submitSubmissionPart3.getPagePath(), params);
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pagesOld.submitSubmissionPart3.getPagePath(), params);
                             return null;
                         }
                     }.execute(webClient).get();

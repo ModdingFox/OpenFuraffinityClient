@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.settings">
+    tools:context=".fragmentsOld.settings">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -94,7 +94,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/enablePostLabels" />
-
 
 
             <Switch

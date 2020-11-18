@@ -41,7 +41,7 @@ public class uploadDialog extends DialogFragment {
     private TextView thumbnailFilePath;
 
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.submitSubmissionPart1 page;
+    private open.furaffinity.client.pagesOld.submitSubmissionPart1 page;
 
     private void getElements(View rootView) {
         submissionType = rootView.findViewById(R.id.submissionType);
@@ -53,11 +53,11 @@ public class uploadDialog extends DialogFragment {
 
     private void initClientAndPage() {
         webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pages.submitSubmissionPart1();
+        page = new open.furaffinity.client.pagesOld.submitSubmissionPart1();
     }
 
     private void fetchPageData() {
-        page = new open.furaffinity.client.pages.submitSubmissionPart1();
+        page = new open.furaffinity.client.pagesOld.submitSubmissionPart1();
         try {
             page.execute(webClient).get();
         } catch (ExecutionException | InterruptedException e) {
@@ -73,7 +73,7 @@ public class uploadDialog extends DialogFragment {
         submissionType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                page.setSubmissionTypeCurrent(((kvPair)submissionType.getSelectedItem()).getKey());
+                page.setSubmissionTypeCurrent(((kvPair) submissionType.getSelectedItem()).getKey());
             }
 
             @Override
@@ -125,11 +125,11 @@ public class uploadDialog extends DialogFragment {
         builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                open.furaffinity.client.pages.submitSubmissionPart2 page2 = new open.furaffinity.client.pages.submitSubmissionPart2(page);
+                open.furaffinity.client.pagesOld.submitSubmissionPart2 page2 = new open.furaffinity.client.pagesOld.submitSubmissionPart2(page);
                 try {
                     page2.execute(webClient).get();
 
-                    open.furaffinity.client.pages.submitSubmissionPart3 page3 = new open.furaffinity.client.pages.submitSubmissionPart3(page2, sourceFilePath.getText().toString(), thumbnailFilePath.getText().toString());
+                    open.furaffinity.client.pagesOld.submitSubmissionPart3 page3 = new open.furaffinity.client.pagesOld.submitSubmissionPart3(page2, sourceFilePath.getText().toString(), thumbnailFilePath.getText().toString());
                     page3.execute(webClient).get();
 
                     uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(page3);
@@ -155,14 +155,14 @@ public class uploadDialog extends DialogFragment {
 
         switch (requestCode) {
             case submissionFileRequestCode:
-                if(resultCode == FilePickerActivity.RESULT_OK) {
+                if (resultCode == FilePickerActivity.RESULT_OK) {
                     sourceFilePath.setText(data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH));
                 } else {
                     sourceFilePath.setText("");
                 }
                 break;
             case thumbnailFileRequestCode:
-                if(resultCode == FilePickerActivity.RESULT_OK) {
+                if (resultCode == FilePickerActivity.RESULT_OK) {
                     thumbnailFilePath.setText(data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH));
                 } else {
                     thumbnailFilePath.setText("");

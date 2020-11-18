@@ -4,43 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/userIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/loading"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+    <ImageView
+        android:id="@+id/userIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/loading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/notLoaded"
-            app:layout_constraintStart_toEndOf="@+id/userIcon"
-            app:layout_constraintEnd_toStartOf="@id/checkBox"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"/>
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/notLoaded"
+        app:layout_constraintStart_toEndOf="@+id/userIcon"
+        app:layout_constraintEnd_toStartOf="@id/checkBox"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.0" />
 
-        <TextView
-            android:id="@+id/actionText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/notLoaded"
-            app:layout_constraintStart_toEndOf="@+id/userIcon"
-            app:layout_constraintEnd_toStartOf="@id/checkBox"
-            app:layout_constraintTop_toBottomOf="@id/userName"
-            app:layout_constraintHorizontal_bias="0.0"/>
+    <TextView
+        android:id="@+id/actionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/notLoaded"
+        app:layout_constraintStart_toEndOf="@+id/userIcon"
+        app:layout_constraintEnd_toStartOf="@id/checkBox"
+        app:layout_constraintTop_toBottomOf="@id/userName"
+        app:layout_constraintHorizontal_bias="0.0" />
 
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

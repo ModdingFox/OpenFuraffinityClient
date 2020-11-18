@@ -15,7 +15,7 @@ import open.furaffinity.client.dialogs.recaptchaV2Dialog;
 public class sendPm {
     private static String TAG = sendPm.class.getName();
 
-    private static void sendMessage(Context context, String postKey, String user, String subject, String body, String gRecaptchaResponse){
+    private static void sendMessage(Context context, String postKey, String user, String subject, String body, String gRecaptchaResponse) {
         HashMap<String, String> params = new HashMap<>();
         params.put("key", postKey);
         params.put("to", user);
@@ -27,7 +27,7 @@ public class sendPm {
             new AsyncTask<webClient, Void, Void>() {
                 @Override
                 protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pages.msgPms.getSendPath(), params);
+                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pagesOld.msgPms.getSendPath(), params);
                     return null;
                 }
             }.execute(new webClient(context)).get();
@@ -37,7 +37,7 @@ public class sendPm {
     }
 
     public static void sendPM(Context context, FragmentManager fragmentManager, String userIn) {
-        open.furaffinity.client.pages.msgPms msgPms = new open.furaffinity.client.pages.msgPms();
+        open.furaffinity.client.pagesOld.msgPms msgPms = new open.furaffinity.client.pagesOld.msgPms();
 
         try {
             msgPms.execute(new webClient(context)).get();
@@ -47,12 +47,12 @@ public class sendPm {
 
         msgPmsDialog msgPmsDialog = new msgPmsDialog();
 
-        if(userIn != null) {
+        if (userIn != null) {
             msgPmsDialog.setUser(userIn);
         }
 
         msgPmsDialog.setListener((user, subject, body) -> {
-            if(msgPms.isRecaptchaRequired()) {
+            if (msgPms.isRecaptchaRequired()) {
                 recaptchaV2Dialog recaptchaV2Dialog = new recaptchaV2Dialog();
                 recaptchaV2Dialog.setPagePath(open.furaffinity.client.utilities.webClient.getBaseUrl() + msgPms.getPagePath());
                 recaptchaV2Dialog.setListener(new recaptchaV2Dialog.recaptchaV2DialogListener() {

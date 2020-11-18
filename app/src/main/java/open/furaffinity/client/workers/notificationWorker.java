@@ -31,21 +31,21 @@ public class notificationWorker extends Worker {
 
     private open.furaffinity.client.utilities.webClient webClient;
 
-    private open.furaffinity.client.pages.loginTest loginTest;
-    private open.furaffinity.client.pages.msgOthers msgOthers;
-    private open.furaffinity.client.pages.msgPms msgPms;
-    private open.furaffinity.client.pages.msgSubmission msgSubmission;
+    private open.furaffinity.client.pagesOld.loginTest loginTest;
+    private open.furaffinity.client.pagesOld.msgOthers msgOthers;
+    private open.furaffinity.client.pagesOld.msgPms msgPms;
+    private open.furaffinity.client.pagesOld.msgSubmission msgSubmission;
 
     private List<HashMap<String, String>> msgPmsData = new ArrayList<>();
     private List<HashMap<String, String>> msgSubmissionData = new ArrayList<>();
 
     private void initClientAndPage() {
         webClient = new webClient(context);
-        loginTest = new open.furaffinity.client.pages.loginTest();
-        msgOthers = new open.furaffinity.client.pages.msgOthers();
-        msgPms = new open.furaffinity.client.pages.msgPms();
-        msgPms.setSelectedFolder(open.furaffinity.client.pages.msgPms.mailFolders.unread);
-        msgSubmission = new open.furaffinity.client.pages.msgSubmission(true);
+        loginTest = new open.furaffinity.client.pagesOld.loginTest();
+        msgOthers = new open.furaffinity.client.pagesOld.msgOthers();
+        msgPms = new open.furaffinity.client.pagesOld.msgPms();
+        msgPms.setSelectedFolder(open.furaffinity.client.pagesOld.msgPms.mailFolders.unread);
+        msgSubmission = new open.furaffinity.client.pagesOld.msgSubmission(true);
     }
 
     private void fetchPageData() {
@@ -55,7 +55,7 @@ public class notificationWorker extends Worker {
                 msgOthers.execute(webClient).get();
 
                 do {
-                    msgPms = new open.furaffinity.client.pages.msgPms(msgPms);
+                    msgPms = new open.furaffinity.client.pagesOld.msgPms(msgPms);
                     msgPms.execute(webClient).get();
                     msgPms.setPage(msgPms.getPage() + 1);
 
@@ -66,7 +66,7 @@ public class notificationWorker extends Worker {
                 } while (msgPms.getMessages() != null && msgPms.getMessages().size() > 0);
 
                 do {
-                    msgSubmission = new open.furaffinity.client.pages.msgSubmission(msgSubmission);
+                    msgSubmission = new open.furaffinity.client.pagesOld.msgSubmission(msgSubmission);
                     msgSubmission.execute(webClient).get();
                     msgSubmission.setNextPage();
 
@@ -92,11 +92,11 @@ public class notificationWorker extends Worker {
         fetchPageData();
 
         if (loginTest.getIsLoggedIn()) {
-            List<HashMap<String, String>> watches = open.furaffinity.client.pages.msgOthers.processWatchNotifications(msgOthers.getWatches(), "");
+            List<HashMap<String, String>> watches = open.furaffinity.client.pagesOld.msgOthers.processWatchNotifications(msgOthers.getWatches(), "");
             List<HashMap<String, String>> comments = open.furaffinity.client.utilities.html.commentsToListHash(msgOthers.getSubmissionComments());
-            List<HashMap<String, String>> shouts = open.furaffinity.client.pages.msgOthers.processShoutNotifications(msgOthers.getShouts(), "");
-            List<HashMap<String, String>> favorites = open.furaffinity.client.pages.msgOthers.processLineNotifications(msgOthers.getFavorites(), "");
-            List<HashMap<String, String>> journals = open.furaffinity.client.pages.msgOthers.processLineNotifications(msgOthers.getJournals(), "");
+            List<HashMap<String, String>> shouts = open.furaffinity.client.pagesOld.msgOthers.processShoutNotifications(msgOthers.getShouts(), "");
+            List<HashMap<String, String>> favorites = open.furaffinity.client.pagesOld.msgOthers.processLineNotifications(msgOthers.getFavorites(), "");
+            List<HashMap<String, String>> journals = open.furaffinity.client.pagesOld.msgOthers.processLineNotifications(msgOthers.getJournals(), "");
 
             HashMap<String, Integer> newNotifications = new HashMap<>();
 

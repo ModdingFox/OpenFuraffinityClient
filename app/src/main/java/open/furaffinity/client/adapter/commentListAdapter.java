@@ -110,7 +110,7 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
 
         holder.comment.loadData("<font color='white'>" + mDataSet.get(position).get("comment") + "</font>", "text/html; charset=utf-8", "UTF-8");
 
-        if(isLoggedIn && mDataSet.get(position).containsKey("replyToLink")) {
+        if (isLoggedIn && mDataSet.get(position).containsKey("replyToLink")) {
             holder.replyButton.setVisibility(View.VISIBLE);
 
             holder.replyButton.setOnClickListener(new View.OnClickListener() {
@@ -135,10 +135,10 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
             mDataSet.get(position).put("padding", "0");
         }
 
-        if(mDataSet.get(position).containsKey("checkId")) {
+        if (mDataSet.get(position).containsKey("checkId")) {
             holder.checkBox.setVisibility(View.VISIBLE);
 
-            if(checkedItems.contains(mDataSet.get(position).get("checkId"))) {
+            if (checkedItems.contains(mDataSet.get(position).get("checkId"))) {
                 holder.checkBox.setChecked(true);
             } else {
                 holder.checkBox.setChecked(false);
@@ -147,7 +147,7 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(isChecked) {
+                    if (isChecked) {
                         checkedItems.add(mDataSet.get(position).get("checkId"));
                     } else {
                         checkedItems.remove(mDataSet.get(position).get("checkId"));

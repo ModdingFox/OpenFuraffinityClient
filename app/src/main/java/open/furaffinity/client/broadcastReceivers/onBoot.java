@@ -12,7 +12,7 @@ import androidx.work.WorkManager;
 import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragments.settings;
+import open.furaffinity.client.fragmentsOld.settings;
 import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 

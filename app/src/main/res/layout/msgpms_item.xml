@@ -11,7 +11,7 @@
         android:layout_gravity="center_vertical"
         android:text="@string/notLoaded"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/messageText"
@@ -22,7 +22,7 @@
         app:layout_constraintStart_toEndOf="@+id/userName"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/checkBox"
-        app:layout_constraintHorizontal_bias="0.0"/>
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <CheckBox
         android:id="@+id/checkBox"

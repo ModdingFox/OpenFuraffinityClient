@@ -39,7 +39,7 @@ public class uiControls {
     }
 
     public static void spinnerSetAdapter(Context context, Spinner inputSpinner, HashMap<String, String> inputData, String currentValue, boolean sortKeys, boolean isNumeric) {
-        if(inputData != null) {
+        if (inputData != null) {
             ArrayList<kvPair> spinnerData = new ArrayList<>();
             kvPair selectedItem = null;
 
