@@ -107,8 +107,6 @@ public class browse extends Fragment {
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
         if (sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
-            page = new open.furaffinity.client.pages.browse(page);
-
             page.setCat(sharedPref.getString(getString(R.string.browseCatSetting), ""));
             page.setAtype(sharedPref.getString(getString(R.string.browseAtypeSetting), ""));
             page.setSpecies(sharedPref.getString(getString(R.string.browseSpeciesSetting), ""));
@@ -117,8 +115,6 @@ public class browse extends Fragment {
             page.setRatingGeneral(sharedPref.getBoolean(getString(R.string.browseRatingGeneralSetting), true));
             page.setRatingMature(sharedPref.getBoolean(getString(R.string.browseRatingMatureSetting), false));
             page.setRatingAdult(sharedPref.getBoolean(getString(R.string.browseRatingAdultSetting), false));
-
-            resetRecycler();
         }
 
         isInitialized = true;
@@ -149,6 +145,7 @@ public class browse extends Fragment {
             @Override
             public void requestFailed() {
                 updateUIElements();
+                Toast.makeText(getActivity(), "Failed to detect login", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -161,6 +158,7 @@ public class browse extends Fragment {
                     isLoading = false;
                     initCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
+                    resetRecycler();
                 } else {
                     List<HashMap<String, String>> pageResults = page.getPageResults();
 
@@ -197,13 +195,9 @@ public class browse extends Fragment {
         browsePageEditText.setText(page.getCurrentPage());
         browseRatingGeneralSwitch.setChecked((!page.getCurrentRatingGeneral().equals("")));
 
-        if (loginCheck.getIsLoggedIn()) {
-            browseRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
-            browseRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
-        } else {
-            browseRatingMatureSwitch.setChecked(false);
-            browseRatingAdultSwitch.setChecked(false);
-        }
+        //fa will ignore these in sfw mode anyways
+        browseRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
+        browseRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
     }
 
     private void saveCurrentSettings() {

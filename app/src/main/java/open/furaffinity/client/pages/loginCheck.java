@@ -28,22 +28,24 @@ public class loginCheck extends open.furaffinity.client.abstractClasses.page {
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
-        if (doc != null && doc.selectFirst("a[href=/login]") == null) {
-            isLoggedIn = true;
+        if (doc != null) {
+            if (doc.selectFirst("a[href=/login]") == null) {
+                isLoggedIn = true;
 
-            Element nsfwToggle = doc.selectFirst("input.slider-toggle[id=sfw-toggle-mobile]");
+                Element nsfwToggle = doc.selectFirst("input.slider-toggle[id=sfw-toggle-mobile]");
 
-            if (nsfwToggle != null) {
-                this.isNSFWAllowed = true;
-            }
+                if (nsfwToggle != null) {
+                    this.isNSFWAllowed = true;
+                }
 
-            Element userIconImg = doc.selectFirst("img.loggedin_user_avatar");
+                Element userIconImg = doc.selectFirst("img.loggedin_user_avatar");
 
-            if(userIconImg != null) {
-                open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(userIconImg);
+                if (userIconImg != null) {
+                    open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(userIconImg);
 
-                userIcon = userIconImg.attr("src");
-                userName = userIconImg.attr("alt");
+                    userIcon = userIconImg.attr("src");
+                    userName = userIconImg.attr("alt");
+                }
             }
 
             return true;

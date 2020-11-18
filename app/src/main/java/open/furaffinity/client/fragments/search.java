@@ -7,7 +7,6 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
@@ -31,23 +31,21 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.page;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.adapter.savedSearchListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pages.loginTest;
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
 import open.furaffinity.client.sqlite.searchDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.notificationItem;
 import open.furaffinity.client.utilities.uiControls;
-import open.furaffinity.client.utilities.webClient;
 
 public class search extends Fragment {
     private static final String TAG = search.class.getName();
@@ -66,7 +64,6 @@ public class search extends Fragment {
 
     private RecyclerView savedSearchRecyclerView;
     private RecyclerView.Adapter savedMAdapter;
-    private EndlessRecyclerViewScrollListener savedEndlessRecyclerViewScrollListener;
 
     private EditText searchEditText;
     private Spinner searchOrderBySpinner;
@@ -95,10 +92,11 @@ public class search extends Fragment {
     private FloatingActionButton searchSettings;
     private FloatingActionButton saveSearch;
 
-    private webClient webClient;
-    private loginTest loginTest;
+    private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.search page;
 
+    private boolean isInitialized = false;
+    private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private boolean loadedMainActivitySearchQuery = false;
 
@@ -172,75 +170,22 @@ public class search extends Fragment {
         fab.addButton(saveSearch, 1.5f, 180);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(this.getActivity());
-        loginTest = new loginTest();
-        page = new open.furaffinity.client.pages.search();
+    private void fetchPageData() {
+        if(!isLoading) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new open.furaffinity.client.pages.search(page);
+            page.execute();
+        }
     }
 
-    private void fetchPageData() {
-        loginTest = new loginTest();
-        page = new open.furaffinity.client.pages.search(page);
-        try {
-            loginTest.execute(webClient).get();
-            page.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
-        }
-
-        List<HashMap<String, String>> pageResults = page.getPageResults();
-
-        //Deduplicate results
-        List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-        List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-        newPostPaths.removeAll(oldPostPaths);
-        pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-        mDataSet.addAll(pageResults);
-
-        if (page.getPageResults() != null && page.getPageResults().size() > 0 && page.getCurrentPage().equals("1")) {
-            //Find any saved searches that meet the current search criteria and apply the most recent link to them
-            searchDBHelper dbHelper = new searchDBHelper(getActivity());
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-            ContentValues values = new ContentValues();
-            values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, page.getPageResults().get(0).get("postPath"));
-
-            String selection = "";
-            selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_ORDERBY + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_ORDERDIRECTION + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_RANGE + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_RATINGGENERAL + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_RATINGMATURE + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_RATINGADULT + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_TYPEART + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_TYPEMUSIC + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_TYPEFLASH + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_TYPESTORY + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_TYPEPHOTO + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_TYPEPOETRY + " = ? AND ";
-            selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
-
-            String[] selectionArgs = {
-                    page.getCurrentQuery(),
-                    page.getCurrentOrderBy(),
-                    page.getCurrentOrderDirection(),
-                    page.getCurrentRange(),
-                    ((page.getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
-                    ((page.getCurrentRatingMature().equals("")) ? ("0") : ("1")),
-                    ((page.getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
-                    ((page.getCurrentTypeArt().equals("")) ? ("0") : ("1")),
-                    ((page.getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
-                    ((page.getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
-                    ((page.getCurrentTypeStory().equals("")) ? ("0") : ("1")),
-                    ((page.getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
-                    ((page.getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
-                    page.getCurrentMode()
-            };
-
-            db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
-            db.close();
-        }
+    private void resetRecycler() {
+        page.setPage(Integer.toString(1));
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        mAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
+        fetchPageData();
     }
 
     private void initCurrentSettings() {
@@ -248,10 +193,6 @@ public class search extends Fragment {
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
         if (sharedPref.getBoolean(getString(R.string.saveSearchState), open.furaffinity.client.fragments.settings.saveSearchStateDefault)) {
-            fetchPageData();
-            mDataSet.clear();
-            page = new open.furaffinity.client.pages.search(page);
-
             page.setOrderBy(sharedPref.getString(getString(R.string.searchOrderBySetting), ""));
             page.setOrderDirection(sharedPref.getString(getString(R.string.searchOrderDirectionSetting), ""));
             page.setRange(sharedPref.getString(getString(R.string.searchRangeSetting), ""));
@@ -266,6 +207,116 @@ public class search extends Fragment {
             page.setTypePoetry(sharedPref.getBoolean(getString(R.string.searchTypePoetrySetting), false));
             page.setMode(sharedPref.getString(getString(R.string.searchModeSetting), ""));
         }
+
+        isInitialized = true;
+    }
+
+    private void initPages() {
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        mAdapter = new imageListAdapter(mDataSet, getActivity());
+        recyclerView.setAdapter(mAdapter);
+
+        loginCheck = new open.furaffinity.client.pages.loginCheck(getActivity(), new page.pageListener() {
+            private void updateUIElements() {
+                if (loginCheck.getIsLoggedIn() && loginCheck.getIsNSFWAllowed()) {
+                    searchRatingMatureSwitch.setVisibility(View.VISIBLE);
+                    searchRatingAdultSwitch.setVisibility(View.VISIBLE);
+                } else {
+                    searchRatingMatureSwitch.setVisibility(View.GONE);
+                    searchRatingAdultSwitch.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void requestSucceeded() {
+                updateUIElements();
+            }
+
+            @Override
+            public void requestFailed() {
+                updateUIElements();
+                Toast.makeText(getActivity(), "Failed to detect login", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        page = new open.furaffinity.client.pages.search(getActivity(), new page.pageListener() {
+            @Override
+            public void requestSucceeded() {
+                if(!isInitialized) {
+                    isLoading = false;
+                    initCurrentSettings();
+                    loadCurrentSettings();
+                    resetRecycler();
+                } else {
+                    List<HashMap<String, String>> pageResults = page.getPageResults();
+
+                    int curSize = mAdapter.getItemCount();
+
+                    //Deduplicate results
+                    List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                    List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                    newPostPaths.removeAll(oldPostPaths);
+                    pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+                    mDataSet.addAll(pageResults);
+                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+
+                    if (page.getPageResults() != null && page.getPageResults().size() > 0 && page.getCurrentPage().equals("1")) {
+                        //Find any saved searches that meet the current search criteria and apply the most recent link to them
+                        searchDBHelper dbHelper = new searchDBHelper(getActivity());
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+                        ContentValues values = new ContentValues();
+                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, page.getPageResults().get(0).get("postPath"));
+
+                        String selection = "";
+                        selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_ORDERBY + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_ORDERDIRECTION + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_RANGE + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_RATINGGENERAL + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_RATINGMATURE + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_RATINGADULT + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_TYPEART + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_TYPEMUSIC + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_TYPEFLASH + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_TYPESTORY + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_TYPEPHOTO + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_TYPEPOETRY + " = ? AND ";
+                        selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
+
+                        String[] selectionArgs = {
+                                page.getCurrentQuery(),
+                                page.getCurrentOrderBy(),
+                                page.getCurrentOrderDirection(),
+                                page.getCurrentRange(),
+                                ((page.getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
+                                ((page.getCurrentRatingMature().equals("")) ? ("0") : ("1")),
+                                ((page.getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
+                                ((page.getCurrentTypeArt().equals("")) ? ("0") : ("1")),
+                                ((page.getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
+                                ((page.getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
+                                ((page.getCurrentTypeStory().equals("")) ? ("0") : ("1")),
+                                ((page.getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
+                                ((page.getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
+                                page.getCurrentMode()
+                        };
+
+                        db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
+                        db.close();
+                    }
+
+                    swipeRefreshLayout.setRefreshing(false);
+                    isLoading = false;
+                }
+            }
+
+            @Override
+            public void requestFailed() {
+                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Failed to load data from search page", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadSavedSearches() {
@@ -303,7 +354,6 @@ public class search extends Fragment {
     }
 
     private void saveCurrentSearch() {
-
         textDialog textDialog = new textDialog();
         textDialog.setTitleText("Enter name for search:");
         textDialog.setListener(new textDialog.dialogListener() {
@@ -363,6 +413,17 @@ public class search extends Fragment {
             }
         });
         textDialog.show(getChildFragmentManager(), "getSearchName");
+    }
+
+    private void setFabSearchMode() {
+        fab.removeButton(search);
+        fab.removeButton(savedSearches);
+        fab.removeButton(searchSettings);
+        fab.removeButton(saveSearch);
+
+        fab.addButton(searchSettings, 1.5f, 270);
+        fab.addButton(savedSearches, 1.5f, 225);
+        fab.addButton(saveSearch, 1.5f, 180);
     }
 
     private void loadCurrentSettings() {
@@ -437,9 +498,8 @@ public class search extends Fragment {
 
             db.close();
 
-            fetchPageData();
-
             loadedMainActivitySearchQuery = true;
+            setFabSearchMode();
 
             searchOptionsScrollView.setVisibility(View.GONE);
             savedSearchRecyclerView.setVisibility(View.GONE);
@@ -483,13 +543,9 @@ public class search extends Fragment {
 
         searchRatingGeneralSwitch.setChecked((!page.getCurrentRatingGeneral().equals("")));
 
-        if (loginTest.getIsLoggedIn()) {
-            searchRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
-            searchRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
-        } else {
-            searchRatingMatureSwitch.setChecked(false);
-            searchRatingAdultSwitch.setChecked(false);
-        }
+        //fa will ignore these in sfw mode anyways
+        searchRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
+        searchRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
 
         searchTypeArtSwitch.setChecked((!page.getCurrentTypeArt().equals("")));
         searchTypeMusicSwitch.setChecked((!page.getCurrentTypeMusic().equals("")));
@@ -629,28 +685,11 @@ public class search extends Fragment {
                 editor.commit();
             }
 
-            recyclerView.scrollTo(0, 0);
-            mDataSet.clear();
-            mAdapter.notifyDataSetChanged();
-            endlessRecyclerViewScrollListener.resetState();
-            page = new open.furaffinity.client.pages.search(page);
-            fetchPageData();
+            resetRecycler();
         }
     }
 
     private void updateUIElements() {
-        if (loginTest.getIsLoggedIn() && loginTest.getIsNSFWAllowed()) {
-            searchRatingMatureSwitch.setVisibility(View.VISIBLE);
-            searchRatingAdultSwitch.setVisibility(View.VISIBLE);
-        } else {
-            searchRatingMatureSwitch.setVisibility(View.GONE);
-            searchRatingAdultSwitch.setVisibility(View.GONE);
-        }
-
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new imageListAdapter(mDataSet, getActivity());
-        recyclerView.setAdapter(mAdapter);
-
         savedSearchRecyclerView.setLayoutManager(saveLayoutManager);
         savedMAdapter = new savedSearchListAdapter(savedMDataSet, getActivity());
         savedSearchRecyclerView.setAdapter(savedMAdapter);
@@ -660,16 +699,7 @@ public class search extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page.setPage(Integer.toString(1));
-
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-                page = new open.furaffinity.client.pages.search(page);
-                fetchPageData();
-                loadCurrentSettings();
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
@@ -677,9 +707,7 @@ public class search extends Fragment {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setPage(Integer.toString(page.getPage() + 1));
-                int curSize = mAdapter.getItemCount();
                 fetchPageData();
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
 
@@ -693,16 +721,6 @@ public class search extends Fragment {
             }
         });
 
-        savedEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(saveLayoutManager) {
-            @Override
-            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
-
-            }
-        };
-
-        //noinspection deprecation
-        savedSearchRecyclerView.setOnScrollListener(savedEndlessRecyclerViewScrollListener);
-
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -715,14 +733,7 @@ public class search extends Fragment {
                 ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(rootView.getWindowToken(), 0);
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
 
-                fab.removeButton(search);
-                fab.removeButton(savedSearches);
-                fab.removeButton(searchSettings);
-                fab.removeButton(saveSearch);
-
-                fab.addButton(searchSettings, 1.5f, 270);
-                fab.addButton(savedSearches, 1.5f, 225);
-                fab.addButton(saveSearch, 1.5f, 180);
+                setFabSearchMode();
             }
         });
 
@@ -753,6 +764,7 @@ public class search extends Fragment {
                 swipeRefreshLayout.setVisibility(View.GONE);
                 savedSearchRecyclerView.setVisibility(View.GONE);
                 loadCurrentSettings();
+                resetRecycler();
                 updateUIElements();
                 updateUIElementListeners(rootView);
                 searchOptionsScrollView.setVisibility(View.VISIBLE);
@@ -787,11 +799,9 @@ public class search extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         getElements(rootView);
-        initClientAndPage();
-        initCurrentSettings();
+        initPages();
         fetchPageData();
         loadSavedSearches();
-        loadCurrentSettings();
         updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;

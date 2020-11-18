@@ -22,17 +22,16 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.page;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.sqlite.searchContract;
 import open.furaffinity.client.sqlite.searchDBHelper;
-import open.furaffinity.client.utilities.webClient;
 
 public class searchNotificationWorker extends Worker {
     private static final String TAG = searchNotificationWorker.class.getName();
 
     private Context context;
 
-    private open.furaffinity.client.utilities.webClient webClient;
     private open.furaffinity.client.pages.search page;
 
     private List<HashMap<String, String>> mDataset = new ArrayList<>();
@@ -40,13 +39,22 @@ public class searchNotificationWorker extends Worker {
     private static final int maxPagesToCheck = 3;
 
     private void initClientAndPage() {
-        webClient = new webClient(context);
-        page = new open.furaffinity.client.pages.search();
+        page = new open.furaffinity.client.pages.search(context, new page.pageListener() {
+            @Override
+            public void requestSucceeded() {
+
+            }
+
+            @Override
+            public void requestFailed() {
+
+            }
+        });
     }
 
     private void fetchPageData() {
         try {
-            page.execute(webClient).get();
+            page.execute().get();
             page = new open.furaffinity.client.pages.search(page);
 
             searchDBHelper dbHelper = new searchDBHelper(context);
@@ -127,7 +135,7 @@ public class searchNotificationWorker extends Worker {
                 int postCount = 0;
 
                 do {
-                    page.execute(webClient).get();
+                    page.execute().get();
 
                     List<HashMap<String, String>> currentPageResults = page.getPageResults();
 
@@ -212,7 +220,6 @@ public class searchNotificationWorker extends Worker {
 
             mNotificationManager.notify(1, mBuilder.build());
         }
-
 
         return Result.success();
     }

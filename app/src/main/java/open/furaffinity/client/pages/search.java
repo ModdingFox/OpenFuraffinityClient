@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,13 +10,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import open.furaffinity.client.utilities.webClient;
-
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
-public class search extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = search.class.getName();
+public class search extends open.furaffinity.client.abstractClasses.page {
+    private static String pagePath = "/search";
 
     private static List<String> rangeAllowedKeys = Arrays.asList("day", "3days", "week", "month", "all");
     private static List<String> modeAllowedKeys = Arrays.asList("all", "any", "extended");
@@ -28,7 +26,8 @@ public class search extends AsyncTask<webClient, Void, Void> {
 
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public search() {
+    public search(Context context, pageListener pageListener) {
+        super(context, pageListener);
         setPage("1");
         setRatingGeneral(true);
         requestParameters.put("order-by", "relevancy");//hacky but works for now
@@ -37,29 +36,30 @@ public class search extends AsyncTask<webClient, Void, Void> {
     }
 
     public search(search search) {
+        super(search);
         this.orderBy = search.orderBy;
         this.orderDirection = search.orderDirection;
         this.requestParameters = search.requestParameters;
         this.pageResults = search.pageResults;
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         orderBy = getDropDownOptions("order-by", html);
         orderDirection = getDropDownOptions("order-direction", html);
         pageResults = getResultsData(html);
+
+        if(orderBy != null && orderDirection != null && pageResults != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        String pagePath = "/search";
-        html = webClient[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
-        if (html != null) {
-            processPageData(html);
-        } else {
-            Log.e(TAG, "doInBackground: did not get data back from server");
-        }
-        return null;
+    protected Boolean doInBackground(Void... voids) {
+        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
+        if (webClient.getLastPageLoaded() && html != null) { return processPageData(html); }
+        return false;
     }
 
     public String getCurrentQuery() {
@@ -228,6 +228,4 @@ public class search extends AsyncTask<webClient, Void, Void> {
     public List<HashMap<String, String>> getPageResults() {
         return pageResults;
     }
-
-
 }

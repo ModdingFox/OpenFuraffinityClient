@@ -27,14 +27,12 @@ public class browse extends open.furaffinity.client.abstractClasses.page {
 
     public browse(Context context, pageListener pageListener) {
         super(context, pageListener);
-
         setPage("1");
         setRatingGeneral(true);
     }
 
     public browse(browse browse) {
         super(browse);
-
         this.cat = browse.cat;
         this.atype = browse.atype;
         this.species = browse.species;
@@ -196,6 +194,4 @@ public class browse extends open.furaffinity.client.abstractClasses.page {
     public List<HashMap<String, String>> getPageResults() {
         return pageResults;
     }
-
-
 }
