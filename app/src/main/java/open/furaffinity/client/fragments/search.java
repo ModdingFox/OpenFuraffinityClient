@@ -139,6 +139,7 @@ public class search extends Fragment {
         searchExtendedRadioButton = rootView.findViewById(R.id.searchExtendedRadioButton);
 
         fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
 
         search = new FloatingActionButton(getContext());
         savedSearches = new FloatingActionButton(getContext());
@@ -246,6 +247,7 @@ public class search extends Fragment {
                     isLoading = false;
                     initCurrentSettings();
                     loadCurrentSettings();
+                    fab.setVisibility(View.VISIBLE);
                     resetRecycler();
                 } else {
                     List<HashMap<String, String>> pageResults = page.getPageResults();
