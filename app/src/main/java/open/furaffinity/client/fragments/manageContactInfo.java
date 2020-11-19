@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.pagesRead.controlsContacts;
+import open.furaffinity.client.pages.controlsContacts;
 import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;

@@ -14,6 +14,8 @@ import open.furaffinity.client.fragments.manageAvatar;
 import open.furaffinity.client.fragments.manageWatches;
 import open.furaffinity.client.fragments.manageContactInfo;
 import open.furaffinity.client.fragments.manageFolders;
+import open.furaffinity.client.fragments.manageJournals;
+import open.furaffinity.client.fragments.manageUserPageAndProfileInformation;
 
 public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = profileSectionsPagerAdapter.class.getName();
@@ -40,7 +42,7 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 return new open.furaffinity.client.fragmentsOld.manageUserSettings();
             case 3:
-                return new open.furaffinity.client.fragmentsOld.manageUserPageAndProfileInformation();
+                return new manageUserPageAndProfileInformation();
             case 4:
                 return new manageContactInfo();
             case 5:
@@ -50,7 +52,7 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
             case 7:
                 return new manageFolders();
             case 8:
-                return new open.furaffinity.client.fragmentsOld.manageJournals();
+                return new manageJournals();
             case 9:
                 return new open.furaffinity.client.fragmentsOld.manageFavorites();
             case 10:

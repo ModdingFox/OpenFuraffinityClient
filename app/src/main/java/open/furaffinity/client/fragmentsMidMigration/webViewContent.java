@@ -35,11 +35,11 @@ public class webViewContent extends Fragment {
             String submissionDescription = getArguments().getString(messageIds.submissionDescription_MESSAGE);
             String pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 
-            if(submissionDescription == open.furaffinity.client.pagesRead.commissions.class.getName()) {
-                abstractPage = new open.furaffinity.client.pagesRead.commissions(getActivity(), new abstractPage.pageListener() {
+            if(submissionDescription == open.furaffinity.client.pages.commissions.class.getName()) {
+                abstractPage = new open.furaffinity.client.pages.commissions(getActivity(), new abstractPage.pageListener() {
                     @Override
                     public void requestSucceeded(abstractPage abstractPage) {
-                        mData = "<table>" + ((open.furaffinity.client.pagesRead.commissions)abstractPage).getCommissionBodyBody() + "</table>";
+                        mData = "<table>" + ((open.furaffinity.client.pages.commissions)abstractPage).getCommissionBodyBody() + "</table>";
                         updateUIElements();
                     }
 

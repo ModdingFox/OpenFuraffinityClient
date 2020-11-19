@@ -28,7 +28,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pagesRead.loginCheck;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
@@ -54,8 +54,8 @@ public class browse extends Fragment {
 
     private FloatingActionButton fab;
 
-    private open.furaffinity.client.pagesRead.loginCheck loginCheck;
-    private open.furaffinity.client.pagesRead.browse page;
+    private open.furaffinity.client.pages.loginCheck loginCheck;
+    private open.furaffinity.client.pages.browse page;
 
     private boolean isInitialized = false;
     private boolean isLoading = false;
@@ -89,7 +89,7 @@ public class browse extends Fragment {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
-            page = new open.furaffinity.client.pagesRead.browse(page);
+            page = new open.furaffinity.client.pages.browse(page);
             page.execute();
         }
     }
@@ -152,7 +152,7 @@ public class browse extends Fragment {
 
         loginCheck.execute();
 
-        page = new open.furaffinity.client.pagesRead.browse(this.getActivity(), new abstractPage.pageListener() {
+        page = new open.furaffinity.client.pages.browse(this.getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
                 if (!isInitialized) {
@@ -161,7 +161,7 @@ public class browse extends Fragment {
                     fab.setVisibility(View.VISIBLE);
                     resetRecycler();
                 } else {
-                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pagesRead.browse)abstractPage).getPageResults();
+                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.browse)abstractPage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 

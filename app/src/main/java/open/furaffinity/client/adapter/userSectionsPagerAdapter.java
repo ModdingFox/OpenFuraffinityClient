@@ -81,7 +81,7 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
             case 5:
                 webViewContent newUserCommissionsFragment = new webViewContent();
                 bundle.putString(messageIds.pagePath_MESSAGE, user.getUserCommissionPath());
-                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pagesRead.commissions.class.getName());
+                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.commissions.class.getName());
                 newUserCommissionsFragment.setArguments(bundle);
                 return newUserCommissionsFragment;
             case 6:

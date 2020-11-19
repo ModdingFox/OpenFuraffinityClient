@@ -23,7 +23,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.manageAvatarListAdapter;
 import open.furaffinity.client.dialogs.uploadAvatarDialog;
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.pagesRead.controlsAvatar;
+import open.furaffinity.client.pages.controlsAvatar;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
@@ -86,12 +86,14 @@ public class manageAvatar extends Fragment {
                 mDataSet.clear();
                 mDataSet.addAll(((controlsAvatar)abstractPage).getPageResults());
                 mAdapter.notifyDataSetChanged();
+                //fab.setVisibility(View.VISIBLE);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void requestFailed(abstractPage abstractPage) {
+                fab.setVisibility(View.GONE);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), "Failed to load data for avatars", Toast.LENGTH_SHORT).show();

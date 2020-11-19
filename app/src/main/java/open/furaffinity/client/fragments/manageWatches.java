@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.watchListAdapter;
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.pagesRead.controlsBuddyList;
+import open.furaffinity.client.pages.controlsBuddyList;
 
 public class manageWatches extends Fragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
@@ -42,7 +42,7 @@ public class manageWatches extends Fragment {
     }
 
     private void fetchPageData() {
-        if (!isLoading) {
+        if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new controlsBuddyList(page);

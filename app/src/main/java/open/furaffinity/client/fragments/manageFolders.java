@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
@@ -29,8 +30,8 @@ import open.furaffinity.client.adapter.manageFolderListAdapter;
 import open.furaffinity.client.dialogs.controlsFoldersSubmissionsFolderDialog;
 import open.furaffinity.client.dialogs.spinnerTextDialog;
 import open.furaffinity.client.dialogs.textDialog;
-import open.furaffinity.client.pagesRead.controlsFoldersSubmissionsFolder;
-import open.furaffinity.client.pagesRead.controlsFoldersSubmissions;
+import open.furaffinity.client.pages.controlsFoldersSubmissionsFolder;
+import open.furaffinity.client.pages.controlsFoldersSubmissions;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
@@ -114,8 +115,18 @@ public class manageFolders extends Fragment {
         page = new controlsFoldersSubmissions(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                mDataSet.addAll(page.getPageResults());
-                mAdapter.notifyDataSetChanged();
+                List<HashMap<String, String>> pageResults = ((controlsFoldersSubmissions)abstractPage).getPageResults();
+
+                int curSize = mAdapter.getItemCount();
+
+                //Deduplicate results
+                List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                newPostPaths.removeAll(oldPostPaths);
+                pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+                mDataSet.addAll(pageResults);
+                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+
                 fab.setVisibility(View.VISIBLE);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);

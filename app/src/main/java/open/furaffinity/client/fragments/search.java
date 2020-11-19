@@ -40,7 +40,7 @@ import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.adapter.savedSearchListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pagesRead.loginCheck;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
 import open.furaffinity.client.sqlite.searchDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
@@ -93,8 +93,8 @@ public class search extends Fragment {
     private FloatingActionButton searchSettings;
     private FloatingActionButton saveSearch;
 
-    private open.furaffinity.client.pagesRead.loginCheck loginCheck;
-    private open.furaffinity.client.pagesRead.search page;
+    private open.furaffinity.client.pages.loginCheck loginCheck;
+    private open.furaffinity.client.pages.search page;
 
     private boolean isInitialized = false;
     private boolean isLoading = false;
@@ -176,7 +176,7 @@ public class search extends Fragment {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
-            page = new open.furaffinity.client.pagesRead.search(page);
+            page = new open.furaffinity.client.pages.search(page);
             page.execute();
         }
     }
@@ -397,7 +397,7 @@ public class search extends Fragment {
 
         loginCheck.execute();
 
-        page = new open.furaffinity.client.pagesRead.search(getActivity(), new abstractPage.pageListener() {
+        page = new open.furaffinity.client.pages.search(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
                 if (!isInitialized) {
@@ -407,7 +407,7 @@ public class search extends Fragment {
                     fab.setVisibility(View.VISIBLE);
                     resetRecycler();
                 } else {
-                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pagesRead.search)abstractPage).getPageResults();
+                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.search)abstractPage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 
@@ -419,13 +419,13 @@ public class search extends Fragment {
                     mDataSet.addAll(pageResults);
                     mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
 
-                    if (((open.furaffinity.client.pagesRead.search)abstractPage).getPageResults() != null && ((open.furaffinity.client.pagesRead.search)abstractPage).getPageResults().size() > 0 && ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentPage().equals("1")) {
+                    if (((open.furaffinity.client.pages.search)abstractPage).getPageResults() != null && ((open.furaffinity.client.pages.search)abstractPage).getPageResults().size() > 0 && ((open.furaffinity.client.pages.search)abstractPage).getCurrentPage().equals("1")) {
                         //Find any saved searches that meet the current search criteria and apply the most recent link to them
                         searchDBHelper dbHelper = new searchDBHelper(getActivity());
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                         ContentValues values = new ContentValues();
-                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, ((open.furaffinity.client.pagesRead.search)abstractPage).getPageResults().get(0).get("postPath"));
+                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, ((open.furaffinity.client.pages.search)abstractPage).getPageResults().get(0).get("postPath"));
 
                         String selection = "";
                         selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
@@ -444,20 +444,20 @@ public class search extends Fragment {
                         selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
 
                         String[] selectionArgs = {
-                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentQuery(),
-                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentOrderBy(),
-                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentOrderDirection(),
-                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentRange(),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentRatingMature().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypeArt().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypeStory().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
-                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentMode()
+                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentQuery(),
+                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentOrderBy(),
+                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentOrderDirection(),
+                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentRange(),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentRatingMature().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypeArt().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypeStory().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
+                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentMode()
                         };
 
                         db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);

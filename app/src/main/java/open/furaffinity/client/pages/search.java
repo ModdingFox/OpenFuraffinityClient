@@ -1,4 +1,4 @@
-package open.furaffinity.client.pagesRead;
+package open.furaffinity.client.pages;
 
 import android.content.Context;
 import android.util.Log;

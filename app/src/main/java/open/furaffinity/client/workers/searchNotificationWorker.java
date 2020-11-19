@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.pagesRead.search;
+import open.furaffinity.client.pages.search;
 import open.furaffinity.client.sqlite.searchContract;
 import open.furaffinity.client.sqlite.searchDBHelper;
 

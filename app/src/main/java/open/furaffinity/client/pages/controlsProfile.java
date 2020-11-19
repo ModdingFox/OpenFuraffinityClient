@@ -1,6 +1,6 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsProfile extends AsyncTask<webClient, Void, Void> {
+public class controlsProfile extends abstractPage {
     private static final String TAG = controlsProfile.class.getName();
 
     private static String pagePath = "/controls/profile/";
@@ -78,10 +78,16 @@ public class controlsProfile extends AsyncTask<webClient, Void, Void> {
     private List<inputItem> pageResults = new ArrayList<>();
     private String key;
 
-    public controlsProfile() {
+    public controlsProfile(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageData(String html) {
+
+    public controlsProfile(controlsProfile controlsProfile) {
+        super(controlsProfile);
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements controlPanelItemContainerDiv = doc.select("div.control-panel-item-container");
@@ -160,14 +166,21 @@ public class controlsProfile extends AsyncTask<webClient, Void, Void> {
                 key = keyInput.attr("value");
             }
         }
+
+        if(controlPanelItemContainerDiv.size() > 0 && msgFormForm != null){
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {
