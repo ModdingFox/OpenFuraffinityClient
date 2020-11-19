@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.pagesRead.controlsContacts;
 import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
@@ -28,10 +31,9 @@ public class manageContactInfo extends Fragment {
     private fabCircular fab;
 
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pagesOld.controlsContacts page;
+    private controlsContacts page;
 
-    private int loadingStopCounter = 3;
-
+    private boolean isLoading = false;
     List<dynamicEditItem> uiElementList;
 
     private void getElements(View rootView) {
@@ -39,41 +41,51 @@ public class manageContactInfo extends Fragment {
 
         fab = rootView.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_menu_save);
-    }
-
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pagesOld.controlsContacts();
+        fab.setVisibility(View.GONE);
     }
 
     private void fetchPageData() {
-        if (!(loadingStopCounter == 0)) {
-            page = new open.furaffinity.client.pagesOld.controlsContacts();
-            try {
-                page.execute(webClient).get();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "loadPage: ", e);
-            }
-
-            if (uiElementList != null) {
-                for (dynamicEditItem currentItem : uiElementList) {
-                    currentItem.removeFromView();
-                }
-            }
-
-            uiElementList = new ArrayList<>();
-
-            if (page.getPageResults() != null) {
-                for (HashMap<String, String> currentItem : page.getPageResults()) {
-                    String label = ((currentItem.containsKey("label")) ? (currentItem.get("label")) : (""));
-                    String value = ((currentItem.containsKey("value")) ? (currentItem.get("value")) : (""));
-                    String name = ((currentItem.containsKey("name")) ? (currentItem.get("name")) : (""));
-                    String placeholder = ((currentItem.containsKey("placeholder")) ? (currentItem.get("placeholder")) : (""));
-
-                    uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, name, label, value, placeholder));
-                }
-            }
+        if (!isLoading) {
+            isLoading = true;
+            page.execute();
         }
+    }
+
+    private void initPages() {
+        webClient = new webClient(requireContext());
+        page = new controlsContacts(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded() {
+                if (uiElementList != null) {
+                    for (dynamicEditItem currentItem : uiElementList) {
+                        currentItem.removeFromView();
+                    }
+                }
+
+                uiElementList = new ArrayList<>();
+
+                if (page.getPageResults() != null) {
+                    for (HashMap<String, String> currentItem : page.getPageResults()) {
+                        String label = ((currentItem.containsKey("label")) ? (currentItem.get("label")) : (""));
+                        String value = ((currentItem.containsKey("value")) ? (currentItem.get("value")) : (""));
+                        String name = ((currentItem.containsKey("name")) ? (currentItem.get("name")) : (""));
+                        String placeholder = ((currentItem.containsKey("placeholder")) ? (currentItem.get("placeholder")) : (""));
+
+                        uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, name, label, value, placeholder));
+                    }
+                }
+
+                fab.setVisibility(View.VISIBLE);
+                isLoading = false;
+            }
+
+            @Override
+            public void requestFailed() {
+                fab.setVisibility(View.GONE);
+                isLoading = false;
+                Toast.makeText(getActivity(), "Failed to load data for contact info", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateUIElementListeners(View rootView) {
@@ -92,7 +104,7 @@ public class manageContactInfo extends Fragment {
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pagesOld.controlsContacts.getPagePath(), params);
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsContacts.getPagePath(), params);
                             return null;
                         }
                     }.execute(webClient).get();
@@ -111,7 +123,7 @@ public class manageContactInfo extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_scrollview_with_fab, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
         updateUIElementListeners(rootView);
         return rootView;

@@ -1,4 +1,4 @@
-package open.furaffinity.client.pages;
+package open.furaffinity.client.pagesRead;
 
 import android.content.Context;
 
@@ -10,6 +10,8 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsAvatar extends abstractPage {
     private static String pagePath = "/controls/avatar/";

@@ -22,8 +22,8 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.manageAvatarListAdapter;
 import open.furaffinity.client.dialogs.uploadAvatarDialog;
-import open.furaffinity.client.pages.abstractPage;
-import open.furaffinity.client.pages.controlsAvatar;
+import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.pagesRead.controlsAvatar;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 

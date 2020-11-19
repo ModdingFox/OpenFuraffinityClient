@@ -18,9 +18,8 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.watchListAdapter;
-import open.furaffinity.client.pages.abstractPage;
-import open.furaffinity.client.pages.controlsBuddyList;
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.pagesRead.controlsBuddyList;
 
 public class manageWatches extends Fragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
@@ -29,7 +28,6 @@ public class manageWatches extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
 
-    private open.furaffinity.client.utilities.webClient webClient;
     private controlsBuddyList page;
 
     private int loadingStopCounter = 3;
@@ -60,8 +58,6 @@ public class manageWatches extends Fragment {
     }
 
     private void initPages() {
-        webClient = new webClient(requireContext());
-
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new watchListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);

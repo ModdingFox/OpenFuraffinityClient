@@ -1,6 +1,6 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.pagesRead;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,12 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = controlsFoldersSubmissions.class.getName();
-
+public class controlsFoldersSubmissions extends abstractPage {
     private static String pagePath = "/controls/folders/submissions/";
+    
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
     private String createGroupKey = "";
@@ -24,7 +23,12 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
     HashMap<String, String> existingGroups = new HashMap<>();
     String selectedGroup;
 
-    public controlsFoldersSubmissions() {
+    public controlsFoldersSubmissions(Context context, pageListener pageListener) {
+        super(context, pageListener);
+    }
+
+    public controlsFoldersSubmissions(controlsFoldersSubmissions controlsFoldersSubmissions){
+        super(controlsFoldersSubmissions);
     }
 
     private HashMap<String, String> extractFormelements(Element form, String name) {
@@ -57,7 +61,7 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
         return result;
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements groupsAndFolders = doc.select("tr.group-row,tr.folder-row");
@@ -158,14 +162,21 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
                 }
             }
         }
+
+        if(addGroupForm != null &&  renameGroupForm != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {

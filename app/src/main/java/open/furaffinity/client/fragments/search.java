@@ -34,13 +34,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.pages.abstractPage;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.adapter.savedSearchListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pages.loginCheck;
+import open.furaffinity.client.pagesRead.loginCheck;
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
 import open.furaffinity.client.sqlite.searchDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
@@ -93,8 +93,8 @@ public class search extends Fragment {
     private FloatingActionButton searchSettings;
     private FloatingActionButton saveSearch;
 
-    private open.furaffinity.client.pages.loginCheck loginCheck;
-    private open.furaffinity.client.pages.search page;
+    private open.furaffinity.client.pagesRead.loginCheck loginCheck;
+    private open.furaffinity.client.pagesRead.search page;
 
     private boolean isInitialized = false;
     private boolean isLoading = false;
@@ -176,7 +176,7 @@ public class search extends Fragment {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
-            page = new open.furaffinity.client.pages.search(page);
+            page = new open.furaffinity.client.pagesRead.search(page);
             page.execute();
         }
     }
@@ -397,7 +397,7 @@ public class search extends Fragment {
 
         loginCheck.execute();
 
-        page = new open.furaffinity.client.pages.search(getActivity(), new abstractPage.pageListener() {
+        page = new open.furaffinity.client.pagesRead.search(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded() {
                 if (!isInitialized) {

@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
@@ -23,11 +24,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.manageFolderListAdapter;
 import open.furaffinity.client.dialogs.controlsFoldersSubmissionsFolderDialog;
 import open.furaffinity.client.dialogs.spinnerTextDialog;
 import open.furaffinity.client.dialogs.textDialog;
-import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.pagesRead.controlsFoldersSubmissions;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
@@ -41,7 +43,6 @@ public class manageFolders extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     private fabCircular fab;
     private FloatingActionButton createFolder;
@@ -49,8 +50,9 @@ public class manageFolders extends Fragment {
     private FloatingActionButton renameGroup;
 
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pagesOld.controlsFoldersSubmissions page;
+    private controlsFoldersSubmissions page;
 
+    private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     private void getElements(View rootView) {
@@ -62,6 +64,8 @@ public class manageFolders extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
         fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+
         createFolder = new FloatingActionButton(getContext());
         createGroup = new FloatingActionButton(getContext());
         renameGroup = new FloatingActionButton(getContext());
@@ -83,26 +87,47 @@ public class manageFolders extends Fragment {
         fab.addButton(renameGroup, 1.5f, 180);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pagesOld.controlsFoldersSubmissions();
-    }
-
     private void fetchPageData() {
-        page = new open.furaffinity.client.pagesOld.controlsFoldersSubmissions();
-        try {
-            page.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "loadNextPage: ", e);
+        if (!isLoading) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new controlsFoldersSubmissions(page);
+            page.execute();
         }
-
-        mDataSet = page.getPageResults();
     }
 
-    private void updateUIElements() {
+    private void resetRecycler() {
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        mAdapter.notifyDataSetChanged();
+        fetchPageData();
+    }
+
+    private void initPages() {
+        webClient = new webClient(requireContext());
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageFolderListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+
+        page = new controlsFoldersSubmissions(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded() {
+                mDataSet.addAll(page.getPageResults());
+                mAdapter.notifyDataSetChanged();
+                fab.setVisibility(View.VISIBLE);
+                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void requestFailed() {
+                fab.setVisibility(View.GONE);
+                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Failed to load data for folders", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void moveFolder(View rootView, String postURL, String key, String position, String id, String idName) {
@@ -120,15 +145,7 @@ public class manageFolders extends Fragment {
                 }
             }.execute(webClient).get();
 
-            recyclerView.scrollTo(0, 0);
-            mDataSet.clear();
-            mAdapter.notifyDataSetChanged();
-            endlessRecyclerViewScrollListener.resetState();
-
-            initClientAndPage();
-            fetchPageData();
-            updateUIElements();
-            updateUIElementListeners(rootView);
+            resetRecycler();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not move item up/down: ", e);
         }
@@ -170,15 +187,7 @@ public class manageFolders extends Fragment {
                             }
                         }.execute(webClient).get();
 
-                        recyclerView.scrollTo(0, 0);
-                        mDataSet.clear();
-                        mAdapter.notifyDataSetChanged();
-                        endlessRecyclerViewScrollListener.resetState();
-
-                        initClientAndPage();
-                        fetchPageData();
-                        updateUIElements();
-                        updateUIElementListeners(rootView);
+                        resetRecycler();
                     } catch (ExecutionException | InterruptedException e) {
                         Log.e(TAG, "Could not add/edit folder: ", e);
                     }
@@ -195,27 +204,9 @@ public class manageFolders extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-
-                initClientAndPage();
-                fetchPageData();
-                updateUIElements();
-                updateUIElementListeners(rootView);
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
-
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
-            @Override
-            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
-            }
-        };
-
-        recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
         ((manageFolderListAdapter) mAdapter).setListener(new manageFolderListAdapter.manageFolderListAdapterListener() {
             @Override
@@ -243,15 +234,7 @@ public class manageFolders extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    recyclerView.scrollTo(0, 0);
-                    mDataSet.clear();
-                    mAdapter.notifyDataSetChanged();
-                    endlessRecyclerViewScrollListener.resetState();
-
-                    initClientAndPage();
-                    fetchPageData();
-                    updateUIElements();
-                    updateUIElementListeners(rootView);
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not move item up/down: ", e);
                 }
@@ -292,15 +275,7 @@ public class manageFolders extends Fragment {
                                 }
                             }.execute(webClient).get();
 
-                            recyclerView.scrollTo(0, 0);
-                            mDataSet.clear();
-                            mAdapter.notifyDataSetChanged();
-                            endlessRecyclerViewScrollListener.resetState();
-
-                            initClientAndPage();
-                            fetchPageData();
-                            updateUIElements();
-                            updateUIElementListeners(rootView);
+                            resetRecycler();
                         } catch (ExecutionException | InterruptedException e) {
                             Log.e(TAG, "Could not create group: ", e);
                         }
@@ -337,15 +312,7 @@ public class manageFolders extends Fragment {
                                 }
                             }.execute(webClient).get();
 
-                            recyclerView.scrollTo(0, 0);
-                            mDataSet.clear();
-                            mAdapter.notifyDataSetChanged();
-                            endlessRecyclerViewScrollListener.resetState();
-
-                            initClientAndPage();
-                            fetchPageData();
-                            updateUIElements();
-                            updateUIElementListeners(rootView);
+                            resetRecycler();
                         } catch (ExecutionException | InterruptedException e) {
                             Log.e(TAG, "Could not rename group: ", e);
                         }
@@ -364,9 +331,8 @@ public class manageFolders extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

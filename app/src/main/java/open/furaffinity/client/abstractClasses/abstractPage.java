@@ -1,4 +1,4 @@
-package open.furaffinity.client.pages;
+package open.furaffinity.client.abstractClasses;
 
 import android.content.Context;
 import android.os.AsyncTask;

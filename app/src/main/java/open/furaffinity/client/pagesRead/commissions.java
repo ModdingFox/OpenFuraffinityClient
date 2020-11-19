@@ -1,10 +1,12 @@
-package open.furaffinity.client.pages;
+package open.furaffinity.client.pagesRead;
 
 import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
+import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class commissions extends abstractPage {
     private String pagePath;

@@ -1,4 +1,4 @@
-package open.furaffinity.client.pages;
+package open.furaffinity.client.pagesRead;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import open.furaffinity.client.abstractClasses.abstractPage;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
