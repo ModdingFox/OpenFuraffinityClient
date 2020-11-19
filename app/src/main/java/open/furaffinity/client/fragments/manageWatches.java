@@ -64,8 +64,8 @@ public class manageWatches extends Fragment {
 
         page = new controlsBuddyList(getActivity(), new abstractPage.pageListener() {
             @Override
-            public void requestSucceeded() {
-                List<HashMap<String, String>> pageResults = page.getPageResults();
+            public void requestSucceeded(abstractPage abstractPage) {
+                List<HashMap<String, String>> pageResults = ((controlsBuddyList)abstractPage).getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 
@@ -86,7 +86,7 @@ public class manageWatches extends Fragment {
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
                 loadingStopCounter--;
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);

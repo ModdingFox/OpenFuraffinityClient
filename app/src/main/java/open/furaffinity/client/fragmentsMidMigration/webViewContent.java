@@ -38,13 +38,13 @@ public class webViewContent extends Fragment {
             if(submissionDescription == open.furaffinity.client.pagesRead.commissions.class.getName()) {
                 abstractPage = new open.furaffinity.client.pagesRead.commissions(getActivity(), new abstractPage.pageListener() {
                     @Override
-                    public void requestSucceeded() {
+                    public void requestSucceeded(abstractPage abstractPage) {
                         mData = "<table>" + ((open.furaffinity.client.pagesRead.commissions)abstractPage).getCommissionBodyBody() + "</table>";
                         updateUIElements();
                     }
 
                     @Override
-                    public void requestFailed() {
+                    public void requestFailed(abstractPage abstractPage) {
                         Toast.makeText(getActivity(), "Failed to load data from commissions page", Toast.LENGTH_SHORT).show();
                     }
                 }, pagePath);

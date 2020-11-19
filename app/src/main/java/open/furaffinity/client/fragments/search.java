@@ -384,12 +384,12 @@ public class search extends Fragment {
             }
 
             @Override
-            public void requestSucceeded() {
+            public void requestSucceeded(abstractPage abstractPage) {
                 updateUIElements();
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
                 updateUIElements();
                 Toast.makeText(getActivity(), "Failed to detect login", Toast.LENGTH_SHORT).show();
             }
@@ -399,7 +399,7 @@ public class search extends Fragment {
 
         page = new open.furaffinity.client.pagesRead.search(getActivity(), new abstractPage.pageListener() {
             @Override
-            public void requestSucceeded() {
+            public void requestSucceeded(abstractPage abstractPage) {
                 if (!isInitialized) {
                     isLoading = false;
                     initCurrentSettings();
@@ -407,7 +407,7 @@ public class search extends Fragment {
                     fab.setVisibility(View.VISIBLE);
                     resetRecycler();
                 } else {
-                    List<HashMap<String, String>> pageResults = page.getPageResults();
+                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pagesRead.search)abstractPage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 
@@ -419,13 +419,13 @@ public class search extends Fragment {
                     mDataSet.addAll(pageResults);
                     mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
 
-                    if (page.getPageResults() != null && page.getPageResults().size() > 0 && page.getCurrentPage().equals("1")) {
+                    if (((open.furaffinity.client.pagesRead.search)abstractPage).getPageResults() != null && ((open.furaffinity.client.pagesRead.search)abstractPage).getPageResults().size() > 0 && ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentPage().equals("1")) {
                         //Find any saved searches that meet the current search criteria and apply the most recent link to them
                         searchDBHelper dbHelper = new searchDBHelper(getActivity());
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                         ContentValues values = new ContentValues();
-                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, page.getPageResults().get(0).get("postPath"));
+                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, ((open.furaffinity.client.pagesRead.search)abstractPage).getPageResults().get(0).get("postPath"));
 
                         String selection = "";
                         selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
@@ -444,20 +444,20 @@ public class search extends Fragment {
                         selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
 
                         String[] selectionArgs = {
-                                page.getCurrentQuery(),
-                                page.getCurrentOrderBy(),
-                                page.getCurrentOrderDirection(),
-                                page.getCurrentRange(),
-                                ((page.getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
-                                ((page.getCurrentRatingMature().equals("")) ? ("0") : ("1")),
-                                ((page.getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
-                                ((page.getCurrentTypeArt().equals("")) ? ("0") : ("1")),
-                                ((page.getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
-                                ((page.getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
-                                ((page.getCurrentTypeStory().equals("")) ? ("0") : ("1")),
-                                ((page.getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
-                                ((page.getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
-                                page.getCurrentMode()
+                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentQuery(),
+                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentOrderBy(),
+                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentOrderDirection(),
+                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentRange(),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentRatingMature().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypeArt().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypeStory().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
+                                ((open.furaffinity.client.pagesRead.search)abstractPage).getCurrentMode()
                         };
 
                         db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
@@ -470,7 +470,7 @@ public class search extends Fragment {
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), "Failed to load data from search page", Toast.LENGTH_SHORT).show();

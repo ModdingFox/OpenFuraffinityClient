@@ -82,16 +82,16 @@ public class manageAvatar extends Fragment {
 
         page = new controlsAvatar(getActivity(), new abstractPage.pageListener() {
             @Override
-            public void requestSucceeded() {
+            public void requestSucceeded(abstractPage abstractPage) {
                 mDataSet.clear();
-                mDataSet.addAll(page.getPageResults());
+                mDataSet.addAll(((controlsAvatar)abstractPage).getPageResults());
                 mAdapter.notifyDataSetChanged();
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), "Failed to load data for avatars", Toast.LENGTH_SHORT).show();

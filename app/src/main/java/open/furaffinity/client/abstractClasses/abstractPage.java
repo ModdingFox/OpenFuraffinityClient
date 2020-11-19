@@ -12,9 +12,9 @@ public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
     protected webClient webClient;
 
     public interface pageListener {
-        public void requestSucceeded();
+        public void requestSucceeded(abstractPage abstractPage);
 
-        public void requestFailed();
+        public void requestFailed(abstractPage abstractPage);
     }
 
     protected pageListener pageListener;
@@ -38,9 +38,9 @@ public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
         super.onPostExecute(aBoolean);
 
         if (aBoolean) {
-            this.pageListener.requestSucceeded();
+            this.pageListener.requestSucceeded(abstractPage.this);
         } else {
-            this.pageListener.requestFailed();
+            this.pageListener.requestFailed(abstractPage.this);
         }
     }
 }

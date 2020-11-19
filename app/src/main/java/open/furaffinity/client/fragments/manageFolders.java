@@ -29,6 +29,7 @@ import open.furaffinity.client.adapter.manageFolderListAdapter;
 import open.furaffinity.client.dialogs.controlsFoldersSubmissionsFolderDialog;
 import open.furaffinity.client.dialogs.spinnerTextDialog;
 import open.furaffinity.client.dialogs.textDialog;
+import open.furaffinity.client.pagesRead.controlsFoldersSubmissionsFolder;
 import open.furaffinity.client.pagesRead.controlsFoldersSubmissions;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
@@ -112,7 +113,7 @@ public class manageFolders extends Fragment {
 
         page = new controlsFoldersSubmissions(getActivity(), new abstractPage.pageListener() {
             @Override
-            public void requestSucceeded() {
+            public void requestSucceeded(abstractPage abstractPage) {
                 mDataSet.addAll(page.getPageResults());
                 mAdapter.notifyDataSetChanged();
                 fab.setVisibility(View.VISIBLE);
@@ -121,7 +122,7 @@ public class manageFolders extends Fragment {
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
@@ -152,52 +153,56 @@ public class manageFolders extends Fragment {
     }
 
     private void addEditFolder(View rootView, String postURL, String id) {
-        open.furaffinity.client.pagesOld.controlsFoldersSubmissionsFolder controlsFoldersSubmissionsFolder = new open.furaffinity.client.pagesOld.controlsFoldersSubmissionsFolder(postURL, id);
+        controlsFoldersSubmissionsFolder controlsFoldersSubmissionsFolder = new controlsFoldersSubmissionsFolder(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                controlsFoldersSubmissionsFolderDialog controlsFoldersSubmissionsFolderDialog = new controlsFoldersSubmissionsFolderDialog();
+                controlsFoldersSubmissionsFolderDialog.setData(((controlsFoldersSubmissionsFolder)abstractPage).getExistingGroups());
+                controlsFoldersSubmissionsFolderDialog.setSpinnerSelected(((controlsFoldersSubmissionsFolder)abstractPage).getSelectedGroup());
+                controlsFoldersSubmissionsFolderDialog.setFolderName(((controlsFoldersSubmissionsFolder)abstractPage).getFolderName());
+                controlsFoldersSubmissionsFolderDialog.setDescription(((controlsFoldersSubmissionsFolder)abstractPage).getDescription());
 
-        try {
-            controlsFoldersSubmissionsFolder.execute(webClient).get();
+                controlsFoldersSubmissionsFolderDialog.setListener(new controlsFoldersSubmissionsFolderDialog.controlsFoldersSubmissionsFolderDialogListener() {
+                    @Override
+                    public void onDialogPositiveClick(String spinnerSelected, String groupName, String folderName, String description) {
+                        HashMap<String, String> params = new HashMap<>();
+                        if (id == null) {
+                            params.put("folder_id", "");
+                        } else {
+                            params.put("folder_id", id);
+                        }
+                        params.put("group_id", spinnerSelected);
+                        params.put("create_group_name", groupName);
+                        params.put("folder_name", folderName);
+                        params.put("folder_description", description);
+                        params.put("key", ((controlsFoldersSubmissionsFolder)abstractPage).getKey());
 
-            controlsFoldersSubmissionsFolderDialog controlsFoldersSubmissionsFolderDialog = new controlsFoldersSubmissionsFolderDialog();
-            controlsFoldersSubmissionsFolderDialog.setData(controlsFoldersSubmissionsFolder.getExistingGroups());
-            controlsFoldersSubmissionsFolderDialog.setSpinnerSelected(controlsFoldersSubmissionsFolder.getSelectedGroup());
-            controlsFoldersSubmissionsFolderDialog.setFolderName(controlsFoldersSubmissionsFolder.getFolderName());
-            controlsFoldersSubmissionsFolderDialog.setDescription(controlsFoldersSubmissionsFolder.getDescription());
+                        try {
+                            new AsyncTask<webClient, Void, Void>() {
+                                @Override
+                                protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + ((controlsFoldersSubmissionsFolder)abstractPage).getPagePath(), params);
+                                    return null;
+                                }
+                            }.execute(webClient).get();
 
-            controlsFoldersSubmissionsFolderDialog.setListener(new controlsFoldersSubmissionsFolderDialog.controlsFoldersSubmissionsFolderDialogListener() {
-                @Override
-                public void onDialogPositiveClick(String spinnerSelected, String groupName, String folderName, String description) {
-                    HashMap<String, String> params = new HashMap<>();
-                    if (id == null) {
-                        params.put("folder_id", "");
-                    } else {
-                        params.put("folder_id", id);
+                            resetRecycler();
+                        } catch (ExecutionException | InterruptedException e) {
+                            Log.e(TAG, "Could not add/edit folder: ", e);
+                        }
                     }
-                    params.put("group_id", spinnerSelected);
-                    params.put("create_group_name", groupName);
-                    params.put("folder_name", folderName);
-                    params.put("folder_description", description);
-                    params.put("key", controlsFoldersSubmissionsFolder.getKey());
+                });
 
-                    try {
-                        new AsyncTask<webClient, Void, Void>() {
-                            @Override
-                            protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                                webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsFoldersSubmissionsFolder.getPagePath(), params);
-                                return null;
-                            }
-                        }.execute(webClient).get();
+                controlsFoldersSubmissionsFolderDialog.show(getChildFragmentManager(), "editFolder");
+            }
 
-                        resetRecycler();
-                    } catch (ExecutionException | InterruptedException e) {
-                        Log.e(TAG, "Could not add/edit folder: ", e);
-                    }
-                }
-            });
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to load data for folder", Toast.LENGTH_SHORT).show();
+            }
+        }, postURL, id);
 
-            controlsFoldersSubmissionsFolderDialog.show(getChildFragmentManager(), "editFolder");
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "getFolderInfo: ", e);
-        }
+        controlsFoldersSubmissionsFolder.execute();
     }
 
     private void updateUIElementListeners(View rootView) {

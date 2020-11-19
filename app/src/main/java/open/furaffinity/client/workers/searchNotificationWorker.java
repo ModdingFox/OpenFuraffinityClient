@@ -42,12 +42,12 @@ public class searchNotificationWorker extends Worker {
     private void initClientAndPage() {
         page = new search(context, new abstractPage.pageListener() {
             @Override
-            public void requestSucceeded() {
+            public void requestSucceeded(abstractPage abstractPage) {
 
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
 
             }
         });

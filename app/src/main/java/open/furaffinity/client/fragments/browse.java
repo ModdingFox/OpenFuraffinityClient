@@ -139,12 +139,12 @@ public class browse extends Fragment {
             }
 
             @Override
-            public void requestSucceeded() {
+            public void requestSucceeded(abstractPage abstractPage) {
                 updateUIElements();
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
                 updateUIElements();
                 Toast.makeText(getActivity(), "Failed to detect login", Toast.LENGTH_SHORT).show();
             }
@@ -154,14 +154,14 @@ public class browse extends Fragment {
 
         page = new open.furaffinity.client.pagesRead.browse(this.getActivity(), new abstractPage.pageListener() {
             @Override
-            public void requestSucceeded() {
+            public void requestSucceeded(abstractPage abstractPage) {
                 if (!isInitialized) {
                     isLoading = false;
                     initCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
                     resetRecycler();
                 } else {
-                    List<HashMap<String, String>> pageResults = page.getPageResults();
+                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pagesRead.browse)abstractPage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 
@@ -179,7 +179,7 @@ public class browse extends Fragment {
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), "Failed to load data from browse page", Toast.LENGTH_SHORT).show();

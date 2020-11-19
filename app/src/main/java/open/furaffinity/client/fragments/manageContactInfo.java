@@ -55,7 +55,7 @@ public class manageContactInfo extends Fragment {
         webClient = new webClient(requireContext());
         page = new controlsContacts(getActivity(), new abstractPage.pageListener() {
             @Override
-            public void requestSucceeded() {
+            public void requestSucceeded(abstractPage abstractPage) {
                 if (uiElementList != null) {
                     for (dynamicEditItem currentItem : uiElementList) {
                         currentItem.removeFromView();
@@ -64,8 +64,8 @@ public class manageContactInfo extends Fragment {
 
                 uiElementList = new ArrayList<>();
 
-                if (page.getPageResults() != null) {
-                    for (HashMap<String, String> currentItem : page.getPageResults()) {
+                if (((controlsContacts)abstractPage).getPageResults() != null) {
+                    for (HashMap<String, String> currentItem : ((controlsContacts)abstractPage).getPageResults()) {
                         String label = ((currentItem.containsKey("label")) ? (currentItem.get("label")) : (""));
                         String value = ((currentItem.containsKey("value")) ? (currentItem.get("value")) : (""));
                         String name = ((currentItem.containsKey("name")) ? (currentItem.get("name")) : (""));
@@ -80,7 +80,7 @@ public class manageContactInfo extends Fragment {
             }
 
             @Override
-            public void requestFailed() {
+            public void requestFailed(abstractPage abstractPage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data for contact info", Toast.LENGTH_SHORT).show();
