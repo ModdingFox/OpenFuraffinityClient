@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import open.furaffinity.client.pages.msgPms;
 import open.furaffinity.client.utilities.webClient;
 
 public class view extends AsyncTask<webClient, Void, Void> {
@@ -83,7 +84,7 @@ public class view extends AsyncTask<webClient, Void, Void> {
                         download = "https:" + currentElement.attr("href");
                         break;
                     case "Note":
-                        note = currentElement.attr("href").replace(open.furaffinity.client.pagesOld.msgPms.getNotePathPrefix(), "");
+                        note = currentElement.attr("href").replace(msgPms.getNotePathPrefix(), "");
                         note = note.substring(0, note.length() - 1);
                         break;
                     case "Next":

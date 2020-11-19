@@ -10,10 +10,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragmentsOld.comments;
+import open.furaffinity.client.fragmentsMidMigration.comments;
 import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.fragmentsMidMigration.webViewContent;
-import open.furaffinity.client.pagesOld.journal;
+import open.furaffinity.client.pages.journal;
 import open.furaffinity.client.utilities.messageIds;
 
 public class journalSectionsPagerAdapter extends FragmentPagerAdapter {
@@ -42,7 +42,6 @@ public class journalSectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 comments newJournalCommentsFragment = new comments();
                 bundle.putString(messageIds.pagePath_MESSAGE, journal.getPagePath());
-                bundle.putString(messageIds.submissionComments_MESSAGE, journal.getJournalComments());
                 bundle.putString(messageIds.SubmissionCommentsType_MESSAGE, "journal");
                 newJournalCommentsFragment.setArguments(bundle);
                 return newJournalCommentsFragment;

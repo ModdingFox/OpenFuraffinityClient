@@ -417,7 +417,7 @@ public class search extends Fragment {
                     newPostPaths.removeAll(oldPostPaths);
                     pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
                     mDataSet.addAll(pageResults);
-                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
                     if (((open.furaffinity.client.pages.search)abstractPage).getPageResults() != null && ((open.furaffinity.client.pages.search)abstractPage).getPageResults().size() > 0 && ((open.furaffinity.client.pages.search)abstractPage).getCurrentPage().equals("1")) {
                         //Find any saved searches that meet the current search criteria and apply the most recent link to them

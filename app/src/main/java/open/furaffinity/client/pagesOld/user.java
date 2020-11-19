@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import open.furaffinity.client.pages.msgPms;
 import open.furaffinity.client.utilities.webClient;
 
 public class user extends AsyncTask<webClient, Void, Void> {
@@ -178,7 +179,7 @@ public class user extends AsyncTask<webClient, Void, Void> {
                             watchUnWatch = userNavControlsDivElement.attr("href");
                             break;
                         case "Note":
-                            noteUser = userNavControlsDivElement.attr("href").replace(open.furaffinity.client.pagesOld.msgPms.getNotePathPrefix(), "");
+                            noteUser = userNavControlsDivElement.attr("href").replace(msgPms.getNotePathPrefix(), "");
                             noteUser = noteUser.substring(0, noteUser.length() - 1);
                             break;
                         case "Block":

@@ -71,6 +71,8 @@ public class manageSubmissions extends Fragment {
         public void requestSucceeded(abstractPage abstractPage) {
             List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
 
+            int curSize = mAdapter.getItemCount();
+
             if (pageResults.size() == 0 && loadingStopCounter > 0) {
                 loadingStopCounter--;
             }
@@ -81,6 +83,7 @@ public class manageSubmissions extends Fragment {
             newPostPaths.removeAll(oldPostPaths);
             pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
             mDataSet.addAll(pageResults);
+            mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
             fab.setVisibility(View.VISIBLE);
             isLoading = false;

@@ -92,10 +92,16 @@ public class manageShouts extends Fragment {
     private void initPages() {
         webClient = new webClient(requireContext());
 
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        mAdapter = new commentListAdapter(mDataSet, getActivity(), true);
+        recyclerView.setAdapter(mAdapter);
+
         page = new controlsShouts(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
                 List<HashMap<String, String>> pageResults = ((controlsShouts)abstractPage).getPageResults();
+
+                int curSize = mAdapter.getItemCount();
 
                 if (pageResults.size() == 0 && loadingStopCounter > 0) {
                     loadingStopCounter--;
@@ -107,6 +113,7 @@ public class manageShouts extends Fragment {
                 newPostPaths.removeAll(oldPostPaths);
                 pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("checkId"))).collect(Collectors.toList());
                 mDataSet.addAll(pageResults);
+                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
                 fab.setVisibility(View.VISIBLE);
                 isLoading = false;
@@ -121,12 +128,6 @@ public class manageShouts extends Fragment {
                 Toast.makeText(getActivity(), "Failed to load data for shouts", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void updateUIElements() {
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new commentListAdapter(mDataSet, getActivity(), true);
-        recyclerView.setAdapter(mAdapter);
     }
 
     private void updateUIElementListeners(View rootView) {
@@ -176,7 +177,6 @@ public class manageShouts extends Fragment {
         getElements(rootView);
         initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

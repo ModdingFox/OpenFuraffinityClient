@@ -21,7 +21,6 @@ import java.util.TimeZone;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.historyListAdapter;
-import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.messageIds;
@@ -61,7 +60,7 @@ public class historyList extends Fragment {
         switch (currentView) {
             case 0:
                 tableName = historyItemEntry.TABLE_NAME_JOURNAL;
-                routableClass = open.furaffinity.client.fragmentsOld.journal.class.getName();
+                routableClass = journal.class.getName();
                 break;
             case 1:
                 tableName = historyItemEntry.TABLE_NAME_USER;

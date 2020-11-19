@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragmentsMidMigration;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -22,8 +23,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
+import open.furaffinity.client.pages.journal;
 import open.furaffinity.client.pagesOld.loginTest;
 import open.furaffinity.client.utilities.html;
 import open.furaffinity.client.utilities.messageIds;
@@ -47,7 +50,7 @@ public class comments extends Fragment {
 
     private open.furaffinity.client.utilities.webClient webClient;
     private open.furaffinity.client.pagesOld.loginTest loginTest;
-    private open.furaffinity.client.pagesOld.journal journal;
+    private open.furaffinity.client.pages.journal journal;
     private open.furaffinity.client.pagesOld.view view;
 
     private void getElements(View rootView) {
@@ -73,9 +76,15 @@ public class comments extends Fragment {
             Log.e(TAG, "Could not load page: ", e);
         }
 
-        mDataSet = html.commentsToListHash(getArguments().getString(messageIds.SubmissionComments_MESSAGE));
         pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
         pageType = getArguments().getString(messageIds.SubmissionCommentsType_MESSAGE);
+
+        //for now doing this just for journal will come back and re work view so this always just loads everytime removing the need for this function
+        if(pageType == "journal") {
+            fetchPageData();
+        } else {
+            mDataSet = html.commentsToListHash(getArguments().getString(messageIds.SubmissionComments_MESSAGE));
+        }
     }
 
     private void fetchPageData() {
@@ -90,12 +99,25 @@ public class comments extends Fragment {
         if (pagePath != null && pageType != null) {
             switch (pageType) {
                 case "journal":
-                    journal = new open.furaffinity.client.pagesOld.journal(pagePath);
+                    journal = new journal(getActivity(), new abstractPage.pageListener() {
+                        @Override
+                        public void requestSucceeded(abstractPage abstractPage) {
+                            comment.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void requestFailed(abstractPage abstractPage) {
+                            comment.setVisibility(View.GONE);
+                            Toast.makeText(getActivity(), "Failed to load data for journal", Toast.LENGTH_SHORT).show();
+                        }
+                    }, pagePath);
+
                     try {
-                        journal.execute(webClient).get();
+                        journal.execute().get();
                     } catch (ExecutionException | InterruptedException e) {
                         Log.e(TAG, "Could not load page: ", e);
                     }
+
                     mDataSet = html.commentsToListHash(journal.getJournalComments());
                     break;
                 case "view":

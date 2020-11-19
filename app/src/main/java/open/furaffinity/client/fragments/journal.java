@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -26,10 +27,10 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.journalSectionsPagerAdapter;
-import open.furaffinity.client.fragments.settings;
-import open.furaffinity.client.pagesOld.loginTest;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
@@ -55,8 +56,8 @@ public class journal extends Fragment {
     private FloatingActionButton sendNote;
 
     private webClient webClient;
-    private open.furaffinity.client.pagesOld.loginTest loginTest;
-    private open.furaffinity.client.pagesOld.journal page;
+    private open.furaffinity.client.pages.loginCheck loginCheck;
+    private open.furaffinity.client.pages.journal page;
 
     private void saveHistory() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
@@ -116,27 +117,44 @@ public class journal extends Fragment {
 
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
-        loginTest = new loginTest();
-        page = new open.furaffinity.client.pagesOld.journal(pagePath);
+
+        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        page = new open.furaffinity.client.pages.journal(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to load data for journal", Toast.LENGTH_SHORT).show();
+            }
+        }, pagePath);
     }
 
     private void fetchPageData() {
-        loginTest = new loginTest();
         try {
-            loginTest.execute(webClient).get();
-            page.execute(webClient).get();
+            loginCheck.execute().get();
+            page.execute().get();
             saveHistory();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
     }
 
-    private void checkPageLoaded() {
-
-    }
-
     private void updateUIElements() {
-        if (loginTest.getIsLoggedIn() && page.getWatchUnWatch() != null && page.getNoteUser() != null) {
+        if (loginCheck.getIsLoggedIn() && page.getWatchUnWatch() != null && page.getNoteUser() != null) {
             fab.setVisibility(View.VISIBLE);
 
             if (page.getIsWatching()) {
@@ -208,7 +226,6 @@ public class journal extends Fragment {
         getElements(rootView);
         initClientAndPage(((mainActivity) getActivity()).getJournalPath());
         fetchPageData();
-        checkPageLoaded();
         updateUIElements();
         updateUIElementListeners();
         setupViewPager();

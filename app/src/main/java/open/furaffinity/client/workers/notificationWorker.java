@@ -21,7 +21,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
+import open.furaffinity.client.pages.msgOthers;
+import open.furaffinity.client.pages.msgPms;
 import open.furaffinity.client.utilities.webClient;
 
 public class notificationWorker extends Worker {
@@ -31,9 +34,9 @@ public class notificationWorker extends Worker {
 
     private open.furaffinity.client.utilities.webClient webClient;
 
-    private open.furaffinity.client.pagesOld.loginTest loginTest;
-    private open.furaffinity.client.pagesOld.msgOthers msgOthers;
-    private open.furaffinity.client.pagesOld.msgPms msgPms;
+    private open.furaffinity.client.pages.loginCheck loginCheck;
+    private open.furaffinity.client.pages.msgOthers msgOthers;
+    private open.furaffinity.client.pages.msgPms msgPms;
     private open.furaffinity.client.pagesOld.msgSubmission msgSubmission;
 
     private List<HashMap<String, String>> msgPmsData = new ArrayList<>();
@@ -41,22 +44,56 @@ public class notificationWorker extends Worker {
 
     private void initClientAndPage() {
         webClient = new webClient(context);
-        loginTest = new open.furaffinity.client.pagesOld.loginTest();
-        msgOthers = new open.furaffinity.client.pagesOld.msgOthers();
-        msgPms = new open.furaffinity.client.pagesOld.msgPms();
-        msgPms.setSelectedFolder(open.furaffinity.client.pagesOld.msgPms.mailFolders.unread);
+
+        loginCheck = new open.furaffinity.client.pages.loginCheck(context, new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+
+            }
+        });
+
+        msgOthers = new msgOthers(context, new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+
+            }
+        });
+
+        msgPms = new msgPms(context, new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+
+            }
+        });
+
+        msgPms.setSelectedFolder(open.furaffinity.client.pages.msgPms.mailFolders.unread);
         msgSubmission = new open.furaffinity.client.pagesOld.msgSubmission(true);
     }
 
     private void fetchPageData() {
         try {
-            loginTest.execute(webClient).get();
-            if (loginTest.getIsLoggedIn()) {
-                msgOthers.execute(webClient).get();
+            loginCheck.execute().get();
+            if (loginCheck.getIsLoggedIn()) {
+                msgOthers.execute().get();
 
                 do {
-                    msgPms = new open.furaffinity.client.pagesOld.msgPms(msgPms);
-                    msgPms.execute(webClient).get();
+                    msgPms = new msgPms(msgPms);
+                    msgPms.execute().get();
                     msgPms.setPage(msgPms.getPage() + 1);
 
                     if (msgPms.getMessages() != null) {
@@ -91,12 +128,12 @@ public class notificationWorker extends Worker {
         initClientAndPage();
         fetchPageData();
 
-        if (loginTest.getIsLoggedIn()) {
-            List<HashMap<String, String>> watches = open.furaffinity.client.pagesOld.msgOthers.processWatchNotifications(msgOthers.getWatches(), "");
+        if (loginCheck.getIsLoggedIn()) {
+            List<HashMap<String, String>> watches = open.furaffinity.client.pages.msgOthers.processWatchNotifications(msgOthers.getWatches(), "");
             List<HashMap<String, String>> comments = open.furaffinity.client.utilities.html.commentsToListHash(msgOthers.getSubmissionComments());
-            List<HashMap<String, String>> shouts = open.furaffinity.client.pagesOld.msgOthers.processShoutNotifications(msgOthers.getShouts(), "");
-            List<HashMap<String, String>> favorites = open.furaffinity.client.pagesOld.msgOthers.processLineNotifications(msgOthers.getFavorites(), "");
-            List<HashMap<String, String>> journals = open.furaffinity.client.pagesOld.msgOthers.processLineNotifications(msgOthers.getJournals(), "");
+            List<HashMap<String, String>> shouts = open.furaffinity.client.pages.msgOthers.processShoutNotifications(msgOthers.getShouts(), "");
+            List<HashMap<String, String>> favorites = open.furaffinity.client.pages.msgOthers.processLineNotifications(msgOthers.getFavorites(), "");
+            List<HashMap<String, String>> journals = open.furaffinity.client.pages.msgOthers.processLineNotifications(msgOthers.getJournals(), "");
 
             HashMap<String, Integer> newNotifications = new HashMap<>();
 

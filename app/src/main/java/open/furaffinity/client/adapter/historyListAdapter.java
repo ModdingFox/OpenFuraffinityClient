@@ -17,6 +17,7 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
+import open.furaffinity.client.fragments.journal;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 
@@ -70,7 +71,7 @@ public class historyListAdapter extends RecyclerView.Adapter<historyListAdapter.
             holder.item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.journal.class.getName())) {
+                    if (mDataSet.get(position).get("class").equals(journal.class.getName())) {
                         ((mainActivity) context).setJournalPath(mDataSet.get(position).get("path"));
                     } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.msgPmsMessage.class.getName())) {
                         ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("path"));
@@ -93,7 +94,7 @@ public class historyListAdapter extends RecyclerView.Adapter<historyListAdapter.
                 String selection = historyContract.historyItemEntry.COLUMN_NAME_URL + " = ?";
                 String[] selectionArgs = {mDataSet.get(position).get("path")};
 
-                if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.journal.class.getName())) {
+                if (mDataSet.get(position).get("class").equals(journal.class.getName())) {
                     db.delete(historyContract.historyItemEntry.TABLE_NAME_JOURNAL, selection, selectionArgs);
                 } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.user.class.getName())) {
                     db.delete(historyContract.historyItemEntry.TABLE_NAME_USER, selection, selectionArgs);

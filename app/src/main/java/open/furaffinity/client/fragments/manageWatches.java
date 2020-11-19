@@ -78,7 +78,7 @@ public class manageWatches extends Fragment {
                     newPostPaths.removeAll(oldPostPaths);
                     pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("userLink"))).collect(Collectors.toList());
                     mDataSet.addAll(pageResults);
-                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
                 }
 
                 isLoading = false;

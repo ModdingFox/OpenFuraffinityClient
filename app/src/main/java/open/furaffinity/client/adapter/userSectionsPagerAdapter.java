@@ -13,7 +13,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.fragmentsOld.shouts;
 import open.furaffinity.client.fragments.userGallery;
-import open.furaffinity.client.fragmentsOld.userJournals;
+import open.furaffinity.client.fragments.userJournals;
 import open.furaffinity.client.fragmentsOld.userProfile;
 import open.furaffinity.client.fragmentsOld.watch;
 import open.furaffinity.client.fragmentsMidMigration.webViewContent;
