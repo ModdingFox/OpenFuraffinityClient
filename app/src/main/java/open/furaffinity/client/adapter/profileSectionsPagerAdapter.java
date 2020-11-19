@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.fragments.manageAccountSettings;
 import open.furaffinity.client.fragments.manageBadges;
 import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.fragments.manageAvatar;
@@ -17,6 +18,8 @@ import open.furaffinity.client.fragments.manageContactInfo;
 import open.furaffinity.client.fragments.manageFolders;
 import open.furaffinity.client.fragments.manageJournals;
 import open.furaffinity.client.fragments.manageUserPageAndProfileInformation;
+import open.furaffinity.client.fragments.manageShouts;
+import open.furaffinity.client.fragments.manageSiteSettings;
 
 public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = profileSectionsPagerAdapter.class.getName();
@@ -37,9 +40,9 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new open.furaffinity.client.fragmentsOld.manageAccountSettings();
+                return new manageAccountSettings();
             case 1:
-                return new open.furaffinity.client.fragmentsOld.manageSiteSettings();
+                return new manageSiteSettings();
             case 2:
                 return new open.furaffinity.client.fragmentsOld.manageUserSettings();
             case 3:
@@ -59,7 +62,7 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
             case 10:
                 return new manageWatches();
             case 11:
-                return new open.furaffinity.client.fragmentsOld.manageShouts();
+                return new manageShouts();
             case 12:
                 return new manageBadges();
             default:

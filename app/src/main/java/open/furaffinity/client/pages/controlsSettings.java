@@ -1,6 +1,6 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,9 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsSettings extends AsyncTask<webClient, Void, Void> {
+public class controlsSettings extends abstractPage {
     private static final String TAG = controlsSettings.class.getName();
 
     private static String pagePath = "/controls/settings/";
@@ -49,10 +49,11 @@ public class controlsSettings extends AsyncTask<webClient, Void, Void> {
     private HashMap<String, String> account_disabled;
     private String account_disabled_current;
 
-    public controlsSettings() {
+    public controlsSettings(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements inputs = doc.select("input");
@@ -154,14 +155,21 @@ public class controlsSettings extends AsyncTask<webClient, Void, Void> {
             }
         }
 
+        //not really a great way of doing it but sure
+        if(inputs.size() > 0 && selects.size() > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {
@@ -295,6 +303,4 @@ public class controlsSettings extends AsyncTask<webClient, Void, Void> {
     public String getAccountDisabledCurrent() {
         return account_disabled_current;
     }
-
-
 }

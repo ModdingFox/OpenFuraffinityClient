@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -17,7 +18,9 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.dialogs.textDialog;
+import open.furaffinity.client.pages.controlsSettings;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
@@ -51,7 +54,9 @@ public class manageAccountSettings extends Fragment {
     private fabCircular fab;
 
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pagesOld.controlsSettings page;
+    private controlsSettings page;
+
+    private boolean isLoading = false;
 
     private void getElements(View rootView) {
         fa_useremail = rootView.findViewById(R.id.fa_useremail);
@@ -78,49 +83,60 @@ public class manageAccountSettings extends Fragment {
 
         fab = rootView.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_menu_save);
-    }
-
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pagesOld.controlsSettings();
+        fab.setVisibility(View.GONE);
     }
 
     private void fetchPageData() {
-        page = new open.furaffinity.client.pagesOld.controlsSettings();
-        try {
-            page.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "loadPage: ", e);
+        if (!isLoading) {
+            isLoading = true;
+            page.execute();
         }
     }
 
-    private void updateUIElements() {
-        fa_useremail.setText(page.getFaUserEmail());
+    private void initPages() {
+        webClient = new webClient(requireContext());
 
-        uiControls.spinnerSetAdapter(requireContext(), ssl_enable, page.getSslEnable(), page.getSslEnableCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), bdaymonth, page.getBDayMonth(), page.getBDayMonthCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), bdayday, page.getBDayDay(), page.getBDayDayCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), bdayyear, page.getBDayYear(), page.getBDayYearCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), viewmature, page.getViewMature(), page.getViewMatureCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), timezone, page.getTimezone(), page.getTimezoneCurrent(), true, false);
+        page = new controlsSettings(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                fa_useremail.setText(((controlsSettings)abstractPage).getFaUserEmail());
 
-        timezone_dst.setChecked(page.getTimezoneDST());
+                uiControls.spinnerSetAdapter(requireContext(), ssl_enable, ((controlsSettings)abstractPage).getSslEnable(), ((controlsSettings)abstractPage).getSslEnableCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdaymonth, ((controlsSettings)abstractPage).getBDayMonth(), ((controlsSettings)abstractPage).getBDayMonthCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdayday, ((controlsSettings)abstractPage).getBDayDay(), ((controlsSettings)abstractPage).getBDayDayCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdayyear, ((controlsSettings)abstractPage).getBDayYear(), ((controlsSettings)abstractPage).getBDayYearCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), viewmature, ((controlsSettings)abstractPage).getViewMature(), ((controlsSettings)abstractPage).getViewMatureCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), timezone, ((controlsSettings)abstractPage).getTimezone(), ((controlsSettings)abstractPage).getTimezoneCurrent(), true, false);
 
-        uiControls.spinnerSetAdapter(requireContext(), fullview, page.getFullView(), page.getFullViewCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), style, page.getStyle(), page.getStyleCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), stylesheet, page.getStylesheet(), page.getStylesheetCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), scales_enabled, page.getScalesEnabled(), page.getScalesEnabledCurrent(), true, false);
+                timezone_dst.setChecked(((controlsSettings)abstractPage).getTimezoneDST());
 
-        paypal_email.setText(page.getPayPalEmail());
+                uiControls.spinnerSetAdapter(requireContext(), fullview, ((controlsSettings)abstractPage).getFullView(), ((controlsSettings)abstractPage).getFullViewCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), style, ((controlsSettings)abstractPage).getStyle(), ((controlsSettings)abstractPage).getStyleCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), stylesheet, ((controlsSettings)abstractPage).getStylesheet(), ((controlsSettings)abstractPage).getStylesheetCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), scales_enabled, ((controlsSettings)abstractPage).getScalesEnabled(), ((controlsSettings)abstractPage).getScalesEnabledCurrent(), true, false);
 
-        uiControls.spinnerSetAdapter(requireContext(), display_mode, page.getDisplayMode(), page.getDisplayModeCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), scales_message_enabled, page.getScalesMessageEnabled(), page.getScalesMessageEnabledCurrent(), true, false);
+                paypal_email.setText(((controlsSettings)abstractPage).getPayPalEmail());
 
-        scales_name.setText(page.getScalesName());
-        scales_plural_name.setText(page.getScalesPluralName());
-        scales_cost.setText(page.getScalesCost());
+                uiControls.spinnerSetAdapter(requireContext(), display_mode, ((controlsSettings)abstractPage).getDisplayMode(), ((controlsSettings)abstractPage).getDisplayModeCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), scales_message_enabled, ((controlsSettings)abstractPage).getScalesMessageEnabled(), ((controlsSettings)abstractPage).getScalesMessageEnabledCurrent(), true, false);
 
-        uiControls.spinnerSetAdapter(requireContext(), account_disabled, page.getAccountDisabled(), page.getAccountDisabledCurrent(), true, false);
+                scales_name.setText(((controlsSettings)abstractPage).getScalesName());
+                scales_plural_name.setText(((controlsSettings)abstractPage).getScalesPluralName());
+                scales_cost.setText(((controlsSettings)abstractPage).getScalesCost());
+
+                uiControls.spinnerSetAdapter(requireContext(), account_disabled, ((controlsSettings)abstractPage).getAccountDisabled(), ((controlsSettings)abstractPage).getAccountDisabledCurrent(), true, false);
+
+                fab.setVisibility(View.VISIBLE);
+                isLoading = false;
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                fab.setVisibility(View.GONE);
+                isLoading = false;
+                Toast.makeText(getActivity(), "Failed to load data for account settings", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateUIElementListeners(View rootView) {
@@ -162,7 +178,7 @@ public class manageAccountSettings extends Fragment {
                             new AsyncTask<webClient, Void, Void>() {
                                 @Override
                                 protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pagesOld.controlsSettings.getPagePath(), params);
+                                    webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsSettings.getPagePath(), params);
                                     return null;
                                 }
                             }.execute(webClient).get();
@@ -189,9 +205,8 @@ public class manageAccountSettings extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_manage_account_settings, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }
