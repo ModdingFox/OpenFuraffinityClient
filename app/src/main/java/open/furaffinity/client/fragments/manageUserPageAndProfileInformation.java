@@ -83,7 +83,7 @@ public class manageUserPageAndProfileInformation extends Fragment {
             public void requestFailed(abstractPage abstractPage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
-                Toast.makeText(getActivity(), "Failed to load data for watches", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to load data for user page/profile", Toast.LENGTH_SHORT).show();
             }
         });
     }
