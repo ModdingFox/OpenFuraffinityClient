@@ -1,6 +1,6 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,11 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsUserSettings extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = controlsUserSettings.class.getName();
-
+public class controlsUserSettings extends abstractPage {
     private static String pagePath = "/controls/user-settings/";
 
     private boolean accept_trades;
@@ -23,10 +21,15 @@ public class controlsUserSettings extends AsyncTask<webClient, Void, Void> {
 
     private String key;
 
-    public controlsUserSettings() {
+    public controlsUserSettings(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageData(String html) {
+    public controlsUserSettings(controlsUserSettings controlsUserSettings) {
+        super(controlsUserSettings);
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements inputs = doc.select("input[checked=checked]");
@@ -73,15 +76,20 @@ public class controlsUserSettings extends AsyncTask<webClient, Void, Void> {
             if (keyInput != null) {
                 key = keyInput.attr("value");
             }
+
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {

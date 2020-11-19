@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.manageAccountSettings;
 import open.furaffinity.client.fragments.manageBadges;
+import open.furaffinity.client.fragments.manageUserSettings;
 import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.fragments.manageAvatar;
 import open.furaffinity.client.fragments.manageWatches;
@@ -20,6 +21,8 @@ import open.furaffinity.client.fragments.manageJournals;
 import open.furaffinity.client.fragments.manageUserPageAndProfileInformation;
 import open.furaffinity.client.fragments.manageShouts;
 import open.furaffinity.client.fragments.manageSiteSettings;
+import open.furaffinity.client.fragments.manageFavorites;
+import open.furaffinity.client.fragments.manageSubmissions;
 
 public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = profileSectionsPagerAdapter.class.getName();
@@ -44,7 +47,7 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new manageSiteSettings();
             case 2:
-                return new open.furaffinity.client.fragmentsOld.manageUserSettings();
+                return new manageUserSettings();
             case 3:
                 return new manageUserPageAndProfileInformation();
             case 4:
@@ -52,13 +55,13 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
             case 5:
                 return new manageAvatar();
             case 6:
-                return new open.furaffinity.client.fragmentsOld.manageSubmissions();
+                return new manageSubmissions();
             case 7:
                 return new manageFolders();
             case 8:
                 return new manageJournals();
             case 9:
-                return new open.furaffinity.client.fragmentsOld.manageFavorites();
+                return new manageFavorites();
             case 10:
                 return new manageWatches();
             case 11:

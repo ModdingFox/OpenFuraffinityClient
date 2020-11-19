@@ -1,15 +1,15 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -20,13 +20,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.imageListAdapter;
-import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.uiControls;
@@ -46,12 +46,55 @@ public class userGallery extends Fragment {
     private Spinner folderSpinner;
 
     private webClient webClient;
-    private open.furaffinity.client.pagesOld.gallery page;
+    private gallery page;
 
     private int loadingStopCounter = 3;
+    private boolean isLoading = false;
     private String pagePath = null;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private HashMap<String, String> folderList = new HashMap<>();
+
+    private abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
+
+            int curSize = mAdapter.getItemCount();
+
+            if (pageResults.size() == 0 && loadingStopCounter > 0) {
+                loadingStopCounter--;
+            }
+
+            //Deduplicate results
+            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+            newPostPaths.removeAll(oldPostPaths);
+            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+            mDataSet.addAll(pageResults);
+            mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+
+            folderList = ((gallery)abstractPage).getFolderResults();
+
+            if (folderList.size() > 0) {
+                folderSpinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, ((gallery)abstractPage).getPagePath(), true, false);
+
+                controls.removeView(folderSpinner);
+                controls.addView(folderSpinner);
+            }
+
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            loadingStopCounter--;
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(getActivity(), "Failed to load data for gallery", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private void getElements(View rootView) {
         Context context = getActivity();
@@ -66,66 +109,40 @@ public class userGallery extends Fragment {
         folderSpinner = new Spinner(requireContext());
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(this.getActivity());
-        page = new open.furaffinity.client.pagesOld.gallery(pagePath);
-    }
-
     private void fetchPageData() {
-        if (!(loadingStopCounter == 0)) {
-            page = new open.furaffinity.client.pagesOld.gallery(page);
-            try {
-                page.execute(webClient).get();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "loadNextPage: ", e);
-            }
-
-            List<HashMap<String, String>> pageResults = page.getPageResults();
-
-            if (pageResults.size() == 0 && loadingStopCounter > 0) {
-                loadingStopCounter--;
-            }
-
-            //Deduplicate results
-            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-            newPostPaths.removeAll(oldPostPaths);
-            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-            mDataSet.addAll(pageResults);
-
-            folderList = page.getFolderResults();
+        if (!isLoading && loadingStopCounter > 0) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new gallery(page);
+            page.execute();
         }
     }
 
-    private void updateUIElements() {
-        if (folderList.size() > 0) {
-            folderSpinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, page.getPagePath(), true, false);
+    private void resetRecycler() {
+        loadingStopCounter = 3;
+        page = new gallery(getActivity(), pageListener, pagePath);
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        mAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
+        fetchPageData();
+    }
 
-            controls.removeView(folderSpinner);
-            controls.addView(folderSpinner);
-        }
+    private void initPages() {
+        webClient = new webClient(this.getActivity());
 
-//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+
+        page = new gallery(getActivity(), pageListener, pagePath);
     }
 
     private void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                initClientAndPage();
-
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-                page = new open.furaffinity.client.pagesOld.gallery(pagePath);
-                fetchPageData();
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
@@ -133,9 +150,7 @@ public class userGallery extends Fragment {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setNextPage();
-                int curSize = mAdapter.getItemCount();
                 fetchPageData();
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
 
@@ -148,13 +163,8 @@ public class userGallery extends Fragment {
                 String newPagePath = ((kvPair) folderSpinner.getItemAtPosition(position)).getKey();
                 if (newPagePath != pagePath) {
                     pagePath = newPagePath;
-                    mDataSet = new ArrayList<>();
                     folderList = new HashMap<>();
-                    getElements(rootView);
-                    initClientAndPage();
-                    fetchPageData();
-                    updateUIElements();
-                    updateUIElementListeners(rootView);
+                    resetRecycler();
                 }
             }
 
@@ -175,9 +185,8 @@ public class userGallery extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view, container, false);
         pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

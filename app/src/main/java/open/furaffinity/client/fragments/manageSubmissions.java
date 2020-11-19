@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
@@ -28,10 +29,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
@@ -56,11 +59,43 @@ public class manageSubmissions extends Fragment {
     private FloatingActionButton removeSelected;
 
     private webClient webClient;
-    private open.furaffinity.client.pagesOld.gallery page;
+    private gallery page;
 
     private int loadingStopCounter = 3;
+    private boolean isLoading = false;
     private String pagePath = null;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+
+    private abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
+
+            if (pageResults.size() == 0 && loadingStopCounter > 0) {
+                loadingStopCounter--;
+            }
+
+            //Deduplicate results
+            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+            newPostPaths.removeAll(oldPostPaths);
+            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+            mDataSet.addAll(pageResults);
+
+            fab.setVisibility(View.VISIBLE);
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            loadingStopCounter--;
+            fab.setVisibility(View.GONE);
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(getActivity(), "Failed to load data for submissions", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private void getElements(View rootView) {
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
@@ -71,6 +106,8 @@ public class manageSubmissions extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
         fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+
         assignSelectedToFolder = new FloatingActionButton(getContext());
         assignSelectedToNewFolder = new FloatingActionButton(getContext());
         unassignSelectedFromFolders = new FloatingActionButton(getContext());
@@ -109,56 +146,41 @@ public class manageSubmissions extends Fragment {
         fab.addButton(removeSelected, 3f, 225);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pagesOld.gallery(pagePath);
-    }
-
     private void fetchPageData() {
-        if (!(loadingStopCounter == 0)) {
-            page = new open.furaffinity.client.pagesOld.gallery(page);
-            try {
-                page.execute(webClient).get();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "loadNextPage: ", e);
-            }
-
-            List<HashMap<String, String>> pageResults = page.getPageResults();
-
-            if (pageResults.size() == 0 && loadingStopCounter > 0) {
-                loadingStopCounter--;
-            }
-
-            //Deduplicate results
-            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-            newPostPaths.removeAll(oldPostPaths);
-            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-            mDataSet.addAll(pageResults);
+        if (!isLoading && loadingStopCounter > 0) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new gallery(page);
+            page.execute();
         }
     }
 
-    private void updateUIElements() {
+    private void resetRecycler() {
+        loadingStopCounter = 3;
+        page = new gallery(getActivity(), pageListener, pagePath);
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        ((manageImageListAdapter) mAdapter).clearChecked();
+        mAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
+        fetchPageData();
+    }
+
+    private void initPages() {
+        webClient = new webClient(requireContext());
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageImageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+
+        page = new gallery(getActivity(), pageListener, pagePath);
     }
 
     private void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                ((manageImageListAdapter) mAdapter).clearChecked();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-
-                initClientAndPage();
-                fetchPageData();
-                updateUIElements();
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
@@ -201,15 +223,7 @@ public class manageSubmissions extends Fragment {
                                 }
                             }.execute(webClient).get();
 
-                            recyclerView.scrollTo(0, 0);
-                            mDataSet.clear();
-                            ((manageImageListAdapter) mAdapter).clearChecked();
-                            mAdapter.notifyDataSetChanged();
-                            endlessRecyclerViewScrollListener.resetState();
-
-                            initClientAndPage();
-                            fetchPageData();
-                            updateUIElements();
+                            resetRecycler();
                         } catch (ExecutionException | InterruptedException e) {
                             Log.e(TAG, "Could not assign submission folder: ", e);
                         }
@@ -252,15 +266,7 @@ public class manageSubmissions extends Fragment {
                                 }
                             }.execute(webClient).get();
 
-                            recyclerView.scrollTo(0, 0);
-                            mDataSet.clear();
-                            ((manageImageListAdapter) mAdapter).clearChecked();
-                            mAdapter.notifyDataSetChanged();
-                            endlessRecyclerViewScrollListener.resetState();
-
-                            initClientAndPage();
-                            fetchPageData();
-                            updateUIElements();
+                            resetRecycler();
                         } catch (ExecutionException | InterruptedException e) {
                             Log.e(TAG, "Could not move submission to new folder: ", e);
                         }
@@ -298,15 +304,7 @@ public class manageSubmissions extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    recyclerView.scrollTo(0, 0);
-                    mDataSet.clear();
-                    ((manageImageListAdapter) mAdapter).clearChecked();
-                    mAdapter.notifyDataSetChanged();
-                    endlessRecyclerViewScrollListener.resetState();
-
-                    initClientAndPage();
-                    fetchPageData();
-                    updateUIElements();
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not move submission to scraps: ", e);
                 }
@@ -334,15 +332,7 @@ public class manageSubmissions extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    recyclerView.scrollTo(0, 0);
-                    mDataSet.clear();
-                    ((manageImageListAdapter) mAdapter).clearChecked();
-                    mAdapter.notifyDataSetChanged();
-                    endlessRecyclerViewScrollListener.resetState();
-
-                    initClientAndPage();
-                    fetchPageData();
-                    updateUIElements();
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not move submission to scraps: ", e);
                 }
@@ -370,15 +360,7 @@ public class manageSubmissions extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    recyclerView.scrollTo(0, 0);
-                    mDataSet.clear();
-                    ((manageImageListAdapter) mAdapter).clearChecked();
-                    mAdapter.notifyDataSetChanged();
-                    endlessRecyclerViewScrollListener.resetState();
-
-                    initClientAndPage();
-                    fetchPageData();
-                    updateUIElements();
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not move submission to gallery: ", e);
                 }
@@ -421,15 +403,7 @@ public class manageSubmissions extends Fragment {
                                 }
                             }.execute(webClient).get();
 
-                            recyclerView.scrollTo(0, 0);
-                            mDataSet.clear();
-                            ((manageImageListAdapter) mAdapter).clearChecked();
-                            mAdapter.notifyDataSetChanged();
-                            endlessRecyclerViewScrollListener.resetState();
-
-                            initClientAndPage();
-                            fetchPageData();
-                            updateUIElements();
+                            resetRecycler();
                         } catch (ExecutionException | InterruptedException e) {
                             Log.e(TAG, "Could not delete submission: ", e);
                         }
@@ -456,9 +430,8 @@ public class manageSubmissions extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
         pagePath = "/controls/submissions/";
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

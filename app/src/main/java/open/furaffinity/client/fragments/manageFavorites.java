@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -23,8 +24,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
@@ -44,46 +47,19 @@ public class manageFavorites extends Fragment {
     private FloatingActionButton removeSelected;
 
     private webClient webClient;
-    private open.furaffinity.client.pagesOld.gallery page;
+    private gallery page;
 
     private int loadingStopCounter = 3;
+    private boolean isLoading = false;
     private String pagePath = null;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void getElements(View rootView) {
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+    private abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
 
-        constraintLayout = rootView.findViewById(R.id.constraintLayout);
-
-        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-
-        fab = rootView.findViewById(R.id.fab);
-        removeSelected = new FloatingActionButton(getContext());
-
-        removeSelected.setImageResource(R.drawable.ic_menu_delete);
-        removeSelected.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
-
-        constraintLayout.addView(removeSelected);
-
-        fab.addButton(removeSelected, 1.5f, 270);
-    }
-
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pagesOld.gallery(pagePath);
-    }
-
-    private void fetchPageData() {
-        if (!(loadingStopCounter == 0)) {
-            page = new open.furaffinity.client.pagesOld.gallery(page);
-            try {
-                page.execute(webClient).get();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "loadNextPage: ", e);
-            }
-
-            List<HashMap<String, String>> pageResults = page.getPageResults();
+            int curSize = mAdapter.getItemCount();
 
             if (pageResults.size() == 0 && loadingStopCounter > 0) {
                 loadingStopCounter--;
@@ -95,30 +71,79 @@ public class manageFavorites extends Fragment {
             newPostPaths.removeAll(oldPostPaths);
             pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
             mDataSet.addAll(pageResults);
+            mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+
+            fab.setVisibility(View.VISIBLE);
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            loadingStopCounter--;
+            fab.setVisibility(View.GONE);
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(getActivity(), "Failed to load data for favorites", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private void getElements(View rootView) {
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+
+        constraintLayout = rootView.findViewById(R.id.constraintLayout);
+
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+
+        removeSelected = new FloatingActionButton(getContext());
+
+        removeSelected.setImageResource(R.drawable.ic_menu_delete);
+        removeSelected.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+
+        constraintLayout.addView(removeSelected);
+
+        fab.addButton(removeSelected, 1.5f, 270);
+    }
+
+    private void fetchPageData() {
+        if (!isLoading && loadingStopCounter > 0) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new gallery(page);
+            page.execute();
         }
     }
 
-    private void updateUIElements() {
+    private void resetRecycler() {
+        loadingStopCounter = 3;
+        page = new gallery(getActivity(), pageListener, pagePath);
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        ((manageImageListAdapter) mAdapter).clearChecked();
+        mAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
+        fetchPageData();
+    }
+
+    private void initPages() {
+        webClient = new webClient(requireContext());
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageImageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+
+        page = new gallery(getActivity(), pageListener, pagePath);
     }
 
     private void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                ((manageImageListAdapter) mAdapter).clearChecked();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-
-                initClientAndPage();
-                fetchPageData();
-                updateUIElements();
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
@@ -126,9 +151,7 @@ public class manageFavorites extends Fragment {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setNextPage();
-                int curSize = mAdapter.getItemCount();
                 fetchPageData();
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
 
@@ -155,15 +178,7 @@ public class manageFavorites extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    recyclerView.scrollTo(0, 0);
-                    mDataSet.clear();
-                    ((manageImageListAdapter) mAdapter).clearChecked();
-                    mAdapter.notifyDataSetChanged();
-                    endlessRecyclerViewScrollListener.resetState();
-
-                    initClientAndPage();
-                    fetchPageData();
-                    updateUIElements();
+                resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not un fav post: ", e);
                 }
@@ -180,9 +195,8 @@ public class manageFavorites extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
         pagePath = "/controls/favorites/";
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }
