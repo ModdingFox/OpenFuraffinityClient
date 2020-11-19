@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.fragments.manageBadges;
 import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.fragments.manageAvatar;
 import open.furaffinity.client.fragments.manageWatches;
@@ -60,7 +61,7 @@ public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
             case 11:
                 return new open.furaffinity.client.fragmentsOld.manageShouts();
             case 12:
-                return new open.furaffinity.client.fragmentsOld.manageBadges();
+                return new manageBadges();
             default:
                 return new notImplementedYet();
         }
