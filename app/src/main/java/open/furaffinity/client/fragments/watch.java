@@ -1,11 +1,11 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,15 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.stringListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pagesOld.watchList;
+import open.furaffinity.client.pages.watchList;
 import open.furaffinity.client.utilities.messageIds;
-import open.furaffinity.client.utilities.webClient;
 
 public class watch extends Fragment {
     private static final String TAG = watch.class.getName();
@@ -36,8 +35,7 @@ public class watch extends Fragment {
 
     private Button button;
 
-    private webClient webClient;
-    private open.furaffinity.client.pagesOld.watchList page;
+    private watchList page;
 
     private int loadingStopCounter = 3;
     private boolean isFirstLoad = true;
@@ -51,25 +49,28 @@ public class watch extends Fragment {
         button = rootView.findViewById(R.id.button);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(this.getActivity());
-        page = new watchList(getArguments().getString(messageIds.pagePath_MESSAGE));
-    }
-
     private void fetchPageData() {
         if (isFirstLoad) {
-            mDataSet = watchList.processWatchList(getArguments().getString(messageIds.userWatchRecent_MESSAGE), true);
+            mDataSet.addAll(watchList.processWatchList(getArguments().getString(messageIds.userWatchRecent_MESSAGE), true));
+            mAdapter.notifyDataSetChanged();
             isFirstLoad = false;
         } else {
-            if (!(loadingStopCounter == 0)) {
-                page = new open.furaffinity.client.pagesOld.watchList(page);
-                try {
-                    page.execute(webClient).get();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "loadNextPage: ", e);
-                }
+            page = new watchList(page);
+            page.execute();
+        }
+    }
 
+    private void initPages() {
+        recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new stringListAdapter(mDataSet, getActivity());
+        recyclerView.setAdapter(mAdapter);
+
+        page = new watchList(getContext(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 List<HashMap<String, String>> pageResults = page.getPageResults();
+
+                int curSize = mAdapter.getItemCount();
 
                 if (pageResults.size() == 0 && loadingStopCounter > 0) {
                     loadingStopCounter--;
@@ -81,15 +82,14 @@ public class watch extends Fragment {
                 newPostPaths.removeAll(oldPostPaths);
                 pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("item"))).collect(Collectors.toList());
                 mDataSet.addAll(pageResults);
+                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
-        }
-    }
 
-    private void updateUIElements() {
-//        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new stringListAdapter(mDataSet, getActivity());
-        recyclerView.setAdapter(mAdapter);
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to load data for watch list", Toast.LENGTH_SHORT).show();
+            }
+        }, getArguments().getString(messageIds.pagePath_MESSAGE));
     }
 
     private void updateUIElementListeners(View rootView) {
@@ -97,9 +97,7 @@ public class watch extends Fragment {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setPage(Integer.toString(page.getPage() + 1));
-                int curSize = mAdapter.getItemCount();
                 fetchPageData();
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
 
@@ -110,9 +108,9 @@ public class watch extends Fragment {
             @Override
             public void onClick(View v) {
                 button.setVisibility(View.GONE);
-                mDataSet = new ArrayList<>();
+                mDataSet.clear();
+                mAdapter.notifyDataSetChanged();
                 fetchPageData();
-                updateUIElements();
             }
         });
     }
@@ -131,9 +129,8 @@ public class watch extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_watch, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

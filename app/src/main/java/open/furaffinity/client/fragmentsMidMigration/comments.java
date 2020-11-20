@@ -27,6 +27,7 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.pages.journal;
+import open.furaffinity.client.pages.view;
 import open.furaffinity.client.pagesOld.loginTest;
 import open.furaffinity.client.utilities.html;
 import open.furaffinity.client.utilities.messageIds;
@@ -51,7 +52,7 @@ public class comments extends Fragment {
     private open.furaffinity.client.utilities.webClient webClient;
     private open.furaffinity.client.pagesOld.loginTest loginTest;
     private open.furaffinity.client.pages.journal journal;
-    private open.furaffinity.client.pagesOld.view view;
+    private open.furaffinity.client.pages.view view;
 
     private void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
@@ -121,7 +122,7 @@ public class comments extends Fragment {
                     mDataSet = html.commentsToListHash(journal.getJournalComments());
                     break;
                 case "view":
-                    view = new open.furaffinity.client.pagesOld.view(getActivity(), new abstractPage.pageListener() {
+                    view = new view(getActivity(), new abstractPage.pageListener() {
                         @Override
                         public void requestSucceeded(abstractPage abstractPage) {
 
@@ -129,7 +130,8 @@ public class comments extends Fragment {
 
                         @Override
                         public void requestFailed(abstractPage abstractPage) {
-
+                            comment.setVisibility(View.GONE);
+                            Toast.makeText(getActivity(), "Failed to load data for view", Toast.LENGTH_SHORT).show();
                         }
                     }, pagePath);
                     try {

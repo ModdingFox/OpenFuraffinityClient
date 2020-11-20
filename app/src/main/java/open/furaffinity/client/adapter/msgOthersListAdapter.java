@@ -21,6 +21,7 @@ import java.util.List;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragments.journal;
+import open.furaffinity.client.fragmentsMidMigration.view;
 
 public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdapter.ViewHolder> {
     private static final String TAG = msgOthersListAdapter.class.getName();
@@ -112,7 +113,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
                 public void onClick(View v) {
                     if (mDataSet.get(position).get("postClass").equals(journal.class.getName())) {
                         ((mainActivity) context).setJournalPath(mDataSet.get(position).get("postLink"));
-                    } else if (mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragmentsOld.view.class.getName())) {
+                    } else if (mDataSet.get(position).get("postClass").equals(view.class.getName())) {
                         ((mainActivity) context).setViewPath(mDataSet.get(position).get("postLink"));
                     }
                 }

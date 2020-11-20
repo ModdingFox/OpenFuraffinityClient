@@ -18,7 +18,7 @@ import open.furaffinity.client.fragments.viewFolders;
 import open.furaffinity.client.fragments.viewInfo;
 import open.furaffinity.client.fragments.viewKeywords;
 import open.furaffinity.client.fragmentsMidMigration.webViewContent;
-import open.furaffinity.client.pagesOld.view;
+import open.furaffinity.client.pages.view;
 import open.furaffinity.client.utilities.messageIds;
 
 public class viewSectionsPagerAdapter extends FragmentPagerAdapter {

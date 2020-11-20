@@ -13,6 +13,7 @@ import java.util.List;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragments.journal;
+import open.furaffinity.client.fragmentsMidMigration.view;
 
 public class msgOthers extends abstractPage {
     private String pagePath = "/msg/others";
@@ -180,7 +181,7 @@ public class msgOthers extends abstractPage {
                 currentElementResult.put("userName", currentElementStrong.get(0).text());
                 currentElementResult.put("postLink", currentElementAHref.get(1).attr("href"));
                 currentElementResult.put("postName", currentElementStrong.get(1).text());
-                currentElementResult.put("postClass", open.furaffinity.client.fragmentsOld.view.class.getName());
+                currentElementResult.put("postClass", view.class.getName());
                 currentElementResult.put("time", currentElementSpan.text());
                 currentElementResult.put("actionText", actionText);
 

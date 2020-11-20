@@ -15,7 +15,7 @@ import open.furaffinity.client.fragments.shouts;
 import open.furaffinity.client.fragments.userGallery;
 import open.furaffinity.client.fragments.userJournals;
 import open.furaffinity.client.fragments.userProfile;
-import open.furaffinity.client.fragmentsOld.watch;
+import open.furaffinity.client.fragments.watch;
 import open.furaffinity.client.fragmentsMidMigration.webViewContent;
 import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;

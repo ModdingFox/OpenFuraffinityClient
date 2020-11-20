@@ -1,7 +1,6 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.pages;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,12 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.pages.msgPms;
-import open.furaffinity.client.utilities.webClient;
 
 public class view extends abstractPage {
-    private static final String TAG = view.class.getName();
-
     private String pagePath;
 
     private String prev;

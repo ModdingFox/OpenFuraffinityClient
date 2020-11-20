@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragmentsMidMigration;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
@@ -68,7 +69,7 @@ public class view extends Fragment {
 
     private webClient webClient;
     private open.furaffinity.client.pagesOld.loginTest loginTest;
-    private open.furaffinity.client.pagesOld.view page;
+    private open.furaffinity.client.pages.view page;
 
     private void saveHistory() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
@@ -131,7 +132,8 @@ public class view extends Fragment {
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
         loginTest = new loginTest();
-        page = new open.furaffinity.client.pagesOld.view(getActivity(), new abstractPage.pageListener() {
+
+        page = new open.furaffinity.client.pages.view(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
 
@@ -139,7 +141,7 @@ public class view extends Fragment {
 
             @Override
             public void requestFailed(abstractPage abstractPage) {
-
+                Toast.makeText(getActivity(), "Failed to load data for view", Toast.LENGTH_SHORT).show();
             }
         }, pagePath);
     }
@@ -248,7 +250,7 @@ public class view extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    page = new open.furaffinity.client.pagesOld.view(page);
+                    page = new open.furaffinity.client.pages.view(page);
                     fetchPageData();
                     updateUIElements();
                     updateUIElementListeners(rootView);

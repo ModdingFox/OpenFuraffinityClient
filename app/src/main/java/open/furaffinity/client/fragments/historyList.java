@@ -22,6 +22,7 @@ import java.util.TimeZone;
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.historyListAdapter;
 import open.furaffinity.client.fragmentsMidMigration.user;
+import open.furaffinity.client.fragmentsMidMigration.view;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.messageIds;
@@ -69,7 +70,7 @@ public class historyList extends Fragment {
                 break;
             case 2:
                 tableName = historyItemEntry.TABLE_NAME_VIEW;
-                routableClass = open.furaffinity.client.fragmentsOld.view.class.getName();
+                routableClass = view.class.getName();
                 break;
         }
 
