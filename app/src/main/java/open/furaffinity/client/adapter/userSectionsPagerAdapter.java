@@ -11,13 +11,13 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.notImplementedYet;
-import open.furaffinity.client.fragmentsOld.shouts;
+import open.furaffinity.client.fragments.shouts;
 import open.furaffinity.client.fragments.userGallery;
 import open.furaffinity.client.fragments.userJournals;
-import open.furaffinity.client.fragmentsOld.userProfile;
+import open.furaffinity.client.fragments.userProfile;
 import open.furaffinity.client.fragmentsOld.watch;
 import open.furaffinity.client.fragmentsMidMigration.webViewContent;
-import open.furaffinity.client.pagesOld.user;
+import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 
 public class userSectionsPagerAdapter extends FragmentPagerAdapter {

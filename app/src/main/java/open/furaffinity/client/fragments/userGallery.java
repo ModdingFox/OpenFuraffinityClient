@@ -49,6 +49,7 @@ public class userGallery extends Fragment {
     private gallery page;
 
     private int loadingStopCounter = 3;
+    private boolean isInitialized = false;
     private boolean isLoading = false;
     private String pagePath = null;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
@@ -73,14 +74,18 @@ public class userGallery extends Fragment {
             mDataSet.addAll(pageResults);
             mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
-            folderList = ((gallery)abstractPage).getFolderResults();
+            if(!isInitialized) {
+                folderList = ((gallery) abstractPage).getFolderResults();
 
-            if (folderList.size() > 0) {
-                folderSpinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, ((gallery)abstractPage).getPagePath(), true, false);
+                if (folderList.size() > 0) {
+                    folderSpinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, ((gallery) abstractPage).getPagePath(), true, false);
 
-                controls.removeView(folderSpinner);
-                controls.addView(folderSpinner);
+                    controls.removeView(folderSpinner);
+                    controls.addView(folderSpinner);
+                }
+
+                isInitialized = true;
             }
 
             isLoading = false;

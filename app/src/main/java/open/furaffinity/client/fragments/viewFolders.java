@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,7 +46,7 @@ public class viewFolders extends Fragment {
 
             if (splitCurrentElement.length == 2) {
                 newDataElement.put("item", splitCurrentElement[0]);
-                newDataElement.put("class", open.furaffinity.client.fragmentsOld.user.class.getName());
+                newDataElement.put("class", user.class.getName());
                 newDataElement.put("path", splitCurrentElement[1]);
                 mDataSet.add(newDataElement);
             }

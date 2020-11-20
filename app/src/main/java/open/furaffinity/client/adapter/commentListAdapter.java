@@ -169,4 +169,8 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
     public int getItemCount() {
         return mDataSet.size();
     }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
+    }
 }

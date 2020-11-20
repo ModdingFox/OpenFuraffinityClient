@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import open.furaffinity.client.fragments.user;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 
@@ -43,7 +44,7 @@ public class watchList extends AsyncTask<webClient, Void, Void> {
             HashMap<String, String> newUser = new HashMap<>();
             newUser.put("item", currentElement.text());
             newUser.put("path", currentElement.selectFirst("a").attr("href"));
-            newUser.put("class", open.furaffinity.client.fragmentsOld.user.class.getName());
+            newUser.put("class", user.class.getName());
             newUser.put("messageId", messageIds.pagePath_MESSAGE);
             result.add(newUser);
         }

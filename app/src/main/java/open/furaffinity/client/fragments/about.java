@@ -1,10 +1,11 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,10 +17,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.commentListAdapter;
-import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pagesOld.user;
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.pages.user;
 
 public class about extends Fragment {
     private static final String TAG = about.class.getName();
@@ -28,10 +28,6 @@ public class about extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
-    private webClient webClient;
-    private user page;
 
     private class contributor {
         private String userPage;
@@ -80,36 +76,10 @@ public class about extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclerView);
     }
 
-    private void initClientAndPage(String pagePath) {
-        webClient = new webClient(this.getActivity());
-        page = new open.furaffinity.client.pagesOld.user(pagePath);
-    }
-
-    private void fetchPageData(contributor contributor) {
-        try {
-            page.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
-        }
-
-        HashMap<String, String> newUserItem = new HashMap<>();
-        newUserItem.put("userName", page.getUserName() + ((contributor.getUserAlias() != null) ? ("(" + contributor.getUserAlias() + ")") : ("")));
-        newUserItem.put("userIcon", page.getUserIcon());
-        newUserItem.put("userLink", contributor.getUserPage());
-        newUserItem.put("commentDate", contributor.getUserDate());
-        newUserItem.put("commentDate", contributor.getUserDate());
-        newUserItem.put("comment", contributor.getUserDescription());
-        mDataSet.add(newUserItem);
-    }
-
-    private void updateUIElements() {
+    private void initPages() {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new commentListAdapter(mDataSet, getActivity(), false);
         recyclerView.setAdapter(mAdapter);
-    }
-
-    private void updateUIElementListeners(View rootView) {
-
     }
 
     @Override
@@ -135,14 +105,32 @@ public class about extends Fragment {
                 "Tyst Jal"));
 
         getElements(rootView);
+        initPages();
 
         for (contributor currentElement : contributorsList) {
-            initClientAndPage(currentElement.getUserPage());
-            fetchPageData(currentElement);
-        }
+            try {
+                new user(getActivity(), new abstractPage.pageListener() {
+                    @Override
+                    public void requestSucceeded(abstractPage abstractPage) {
+                        HashMap<String, String> newUserItem = new HashMap<>();
+                        newUserItem.put("userName", ((user) abstractPage).getUserName() + ((currentElement.getUserAlias() != null) ? ("(" + currentElement.getUserAlias() + ")") : ("")));
+                        newUserItem.put("userIcon", ((user) abstractPage).getUserIcon());
+                        newUserItem.put("userLink", currentElement.getUserPage());
+                        newUserItem.put("commentDate", currentElement.getUserDate());
+                        newUserItem.put("comment", currentElement.getUserDescription());
+                        mDataSet.add(newUserItem);
+                        mAdapter.notifyDataSetChanged();
+                    }
 
-        updateUIElements();
-        updateUIElementListeners(rootView);
+                    @Override
+                    public void requestFailed(abstractPage abstractPage) {
+                        Toast.makeText(getActivity(), "Failed to load data for contributor", Toast.LENGTH_SHORT).show();
+                    }
+                }, currentElement.getUserPage()).execute().get();
+            } catch (InterruptedException | ExecutionException e) {
+                Log.e(TAG, "onCreateView: Failed to load data for contributor", e);
+            }
+        }
         return rootView;
     }
 }

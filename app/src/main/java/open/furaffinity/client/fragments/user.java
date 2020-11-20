@@ -1,9 +1,7 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
-import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,9 +27,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
-import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.pagesOld.loginTest;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
@@ -63,13 +61,12 @@ public class user extends Fragment {
     private FloatingActionButton blockUser;
     private FloatingActionButton sendNote;
 
-
     private String currentPage;
     private String currentPagePath = null;
 
     private webClient webClient;
     private open.furaffinity.client.pagesOld.loginTest loginTest;
-    private open.furaffinity.client.pagesOld.user page;
+    private open.furaffinity.client.pages.user page;
 
     private void saveHistory() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
@@ -150,35 +147,32 @@ public class user extends Fragment {
         return result;
     }
 
-    private void initClientAndPage(String pagePath) {
-        webClient = new webClient(this.getActivity());
-        loginTest = new loginTest();
-        page = new open.furaffinity.client.pagesOld.user(pagePath);
-    }
-
     private void fetchPageData() {
         loginTest = new loginTest();
         try {
             loginTest.execute(webClient).get();
-            page.execute(webClient).get();
+            page.execute().get();
             saveHistory();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
     }
 
-    private void checkPageLoaded() {
-        if (!page.getIsLoaded()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-            builder.setMessage("There was an issue loading the data from FurAffinity. Returning you to where you came from.")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
+    private void initClientAndPage(String pagePath) {
+        webClient = new webClient(this.getActivity());
+        loginTest = new loginTest();
+        
+        page = new open.furaffinity.client.pages.user(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+
+            }
+        }, pagePath);
     }
 
     private void updateUIElements() {
@@ -308,7 +302,6 @@ public class user extends Fragment {
         getElements(rootView);
         initClientAndPage(getPagePath());
         fetchPageData();
-        checkPageLoaded();
         updateUIElements();
         updateUIElementListeners(rootView);
         setupViewPager();

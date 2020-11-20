@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsMidMigration;
+package open.furaffinity.client.fragments;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;

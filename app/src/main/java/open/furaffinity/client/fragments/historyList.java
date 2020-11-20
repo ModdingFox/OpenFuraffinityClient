@@ -64,7 +64,7 @@ public class historyList extends Fragment {
                 break;
             case 1:
                 tableName = historyItemEntry.TABLE_NAME_USER;
-                routableClass = open.furaffinity.client.fragmentsOld.user.class.getName();
+                routableClass = user.class.getName();
                 break;
             case 2:
                 tableName = historyItemEntry.TABLE_NAME_VIEW;

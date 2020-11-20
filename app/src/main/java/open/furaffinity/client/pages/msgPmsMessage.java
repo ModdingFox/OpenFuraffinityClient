@@ -126,7 +126,7 @@ public class msgPmsMessage extends abstractPage {
     }
 
     public String getMessageUser() {
-        String user = messageUserLink.replace(open.furaffinity.client.pagesOld.user.getPagePrefix(), "");
+        String user = messageUserLink.replace(open.furaffinity.client.pages.user.getPagePrefix(), "");
         return user.substring(0, user.length() - 1);
     }
 }

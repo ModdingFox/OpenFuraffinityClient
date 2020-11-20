@@ -16,7 +16,8 @@ import java.util.List;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragments.journal;
-import open.furaffinity.client.fragmentsMidMigration.msgPmsMessage;
+import open.furaffinity.client.fragments.msgPmsMessage;
+import open.furaffinity.client.fragments.user;
 
 public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.ViewHolder> {
     private static final String TAG = stringListAdapter.class.getName();
@@ -70,7 +71,7 @@ public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.Vi
                         ((mainActivity) context).setJournalPath(mDataSet.get(position).get("path"));
                     } else if (mDataSet.get(position).get("class").equals(msgPmsMessage.class.getName())) {
                         ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("path"));
-                    } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.user.class.getName())) {
+                    } else if (mDataSet.get(position).get("class").equals(user.class.getName())) {
                         ((mainActivity) context).setUserPath(mDataSet.get(position).get("path"));
                     } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.view.class.getName())) {
                         ((mainActivity) context).setViewPath(mDataSet.get(position).get("path"));

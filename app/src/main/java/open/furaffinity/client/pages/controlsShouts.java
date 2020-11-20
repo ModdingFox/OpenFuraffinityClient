@@ -37,7 +37,7 @@ public class controlsShouts extends abstractPage {
                 if (aShoutParent != null) {
                     Element aShoutParentParent = aShoutParent.parent();
                     if (aShoutParentParent != null) {
-                        pageResults = open.furaffinity.client.pagesOld.user.processShouts(aShoutParentParent.html());
+                        pageResults = user.processShouts(aShoutParentParent.html());
                     }
                 }
             }

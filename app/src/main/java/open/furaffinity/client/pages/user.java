@@ -1,6 +1,6 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,12 +13,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import open.furaffinity.client.pages.msgPms;
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class user extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = user.class.getName();
-
+public class user extends abstractPage {
     private static String pagePrefix = "/user/";
 
     private boolean isLoaded = false;
@@ -65,11 +62,17 @@ public class user extends AsyncTask<webClient, Void, Void> {
     private String blockUnBlock;
     private String noteUser;
 
-    public user(String pagePath) {
+    public user(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
     }
 
-    private void processPageData(String html) {
+    public user(user user) {
+        super(user);
+        this.pagePath = user.pagePath;
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element userPageFlexItemUsernameH = doc.selectFirst("div.userpage-flex-item.username").selectFirst("h2");
@@ -195,18 +198,20 @@ public class user extends AsyncTask<webClient, Void, Void> {
             }
         }
 
-        return;
+        if(userPageFlexItemUsernameH != null && userPageFlexItemUserNavAvatarDesktopImg != null && userPageFlexItemsH2 != null && userPageProfileDiv != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        isLoaded = webClient[0].getLastPageLoaded();
-        if (isLoaded) {
-            processPageData(html);
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
         }
-        return null;
+        return false;
     }
 
     public String getPagePath() {
