@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragments;
+package open.furaffinity.client.fragmentsMidMigration;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,6 +30,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
+import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.pagesOld.loginTest;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
@@ -161,7 +162,7 @@ public class user extends Fragment {
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
         loginTest = new loginTest();
-        
+
         page = new open.furaffinity.client.pages.user(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {

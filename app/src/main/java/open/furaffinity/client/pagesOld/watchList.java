@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import open.furaffinity.client.fragments.user;
+import open.furaffinity.client.fragmentsMidMigration.user;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.webClient;
 
