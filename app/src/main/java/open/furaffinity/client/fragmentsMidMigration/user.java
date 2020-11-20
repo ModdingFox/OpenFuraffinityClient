@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -171,7 +172,7 @@ public class user extends Fragment {
 
             @Override
             public void requestFailed(abstractPage abstractPage) {
-
+                Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
             }
         }, pagePath);
     }

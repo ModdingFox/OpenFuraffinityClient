@@ -121,9 +121,19 @@ public class comments extends Fragment {
                     mDataSet = html.commentsToListHash(journal.getJournalComments());
                     break;
                 case "view":
-                    view = new open.furaffinity.client.pagesOld.view(pagePath);
+                    view = new open.furaffinity.client.pagesOld.view(getActivity(), new abstractPage.pageListener() {
+                        @Override
+                        public void requestSucceeded(abstractPage abstractPage) {
+
+                        }
+
+                        @Override
+                        public void requestFailed(abstractPage abstractPage) {
+
+                        }
+                    }, pagePath);
                     try {
-                        view.execute(webClient).get();
+                        view.execute().get();
                     } catch (ExecutionException | InterruptedException e) {
                         Log.e(TAG, "Could not load page: ", e);
                     }

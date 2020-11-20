@@ -35,6 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
 import open.furaffinity.client.fragments.settings;
@@ -130,31 +131,27 @@ public class view extends Fragment {
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
         loginTest = new loginTest();
-        page = new open.furaffinity.client.pagesOld.view(pagePath);
+        page = new open.furaffinity.client.pagesOld.view(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+
+            }
+        }, pagePath);
     }
 
     private void fetchPageData() {
         loginTest = new loginTest();
         try {
             loginTest.execute(webClient).get();
-            page.execute(webClient).get();
+            page.execute().get();
             saveHistory();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
-        }
-    }
-
-    private void checkPageLoaded() {
-        if (!page.getIsLoaded()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-            builder.setMessage("There was an issue loading the data from FurAffinity. Returning you to where you came from.")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
         }
     }
 
@@ -251,9 +248,8 @@ public class view extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    page = new open.furaffinity.client.pagesOld.view(page.getPagePath());
+                    page = new open.furaffinity.client.pagesOld.view(page);
                     fetchPageData();
-                    checkPageLoaded();
                     updateUIElements();
                     updateUIElementListeners(rootView);
                 } catch (ExecutionException | InterruptedException e) {
@@ -288,7 +284,6 @@ public class view extends Fragment {
         getElements(rootView);
         initClientAndPage(((mainActivity) getActivity()).getViewPath());
         fetchPageData();
-        checkPageLoaded();
         updateUIElements();
         updateUIElementListeners(rootView);
         setupViewPager();
