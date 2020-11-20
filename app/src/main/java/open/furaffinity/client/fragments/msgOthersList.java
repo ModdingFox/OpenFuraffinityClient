@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.msgOthersListAdapter;
-import open.furaffinity.client.fragmentsOld.msgOthers;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.messageIds;

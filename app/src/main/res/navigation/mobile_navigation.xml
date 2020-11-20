@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/nav_msg_others"
-        android:name="open.furaffinity.client.fragmentsOld.msgOthers"
+        android:name="open.furaffinity.client.fragments.msgOthers"
         android:label="@string/menu_msg_others"
         tools:layout="@layout/fragment_msg_others" />
 
