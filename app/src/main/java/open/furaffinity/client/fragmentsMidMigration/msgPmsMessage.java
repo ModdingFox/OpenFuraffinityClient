@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragmentsMidMigration;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -20,6 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsMessageSectionsPagerAdapter;
 import open.furaffinity.client.utilities.fabCircular;
@@ -45,7 +47,7 @@ public class msgPmsMessage extends Fragment {
     private FloatingActionButton sendNote;
 
     private webClient webClient;
-    private open.furaffinity.client.pagesOld.msgPmsMessage page;
+    private open.furaffinity.client.pages.msgPmsMessage page;
 
     private void getElements(View rootView) {
         coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
@@ -73,12 +75,22 @@ public class msgPmsMessage extends Fragment {
 
     private void initClientAndPage(String pagePath) {
         webClient = new webClient(this.getActivity());
-        page = new open.furaffinity.client.pagesOld.msgPmsMessage(pagePath);
+        page = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to load data for message", Toast.LENGTH_SHORT).show();
+            }
+        }, pagePath);
     }
 
     private void fetchPageData() {
         try {
-            page.execute(webClient).get();
+            page.execute().get();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }

@@ -25,6 +25,7 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.pages.msgOthers;
 import open.furaffinity.client.pages.msgPms;
+import open.furaffinity.client.pages.msgSubmission;
 import open.furaffinity.client.utilities.webClient;
 
 public class notificationWorker extends Worker {
@@ -32,19 +33,15 @@ public class notificationWorker extends Worker {
 
     private Context context;
 
-    private open.furaffinity.client.utilities.webClient webClient;
-
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.msgOthers msgOthers;
     private open.furaffinity.client.pages.msgPms msgPms;
-    private open.furaffinity.client.pagesOld.msgSubmission msgSubmission;
+    private open.furaffinity.client.pages.msgSubmission msgSubmission;
 
     private List<HashMap<String, String>> msgPmsData = new ArrayList<>();
     private List<HashMap<String, String>> msgSubmissionData = new ArrayList<>();
 
     private void initClientAndPage() {
-        webClient = new webClient(context);
-
         loginCheck = new open.furaffinity.client.pages.loginCheck(context, new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
@@ -82,7 +79,17 @@ public class notificationWorker extends Worker {
         });
 
         msgPms.setSelectedFolder(open.furaffinity.client.pages.msgPms.mailFolders.unread);
-        msgSubmission = new open.furaffinity.client.pagesOld.msgSubmission(true);
+        msgSubmission = new msgSubmission(context, new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+
+            }
+        }, true);
     }
 
     private void fetchPageData() {
@@ -103,8 +110,8 @@ public class notificationWorker extends Worker {
                 } while (msgPms.getMessages() != null && msgPms.getMessages().size() > 0);
 
                 do {
-                    msgSubmission = new open.furaffinity.client.pagesOld.msgSubmission(msgSubmission);
-                    msgSubmission.execute(webClient).get();
+                    msgSubmission = new msgSubmission(msgSubmission);
+                    msgSubmission.execute().get();
                     msgSubmission.setNextPage();
 
                     if (msgSubmission.getPageResults() != null) {

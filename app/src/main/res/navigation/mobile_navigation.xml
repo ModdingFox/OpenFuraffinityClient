@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/nav_msg_submission"
-        android:name="open.furaffinity.client.fragmentsOld.msgSubmission"
+        android:name="open.furaffinity.client.fragments.msgSubmission"
         android:label="@string/menu_msg_submission"
         tools:layout="@layout/fragment_msg_submission" />
 
@@ -60,7 +60,7 @@
 
     <fragment
         android:id="@+id/nav_msg_pms_message"
-        android:name="open.furaffinity.client.fragmentsOld.msgPmsMessage"
+        android:name="open.furaffinity.client.fragmentsMidMigration.msgPmsMessage"
         android:label="@string/menu_msg_pms_message"
         tools:layout="@layout/fragment_msgpmsmessage" />
 

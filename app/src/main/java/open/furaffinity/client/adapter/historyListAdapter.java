@@ -18,6 +18,7 @@ import java.util.List;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragments.journal;
+import open.furaffinity.client.fragmentsMidMigration.msgPmsMessage;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 
@@ -73,7 +74,7 @@ public class historyListAdapter extends RecyclerView.Adapter<historyListAdapter.
                 public void onClick(View v) {
                     if (mDataSet.get(position).get("class").equals(journal.class.getName())) {
                         ((mainActivity) context).setJournalPath(mDataSet.get(position).get("path"));
-                    } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.msgPmsMessage.class.getName())) {
+                    } else if (mDataSet.get(position).get("class").equals(msgPmsMessage.class.getName())) {
                         ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("path"));
                     } else if (mDataSet.get(position).get("class").equals(open.furaffinity.client.fragmentsOld.user.class.getName())) {
                         ((mainActivity) context).setUserPath(mDataSet.get(position).get("path"));
