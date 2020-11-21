@@ -21,7 +21,6 @@ import java.util.TimeZone;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.historyListAdapter;
-import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.messageIds;
@@ -31,7 +30,6 @@ public class historyList extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
@@ -62,15 +60,15 @@ public class historyList extends Fragment {
         switch (currentView) {
             case 0:
                 tableName = historyItemEntry.TABLE_NAME_JOURNAL;
-                routableClass = open.furaffinity.client.fragments.journal.class.getName();
+                routableClass = journal.class.getName();
                 break;
             case 1:
                 tableName = historyItemEntry.TABLE_NAME_USER;
-                routableClass = open.furaffinity.client.fragments.user.class.getName();
+                routableClass = user.class.getName();
                 break;
             case 2:
                 tableName = historyItemEntry.TABLE_NAME_VIEW;
-                routableClass = open.furaffinity.client.fragments.view.class.getName();
+                routableClass = view.class.getName();
                 break;
         }
 
@@ -109,7 +107,6 @@ public class historyList extends Fragment {
     }
 
     private void updateUIElements() {
-//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new historyListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);

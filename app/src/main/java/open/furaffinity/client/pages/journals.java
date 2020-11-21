@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -13,26 +13,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class journals extends AsyncTask<webClient, Void, Void> {
+public class journals extends abstractPage {
     private static final String TAG = journals.class.getName();
 
     String pagePath;
     private String page;
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public journals(String pagePath) {
+    public journals(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
         setPage("1");
     }
 
     public journals(journals journals) {
+        super(journals);
         this.pagePath = journals.pagePath;
         this.page = journals.page;
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements journalSections = doc.select("section[id^=jid:]");
@@ -44,14 +46,18 @@ public class journals extends AsyncTask<webClient, Void, Void> {
             newJournalEntry.put("journalPath", journalSection.selectFirst("div.section-footer").selectFirst("a").attr("href"));
             pageResults.add(newJournalEntry);
         }
+
+        //this is not great. really need a way to check if the page was actually loaded.
+        return true;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public int getPage() {

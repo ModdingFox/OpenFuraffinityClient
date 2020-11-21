@@ -29,6 +29,7 @@ public class spinnerDialog extends DialogFragment {
 
     public interface dialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
+
         public void onDialogNegativeClick(DialogFragment dialog);
     }
 
@@ -78,6 +79,6 @@ public class spinnerDialog extends DialogFragment {
     }
 
     public String getSpinnerSelection() {
-        return ((kvPair)spinner.getSelectedItem()).getKey();
+        return ((kvPair) spinner.getSelectedItem()).getKey();
     }
 }

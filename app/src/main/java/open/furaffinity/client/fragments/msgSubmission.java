@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -29,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
@@ -62,7 +64,42 @@ public class msgSubmission extends Fragment {
     private open.furaffinity.client.pages.msgSubmission page;
 
     private int loadingStopCounter = 3;
+    private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+
+    private abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.msgSubmission)abstractPage).getPageResults();
+
+            int curSize = mAdapter.getItemCount();
+
+            if (pageResults.size() == 0 && loadingStopCounter > 0) {
+                loadingStopCounter--;
+            }
+
+            //Deduplicate results
+            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+            newPostPaths.removeAll(oldPostPaths);
+            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+            mDataSet.addAll(pageResults);
+            mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+
+            fab.setVisibility(View.VISIBLE);
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            loadingStopCounter--;
+            fab.setVisibility(View.GONE);
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(getActivity(), "Failed to load data for submissions", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private void getElements(View rootView) {
         Context context = getActivity();
@@ -81,6 +118,7 @@ public class msgSubmission extends Fragment {
         msgSubmissionPerPageSpinner = rootView.findViewById(R.id.msgSubmissionPerPageSpinner);
 
         fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
 
         pageSettings = new FloatingActionButton(getContext());
         deleteSelected = new FloatingActionButton(getContext());
@@ -103,40 +141,32 @@ public class msgSubmission extends Fragment {
         fab.addButton(deleteAll, 1.5f, 225);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(getActivity());
-        page = new open.furaffinity.client.pages.msgSubmission(true);
-    }
-
     private void fetchPageData() {
-        if (!(loadingStopCounter == 0)) {
+        if (!isLoading && loadingStopCounter > 0) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
             page = new open.furaffinity.client.pages.msgSubmission(page);
-            try {
-                page.execute(webClient).get();
-            }//we wait to get the data here. Fuck if i know the proper way to do this in android
-            catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "loadNextPage: ", e);
-            }
-
-            List<HashMap<String, String>> pageResults = page.getPageResults();
-
-            if (pageResults.size() == 0 && loadingStopCounter > 0) {
-                loadingStopCounter--;
-            }
-
-            //Deduplicate results
-            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-            newPostPaths.removeAll(oldPostPaths);
-            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-            mDataSet.addAll(pageResults);
+            page.execute();
         }
     }
 
-    private void updateUIElements() {
+    private void resetRecycler() {
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        ((manageImageListAdapter) mAdapter).clearChecked();
+        mAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
+        fetchPageData();
+    }
+
+    private void initClientAndPage() {
+        webClient = new webClient(getActivity());
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageImageListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+
+        page = new open.furaffinity.client.pages.msgSubmission(getActivity(), pageListener, true);
     }
 
     private void loadCurrentSettings() {
@@ -153,7 +183,7 @@ public class msgSubmission extends Fragment {
         boolean valueChanged = false;
 
         if (page.getIsNewestFirst() != msgSubmissionOrder.isChecked()) {
-            page = new open.furaffinity.client.pages.msgSubmission(msgSubmissionOrder.isChecked());
+            page = new open.furaffinity.client.pages.msgSubmission(getActivity(), pageListener, msgSubmissionOrder.isChecked());
             valueChanged = true;
         }
 
@@ -164,12 +194,7 @@ public class msgSubmission extends Fragment {
         }
 
         if (valueChanged) {
-            recyclerView.scrollTo(0, 0);
-            mDataSet.clear();
-            mAdapter.notifyDataSetChanged();
-            endlessRecyclerViewScrollListener.resetState();
-            page = new open.furaffinity.client.pages.msgSubmission(page);
-            fetchPageData();
+            resetRecycler();
         }
     }
 
@@ -177,14 +202,7 @@ public class msgSubmission extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                ((manageImageListAdapter)mAdapter).clearChecked();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-                fetchPageData();
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
@@ -202,7 +220,7 @@ public class msgSubmission extends Fragment {
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        ((manageImageListAdapter)mAdapter).setListener(new manageImageListAdapter.manageImageListAdapterListener() {
+        ((manageImageListAdapter) mAdapter).setListener(new manageImageListAdapter.manageImageListAdapterListener() {
             @Override
             public void onSwipeLeft(String postId) {
 
@@ -223,12 +241,7 @@ public class msgSubmission extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    recyclerView.scrollTo(0, 0);
-                    mDataSet.clear();
-                    ((manageImageListAdapter)mAdapter).clearChecked();
-                    mAdapter.notifyDataSetChanged();
-                    endlessRecyclerViewScrollListener.resetState();
-                    fetchPageData();
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not delete selected msgSubmissions: ", e);
                 }
@@ -251,12 +264,12 @@ public class msgSubmission extends Fragment {
         deleteSelected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<String> elements = ((manageImageListAdapter)mAdapter).getCheckedItems();
+                List<String> elements = ((manageImageListAdapter) mAdapter).getCheckedItems();
 
                 HashMap<String, String> params = new HashMap<>();
                 params.put("messagecenter-action", "remove_checked");
 
-                for(int i = 0; i < elements.size(); i++) {
+                for (int i = 0; i < elements.size(); i++) {
                     params.put("submissions[" + Integer.toString(i) + "]", elements.get(i));
                 }
 
@@ -269,12 +282,7 @@ public class msgSubmission extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    recyclerView.scrollTo(0, 0);
-                    mDataSet.clear();
-                    ((manageImageListAdapter)mAdapter).clearChecked();
-                    mAdapter.notifyDataSetChanged();
-                    endlessRecyclerViewScrollListener.resetState();
-                    fetchPageData();
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not delete selected msgSubmissions: ", e);
                 }
@@ -296,12 +304,7 @@ public class msgSubmission extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    recyclerView.scrollTo(0, 0);
-                    mDataSet.clear();
-                    ((manageImageListAdapter)mAdapter).clearChecked();
-                    mAdapter.notifyDataSetChanged();
-                    endlessRecyclerViewScrollListener.resetState();
-                    fetchPageData();
+                    resetRecycler();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not delete all msgSubmissions: ", e);
                 }
@@ -320,7 +323,6 @@ public class msgSubmission extends Fragment {
         getElements(rootView);
         initClientAndPage();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

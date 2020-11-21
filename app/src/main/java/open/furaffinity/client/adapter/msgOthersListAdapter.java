@@ -20,6 +20,8 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
+import open.furaffinity.client.fragments.journal;
+import open.furaffinity.client.fragments.view;
 
 public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdapter.ViewHolder> {
     private static final String TAG = msgOthersListAdapter.class.getName();
@@ -109,16 +111,16 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
             holder.actionText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.journal.class.getName())) {
+                    if (mDataSet.get(position).get("postClass").equals(journal.class.getName())) {
                         ((mainActivity) context).setJournalPath(mDataSet.get(position).get("postLink"));
-                    } else if (mDataSet.get(position).get("postClass").equals(open.furaffinity.client.fragments.view.class.getName())) {
+                    } else if (mDataSet.get(position).get("postClass").equals(view.class.getName())) {
                         ((mainActivity) context).setViewPath(mDataSet.get(position).get("postLink"));
                     }
                 }
             });
         }
 
-        if(checkedItems.contains(mDataSet.get(position).get("notificationId"))) {
+        if (checkedItems.contains(mDataSet.get(position).get("notificationId"))) {
             holder.checkBox.setChecked(true);
         } else {
             holder.checkBox.setChecked(false);
@@ -127,7 +129,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     checkedItems.add(mDataSet.get(position).get("notificationId"));
                 } else {
                     checkedItems.remove(mDataSet.get(position).get("notificationId"));

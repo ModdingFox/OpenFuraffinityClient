@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.dialogs.journalDialog;
 import open.furaffinity.client.utilities.webClient;
 
 public class controlsJournalListAdapter extends RecyclerView.Adapter<controlsJournalListAdapter.ViewHolder> {
@@ -39,7 +38,9 @@ public class controlsJournalListAdapter extends RecyclerView.Adapter<controlsJou
 
     private controlsJournalListAdapterListener listener;
 
-    public void setListener(controlsJournalListAdapterListener controlsJournalListAdapterListener) { listener = controlsJournalListAdapterListener; }
+    public void setListener(controlsJournalListAdapterListener controlsJournalListAdapterListener) {
+        listener = controlsJournalListAdapterListener;
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final LinearLayout linearLayout;

@@ -41,7 +41,8 @@ public class viewSectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 webViewContent newViewWebViewContentFragment = new webViewContent();
-                bundle.putString(messageIds.submissionDescription_MESSAGE, view.getSubmissionDescription());
+                bundle.putString(messageIds.pagePath_MESSAGE, view.getPagePath());
+                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.view.class.getName());
                 newViewWebViewContentFragment.setArguments(bundle);
                 return newViewWebViewContentFragment;
             case 1:
@@ -65,7 +66,6 @@ public class viewSectionsPagerAdapter extends FragmentPagerAdapter {
             case 3:
                 comments newCommentsFragment = new comments();
                 bundle.putString(messageIds.pagePath_MESSAGE, view.getPagePath());
-                bundle.putString(messageIds.SubmissionComments_MESSAGE, view.getSubmissionComments());
                 bundle.putString(messageIds.SubmissionCommentsType_MESSAGE, "view");
                 newCommentsFragment.setArguments(bundle);
                 return newCommentsFragment;

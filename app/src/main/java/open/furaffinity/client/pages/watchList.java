@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -13,22 +13,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.fragments.user;
 import open.furaffinity.client.utilities.messageIds;
-import open.furaffinity.client.utilities.webClient;
 
-public class watchList extends AsyncTask<webClient, Void, Void> {
+public class watchList extends abstractPage {
     private static final String TAG = watchList.class.getName();
 
     String pagePath;
     private String page;
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public watchList(String pagePath) {
+    public watchList(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
         setPage("1");
     }
 
     public watchList(watchList watchList) {
+        super(watchList);
         this.pagePath = watchList.pagePath;
         this.page = watchList.page;
     }
@@ -43,7 +46,7 @@ public class watchList extends AsyncTask<webClient, Void, Void> {
             HashMap<String, String> newUser = new HashMap<>();
             newUser.put("item", currentElement.text());
             newUser.put("path", currentElement.selectFirst("a").attr("href"));
-            newUser.put("class", open.furaffinity.client.fragments.user.class.getName());
+            newUser.put("class", user.class.getName());
             newUser.put("messageId", messageIds.pagePath_MESSAGE);
             result.add(newUser);
         }
@@ -51,16 +54,18 @@ public class watchList extends AsyncTask<webClient, Void, Void> {
         return result;
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         pageResults = processWatchList(html, false);
+        return true;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public int getPage() {

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,7 +62,7 @@ public class controlsFoldersSubmissionsFolderDialog extends DialogFragment {
         builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogPositiveClick(((kvPair)spinner.getSelectedItem()).getKey(), groupNameEditText.getText().toString(), folderNameEditText.getText().toString(), descriptionEditText.getText().toString());
+                listener.onDialogPositiveClick(((kvPair) spinner.getSelectedItem()).getKey(), groupNameEditText.getText().toString(), folderNameEditText.getText().toString(), descriptionEditText.getText().toString());
                 dismiss();
             }
         });
@@ -82,7 +81,7 @@ public class controlsFoldersSubmissionsFolderDialog extends DialogFragment {
     }
 
     public void setSpinnerSelected(String spinnerSelected) {
-        if(spinnerSelected != null) {
+        if (spinnerSelected != null) {
             this.spinnerSelected = spinnerSelected;
         }
     }

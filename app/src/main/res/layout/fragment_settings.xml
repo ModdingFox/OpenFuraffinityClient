@@ -96,7 +96,6 @@
                 android:text="@string/enablePostLabels" />
 
 
-
             <Switch
                 android:id="@+id/saveBrowseStateSwitch"
                 android:layout_width="match_parent"

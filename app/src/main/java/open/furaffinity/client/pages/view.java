@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,13 +10,9 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class view extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = view.class.getName();
-
-    private boolean isLoaded = false;
-
+public class view extends abstractPage {
     private String pagePath;
 
     private String prev;
@@ -51,11 +47,17 @@ public class view extends AsyncTask<webClient, Void, Void> {
 
     private List<String> folderList = new ArrayList<>();
 
-    public view(String pagePath) {
+    public view(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
     }
 
-    private void processPageData(String html) {
+    public view(view view) {
+        super(view);
+        this.pagePath = view.pagePath;
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element favoriteNav = doc.selectFirst("div.favorite-nav");
@@ -83,8 +85,8 @@ public class view extends AsyncTask<webClient, Void, Void> {
                         download = "https:" + currentElement.attr("href");
                         break;
                     case "Note":
-                        note = currentElement.attr("href").replace(open.furaffinity.client.pages.msgPms.getNotePathPrefix(), "");
-                        note = note.substring(0, note.length() -1);
+                        note = currentElement.attr("href").replace(msgPms.getNotePathPrefix(), "");
+                        note = note.substring(0, note.length() - 1);
                         break;
                     case "Next":
                         next = currentElement.attr("href");
@@ -102,72 +104,129 @@ public class view extends AsyncTask<webClient, Void, Void> {
 
         Element submissionIdContainer = doc.selectFirst("div.submission-id-container");
 
-        Element submissionIdAvatar = submissionIdContainer.selectFirst("div.submission-id-avatar");
+        if (submissionIdContainer != null) {
+            Element submissionIdAvatar = submissionIdContainer.selectFirst("div.submission-id-avatar");
 
-        Element submissionIdAvatarUserPage = submissionIdAvatar.selectFirst("a");
-        submissionUserPage = submissionIdAvatarUserPage.attr("href");
+            if (submissionIdAvatar != null) {
+                Element submissionIdAvatarUserPage = submissionIdAvatar.selectFirst("a");
+                if (submissionIdAvatarUserPage != null) {
+                    submissionUserPage = submissionIdAvatarUserPage.attr("href");
 
-        Element submissionIdAvatarUserIcon = submissionIdAvatarUserPage.selectFirst("img");
-        submissionUserIcon = "https:" + submissionIdAvatarUserIcon.attr("src");
+                    Element submissionIdAvatarUserIcon = submissionIdAvatarUserPage.selectFirst("img");
+                    if (submissionIdAvatarUserIcon != null) {
+                        submissionUserIcon = "https:" + submissionIdAvatarUserIcon.attr("src");
+                    }
+                }
+            }
 
-        Element submissionTitleDiv = submissionIdContainer.selectFirst("div.submission-title");
-        Element submissionTitleP = submissionTitleDiv.selectFirst("p");
-        submissionTitle = submissionTitleP.text();
+            Element submissionTitleDiv = submissionIdContainer.selectFirst("div.submission-title");
+            if (submissionTitleDiv != null) {
+                Element submissionTitleP = submissionTitleDiv.selectFirst("p");
+                if (submissionTitleP != null) {
+                    submissionTitle = submissionTitleP.text();
+                }
 
-        //Using the submissionTitleDiv as a ref to find the user name. Yeah its not great but works for now
-        Element submissionUserA = submissionTitleDiv.nextElementSibling().selectFirst("a");
-        Element submissionUserStrong = submissionUserA.selectFirst("strong");
-        submissionUser = submissionUserStrong.text();
+                //Using the submissionTitleDiv as a ref to find the user name. Yeah its not great but works for now
+                Element submissionUserA = submissionTitleDiv.nextElementSibling().selectFirst("a");
+                if (submissionUserA != null) {
+                    Element submissionUserStrong = submissionUserA.selectFirst("strong");
+                    if (submissionUserStrong != null) {
+                        submissionUser = submissionUserStrong.text();
+                    }
+                }
+            }
 
-        Element submissionDateSpan = submissionIdContainer.selectFirst("span.popup_date");
-        submissionDate = submissionDateSpan.text();
+            Element submissionDateSpan = submissionIdContainer.selectFirst("span.popup_date");
+            if (submissionDateSpan != null) {
+                submissionDate = submissionDateSpan.text();
+            }
+        }
 
         Element submissionDescriptionDiv = doc.selectFirst("div.submission-description");
-        Elements submissionDescriptionDivA = submissionDescriptionDiv.select("a");
-        open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(submissionDescriptionDivA);
-        submissionDescription = submissionDescriptionDiv.html();
+        if (submissionDescriptionDiv != null) {
+            Elements submissionDescriptionDivA = submissionDescriptionDiv.select("a");
+            if (submissionDescriptionDivA != null) {
+                open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(submissionDescriptionDivA);
+                submissionDescription = submissionDescriptionDiv.html();
+            }
+        }
 
         Element submissionStatsContainer = doc.selectFirst("section.stats-container");
+        if(submissionStatsContainer != null) {
+            Element submissionCommentsDiv = submissionStatsContainer.selectFirst("div.comments");
+            if (submissionCommentsDiv != null) {
+                Element submissionCommentsSpan = submissionCommentsDiv.selectFirst("span");
+                if (submissionCommentsSpan != null) {
+                    submissionCommentCount = submissionCommentsSpan.text();
+                }
+            }
 
-        Element submissionCommentsDiv = submissionStatsContainer.selectFirst("div.comments");
-        Element submissionCommentsSpan = submissionCommentsDiv.selectFirst("span");
-        submissionCommentCount = submissionCommentsSpan.text();
+            Element submissionViewsDiv = submissionStatsContainer.selectFirst("div.views");
+            if (submissionViewsDiv != null) {
+                Element submissionViewsSpan = submissionViewsDiv.selectFirst("span");
+                if (submissionViewsSpan != null) {
+                    submissionViews = submissionViewsSpan.text();
+                }
+            }
 
-        Element submissionViewsDiv = submissionStatsContainer.selectFirst("div.views");
-        Element submissionViewsSpan = submissionViewsDiv.selectFirst("span");
-        submissionViews = submissionViewsSpan.text();
+            Element submissionFavoritesDiv = submissionStatsContainer.selectFirst("div.favorites");
+            if (submissionFavoritesDiv != null) {
+                Element submissionFavoritesSpan = submissionFavoritesDiv.selectFirst("span");
+                if (submissionFavoritesSpan != null) {
+                    submissionFavorites = submissionFavoritesSpan.text();
+                }
+            }
 
-        Element submissionFavoritesDiv = submissionStatsContainer.selectFirst("div.favorites");
-        Element submissionFavoritesSpan = submissionFavoritesDiv.selectFirst("span");
-        submissionFavorites = submissionFavoritesSpan.text();
-
-        Element submissionRatingDiv = submissionStatsContainer.selectFirst("div.rating");
-        Element submissionRatingSpan = submissionRatingDiv.selectFirst("span");
-        submissionRating = submissionRatingSpan.text().trim();
+            Element submissionRatingDiv = submissionStatsContainer.selectFirst("div.rating");
+            if (submissionRatingDiv != null) {
+                Element submissionRatingSpan = submissionRatingDiv.selectFirst("span");
+                if (submissionRatingSpan != null) {
+                    submissionRating = submissionRatingSpan.text().trim();
+                }
+            }
+        }
 
         Element submissionInfoSection = doc.selectFirst("section.info");
-        Element submissionCategoryDiv = submissionInfoSection.selectFirst("div");
-        Element submissionCategoryNameSpan = submissionCategoryDiv.selectFirst("span.category-name");
-        Element submissionCategoryNameTypeSpan = submissionCategoryDiv.selectFirst("span.type-name");
-        submissionCategory = submissionCategoryNameSpan.text() + " / " + submissionCategoryNameTypeSpan.text();
+        if(submissionInfoSection != null) {
+            Element submissionCategoryDiv = submissionInfoSection.selectFirst("div");
+            if(submissionCategoryDiv != null) {
+                Element submissionCategoryNameSpan = submissionCategoryDiv.selectFirst("span.category-name");
+                if(submissionCategoryNameSpan != null) {
+                    Element submissionCategoryNameTypeSpan = submissionCategoryDiv.selectFirst("span.type-name");
+                    if(submissionCategoryNameTypeSpan != null) {
+                        submissionCategory = submissionCategoryNameSpan.text() + " / " + submissionCategoryNameTypeSpan.text();
+                    }
+                }
+            }
 
-        Element submissionSpeciesDiv = submissionCategoryDiv.nextElementSibling();
-        submissionSpecies = submissionSpeciesDiv.text();
+            Element submissionSpeciesDiv = submissionCategoryDiv.nextElementSibling();
+            if(submissionSpeciesDiv != null) {
+                submissionSpecies = submissionSpeciesDiv.text();
+            }
 
-        Element submissionGenderDiv = submissionSpeciesDiv.nextElementSibling();
-        submissionGender = submissionGenderDiv.text();
+            Element submissionGenderDiv = submissionSpeciesDiv.nextElementSibling();
+            if(submissionGenderDiv != null) {
+                submissionGender = submissionGenderDiv.text();
+            }
 
-        Element submissionSizeDiv = submissionGenderDiv.nextElementSibling();
-        submissionSize = submissionSizeDiv.text();
+            Element submissionSizeDiv = submissionGenderDiv.nextElementSibling();
+            if(submissionSizeDiv != null) {
+                submissionSize = submissionSizeDiv.text();
+            }
+        }
 
         Element submissionTagsSection = doc.selectFirst("section.tags-row");
-        Elements submissionTagsSpans = submissionTagsSection.select("span.tags");
-        for (Element currentElement : submissionTagsSpans) {
-            submissionTags.add(currentElement.text());
+        if(submissionTagsSection != null) {
+            Elements submissionTagsSpans = submissionTagsSection.select("span.tags");
+            for (Element currentElement : submissionTagsSpans) {
+                submissionTags.add(currentElement.text());
+            }
         }
 
         Element submissionCommentsList = doc.selectFirst("div.comments-list");
-        submissionComments = submissionCommentsList.html();
+        if(submissionCommentsList != null) {
+            submissionComments = submissionCommentsList.html();
+        }
 
         Element folderListContainerSection = doc.selectFirst("section.folder-list-container");
         if (folderListContainerSection != null) {
@@ -181,25 +240,25 @@ public class view extends AsyncTask<webClient, Void, Void> {
                 }
             }
         }
+
+        if(submissionIdContainer != null ) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        isLoaded = webClient[0].getLastPageLoaded();
-        if (isLoaded) {
-            processPageData(html);
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
         }
-        return null;
+        return false;
     }
 
     public String getPagePath() {
         return pagePath;
-    }
-
-    public boolean getIsLoaded() {
-        return isLoaded;
     }
 
     public String getPrev() {

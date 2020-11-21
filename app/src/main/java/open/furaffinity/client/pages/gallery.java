@@ -1,7 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
-import android.util.Log;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,15 +10,12 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
-public class gallery extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = gallery.class.getName();
-
+public class gallery extends abstractPage {
     private String pagePath;
     private String nextPage;
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
@@ -32,15 +28,17 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
     private String moveFromScrapsSubmit;
     private String moveToScrapsSubmit;
 
-    public gallery(String pagePath) {
+    public gallery(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
     }
 
     public gallery(gallery gallery) {
+        super(gallery);
         this.pagePath = gallery.pagePath;
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         pageResults = getResultsData(html);
 
         Document doc = Jsoup.parse(html);
@@ -61,21 +59,21 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
 
         Elements buttonElements = doc.select("a.button");
 
-        if(buttonElements != null) {
-            for(Element currentButton : buttonElements) {
-                if(currentButton.text().startsWith("Next")) {
+        if (buttonElements != null) {
+            for (Element currentButton : buttonElements) {
+                if (currentButton.text().startsWith("Next")) {
                     nextPage = currentButton.attr("href");
                     break;
                 }
             }
         }
 
-        if(nextPage == null){
+        if (nextPage == null) {
             buttonElements = doc.select("button.button");
 
-            if(buttonElements != null) {
-                for(Element currentButton : buttonElements) {
-                    if(currentButton.text().startsWith("Next")) {
+            if (buttonElements != null) {
+                for (Element currentButton : buttonElements) {
+                    if (currentButton.text().startsWith("Next")) {
                         nextPage = currentButton.parent().attr("action");
                         break;
                     }
@@ -87,13 +85,13 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
 
         Element assignFolderIdElement = doc.selectFirst("select[name=assign_folder_id]");
 
-        if(assignFolderIdElement != null) {
+        if (assignFolderIdElement != null) {
             Elements assignFolderIdOptionElements = assignFolderIdElement.select("option");
 
-            if(assignFolderIdOptionElements != null) {
+            if (assignFolderIdOptionElements != null) {
                 for (Element assignFolderIdOptionElement : assignFolderIdOptionElements) {
                     String value = assignFolderIdOptionElement.attr("value");
-                    if(!value.equals("0")) {
+                    if (!value.equals("0")) {
                         assignFolderId.put(value, assignFolderIdOptionElement.text());
                     }
                 }
@@ -106,33 +104,37 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
         Element moveFromScrapsSubmitElement = doc.selectFirst("button[name=move_from_scraps_submit]");
         Element moveToScrapsSubmitElement = doc.selectFirst("button[name=move_to_scraps_submit]");
 
-        if(assignFolderSubmitElement != null) {
+        if (assignFolderSubmitElement != null) {
             assignFolderSubmit = assignFolderSubmitElement.attr("value");
         }
 
-        if(createFolderSubmitElement != null) {
+        if (createFolderSubmitElement != null) {
             createFolderSubmit = createFolderSubmitElement.attr("value");
         }
 
-        if(removeFromFoldersSubmitElement != null) {
+        if (removeFromFoldersSubmitElement != null) {
             removeFromFoldersSubmit = removeFromFoldersSubmitElement.attr("value");
         }
 
-        if(moveFromScrapsSubmitElement != null) {
+        if (moveFromScrapsSubmitElement != null) {
             moveFromScrapsSubmit = moveFromScrapsSubmitElement.attr("value");
         }
 
-        if(moveToScrapsSubmitElement != null) {
+        if (moveToScrapsSubmitElement != null) {
             moveToScrapsSubmit = moveToScrapsSubmitElement.attr("value");
         }
+
+        //currently not really a great way of checking success
+        return true;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public String getPagePath() {
@@ -140,7 +142,7 @@ public class gallery extends AsyncTask<webClient, Void, Void> {
     }
 
     public void setNextPage() {
-        if(this.nextPage != null) {
+        if (this.nextPage != null) {
             this.pagePath = this.nextPage;
         }
     }

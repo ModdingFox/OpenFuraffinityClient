@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -15,6 +16,8 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.pages.controlsSiteSettings;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
@@ -40,7 +43,9 @@ public class manageSiteSettings extends Fragment {
     private fabCircular fab;
 
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.controlsSiteSettings page;
+    private controlsSiteSettings page;
+
+    private boolean isLoading = false;
 
     private void getElements(View rootView) {
         disable_avatars_yes = rootView.findViewById(R.id.disable_avatars_yes);
@@ -59,55 +64,67 @@ public class manageSiteSettings extends Fragment {
 
         fab = rootView.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_menu_save);
-    }
-
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pages.controlsSiteSettings();
+        fab.setVisibility(View.GONE);
     }
 
     private void fetchPageData() {
-        page = new open.furaffinity.client.pages.controlsSiteSettings();
-        try {
-            page.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "loadPage: ", e);
+        if(!isLoading) {
+            isLoading = true;
+            page = new controlsSiteSettings(page);
+            page.execute();
         }
     }
 
-    private void updateUIElements() {
-        if(page.getDisableAvatars()) {
-            disable_avatars_yes.setChecked(true);
-        } else {
-            disable_avatars_no.setChecked(true);
-        }
+    private void initPages() {
+        webClient = new webClient(requireContext());
 
-        switch(page.getDateFormat()){
-            case "full":
-                switch_date_format_full.setChecked(true);
-                break;
-            case "fuzzy":
-                switch_date_format_fuzzy.setChecked(true);
-                break;
-        }
+        page = new controlsSiteSettings(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if (page.getDisableAvatars()) {
+                    disable_avatars_yes.setChecked(true);
+                } else {
+                    disable_avatars_no.setChecked(true);
+                }
 
-        uiControls.spinnerSetAdapter(requireContext(), select_preferred_perpage, page.getPerPage(), page.getPerPageCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), select_newsubmissions_direction, page.getNewSubmissionsDirection(), page.getNewSubmissionsDirectionCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), select_thumbnail_size, page.getThumbnailSize(), page.getThumbnailSizeCurrent(), true, false);
+                switch (page.getDateFormat()) {
+                    case "full":
+                        switch_date_format_full.setChecked(true);
+                        break;
+                    case "fuzzy":
+                        switch_date_format_fuzzy.setChecked(true);
+                        break;
+                }
 
-        switch(page.getGalleryNavigation()){
-            case "minigallery":
-                gallery_navigation_minigallery.setChecked(true);
-                break;
-            case "links":
-                gallery_navigation_links.setChecked(true);
-                break;
-        }
+                uiControls.spinnerSetAdapter(requireContext(), select_preferred_perpage, page.getPerPage(), page.getPerPageCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), select_newsubmissions_direction, page.getNewSubmissionsDirection(), page.getNewSubmissionsDirectionCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), select_thumbnail_size, page.getThumbnailSize(), page.getThumbnailSizeCurrent(), true, false);
 
-        uiControls.spinnerSetAdapter(requireContext(), hide_favorites, page.getHideFavorites(), page.getHideFavoritesCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), no_guests, page.getNoGuests(), page.getNoGuestsCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), no_search_engines, page.getNoSearchEngines(), page.getNoSearchEnginesCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), no_notes, page.getNoNotes(), page.getNoNotesCurrent(), true, false);
+                switch (page.getGalleryNavigation()) {
+                    case "minigallery":
+                        gallery_navigation_minigallery.setChecked(true);
+                        break;
+                    case "links":
+                        gallery_navigation_links.setChecked(true);
+                        break;
+                }
+
+                uiControls.spinnerSetAdapter(requireContext(), hide_favorites, page.getHideFavorites(), page.getHideFavoritesCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), no_guests, page.getNoGuests(), page.getNoGuestsCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), no_search_engines, page.getNoSearchEngines(), page.getNoSearchEnginesCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), no_notes, page.getNoNotes(), page.getNoNotesCurrent(), true, false);
+
+                fab.setVisibility(View.VISIBLE);
+                isLoading = false;
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                fab.setVisibility(View.GONE);
+                isLoading = false;
+                Toast.makeText(getActivity(), "Failed to load data site settings", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateUIElementListeners(View rootView) {
@@ -117,46 +134,45 @@ public class manageSiteSettings extends Fragment {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("do", "update");
 
-                if(disable_avatars_yes.isChecked()) {
+                if (disable_avatars_yes.isChecked()) {
                     params.put("disable_avatars", "1");
                 }
 
-                if(disable_avatars_no.isChecked()) {
+                if (disable_avatars_no.isChecked()) {
                     params.put("disable_avatars", "0");
                 }
 
-                if(switch_date_format_full.isChecked()) {
+                if (switch_date_format_full.isChecked()) {
                     params.put("date_format", "full");
                 }
 
-                if(switch_date_format_fuzzy.isChecked())
-                {
+                if (switch_date_format_fuzzy.isChecked()) {
                     params.put("date_format", "fuzzy");
                 }
 
-                params.put("perpage", ((kvPair)select_preferred_perpage.getSelectedItem()).getKey());
-                params.put("newsubmissions_direction", ((kvPair)select_newsubmissions_direction.getSelectedItem()).getKey());
-                params.put("thumbnail_size", ((kvPair)select_thumbnail_size.getSelectedItem()).getKey());
+                params.put("perpage", ((kvPair) select_preferred_perpage.getSelectedItem()).getKey());
+                params.put("newsubmissions_direction", ((kvPair) select_newsubmissions_direction.getSelectedItem()).getKey());
+                params.put("thumbnail_size", ((kvPair) select_thumbnail_size.getSelectedItem()).getKey());
 
-                if(gallery_navigation_minigallery.isChecked()){
+                if (gallery_navigation_minigallery.isChecked()) {
                     params.put("gallery_navigation", "minigallery");
                 }
 
-                if(gallery_navigation_links.isChecked()){
+                if (gallery_navigation_links.isChecked()) {
                     params.put("gallery_navigation", "links");
                 }
 
-                params.put("hide_favorites", ((kvPair)hide_favorites.getSelectedItem()).getKey());
-                params.put("no_guests", ((kvPair)no_guests.getSelectedItem()).getKey());
-                params.put("no_search_engines", ((kvPair)no_search_engines.getSelectedItem()).getKey());
-                params.put("no_notes", ((kvPair)no_notes.getSelectedItem()).getKey());
+                params.put("hide_favorites", ((kvPair) hide_favorites.getSelectedItem()).getKey());
+                params.put("no_guests", ((kvPair) no_guests.getSelectedItem()).getKey());
+                params.put("no_search_engines", ((kvPair) no_search_engines.getSelectedItem()).getKey());
+                params.put("no_notes", ((kvPair) no_notes.getSelectedItem()).getKey());
                 params.put("save_settings", "Save Settings");
 
                 try {
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pages.controlsSiteSettings.getPagePath(), params);
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsSiteSettings.getPagePath(), params);
                             return null;
                         }
                     }.execute(webClient).get();
@@ -175,9 +191,8 @@ public class manageSiteSettings extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_manage_site_settings, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

@@ -69,7 +69,7 @@ public class html {
                 currentCommentData.put("commentDate", currentElement.attr("data-timestamp"));
                 currentCommentData.put("comment", currentElementCommentDiv.html());
 
-                if(currentElementReplyToLinkDiv != null) {
+                if (currentElementReplyToLinkDiv != null) {
                     currentCommentData.put("replyToLink", currentElementReplyToLinkDiv.attr("href"));
                 }
 
@@ -89,11 +89,11 @@ public class html {
     public static HashMap<String, String> getDropDownOptions(Element selectIn) {
         HashMap<String, String> result = new HashMap<>();
 
-        if(selectIn != null) {
+        if (selectIn != null) {
             Elements options = selectIn.select("option");
 
-            for(Element option : options) {
-                if(option.hasAttr("value")) {
+            for (Element option : options) {
+                if (option.hasAttr("value")) {
                     result.put(option.attr("value"), option.text());
                 }
             }

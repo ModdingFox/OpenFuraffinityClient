@@ -1,22 +1,17 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Switch;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsSettings extends AsyncTask<webClient, Void, Void> {
+public class controlsSettings extends abstractPage {
     private static final String TAG = controlsSettings.class.getName();
 
     private static String pagePath = "/controls/settings/";
@@ -54,23 +49,24 @@ public class controlsSettings extends AsyncTask<webClient, Void, Void> {
     private HashMap<String, String> account_disabled;
     private String account_disabled_current;
 
-    public controlsSettings() {
+    public controlsSettings(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements inputs = doc.select("input");
         Elements selects = doc.select("select");
 
-        if(inputs != null) {
-            for(Element input : inputs) {
-                switch(input.attr("name")) {
+        if (inputs != null) {
+            for (Element input : inputs) {
+                switch (input.attr("name")) {
                     case "fa_useremail":
                         fa_useremail = input.attr("value");
                         break;
                     case "timezone_dst":
-                        timezone_dst = ((input.attr("value").equals("0"))?(false):(true));
+                        timezone_dst = ((input.attr("value").equals("0")) ? (false) : (true));
                         break;
                     case "paypal_email":
                         paypal_email = input.attr("value");
@@ -88,19 +84,19 @@ public class controlsSettings extends AsyncTask<webClient, Void, Void> {
             }
         }
 
-        if(selects != null) {
-            for(Element select : selects) {
+        if (selects != null) {
+            for (Element select : selects) {
                 Element selected = select.selectFirst("option[selected]");
                 Elements options = select.select("option");
                 HashMap<String, String> newOptionList = new HashMap<>();
 
-                for(Element option : options) {
-                    if(option.hasAttr("value")) {
+                for (Element option : options) {
+                    if (option.hasAttr("value")) {
                         newOptionList.put(option.attr("value"), option.text());
                     }
                 }
 
-                if(selected != null) {
+                if (selected != null) {
                     switch (select.attr("name")) {
                         case "ssl_enable":
                             ssl_enable = newOptionList;
@@ -159,53 +155,152 @@ public class controlsSettings extends AsyncTask<webClient, Void, Void> {
             }
         }
 
+        //not really a great way of doing it but sure
+        if(inputs.size() > 0 && selects.size() > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {
         return pagePath;
     }
 
-    public String getFaUserEmail() { return fa_useremail; }
-    public HashMap<String,String> getSslEnable() { return ssl_enable; }
-    public HashMap<String,String> getBDayMonth() { return bdaymonth; }
-    public HashMap<String,String> getBDayDay() { return bdayday; }
-    public HashMap<String,String> getBDayYear() { return bdayyear; }
-    public HashMap<String,String> getViewMature() { return viewmature; }
-    public HashMap<String,String> getTimezone() { return timezone; }
-    public boolean getTimezoneDST() { return timezone_dst; }
-    public HashMap<String,String> getFullView() { return fullview; }
-    public HashMap<String,String> getStyle() { return style; }
-    public HashMap<String,String> getStylesheet() { return stylesheet; }
-    public HashMap<String,String> getScalesEnabled() { return scales_enabled; }
-    public String getPayPalEmail() { return paypal_email; }
-    public HashMap<String,String> getDisplayMode() { return display_mode; }
-    public HashMap<String,String> getScalesMessageEnabled() { return scales_message_enabled; }
-    public String getScalesName() { return scales_name; }
-    public String getScalesPluralName() { return scales_plural_name; }
-    public String getScalesCost() { return scales_cost; }
-    public HashMap<String,String> getAccountDisabled() { return account_disabled; }
+    public String getFaUserEmail() {
+        return fa_useremail;
+    }
 
-    public String getSslEnableCurrent() { return ssl_enable_current; }
-    public String getBDayMonthCurrent() { return bdaymonth_current; }
-    public String getBDayDayCurrent() { return bdayday_current; }
-    public String getBDayYearCurrent() { return bdayyear_current; }
-    public String getViewMatureCurrent() { return viewmature_current; }
-    public String getTimezoneCurrent() { return timezone_current; }
-    public String getFullViewCurrent() { return fullview_current; }
-    public String getStyleCurrent() { return style_current; }
-    public String getStylesheetCurrent() { return stylesheet_current; }
-    public String getScalesEnabledCurrent() { return scales_enabled_current; }
-    public String getDisplayModeCurrent() { return display_mode_current; }
-    public String getScalesMessageEnabledCurrent() { return scales_message_enabled_current; }
-    public String getAccountDisabledCurrent() { return account_disabled_current; }
+    public HashMap<String, String> getSslEnable() {
+        return ssl_enable;
+    }
 
+    public HashMap<String, String> getBDayMonth() {
+        return bdaymonth;
+    }
 
+    public HashMap<String, String> getBDayDay() {
+        return bdayday;
+    }
+
+    public HashMap<String, String> getBDayYear() {
+        return bdayyear;
+    }
+
+    public HashMap<String, String> getViewMature() {
+        return viewmature;
+    }
+
+    public HashMap<String, String> getTimezone() {
+        return timezone;
+    }
+
+    public boolean getTimezoneDST() {
+        return timezone_dst;
+    }
+
+    public HashMap<String, String> getFullView() {
+        return fullview;
+    }
+
+    public HashMap<String, String> getStyle() {
+        return style;
+    }
+
+    public HashMap<String, String> getStylesheet() {
+        return stylesheet;
+    }
+
+    public HashMap<String, String> getScalesEnabled() {
+        return scales_enabled;
+    }
+
+    public String getPayPalEmail() {
+        return paypal_email;
+    }
+
+    public HashMap<String, String> getDisplayMode() {
+        return display_mode;
+    }
+
+    public HashMap<String, String> getScalesMessageEnabled() {
+        return scales_message_enabled;
+    }
+
+    public String getScalesName() {
+        return scales_name;
+    }
+
+    public String getScalesPluralName() {
+        return scales_plural_name;
+    }
+
+    public String getScalesCost() {
+        return scales_cost;
+    }
+
+    public HashMap<String, String> getAccountDisabled() {
+        return account_disabled;
+    }
+
+    public String getSslEnableCurrent() {
+        return ssl_enable_current;
+    }
+
+    public String getBDayMonthCurrent() {
+        return bdaymonth_current;
+    }
+
+    public String getBDayDayCurrent() {
+        return bdayday_current;
+    }
+
+    public String getBDayYearCurrent() {
+        return bdayyear_current;
+    }
+
+    public String getViewMatureCurrent() {
+        return viewmature_current;
+    }
+
+    public String getTimezoneCurrent() {
+        return timezone_current;
+    }
+
+    public String getFullViewCurrent() {
+        return fullview_current;
+    }
+
+    public String getStyleCurrent() {
+        return style_current;
+    }
+
+    public String getStylesheetCurrent() {
+        return stylesheet_current;
+    }
+
+    public String getScalesEnabledCurrent() {
+        return scales_enabled_current;
+    }
+
+    public String getDisplayModeCurrent() {
+        return display_mode_current;
+    }
+
+    public String getScalesMessageEnabledCurrent() {
+        return scales_message_enabled_current;
+    }
+
+    public String getAccountDisabledCurrent() {
+        return account_disabled_current;
+    }
 }

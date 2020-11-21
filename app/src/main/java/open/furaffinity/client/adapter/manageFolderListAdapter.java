@@ -9,18 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.dialogs.textDialog;
 
 public class manageFolderListAdapter extends RecyclerView.Adapter<manageFolderListAdapter.ViewHolder> {
     private static final String TAG = manageFolderListAdapter.class.getName();
@@ -30,8 +26,11 @@ public class manageFolderListAdapter extends RecyclerView.Adapter<manageFolderLi
 
     public interface manageFolderListAdapterListener {
         public void upButton(String postURL, String key, String position, String id, String idName);
+
         public void downButton(String postURL, String key, String position, String id, String idName);
+
         public void deleteButton(String postURL, String key, String id, String idName);
+
         public void editButton(String postURL, String id);
     }
 
@@ -82,9 +81,9 @@ public class manageFolderListAdapter extends RecyclerView.Adapter<manageFolderLi
         holder.upButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mDataSet.get(position).containsKey("upgroup_id")) {
+                if (mDataSet.get(position).containsKey("upgroup_id")) {
                     listener.upButton(mDataSet.get(position).get("upaction"), mDataSet.get(position).get("upkey"), mDataSet.get(position).get("upposition"), mDataSet.get(position).get("upgroup_id"), "group_id");
-                } else if(mDataSet.get(position).containsKey("upfolder_id")) {
+                } else if (mDataSet.get(position).containsKey("upfolder_id")) {
                     listener.upButton(mDataSet.get(position).get("upaction"), mDataSet.get(position).get("upkey"), mDataSet.get(position).get("upposition"), mDataSet.get(position).get("upfolder_id"), "folder_id");
                 }
             }
@@ -93,9 +92,9 @@ public class manageFolderListAdapter extends RecyclerView.Adapter<manageFolderLi
         holder.downButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mDataSet.get(position).containsKey("downgroup_id")) {
+                if (mDataSet.get(position).containsKey("downgroup_id")) {
                     listener.downButton(mDataSet.get(position).get("downaction"), mDataSet.get(position).get("downkey"), mDataSet.get(position).get("downposition"), mDataSet.get(position).get("downgroup_id"), "group_id");
-                } else if(mDataSet.get(position).containsKey("downfolder_id")) {
+                } else if (mDataSet.get(position).containsKey("downfolder_id")) {
                     listener.downButton(mDataSet.get(position).get("downaction"), mDataSet.get(position).get("downkey"), mDataSet.get(position).get("downposition"), mDataSet.get(position).get("downfolder_id"), "folder_id");
                 }
             }
@@ -104,15 +103,15 @@ public class manageFolderListAdapter extends RecyclerView.Adapter<manageFolderLi
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mDataSet.get(position).containsKey("deletegroup_id")) {
+                if (mDataSet.get(position).containsKey("deletegroup_id")) {
                     listener.deleteButton(mDataSet.get(position).get("deleteaction"), mDataSet.get(position).get("deletekey"), mDataSet.get(position).get("deletegroup_id"), "group_id");
-                } else if(mDataSet.get(position).containsKey("deletefolder_id")) {
+                } else if (mDataSet.get(position).containsKey("deletefolder_id")) {
                     listener.deleteButton(mDataSet.get(position).get("deleteaction"), mDataSet.get(position).get("deletekey"), mDataSet.get(position).get("deletefolder_id"), "folder_id");
                 }
             }
         });
 
-        if(mDataSet.get(position).containsKey("editfolder_id")) {
+        if (mDataSet.get(position).containsKey("editfolder_id")) {
             holder.editButton.setVisibility(View.VISIBLE);
         } else {
             holder.editButton.setVisibility(View.GONE);
@@ -121,7 +120,7 @@ public class manageFolderListAdapter extends RecyclerView.Adapter<manageFolderLi
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mDataSet.get(position).containsKey("editfolder_id")) {
+                if (mDataSet.get(position).containsKey("editfolder_id")) {
                     listener.editButton(mDataSet.get(position).get("editaction"), mDataSet.get(position).get("editfolder_id"));
                 }
             }

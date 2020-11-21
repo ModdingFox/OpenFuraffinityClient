@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,12 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = controlsFoldersSubmissions.class.getName();
-
+public class controlsFoldersSubmissions extends abstractPage {
     private static String pagePath = "/controls/folders/submissions/";
+    
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
     private String createGroupKey = "";
@@ -24,22 +23,27 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
     HashMap<String, String> existingGroups = new HashMap<>();
     String selectedGroup;
 
-    public controlsFoldersSubmissions() {
+    public controlsFoldersSubmissions(Context context, pageListener pageListener) {
+        super(context, pageListener);
+    }
+
+    public controlsFoldersSubmissions(controlsFoldersSubmissions controlsFoldersSubmissions){
+        super(controlsFoldersSubmissions);
     }
 
     private HashMap<String, String> extractFormelements(Element form, String name) {
         HashMap<String, String> result = new HashMap<>();
 
-        if(form != null) {
-            if(form.hasAttr("action")) {
+        if (form != null) {
+            if (form.hasAttr("action")) {
                 result.put(name + "action", form.attr("action"));
             }
 
             Elements inputs = form.select("input");
 
-            if(inputs != null) {
-                for(Element input : inputs) {
-                    if(input.hasAttr("name") && input.hasAttr("value")) {
+            if (inputs != null) {
+                for (Element input : inputs) {
+                    if (input.hasAttr("name") && input.hasAttr("value")) {
                         result.put(name + input.attr("name"), input.attr("value"));
                     }
                 }
@@ -47,8 +51,8 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
 
             Element button = form.selectFirst("button[name=key]");
 
-            if(button != null) {
-                if(button.hasAttr("value")) {
+            if (button != null) {
+                if (button.hasAttr("value")) {
                     result.put(name + "key", button.attr("value"));
                 }
             }
@@ -57,32 +61,32 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
         return result;
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements groupsAndFolders = doc.select("tr.group-row,tr.folder-row");
         Element addGroupForm = doc.selectFirst("form[id=add-group]");
         Element renameGroupForm = doc.selectFirst("form[id=edit-group]");
 
-        if(groupsAndFolders != null && groupsAndFolders.size() > 0) {
-            for(Element groupOrFolder : groupsAndFolders) {
+        if (groupsAndFolders != null && groupsAndFolders.size() > 0) {
+            for (Element groupOrFolder : groupsAndFolders) {
                 HashMap<String, String> newItem = new HashMap<>();
 
-                if(groupOrFolder.is("tr.group-row")){
+                if (groupOrFolder.is("tr.group-row")) {
                     newItem.put("type", "group");
                 } else {
                     newItem.put("type", "folder");
                 }
 
                 Element td = groupOrFolder.selectFirst("td");
-                if(td != null) {
+                if (td != null) {
                     Elements tdChildren = td.children();
-                    if(tdChildren.size() >= 2) {
-                        if(tdChildren.get(0).is("form")) {
+                    if (tdChildren.size() >= 2) {
+                        if (tdChildren.get(0).is("form")) {
                             newItem.putAll(extractFormelements(tdChildren.get(0), "up"));
                         }
 
-                        if(tdChildren.get(1).is("form")) {
+                        if (tdChildren.get(1).is("form")) {
                             newItem.putAll(extractFormelements(tdChildren.get(1), "down"));
                         }
                     }
@@ -90,7 +94,7 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
                 td = td.nextElementSibling();
                 Element img = td.selectFirst("img");
 
-                if(img != null && img.hasAttr("src")) {
+                if (img != null && img.hasAttr("src")) {
                     newItem.put("iconLink", open.furaffinity.client.utilities.webClient.getBaseUrl() + img.attr("src"));
                 }
 
@@ -98,11 +102,11 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
 
                 Element name = td.selectFirst("h2");
 
-                if(name != null) {
+                if (name != null) {
                     newItem.put("name", name.text());
                 } else {
                     name = td.selectFirst("h3");
-                    if(name != null) {
+                    if (name != null) {
                         newItem.put("name", name.text());
                     }
                 }
@@ -110,16 +114,16 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
                 td = td.nextElementSibling();
 
                 Elements tdChildren = td.children();
-                if(tdChildren.size() >= 3) {
-                    if(tdChildren.get(0).is("form")) {
+                if (tdChildren.size() >= 3) {
+                    if (tdChildren.get(0).is("form")) {
                         newItem.putAll(extractFormelements(tdChildren.get(0), "edit"));
                     }
 
-                    if(tdChildren.get(1).is("form")) {
+                    if (tdChildren.get(1).is("form")) {
                         newItem.putAll(extractFormelements(tdChildren.get(1), "delete"));
                     }
 
-                    if(tdChildren.get(2).is("form")) {
+                    if (tdChildren.get(2).is("form")) {
                         newItem.putAll(extractFormelements(tdChildren.get(2), "add"));
                     }
                 }
@@ -128,44 +132,51 @@ public class controlsFoldersSubmissions extends AsyncTask<webClient, Void, Void>
             }
         }
 
-        if(addGroupForm != null) {
+        if (addGroupForm != null) {
             Element keyButton = addGroupForm.selectFirst("button[name=key]");
-            if(keyButton != null) {
+            if (keyButton != null) {
                 createGroupKey = keyButton.attr("value");
             }
         }
 
-        if(renameGroupForm != null) {
+        if (renameGroupForm != null) {
             Element keyButton = renameGroupForm.selectFirst("button[name=key]");
-            if(keyButton != null) {
+            if (keyButton != null) {
                 renameGroupKey = keyButton.attr("value");
             }
 
             Element groupId = renameGroupForm.selectFirst("select[name=group_id]");
 
-            if(groupId != null) {
+            if (groupId != null) {
                 Element selectedGroup = groupId.selectFirst("option[selected]");
                 Elements options = groupId.select("option");
 
-                for(Element option : options) {
-                    if(option.hasAttr("value")) {
+                for (Element option : options) {
+                    if (option.hasAttr("value")) {
                         existingGroups.put(option.attr("value"), option.text());
                     }
                 }
 
-                if(selectedGroup != null && selectedGroup.hasAttr("value")) {
+                if (selectedGroup != null && selectedGroup.hasAttr("value")) {
                     this.selectedGroup = selectedGroup.attr("value");
                 }
             }
         }
+
+        if(addGroupForm != null &&  renameGroupForm != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {

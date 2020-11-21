@@ -67,7 +67,7 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
         holder.postUser.setText(String.format("By: %s", mDataSet.get(position).get("postUserName")));
         holder.postRating.setText(mDataSet.get(position).get("postRatingCode"));
 
-        if(!showPostInfo) {
+        if (!showPostInfo) {
             holder.imageListPostInfo.setVisibility(View.GONE);
         }
 

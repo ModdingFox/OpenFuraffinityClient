@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -28,7 +29,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.pages.loginTest;
+import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
@@ -43,8 +45,12 @@ public class mainActivity extends AppCompatActivity {
     private Menu navMenu;
     private NavController navController;
 
-    private webClient webClient;
-    private loginTest loginTest;
+    private View headerView;
+    private ImageView imageView;
+    private TextView userName;
+    private TextView notifications;
+
+    private loginCheck loginCheck;
 
     private String searchSelected = null;
     private String searchQuery = null;
@@ -101,51 +107,64 @@ public class mainActivity extends AppCompatActivity {
         navMenu = navigationView.getMenu();
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        headerView = navigationView.getHeaderView(0);
+        imageView = headerView.findViewById(R.id.imageView);
+        userName = headerView.findViewById(R.id.userName);
+        notifications = headerView.findViewById(R.id.notifications);
     }
 
     private void initClientAndPage() {
-        webClient = new webClient(this);
-        loginTest = new loginTest();
+        loginCheck = new loginCheck(this, new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if (((loginCheck)abstractPage).getIsLoggedIn()) {
+                    Picasso.get().load(((loginCheck)abstractPage).getUserIcon()).into(imageView);
+                    userName.setText(((loginCheck)abstractPage).getUserName());
+
+                    navMenu.findItem(R.id.nav_upload).setVisible(true);
+                    navMenu.findItem(R.id.nav_profile).setVisible(true);
+                    navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
+                    navMenu.findItem(R.id.nav_msg_others).setVisible(true);
+                    navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
+                    navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_logout);
+                } else {
+                    imageView.setImageResource(R.mipmap.ic_launcher);
+                    userName.setText(getString(R.string.app_name));
+                    notifications.setText("");
+
+                    navMenu.findItem(R.id.nav_upload).setVisible(false);
+                    navMenu.findItem(R.id.nav_profile).setVisible(false);
+                    navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
+                    navMenu.findItem(R.id.nav_msg_others).setVisible(false);
+                    navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
+                    navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
+                }
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                imageView.setImageResource(R.mipmap.ic_launcher);
+                userName.setText(getString(R.string.app_name));
+                notifications.setText("");
+
+                navMenu.findItem(R.id.nav_upload).setVisible(false);
+                navMenu.findItem(R.id.nav_profile).setVisible(false);
+                navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
+                navMenu.findItem(R.id.nav_msg_others).setVisible(false);
+                navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
+                navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
+                Toast.makeText(mainActivity.this, "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void fetchPageData() {
-        try {
-            loginTest.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
-        }
+        loginCheck.execute();
     }
 
     public void updateUIElements() {
-        View headerView = navigationView.getHeaderView(0);
-        ImageView imageView = headerView.findViewById(R.id.imageView);
-        TextView userName = headerView.findViewById(R.id.userName);
-        TextView notifications = headerView.findViewById(R.id.notifications);
-
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
-
-        if (loginTest.getIsLoggedIn()) {
-            Picasso.get().load(loginTest.getUserIcon()).into(imageView);
-            userName.setText(loginTest.getUserName());
-
-            navMenu.findItem(R.id.nav_upload).setVisible(true);
-            navMenu.findItem(R.id.nav_profile).setVisible(true);
-            navMenu.findItem(R.id.nav_msg_submission).setVisible(true);
-            navMenu.findItem(R.id.nav_msg_others).setVisible(true);
-            navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
-            navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_logout);
-        } else {
-            imageView.setImageResource(R.mipmap.ic_launcher);
-            userName.setText(getString(R.string.app_name));
-            notifications.setText("");
-
-            navMenu.findItem(R.id.nav_upload).setVisible(false);
-            navMenu.findItem(R.id.nav_profile).setVisible(false);
-            navMenu.findItem(R.id.nav_msg_submission).setVisible(false);
-            navMenu.findItem(R.id.nav_msg_others).setVisible(false);
-            navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
-            navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
-        }
 
         if (!sharedPref.getBoolean(getString(R.string.trackHistorySetting), false)) {
             navMenu.findItem(R.id.nav_history).setVisible(false);

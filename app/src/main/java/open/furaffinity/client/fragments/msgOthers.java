@@ -1,7 +1,6 @@
 package open.furaffinity.client.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.concurrent.ExecutionException;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.msgOthersSectionsPagerAdapter;
-import open.furaffinity.client.utilities.webClient;
 
 public class msgOthers extends Fragment {
     private static final String TAG = msgOthers.class.getName();

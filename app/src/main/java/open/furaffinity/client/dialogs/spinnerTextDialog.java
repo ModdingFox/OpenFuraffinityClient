@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,7 +33,9 @@ public class spinnerTextDialog extends DialogFragment {
 
     private spinnerTextDialogListener listener;
 
-    public void setListener(spinnerTextDialogListener spinnerTextDialogListener) { listener = spinnerTextDialogListener; }
+    public void setListener(spinnerTextDialogListener spinnerTextDialogListener) {
+        listener = spinnerTextDialogListener;
+    }
 
     @NonNull
     @Override
@@ -47,13 +48,13 @@ public class spinnerTextDialog extends DialogFragment {
         spinner = rootView.findViewById(R.id.spinner);
         editText = rootView.findViewById(R.id.editText);
 
-        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data, ((currentValue == null)?(""):(currentValue)), true, false);
+        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data, ((currentValue == null) ? ("") : (currentValue)), true, false);
 
         builder.setView(rootView);
         builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogPositiveClick(((kvPair)spinner.getSelectedItem()).getKey(), editText.getText().toString());
+                listener.onDialogPositiveClick(((kvPair) spinner.getSelectedItem()).getKey(), editText.getText().toString());
                 dismiss();
             }
         });
@@ -67,13 +68,12 @@ public class spinnerTextDialog extends DialogFragment {
         return builder.create();
     }
 
-    public void setData(HashMap<String, String> data, String currentValue)
-    {
+    public void setData(HashMap<String, String> data, String currentValue) {
         this.data = data;
         this.currentValue = currentValue;
     }
 
     public String getSpinnerSelection() {
-        return ((kvPair)spinner.getSelectedItem()).getKey();
+        return ((kvPair) spinner.getSelectedItem()).getKey();
     }
 }

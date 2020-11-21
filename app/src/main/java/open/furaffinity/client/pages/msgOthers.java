@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.fragments.journal;
+import open.furaffinity.client.fragments.view;
 
-public class msgOthers extends AsyncTask<webClient, Void, Void> {
+public class msgOthers extends abstractPage {
     private String pagePath = "/msg/others";
 
     private String watches = "";
@@ -22,10 +24,15 @@ public class msgOthers extends AsyncTask<webClient, Void, Void> {
     private String favorites = "";
     private String journals = "";
 
-    public msgOthers() {
+    public msgOthers(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageData(String html) {
+    public msgOthers(msgOthers msgOthers) {
+        super(msgOthers);
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element msgOthersMessagesWatchesMessageStream = doc.selectFirst("section[id=messages-watches]");
@@ -52,14 +59,18 @@ public class msgOthers extends AsyncTask<webClient, Void, Void> {
         if (msgOthersMessagesJournalsMessageStream != null) {
             journals = msgOthersMessagesJournalsMessageStream.selectFirst("ul.message-stream").html();
         }
+
+        //this is not great. would really like a way to actually check that the page loaded
+        return true;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public String getWatches() {
@@ -134,7 +145,7 @@ public class msgOthers extends AsyncTask<webClient, Void, Void> {
 
                 currentElementResult.put("notificationId", currentElementInputCheckbox.attr("value"));
 
-                if(currentElementAHref != null && currentElementStrong != null && currentElementSpan != null) {
+                if (currentElementAHref != null && currentElementStrong != null && currentElementSpan != null) {
                     currentElementResult.put("userLink", currentElementAHref.attr("href"));
                     currentElementResult.put("userName", currentElementStrong.text());
                     currentElementResult.put("time", currentElementSpan.text());
@@ -170,7 +181,7 @@ public class msgOthers extends AsyncTask<webClient, Void, Void> {
                 currentElementResult.put("userName", currentElementStrong.get(0).text());
                 currentElementResult.put("postLink", currentElementAHref.get(1).attr("href"));
                 currentElementResult.put("postName", currentElementStrong.get(1).text());
-                currentElementResult.put("postClass", open.furaffinity.client.fragments.view.class.getName());
+                currentElementResult.put("postClass", view.class.getName());
                 currentElementResult.put("time", currentElementSpan.text());
                 currentElementResult.put("actionText", actionText);
 
@@ -199,7 +210,7 @@ public class msgOthers extends AsyncTask<webClient, Void, Void> {
                 currentElementResult.put("notificationId", currentElementInputCheckbox.attr("value"));
                 currentElementResult.put("postLink", currentElementAHref.get(0).attr("href"));
                 currentElementResult.put("postName", currentElementStrong.get(0).text());
-                currentElementResult.put("postClass", open.furaffinity.client.fragments.journal.class.getName());
+                currentElementResult.put("postClass", journal.class.getName());
                 currentElementResult.put("userLink", currentElementAHref.get(1).attr("href"));
                 currentElementResult.put("userName", currentElementStrong.get(1).text());
                 currentElementResult.put("time", currentElementSpan.text());

@@ -40,7 +40,7 @@ public class msgPmsDialog extends DialogFragment {
         EditText subjectEditText = rootView.findViewById(R.id.subjectEditText);
         EditText messageEditText = rootView.findViewById(R.id.messageEditText);
 
-        if(this.user != null) {
+        if (this.user != null) {
             userNameEditText.setText(this.user);
         }
 

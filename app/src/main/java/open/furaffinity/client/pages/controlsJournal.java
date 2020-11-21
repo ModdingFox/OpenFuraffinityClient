@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsJournal extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = controlsJournal.class.getName();
-
+public class controlsJournal extends abstractPage {
     private String pagePath = "/controls/journal/";
+
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
+
     private String key;
     private String nextPage;
 
@@ -25,21 +25,34 @@ public class controlsJournal extends AsyncTask<webClient, Void, Void> {
     private String subject;
     private String body;
 
-    public controlsJournal() {
+    public controlsJournal(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    public controlsJournal(String pagePath) {
+    public controlsJournal(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
     }
 
-    private void processPageData(String html) {
+    public controlsJournal(controlsJournal controlsJournal) {
+        super(controlsJournal);
+        this.pagePath = controlsJournal.pagePath;
+        this.pageResults = controlsJournal.pageResults;
+        this.key = controlsJournal.key;
+        this.nextPage = controlsJournal.nextPage;
+        this.id = controlsJournal.id;
+        this.subject = controlsJournal.subject;
+        this.body = controlsJournal.body;
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements pageControlsJournalLinksDiv = doc.select("div.page-controls-journal-links");
         Element msgFormForm = doc.selectFirst("form[name=MsgForm][method=post]");
         Elements formGet = doc.select("form[action^=/controls/journal/][method=get]");
 
-        if(pageControlsJournalLinksDiv != null) {
+        if (pageControlsJournalLinksDiv != null) {
             for (Element pageControlsJournalLinkDiv : pageControlsJournalLinksDiv) {
                 Element autoLinkA = pageControlsJournalLinkDiv.selectFirst("a.auto_link");
                 Element editA = pageControlsJournalLinkDiv.selectFirst("a.edit");
@@ -62,41 +75,48 @@ public class controlsJournal extends AsyncTask<webClient, Void, Void> {
             }
         }
 
-        for(Element currentFormGet : formGet) {
-            if(currentFormGet.text().equals("Older")) {
+        for (Element currentFormGet : formGet) {
+            if (currentFormGet.text().equals("Older")) {
                 nextPage = currentFormGet.attr("action");
             }
         }
 
-        if(msgFormForm != null){
+        if (msgFormForm != null) {
             Element keyInput = msgFormForm.selectFirst("input[name=key]");
             Element idInput = msgFormForm.selectFirst("input[name=id]");
-            if(keyInput != null) {
+            if (keyInput != null) {
                 key = keyInput.attr("value");
             }
 
-            if(idInput != null) {
+            if (idInput != null) {
                 id = idInput.attr("value");
             }
         }
 
         Element subjectInput = doc.selectFirst("input[name=subject]");
-        if(subjectInput != null) {
+        if (subjectInput != null) {
             subject = subjectInput.attr("value");
         }
 
         Element messageTextarea = doc.selectFirst("textarea[name=message]");
-        if(messageTextarea != null) {
+        if (messageTextarea != null) {
             body = messageTextarea.text();
         }
+
+        if(msgFormForm != null && formGet != null && subjectInput != null && messageTextarea != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public String getPagePath() {
@@ -112,7 +132,7 @@ public class controlsJournal extends AsyncTask<webClient, Void, Void> {
     }
 
     public void setNextPage() {
-        if(nextPage != null) {
+        if (nextPage != null) {
             pagePath = nextPage;
         }
     }

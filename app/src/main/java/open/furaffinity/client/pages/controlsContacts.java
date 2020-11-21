@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,38 +11,41 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsContacts extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = controlsContacts.class.getName();
-
+public class controlsContacts extends abstractPage {
     private static String pagePath = "/controls/contacts/";
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
     private String key;
 
-    public controlsContacts() {
+    public controlsContacts(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageData(String html) {
+    public controlsContacts(controlsContacts controlsContacts) {
+        super(controlsContacts);
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements controlPanelContactItemDiv = doc.select("div.control-panel-contact-item");
         Element msgFormForm = doc.selectFirst("form[name=MsgForm]");
 
-        if(controlPanelContactItemDiv != null) {
-            for(Element currentControlPanelContactItemDiv : controlPanelContactItemDiv) {
+        if (controlPanelContactItemDiv != null) {
+            for (Element currentControlPanelContactItemDiv : controlPanelContactItemDiv) {
                 Element cellDiv = currentControlPanelContactItemDiv.selectFirst("div.cell");
-                if(cellDiv != null) {
+                if (cellDiv != null) {
                     Element h4 = cellDiv.selectFirst("h4");
                     Element input = cellDiv.selectFirst("input");
 
-                    if(h4 != null && input != null) {
+                    if (h4 != null && input != null) {
                         HashMap<String, String> newElement = new HashMap<>();
                         newElement.put("label", h4.text());
                         newElement.put("value", input.attr("value"));
                         newElement.put("name", input.attr("name"));
 
-                        if(input.hasAttr("placeholder")) {
+                        if (input.hasAttr("placeholder")) {
                             newElement.put("placeholder", input.attr("placeholder"));
                         }
 
@@ -52,20 +55,27 @@ public class controlsContacts extends AsyncTask<webClient, Void, Void> {
             }
         }
 
-        if(msgFormForm != null){
+        if (msgFormForm != null) {
             Element keyInput = msgFormForm.selectFirst("input[name=key]");
-            if(keyInput != null) {
+            if (keyInput != null) {
                 key = keyInput.attr("value");
             }
         }
+
+        if(pageResults.size() > 0 && key != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {

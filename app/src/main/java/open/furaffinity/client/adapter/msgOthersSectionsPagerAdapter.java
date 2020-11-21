@@ -11,8 +11,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.msgOthersList;
-import open.furaffinity.client.fragments.notImplementedYet;
-import open.furaffinity.client.pages.msgOthers;
 import open.furaffinity.client.utilities.messageIds;
 
 public class msgOthersSectionsPagerAdapter extends FragmentPagerAdapter {

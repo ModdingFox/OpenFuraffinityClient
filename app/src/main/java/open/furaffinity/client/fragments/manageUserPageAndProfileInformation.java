@@ -1,17 +1,13 @@
 package open.furaffinity.client.fragments;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -21,11 +17,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsProfile;
 import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.kvPair;
-import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
 public class manageUserPageAndProfileInformation extends Fragment {
@@ -36,10 +31,9 @@ public class manageUserPageAndProfileInformation extends Fragment {
     private fabCircular fab;
 
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.controlsProfile page;
+    private controlsProfile page;
 
-    private int loadingStopCounter = 3;
-
+    private boolean isLoading = false;
     List<dynamicEditItem> uiElementList;
 
     private void getElements(View rootView) {
@@ -47,40 +41,51 @@ public class manageUserPageAndProfileInformation extends Fragment {
 
         fab = rootView.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_menu_save);
-    }
-
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pages.controlsProfile();
+        fab.setVisibility(View.GONE);
     }
 
     private void fetchPageData() {
-        if (!(loadingStopCounter == 0)) {
-            page = new open.furaffinity.client.pages.controlsProfile();
-            try {
-                page.execute(webClient).get();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "loadPage: ", e);
-            }
+        if (!isLoading) {
+            isLoading = true;
+            page = new controlsProfile(page);
+            page.execute();
+        }
+    }
 
-            if (uiElementList != null) {
-                for (dynamicEditItem currentItem : uiElementList) {
-                    currentItem.removeFromView();
-                }
-            }
-
-            uiElementList = new ArrayList<>();
-
-            if (page.getPageResults() != null) {
-                for (controlsProfile.inputItem currentInputItem : page.getPageResults()) {
-                    if(currentInputItem.isSelect()) {
-                        uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, currentInputItem.getName(), currentInputItem.getHeader(), currentInputItem.getValue(), currentInputItem.getOptions()));
-                    } else {
-                        uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, currentInputItem.getName(), currentInputItem.getHeader(), currentInputItem.getValue(), "", currentInputItem.getMaxLength()));
+    private void initPages() {
+        webClient = new webClient(requireContext());
+        page = new controlsProfile(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if (uiElementList != null) {
+                    for (dynamicEditItem currentItem : uiElementList) {
+                        currentItem.removeFromView();
                     }
                 }
+
+                uiElementList = new ArrayList<>();
+
+                if (((controlsProfile)abstractPage).getPageResults() != null) {
+                    for (controlsProfile.inputItem currentInputItem : ((controlsProfile)abstractPage).getPageResults()) {
+                        if (currentInputItem.isSelect()) {
+                            uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, currentInputItem.getName(), currentInputItem.getHeader(), currentInputItem.getValue(), currentInputItem.getOptions()));
+                        } else {
+                            uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, currentInputItem.getName(), currentInputItem.getHeader(), currentInputItem.getValue(), "", currentInputItem.getMaxLength()));
+                        }
+                    }
+                }
+
+                fab.setVisibility(View.VISIBLE);
+                isLoading = false;
             }
-        }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                fab.setVisibility(View.GONE);
+                isLoading = false;
+                Toast.makeText(getActivity(), "Failed to load data for user page/profile", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateUIElementListeners(View rootView) {
@@ -91,7 +96,7 @@ public class manageUserPageAndProfileInformation extends Fragment {
                 params.put("do", "update");
                 params.put("key", page.getKey());
 
-                for(dynamicEditItem currentItem : uiElementList) {
+                for (dynamicEditItem currentItem : uiElementList) {
                     params.put(currentItem.getName(), currentItem.getValue());
                 }
 
@@ -99,7 +104,7 @@ public class manageUserPageAndProfileInformation extends Fragment {
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pages.controlsProfile.getPagePath(), params);
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsProfile.getPagePath(), params);
                             return null;
                         }
                     }.execute(webClient).get();
@@ -118,7 +123,7 @@ public class manageUserPageAndProfileInformation extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_scrollview_with_fab, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
         updateUIElementListeners(rootView);
         return rootView;

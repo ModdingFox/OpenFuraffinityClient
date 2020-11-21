@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
-public class msgSubmission extends AsyncTask<webClient, Void, Void> {
+public class msgSubmission extends abstractPage {
     private String pagePath = "/msg/submissions";
 
     private boolean isNewestFirst;
@@ -27,7 +27,8 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
 
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public msgSubmission(boolean isNewestFirst) {
+    public msgSubmission(Context context, pageListener pageListener, boolean isNewestFirst) {
+        super(context, pageListener);
         this.isNewestFirst = isNewestFirst;
 
         if (isNewestFirst) {
@@ -38,6 +39,7 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
     }
 
     public msgSubmission(msgSubmission msgSubmission) {
+        super(msgSubmission);
         this.pagePath = msgSubmission.pagePath;
         this.isNewestFirst = msgSubmission.isNewestFirst;
         this.page = msgSubmission.page;
@@ -46,7 +48,7 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
         this.nextPage = msgSubmission.nextPage;
     }
 
-    private void processPageData(String html) {
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element prevA = doc.selectFirst("a[class*=more].prev");
@@ -61,14 +63,19 @@ public class msgSubmission extends AsyncTask<webClient, Void, Void> {
         }
 
         pageResults = getResultsData(html);
+
+        //not the greatest here. need to eventually find a good way to check the page is loaded/valid
+        return true;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
+    protected Boolean doInBackground(Void... Void) {
         String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+        html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public HashMap<String, String> getPerpage() {

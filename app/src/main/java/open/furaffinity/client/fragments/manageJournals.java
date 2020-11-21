@@ -1,20 +1,18 @@
 package open.furaffinity.client.fragments;
 
-import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +21,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.controlsJournalListAdapter;
-import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.dialogs.journalDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.controlsJournal;
@@ -46,38 +44,18 @@ public class manageJournals extends Fragment {
     private fabCircular fab;
 
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.controlsJournal page;
+    private controlsJournal page;
 
     private int loadingStopCounter = 3;
+    private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void getElements(View rootView) {
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+    private abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            List<HashMap<String, String>> pageResults = ((controlsJournal)abstractPage).getPageResults();
 
-        constraintLayout = rootView.findViewById(R.id.constraintLayout);
-
-        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-
-        fab = rootView.findViewById(R.id.fab);
-        fab.setImageResource(R.drawable.ic_menu_newmessage);
-    }
-
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pages.controlsJournal();
-    }
-
-    private void fetchPageData() {
-        if (!(loadingStopCounter == 0)) {
-            page = new open.furaffinity.client.pages.controlsJournal();
-            try {
-                page.execute(webClient).get();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "loadNextPage: ", e);
-            }
-
-            List<HashMap<String, String>> pageResults = page.getPageResults();
+            int curSize = mAdapter.getItemCount();
 
             if (pageResults.size() == 0 && loadingStopCounter > 0) {
                 loadingStopCounter--;
@@ -89,30 +67,69 @@ public class manageJournals extends Fragment {
             newPostPaths.removeAll(oldPostPaths);
             pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
             mDataSet.addAll(pageResults);
+            mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+
+            fab.setVisibility(View.VISIBLE);
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            loadingStopCounter--;
+            fab.setVisibility(View.GONE);
+            isLoading = false;
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(getActivity(), "Failed to load data for journals", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private void getElements(View rootView) {
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+
+        constraintLayout = rootView.findViewById(R.id.constraintLayout);
+
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        fab = rootView.findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_menu_newmessage);
+        fab.setVisibility(View.GONE);
+    }
+
+    private void fetchPageData() {
+        if (!isLoading && loadingStopCounter > 0) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new controlsJournal(page);
+            page.execute();
         }
     }
 
-    private void updateUIElements() {
+    private void resetRecycler() {
+        page = new controlsJournal(getActivity(), pageListener);
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        mAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
+        fetchPageData();
+    }
+
+    private void initPages() {
+        webClient = new webClient(requireContext());
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new controlsJournalListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+
+        page = new controlsJournal(getActivity(), pageListener);
     }
 
     private void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-
-                initClientAndPage();
-                fetchPageData();
-                updateUIElements();
-                updateUIElementListeners(rootView);
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
@@ -120,71 +137,65 @@ public class manageJournals extends Fragment {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
                 page.setNextPage();
-                int curSize = mAdapter.getItemCount();
                 fetchPageData();
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
             }
         };
 
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        ((controlsJournalListAdapter)mAdapter).setListener(new controlsJournalListAdapter.controlsJournalListAdapterListener() {
+        ((controlsJournalListAdapter) mAdapter).setListener(new controlsJournalListAdapter.controlsJournalListAdapterListener() {
             @Override
             public void updateJournal(String editPath) {
-                controlsJournal existingJournal = new controlsJournal(editPath);
+                controlsJournal existingJournal = new controlsJournal(getActivity(), new abstractPage.pageListener() {
+                    @Override
+                    public void requestSucceeded(abstractPage abstractPage) {
+                        journalDialog journalDialog = new journalDialog();
+                        journalDialog.setSubject(((controlsJournal)abstractPage).getSubject());
+                        journalDialog.setBody(((controlsJournal)abstractPage).getBody());
+                        journalDialog.setListener(new journalDialog.journalDialogListener() {
+                            @Override
+                            public void onDialogPositiveClick(String subject, String body, boolean lockComments, boolean makeFeatured) {
+                                HashMap<String, String> params = new HashMap<>();
+                                params.put("id", ((controlsJournal)abstractPage).getId());
+                                params.put("key", ((controlsJournal)abstractPage).getKey());
+                                params.put("do", "update");
+                                params.put("subject", subject);
+                                params.put("message", body);
+                                params.put("submit", "Create / Update Journal");
 
-                try {
-                    existingJournal.execute(webClient).get();
+                                if (lockComments) {
+                                    params.put("lock_comments", "on");
+                                }
 
-                    journalDialog journalDialog = new journalDialog();
-                    journalDialog.setSubject(existingJournal.getSubject());
-                    journalDialog.setBody(existingJournal.getBody());
-                    journalDialog.setListener(new journalDialog.journalDialogListener() {
-                        @Override
-                        public void onDialogPositiveClick(String subject, String body, boolean lockComments, boolean makeFeatured) {
-                            HashMap<String, String> params = new HashMap<>();
-                            params.put("id", existingJournal.getId());
-                            params.put("key", existingJournal.getKey());
-                            params.put("do", "update");
-                            params.put("subject", subject);
-                            params.put("message", body);
-                            params.put("submit", "Create / Update Journal");
+                                if (makeFeatured) {
+                                    params.put("make_featured", "on");
+                                }
 
-                            if(lockComments){
-                                params.put("lock_comments", "on");
+                                try {
+                                    new AsyncTask<webClient, Void, Void>() {
+                                        @Override
+                                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + ((controlsJournal)abstractPage).getPagePath(), params);
+                                            return null;
+                                        }
+                                    }.execute(webClient).get();
+
+                                    resetRecycler();
+                                } catch (ExecutionException | InterruptedException e) {
+                                    Log.e(TAG, "Could not un fav post: ", e);
+                                }
                             }
+                        });
+                        journalDialog.show(getChildFragmentManager(), "updateJournalDialog");
+                    }
 
-                            if(makeFeatured){
-                                params.put("make_featured", "on");
-                            }
+                    @Override
+                    public void requestFailed(abstractPage abstractPage) {
+                        Toast.makeText(getActivity(), "Failed to load data for existing journal", Toast.LENGTH_SHORT).show();
+                    }
+                }, editPath);
 
-                            try {
-                                new AsyncTask<webClient, Void, Void>() {
-                                    @Override
-                                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                                        webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + existingJournal.getPagePath(), params);
-                                        return null;
-                                    }
-                                }.execute(webClient).get();
-
-                                recyclerView.scrollTo(0, 0);
-                                mDataSet.clear();
-                                mAdapter.notifyDataSetChanged();
-                                endlessRecyclerViewScrollListener.resetState();
-
-                                initClientAndPage();
-                                fetchPageData();
-                                updateUIElements();
-                                updateUIElementListeners(rootView);
-                            } catch (ExecutionException | InterruptedException e) {
-                                Log.e(TAG, "Could not un fav post: ", e);
-                            }
-                        }
-                    });
-                    journalDialog.show(getChildFragmentManager(), "updateJournalDialog");
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "updateJournal: ", e);
-                }
+                existingJournal.execute();
             }
         });
 
@@ -203,11 +214,11 @@ public class manageJournals extends Fragment {
                         params.put("message", body);
                         params.put("submit", "Create / Update Journal");
 
-                        if(lockComments){
+                        if (lockComments) {
                             params.put("lock_comments", "on");
                         }
 
-                        if(makeFeatured){
+                        if (makeFeatured) {
                             params.put("make_featured", "on");
                         }
 
@@ -220,15 +231,7 @@ public class manageJournals extends Fragment {
                                 }
                             }.execute(webClient).get();
 
-                            recyclerView.scrollTo(0, 0);
-                            mDataSet.clear();
-                            mAdapter.notifyDataSetChanged();
-                            endlessRecyclerViewScrollListener.resetState();
-
-                            initClientAndPage();
-                            fetchPageData();
-                            updateUIElements();
-                            updateUIElementListeners(rootView);
+                            resetRecycler();
                         } catch (ExecutionException | InterruptedException e) {
                             Log.e(TAG, "Could post journal: ", e);
                         }
@@ -247,9 +250,8 @@ public class manageJournals extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

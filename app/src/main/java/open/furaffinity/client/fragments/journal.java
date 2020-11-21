@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -23,13 +24,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.journalSectionsPagerAdapter;
-import open.furaffinity.client.pages.loginTest;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
@@ -55,8 +56,10 @@ public class journal extends Fragment {
     private FloatingActionButton sendNote;
 
     private webClient webClient;
-    private open.furaffinity.client.pages.loginTest loginTest;
+    private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.journal page;
+
+    private boolean isLoading = false;
 
     private void saveHistory() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
@@ -98,6 +101,8 @@ public class journal extends Fragment {
         tabs = rootView.findViewById(R.id.tabs);
 
         fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+
         watchUser = new FloatingActionButton(getContext());
         sendNote = new FloatingActionButton(getContext());
 
@@ -114,44 +119,72 @@ public class journal extends Fragment {
         fab.addButton(sendNote, 1.5f, 225);
     }
 
-    private void initClientAndPage(String pagePath) {
-        webClient = new webClient(this.getActivity());
-        loginTest = new loginTest();
-        page = new open.furaffinity.client.pages.journal(pagePath);
-    }
-
     private void fetchPageData() {
-        loginTest = new loginTest();
-        try {
-            loginTest.execute(webClient).get();
-            page.execute(webClient).get();
-            saveHistory();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
+        if (!isLoading) {
+            isLoading = true;
+
+            loginCheck = new loginCheck(loginCheck);
+            loginCheck.execute();
+
+            page = new open.furaffinity.client.pages.journal(page);
+            page.execute();
         }
     }
 
-    private void checkPageLoaded() {
-
+    private void setupViewPager(open.furaffinity.client.pages.journal page) {
+        journalSectionsPagerAdapter sectionsPagerAdapter = new journalSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        tabs.setupWithViewPager(viewPager);
     }
 
-    private void updateUIElements() {
-        if(loginTest.getIsLoggedIn() && page.getWatchUnWatch() != null && page.getNoteUser() != null) {
-            fab.setVisibility(View.VISIBLE);
+    private void initPages(String pagePath) {
+        webClient = new webClient(this.getActivity());
 
-            if(page.getIsWatching()) {
-                watchUser.setImageResource(R.drawable.ic_menu_user_remove);
-            } else {
-                watchUser.setImageResource(R.drawable.ic_menu_user_add);
+        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if (((loginCheck)abstractPage).getIsLoggedIn()) {
+                    fab.setVisibility(View.VISIBLE);
+                } else {
+                    fab.setVisibility(View.GONE);
+                }
             }
-        } else {
-            fab.setVisibility(View.GONE);
-        }
 
-        Glide.with(this).load(page.getJournalUserIcon()).into(journalUserIcon);
-        journalUserName.setText(page.getJournalUserName());
-        journalTitle.setText(page.getJournalTitle());
-        journalDate.setText(page.getJournalDate());
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                fab.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        page = new open.furaffinity.client.pages.journal(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if (((open.furaffinity.client.pages.journal)abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.journal)abstractPage).getNoteUser() != null) {
+                    if (((open.furaffinity.client.pages.journal)abstractPage).getIsWatching()) {
+                        watchUser.setImageResource(R.drawable.ic_menu_user_remove);
+                    } else {
+                        watchUser.setImageResource(R.drawable.ic_menu_user_add);
+                    }
+                }
+
+                Glide.with(journal.this).load(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserIcon()).into(journalUserIcon);
+                journalUserName.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserName());
+                journalTitle.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalTitle());
+                journalDate.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalDate());
+
+                saveHistory();
+                setupViewPager(((open.furaffinity.client.pages.journal)abstractPage));
+
+                isLoading = false;
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                isLoading = false;
+                Toast.makeText(getActivity(), "Failed to load data for journal", Toast.LENGTH_SHORT).show();
+            }
+        }, pagePath);
     }
 
     private void updateUIElementListeners() {
@@ -174,9 +207,7 @@ public class journal extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    initClientAndPage(page.getPagePath());
                     fetchPageData();
-                    updateUIElements();
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not watch/unwatch user: ", e);
                 }
@@ -191,12 +222,6 @@ public class journal extends Fragment {
         });
     }
 
-    private void setupViewPager() {
-        journalSectionsPagerAdapter sectionsPagerAdapter = new journalSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        tabs.setupWithViewPager(viewPager);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,12 +231,9 @@ public class journal extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_journal, container, false);
         getElements(rootView);
-        initClientAndPage(((mainActivity) getActivity()).getJournalPath());
+        initPages(((mainActivity) getActivity()).getJournalPath());
         fetchPageData();
-        checkPageLoaded();
-        updateUIElements();
         updateUIElementListeners();
-        setupViewPager();
         return rootView;
     }
 }

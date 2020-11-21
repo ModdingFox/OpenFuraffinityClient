@@ -7,10 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.adapter.manageImageListAdapter;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.msgOthersListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
@@ -50,6 +50,7 @@ public class msgOthersList extends Fragment {
     private webClient webClient;
     private open.furaffinity.client.pages.msgOthers page;
 
+    private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private int msgOthersType;
 
@@ -62,6 +63,7 @@ public class msgOthersList extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
         fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
 
         removeSelected = new FloatingActionButton(getContext());
         removeAll = new FloatingActionButton(getContext());
@@ -79,52 +81,76 @@ public class msgOthersList extends Fragment {
         fab.addButton(removeAll, 1.5f, 180);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pages.msgOthers();
-    }
-
     private void fetchPageData() {
-        msgOthersType = getArguments().getInt(messageIds.msgOthersType_MESSAGE);
-
-        try {
-            page.execute(webClient).get();
-
-            switch (msgOthersType) {
-                case 0:
-                    mDataSet = open.furaffinity.client.pages.msgOthers.processWatchNotifications(page.getWatches(), "started watching you");
-                    break;
-                case 2:
-                    mDataSet = open.furaffinity.client.pages.msgOthers.processShoutNotifications(page.getShouts(), "left a shout");
-                    break;
-                case 1:
-                    mDataSet = open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getSubmissionComments(), "replied to");
-                    break;
-                case 3:
-                    mDataSet = open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getFavorites(), "favorited");
-                    break;
-                case 4:
-                    mDataSet = open.furaffinity.client.pages.msgOthers.processJournalNotifications(page.getJournals(), "created journal");
-                    break;
-                default:
-                    break;
-            }
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "loadNextPage: ", e);
+        if(!isLoading) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new open.furaffinity.client.pages.msgOthers(page);
+            page.execute();
         }
     }
 
-    private void updateUIElements() {
+    private void resetRecycler() {
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        ((msgOthersListAdapter) mAdapter).clearChecked();
+        mAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
+        fetchPageData();
+    }
+
+    private void initPages() {
+        webClient = new webClient(requireContext());
+
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new msgOthersListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
+
+        page = new open.furaffinity.client.pages.msgOthers(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                switch (msgOthersType) {
+                    case 0:
+                        mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processWatchNotifications(page.getWatches(), "started watching you"));
+                        break;
+                    case 2:
+                        mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processShoutNotifications(page.getShouts(), "left a shout"));
+                        break;
+                    case 1:
+                        mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getSubmissionComments(), "replied to"));
+                        break;
+                    case 3:
+                        mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getFavorites(), "favorited"));
+                        break;
+                    case 4:
+                        mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processJournalNotifications(page.getJournals(), "created journal"));
+                        break;
+                    default:
+                        break;
+                }
+
+                mAdapter.notifyDataSetChanged();
+
+                fab.setVisibility(View.VISIBLE);
+                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                fab.setVisibility(View.GONE);
+                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Failed to load data for notification", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void deleteSelected(String itemType, List<String> itemIds) {
         HashMap<String, String> params = new HashMap<>();
         params.put("remove-all", "Remove Selected");
 
-        for(int i = 0; i < itemIds.size(); i++) {
+        for (int i = 0; i < itemIds.size(); i++) {
             params.put(itemType + "[" + Integer.toString(i) + "]", itemIds.get(i));
         }
 
@@ -137,15 +163,7 @@ public class msgOthersList extends Fragment {
                 }
             }.execute(webClient).get();
 
-            recyclerView.scrollTo(0, 0);
-            mDataSet.clear();
-            ((msgOthersListAdapter)mAdapter).clearChecked();
-            mAdapter.notifyDataSetChanged();
-            endlessRecyclerViewScrollListener.resetState();
-
-            initClientAndPage();
-            fetchPageData();
-            updateUIElements();
+            resetRecycler();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not remove notification: ", e);
         }
@@ -164,15 +182,7 @@ public class msgOthersList extends Fragment {
                 }
             }.execute(webClient).get();
 
-            recyclerView.scrollTo(0, 0);
-            mDataSet.clear();
-            ((msgOthersListAdapter)mAdapter).clearChecked();
-            mAdapter.notifyDataSetChanged();
-            endlessRecyclerViewScrollListener.resetState();
-
-            initClientAndPage();
-            fetchPageData();
-            updateUIElements();
+            resetRecycler();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not remove notifications: ", e);
         }
@@ -182,17 +192,7 @@ public class msgOthersList extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                ((msgOthersListAdapter)mAdapter).clearChecked();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-
-                initClientAndPage();
-                fetchPageData();
-                updateUIElements();
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
@@ -211,19 +211,19 @@ public class msgOthersList extends Fragment {
             public void onClick(View v) {
                 switch (msgOthersType) {
                     case 0:
-                        deleteSelected("watches", ((msgOthersListAdapter)mAdapter).getCheckedItems());
+                        deleteSelected("watches", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                         break;
                     case 2:
-                        deleteSelected("shouts", ((msgOthersListAdapter)mAdapter).getCheckedItems());
+                        deleteSelected("shouts", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                         break;
                     case 1:
-                        deleteSelected("comments-submissions", ((msgOthersListAdapter)mAdapter).getCheckedItems());
+                        deleteSelected("comments-submissions", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                         break;
                     case 3:
-                        deleteSelected("favorites", ((msgOthersListAdapter)mAdapter).getCheckedItems());
+                        deleteSelected("favorites", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                         break;
                     case 4:
-                        deleteSelected("journals", ((msgOthersListAdapter)mAdapter).getCheckedItems());
+                        deleteSelected("journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                         break;
                     default:
                         break;
@@ -266,10 +266,11 @@ public class msgOthersList extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
+        msgOthersType = getArguments().getInt(messageIds.msgOthersType_MESSAGE);
+
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

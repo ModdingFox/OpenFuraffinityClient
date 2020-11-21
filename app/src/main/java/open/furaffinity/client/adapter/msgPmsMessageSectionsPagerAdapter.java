@@ -35,7 +35,8 @@ public class msgPmsMessageSectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 webViewContent newMsgPmsMessageWebViewContentFragment = new webViewContent();
-                bundle.putString(messageIds.submissionDescription_MESSAGE, msgPmsMessage.getMessageBody());
+                bundle.putString(messageIds.pagePath_MESSAGE, msgPmsMessage.getPagePath());
+                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.msgPmsMessage.class.getName());
                 newMsgPmsMessageWebViewContentFragment.setArguments(bundle);
                 return newMsgPmsMessageWebViewContentFragment;
             default:

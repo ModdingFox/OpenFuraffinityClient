@@ -1,4 +1,4 @@
-package open.furaffinity.client.pages;
+package open.furaffinity.client.submitPages;
 
 import android.os.AsyncTask;
 
@@ -35,9 +35,9 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
     private String thumbnailFilePath;
 
     private HashMap<String, String> params = new HashMap<>();
-    private open.furaffinity.client.pages.submitSubmissionPart2 submitSubmissionPart2;
+    private open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2;
 
-    public submitSubmissionPart3(open.furaffinity.client.pages.submitSubmissionPart2 submitSubmissionPart2, String sourceFilePath, String thumbnailFilePath) {
+    public submitSubmissionPart3(open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2, String sourceFilePath, String thumbnailFilePath) {
         this.submitSubmissionPart2 = submitSubmissionPart2;
         this.sourceFilePath = sourceFilePath;
         this.thumbnailFilePath = thumbnailFilePath;
@@ -57,10 +57,10 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
         species = open.furaffinity.client.utilities.html.getDropDownOptions(speciesSelect);
         gender = open.furaffinity.client.utilities.html.getDropDownOptions(genderSelect);
 
-        if(ratingInputs != null) {
-            for(Element ratingInput : ratingInputs) {
+        if (ratingInputs != null) {
+            for (Element ratingInput : ratingInputs) {
                 Element nextDiv = ratingInput.nextElementSibling();
-                if(nextDiv != null) {
+                if (nextDiv != null) {
                     rating.put(ratingInput.attr("value"), nextDiv.text());
                 }
             }
@@ -68,13 +68,13 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
 
         Element myformForm = doc.selectFirst("form[name=myform]");
 
-        if(myformForm != null) {
+        if (myformForm != null) {
             params = new HashMap<>();
 
             Elements hiddenInputs = myformForm.select("input[type=hidden]");
 
-            if(hiddenInputs != null) {
-                for(Element hiddenInput : hiddenInputs) {
+            if (hiddenInputs != null) {
+                for (Element hiddenInput : hiddenInputs) {
                     params.put(hiddenInput.attr("name"), hiddenInput.attr("value"));
                 }
             }
@@ -87,7 +87,7 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
         String html;
         List<HashMap<String, String>> postParams = new ArrayList<>();
 
-        for(String key : submitSubmissionPart2.getParams().keySet()){
+        for (String key : submitSubmissionPart2.getParams().keySet()) {
             HashMap<String, String> newParam = new HashMap<>();
             newParam.put("name", key);
             newParam.put("value", submitSubmissionPart2.getParams().get(key));
@@ -97,14 +97,14 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
         File sourceFile = new File(sourceFilePath);
         File thumbnailFile = new File(thumbnailFilePath);
 
-        if(sourceFile.exists()) {
+        if (sourceFile.exists()) {
             HashMap<String, String> newParam = new HashMap<>();
             newParam.put("name", "submission");
             newParam.put("filePath", sourceFile.getPath());
             postParams.add(newParam);
         }
 
-        if(thumbnailFile.exists()) {
+        if (thumbnailFile.exists()) {
             HashMap<String, String> newParam = new HashMap<>();
             newParam.put("name", "thumbnail");
             newParam.put("filePath", thumbnailFile.getPath());
@@ -125,7 +125,9 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
         return pagePath;
     }
 
-    public HashMap<String, String> getParams() { return params; }
+    public HashMap<String, String> getParams() {
+        return params;
+    }
 
     public HashMap<String, String> getCat() {
         return cat;

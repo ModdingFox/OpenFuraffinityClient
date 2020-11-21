@@ -89,7 +89,7 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
             });
         }
 
-        if(checkedItems.contains(mDataSet.get(position).get("messageid"))) {
+        if (checkedItems.contains(mDataSet.get(position).get("messageid"))) {
             holder.checkBox.setChecked(true);
         } else {
             holder.checkBox.setChecked(false);
@@ -98,7 +98,7 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     checkedItems.add(mDataSet.get(position).get("messageid"));
                 } else {
                     checkedItems.remove(mDataSet.get(position).get("messageid"));

@@ -2,7 +2,6 @@ package open.furaffinity.client.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -10,33 +9,21 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 
@@ -48,22 +35,25 @@ public class webClient {
     private String cookieB = null;
     private boolean hasLoginCookie = false;
 
-    public webClient(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
-        cookieA = sharedPref.getString(context.getString(R.string.webClientCookieA), null);
-        cookieB = sharedPref.getString(context.getString(R.string.webClientCookieB), null);
+    private void checkPageForErrors(String html) {
+        Document doc = Jsoup.parse(html);
+        Element head = doc.selectFirst("head");
+        Element title = head.selectFirst("title");
 
-        if (cookieA != null && cookieB != null) {
-            hasLoginCookie = true;
+        Element body = doc.selectFirst("body");
+        Element sectionHeader = body.selectFirst("div.section-header");
+
+        //Some pages doesnt have a section header but luckily they also dont
+        if (!title.text().equals("System Error") && (sectionHeader == null || !sectionHeader.text().equals("System Error"))) {
+            lastPageLoaded = true;
         }
     }
 
-    public String sendGetRequest(String urlIn, HashMap<String, String> cookies) {
+    private String cookieSetup(HashMap<String, String> cookies) {
         if (cookies == null) {
             cookies = new HashMap<>();
         }
 
-        String result = null;
         String additionalCookies = "";
 
         if (hasLoginCookie) {
@@ -80,6 +70,48 @@ public class webClient {
             }
         }
 
+        return additionalCookies;
+    }
+
+    private String getPageResponse(int responseCode, HttpURLConnection httpURLConnection) throws IOException {
+        String result = null;
+
+        Log.i(TAG, "Http Request: Response Code :: " + responseCode);
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+            StringBuilder html = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                html.append(line);
+            }
+            result = html.toString();
+
+            checkPageForErrors(result);
+
+            Log.i(TAG, "Http Request: " + result);
+        } else {
+            Log.e(TAG, "Http Request failed");
+        }
+
+        return result;
+    }
+
+    public webClient(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        cookieA = sharedPref.getString(context.getString(R.string.webClientCookieA), null);
+        cookieB = sharedPref.getString(context.getString(R.string.webClientCookieB), null);
+
+        if (cookieA != null && cookieB != null) {
+            hasLoginCookie = true;
+        }
+    }
+
+    public String sendGetRequest(String urlIn, HashMap<String, String> cookies) {
+        lastPageLoaded = false;
+        String result = null;
+
         try {
             URL url = new URL(urlIn);
             HttpURLConnection httpURLConnection;
@@ -89,7 +121,7 @@ public class webClient {
             do {
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("GET");
-                httpURLConnection.setRequestProperty("Cookie", additionalCookies);
+                httpURLConnection.setRequestProperty("Cookie", cookieSetup(cookies));
                 responseCode = httpURLConnection.getResponseCode();
 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -104,35 +136,7 @@ public class webClient {
                 }
             } while (retry > 0);
 
-
-            Log.i(TAG, "sendGetRequest: GET Response Code :: " + responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-                StringBuilder html = new StringBuilder();
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    html.append(line);
-                }
-                result = html.toString();
-
-                Document doc = Jsoup.parse(result);
-                Element head = doc.selectFirst("head");
-                Element title = head.selectFirst("title");
-
-                Element body = doc.selectFirst("body");
-                Element sectionHeader = body.selectFirst("div.section-header");
-
-                //Some pages doesnt have a section header but luckily they also dont
-                if (!title.text().equals("System Error") && (sectionHeader == null || !sectionHeader.text().equals("System Error"))) {
-                    lastPageLoaded = true;
-                }
-
-                Log.i(TAG, "sendGetRequest: " + result);
-            } else {
-                Log.e(TAG, "sendGetRequest: GET request failed");
-            }
+            result = getPageResponse(responseCode, httpURLConnection);
         } catch (IOException e) {
             Log.e(TAG, "sendGetRequest: ", e);
         }
@@ -145,10 +149,7 @@ public class webClient {
     }
 
     public String sendPostRequest(String urlIn, HashMap<String, String> paramsIn, HashMap<String, String> cookies) {
-        if (cookies == null) {
-            cookies = new HashMap<>();
-        }
-
+        lastPageLoaded = false;
         String result = null;
         byte[] params = paramsIn.entrySet().stream().map(pair ->
         {
@@ -159,22 +160,6 @@ public class webClient {
                 return "";
             }
         }).collect(Collectors.joining("&")).getBytes();
-
-        String additionalCookies = "";
-
-        if (hasLoginCookie) {
-            cookies.put("a", cookieA);
-            cookies.put("b", cookieB);
-        }
-
-        if (cookies != null) {
-            for (String key : cookies.keySet()) {
-                additionalCookies += key;
-                additionalCookies += "=";
-                additionalCookies += cookies.get(key);
-                additionalCookies += "; ";
-            }
-        }
 
         try {
             URL url = new URL(urlIn);
@@ -188,7 +173,7 @@ public class webClient {
                 httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 httpURLConnection.setRequestProperty("charset", "utf-8");
                 httpURLConnection.setRequestProperty("Content-Length", Integer.toString(params.length));
-                httpURLConnection.setRequestProperty("Cookie", additionalCookies);
+                httpURLConnection.setRequestProperty("Cookie", cookieSetup(cookies));
 
                 DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
                 outputStream.write(params);
@@ -207,33 +192,7 @@ public class webClient {
                 }
             } while (retry > 0);
 
-            Log.i(TAG, "sendPostRequest: POST Response Code :: " + responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-                StringBuilder html = new StringBuilder();
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    html.append(line);
-                }
-                result = html.toString();
-
-                Document doc = Jsoup.parse(result);
-                Element head = doc.selectFirst("head");
-                Element title = head.selectFirst("title");
-
-                Element body = doc.selectFirst("body");
-                Element sectionHeader = body.selectFirst("div.section-header");
-
-                if (!title.text().equals("System Error") && (sectionHeader == null || !sectionHeader.text().equals("System Error"))) {
-                    lastPageLoaded = true;
-                }
-
-                Log.i(TAG, result);
-            } else {
-                Log.e(TAG, "sendGetRequest: GET request failed");
-            }
+            result = getPageResponse(responseCode, httpURLConnection);
         } catch (IOException e) {
             Log.e(TAG, "sendGetRequest: ", e);
         }
@@ -246,30 +205,11 @@ public class webClient {
     }
 
     public String sendPostRequest(String urlIn, List<HashMap<String, String>> paramsIn, HashMap<String, String> cookies) {
+        lastPageLoaded = false;
         String result = null;
 
         String boundry = "---------------------------" + UUID.randomUUID().toString().replace("-", "");
         String LINE_FEED = "\r\n";
-
-        if (cookies == null) {
-            cookies = new HashMap<>();
-        }
-
-        String additionalCookies = "";
-
-        if (hasLoginCookie) {
-            cookies.put("a", cookieA);
-            cookies.put("b", cookieB);
-        }
-
-        if (cookies != null) {
-            for (String key : cookies.keySet()) {
-                additionalCookies += key;
-                additionalCookies += "=";
-                additionalCookies += cookies.get(key);
-                additionalCookies += "; ";
-            }
-        }
 
         try {
             URL url = new URL(urlIn);
@@ -282,20 +222,20 @@ public class webClient {
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundry);
                 httpURLConnection.setRequestProperty("charset", "utf-8");
-                httpURLConnection.setRequestProperty("Cookie", additionalCookies);
+                httpURLConnection.setRequestProperty("Cookie", cookieSetup(cookies));
 
                 DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
 
-                for(HashMap<String, String> currentParams : paramsIn) {
-                    if(currentParams.containsKey("name")  && (currentParams.containsKey("value") || currentParams.containsKey("filePath"))) {
+                for (HashMap<String, String> currentParams : paramsIn) {
+                    if (currentParams.containsKey("name") && (currentParams.containsKey("value") || currentParams.containsKey("filePath"))) {
                         outputStream.writeBytes("--" + boundry + LINE_FEED);
                         outputStream.writeBytes("Content-Disposition: form-data; " + "name=\"" + currentParams.get("name") + "\"");
 
-                        if(currentParams.containsKey("filePath")){
+                        if (currentParams.containsKey("filePath")) {
                             File currentFile = new File(currentParams.get("filePath"));
                             String contentType = URLConnection.guessContentTypeFromName(currentFile.getName());
 
-                            if(currentFile.exists()) {
+                            if (currentFile.exists()) {
                                 outputStream.writeBytes("; filename=\"" + currentFile.getName() + "\"" + LINE_FEED);
                                 outputStream.writeBytes("Content-Type: " + ((contentType != null) ? (contentType) : ("application/octet-stream")) + LINE_FEED + LINE_FEED);
 
@@ -339,33 +279,7 @@ public class webClient {
                 }
             } while (retry > 0);
 
-            Log.i(TAG, "sendPostRequest: POST Response Code :: " + responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-                StringBuilder html = new StringBuilder();
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    html.append(line);
-                }
-                result = html.toString();
-
-                Document doc = Jsoup.parse(result);
-                Element head = doc.selectFirst("head");
-                Element title = head.selectFirst("title");
-
-                Element body = doc.selectFirst("body");
-                Element sectionHeader = body.selectFirst("div.section-header");
-
-                if (!title.text().equals("System Error") && (sectionHeader == null || !sectionHeader.text().equals("System Error"))) {
-                    lastPageLoaded = true;
-                }
-
-                Log.i(TAG, result);
-            } else {
-                Log.e(TAG, "sendGetRequest: Post request failed");
-            }
+            result = getPageResponse(responseCode, httpURLConnection);
         } catch (IOException e) {
             Log.e(TAG, "sendPostRequest: ", e);
         }

@@ -22,32 +22,41 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
+import open.furaffinity.client.pages.search;
 import open.furaffinity.client.sqlite.searchContract;
 import open.furaffinity.client.sqlite.searchDBHelper;
-import open.furaffinity.client.utilities.webClient;
 
 public class searchNotificationWorker extends Worker {
     private static final String TAG = searchNotificationWorker.class.getName();
 
     private Context context;
 
-    private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pages.search page;
+    private search page;
 
     private List<HashMap<String, String>> mDataset = new ArrayList<>();
 
     private static final int maxPagesToCheck = 3;
 
     private void initClientAndPage() {
-        webClient = new webClient(context);
-        page = new open.furaffinity.client.pages.search();
+        page = new search(context, new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+
+            }
+        });
     }
 
     private void fetchPageData() {
         try {
-            page.execute(webClient).get();
-            page = new open.furaffinity.client.pages.search(page);
+            page.execute().get();
+            page = new search(page);
 
             searchDBHelper dbHelper = new searchDBHelper(context);
             SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -127,7 +136,7 @@ public class searchNotificationWorker extends Worker {
                 int postCount = 0;
 
                 do {
-                    page.execute(webClient).get();
+                    page.execute().get();
 
                     List<HashMap<String, String>> currentPageResults = page.getPageResults();
 
@@ -145,7 +154,7 @@ public class searchNotificationWorker extends Worker {
                         page.setPage(Integer.toString(Integer.parseInt(page.getCurrentPage()) + 1));
                         Thread.sleep(1000);
                     }
-                    page = new open.furaffinity.client.pages.search(page);
+                    page = new search(page);
                     pageCount++;
                     if (pageCount > maxPagesToCheck) {
                         foundLastPosition = true;
@@ -212,7 +221,6 @@ public class searchNotificationWorker extends Worker {
 
             mNotificationManager.notify(1, mBuilder.build());
         }
-
 
         return Result.success();
     }

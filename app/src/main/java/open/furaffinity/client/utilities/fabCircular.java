@@ -1,24 +1,17 @@
 package open.furaffinity.client.utilities;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import open.furaffinity.client.R;
 
 public class fabCircular extends FloatingActionButton implements View.OnClickListener {
 
@@ -46,15 +39,15 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
         }
 
         public void setPosition(float radius) {
-            float xCosine = (radius * this.radiusMultiplier) * (float)java.lang.Math.cos(this.angle * Math.PI / 180);
-            float ySine = (radius * this.radiusMultiplier) * (float)java.lang.Math.sin(this.angle * Math.PI / 180);
+            float xCosine = (radius * this.radiusMultiplier) * (float) java.lang.Math.cos(this.angle * Math.PI / 180);
+            float ySine = (radius * this.radiusMultiplier) * (float) java.lang.Math.sin(this.angle * Math.PI / 180);
 
             this.floatingActionButton.setTranslationX(xCosine);
             this.floatingActionButton.setTranslationY(ySine);
         }
 
         public void setVisibility(boolean visible) {
-            if(visible) {
+            if (visible) {
                 this.floatingActionButton.show();
             } else {
                 this.floatingActionButton.hide();
@@ -67,7 +60,7 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        for(FloatingActionButtonContainer currentFloatingActionButton : floatingActionButtons) {
+        for (FloatingActionButtonContainer currentFloatingActionButton : floatingActionButtons) {
             currentFloatingActionButton.setPosition(this.getWidth());
             currentFloatingActionButton.setVisibility(!isVisible);
         }
@@ -94,14 +87,14 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
         floatingActionButton.setLayoutParams(this.getLayoutParams());
         floatingActionButton.setTranslationX(this.getTranslationX());
         floatingActionButton.setTranslationY(this.getTranslationY());
-        floatingActionButton.setVisibility(((isVisible)?(VISIBLE):(GONE)));
+        floatingActionButton.setVisibility(((isVisible) ? (VISIBLE) : (GONE)));
         FloatingActionButtonContainer newFloatingActionButtonContainer = new FloatingActionButtonContainer(floatingActionButton, radiusMultiplier, angle);
         newFloatingActionButtonContainer.setPosition(this.getWidth());
         floatingActionButtons.add(newFloatingActionButtonContainer);
     }
 
     public void removeButton(FloatingActionButton floatingActionButton) {
-        for(FloatingActionButtonContainer currentFloatingActionButton : floatingActionButtons) {
+        for (FloatingActionButtonContainer currentFloatingActionButton : floatingActionButtons) {
             currentFloatingActionButton.setPosition(this.getWidth());
             currentFloatingActionButton.setVisibility(false);
         }
@@ -110,15 +103,15 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
 
         List<Integer> positions = new ArrayList<>();
 
-        for(int i = 0; i < floatingActionButtons.size(); i++) {
-            if(floatingActionButtons.get(i).getFloatingActionButton().equals(floatingActionButton)) {
+        for (int i = 0; i < floatingActionButtons.size(); i++) {
+            if (floatingActionButtons.get(i).getFloatingActionButton().equals(floatingActionButton)) {
                 positions.add(i);
             }
         }
 
         Collections.reverse(positions);
 
-        for(int i : positions) {
+        for (int i : positions) {
             floatingActionButtons.get(i).setVisibility(false);
             floatingActionButtons.remove(i);
         }

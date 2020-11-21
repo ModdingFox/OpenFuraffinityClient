@@ -1,9 +1,7 @@
 package open.furaffinity.client.fragments;
 
-import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,28 +13,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
-import open.furaffinity.client.pages.loginTest;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
@@ -67,13 +62,14 @@ public class user extends Fragment {
     private FloatingActionButton blockUser;
     private FloatingActionButton sendNote;
 
-
     private String currentPage;
     private String currentPagePath = null;
 
     private webClient webClient;
-    private open.furaffinity.client.pages.loginTest loginTest;
+    private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.user page;
+
+    private boolean isLoading = false;
 
     private void saveHistory() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
@@ -120,6 +116,8 @@ public class user extends Fragment {
         tabs = rootView.findViewById(R.id.tabs);
 
         fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+
         watchUser = new FloatingActionButton(getContext());
         blockUser = new FloatingActionButton(getContext());
         sendNote = new FloatingActionButton(getContext());
@@ -154,120 +152,19 @@ public class user extends Fragment {
         return result;
     }
 
-    private void initClientAndPage(String pagePath) {
-        webClient = new webClient(this.getActivity());
-        loginTest = new loginTest();
-        page = new open.furaffinity.client.pages.user(pagePath);
-    }
-
     private void fetchPageData() {
-        loginTest = new loginTest();
-        try {
-            loginTest.execute(webClient).get();
-            page.execute(webClient).get();
-            saveHistory();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
+        if(!isLoading) {
+            isLoading = true;
+
+            loginCheck = new loginCheck(loginCheck);
+            loginCheck.execute();
+
+            page = new open.furaffinity.client.pages.user(page);
+            page.execute();
         }
     }
 
-    private void checkPageLoaded() {
-        if (!page.getIsLoaded()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-            builder.setMessage("There was an issue loading the data from FurAffinity. Returning you to where you came from.")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-    }
-
-    private void updateUIElements() {
-        if(loginTest.getIsLoggedIn() && page.getBlockUnBlock() != null && page.getWatchUnWatch() != null && page.getNoteUser() != null) {
-            fab.setVisibility(View.VISIBLE);
-
-            if(page.getIsWatching()) {
-                watchUser.setImageResource(R.drawable.ic_menu_user_remove);
-            } else {
-                watchUser.setImageResource(R.drawable.ic_menu_user_add);
-            }
-
-            if(page.getIsBlocked()) {
-                blockUser.setImageResource(R.drawable.ic_menu_user_unblock);
-            } else {
-                blockUser.setImageResource(R.drawable.ic_menu_user_block);
-            }
-        } else {
-            fab.setVisibility(View.GONE);
-        }
-
-        userName.setText(page.getUserName());
-        userAccountStatus.setText(page.getUserAccountStatus());
-        userAccountStatusLine.setText(page.getUserAccountStatusLine());
-        Glide.with(this).load(page.getUserIcon()).into(userIcon);
-        userViews.setText(page.getUserViews());
-        userSubmissions.setText(page.getUserSubmissions());
-        userFavs.setText(page.getUserFavs());
-        userCommentsEarned.setText(page.getUserCommentsEarned());
-        userCommentsMade.setText(page.getUserCommentsMade());
-        userJournals.setText(page.getUserJournals());
-    }
-
-    private void updateUIElementListeners(View rootView) {
-        watchUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    new AsyncTask<webClient, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getWatchUnWatch());
-                            return null;
-                        }
-                    }.execute(webClient).get();
-
-                    initClientAndPage(page.getPagePath());
-                    fetchPageData();
-                    updateUIElements();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not watch/unwatch user: ", e);
-                }
-            }
-        });
-
-        blockUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    new AsyncTask<webClient, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getBlockUnBlock());
-                            return null;
-                        }
-                    }.execute(webClient).get();
-
-                    initClientAndPage(page.getPagePath());
-                    fetchPageData();
-                    updateUIElements();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not block/unblock user: ", e);
-                }
-            }
-        });
-
-        sendNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser());
-            }
-        });
-    }
-
-    private void setupViewPager() {
+    private void setupViewPager(open.furaffinity.client.pages.user page) {
         userSectionsPagerAdapter userSectionsPagerAdapter = new userSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page, currentPage, currentPagePath);
         viewPager.setAdapter(userSectionsPagerAdapter);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -301,6 +198,115 @@ public class user extends Fragment {
         }
     }
 
+    private void initPages(String pagePath) {
+        webClient = new webClient(this.getActivity());
+
+        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if (((loginCheck)abstractPage).getIsLoggedIn()) {
+                    fab.setVisibility(View.VISIBLE);
+                } else {
+                    fab.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                fab.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        page = new open.furaffinity.client.pages.user(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if(((open.furaffinity.client.pages.user)abstractPage).getBlockUnBlock() != null && ((open.furaffinity.client.pages.user)abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.user)abstractPage).getNoteUser() != null) {
+                    if (page.getIsWatching()) {
+                        watchUser.setImageResource(R.drawable.ic_menu_user_remove);
+                    } else {
+                        watchUser.setImageResource(R.drawable.ic_menu_user_add);
+                    }
+
+                    if (page.getIsBlocked()) {
+                        blockUser.setImageResource(R.drawable.ic_menu_user_unblock);
+                    } else {
+                        blockUser.setImageResource(R.drawable.ic_menu_user_block);
+                    }
+                }
+
+                userName.setText(((open.furaffinity.client.pages.user)abstractPage).getUserName());
+                userAccountStatus.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatus());
+                userAccountStatusLine.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatusLine());
+                Glide.with(user.this).load(((open.furaffinity.client.pages.user)abstractPage).getUserIcon()).into(userIcon);
+                userViews.setText(((open.furaffinity.client.pages.user)abstractPage).getUserViews());
+                userSubmissions.setText(((open.furaffinity.client.pages.user)abstractPage).getUserSubmissions());
+                userFavs.setText(((open.furaffinity.client.pages.user)abstractPage).getUserFavs());
+                userCommentsEarned.setText(((open.furaffinity.client.pages.user)abstractPage).getUserCommentsEarned());
+                userCommentsMade.setText(((open.furaffinity.client.pages.user)abstractPage).getUserCommentsMade());
+                userJournals.setText(((open.furaffinity.client.pages.user)abstractPage).getUserJournals());
+
+                saveHistory();
+                setupViewPager(((open.furaffinity.client.pages.user)abstractPage));
+
+                isLoading = false;
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                isLoading = false;
+                Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
+            }
+        }, pagePath);
+    }
+
+    private void updateUIElementListeners(View rootView) {
+        watchUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getWatchUnWatch());
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    fetchPageData();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not watch/unwatch user: ", e);
+                }
+            }
+        });
+
+        blockUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    new AsyncTask<webClient, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                            webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getBlockUnBlock());
+                            return null;
+                        }
+                    }.execute(webClient).get();
+
+                    fetchPageData();
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.e(TAG, "Could not block/unblock user: ", e);
+                }
+            }
+        });
+
+        sendNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser());
+            }
+        });
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -310,12 +316,9 @@ public class user extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user, container, false);
         getElements(rootView);
-        initClientAndPage(getPagePath());
+        initPages(getPagePath());
         fetchPageData();
-        checkPageLoaded();
-        updateUIElements();
         updateUIElementListeners(rootView);
-        setupViewPager();
         return rootView;
     }
 }

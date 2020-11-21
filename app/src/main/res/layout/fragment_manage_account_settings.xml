@@ -234,6 +234,6 @@
         app:backgroundTint="@color/cardview_dark_background"
         app:srcCompat="@drawable/ic_menu_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

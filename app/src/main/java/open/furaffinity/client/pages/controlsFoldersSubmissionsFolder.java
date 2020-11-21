@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,11 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsFoldersSubmissionsFolder extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = controlsFoldersSubmissionsFolder.class.getName();
-
+public class controlsFoldersSubmissionsFolder extends abstractPage {
     String pagePath;
     String folderId;
 
@@ -24,7 +22,8 @@ public class controlsFoldersSubmissionsFolder extends AsyncTask<webClient, Void,
 
     String key;
 
-    public controlsFoldersSubmissionsFolder(String pagePath, String folderId) {
+    public controlsFoldersSubmissionsFolder(Context context, pageListener pageListener, String pagePath, String folderId) {
+        super(context, pageListener);
         this.pagePath = pagePath;
         this.folderId = folderId;
         this.existingGroups = new HashMap<>();
@@ -33,7 +32,18 @@ public class controlsFoldersSubmissionsFolder extends AsyncTask<webClient, Void,
         this.description = "";
     }
 
-    private void processPageData(String html) {
+    public controlsFoldersSubmissionsFolder(controlsFoldersSubmissionsFolder controlsFoldersSubmissionsFolder) {
+        super(controlsFoldersSubmissionsFolder);
+        this.pagePath = controlsFoldersSubmissionsFolder.pagePath;
+        this.folderId = controlsFoldersSubmissionsFolder.folderId;
+        this.existingGroups = controlsFoldersSubmissionsFolder.existingGroups;
+        this.selectedGroup = controlsFoldersSubmissionsFolder.selectedGroup;
+        this.folderName = controlsFoldersSubmissionsFolder.folderName;
+        this.description = controlsFoldersSubmissionsFolder.description;
+        this.key = controlsFoldersSubmissionsFolder.key;
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element groupId = doc.selectFirst("select[name=group_id]");
@@ -41,45 +51,52 @@ public class controlsFoldersSubmissionsFolder extends AsyncTask<webClient, Void,
         Element folderDescription = doc.selectFirst("textarea[name=folder_description]");
         Element keyButton = doc.selectFirst("button[name=key]");
 
-        if(groupId != null) {
+        if (groupId != null) {
             Element selectedGroup = groupId.selectFirst("option[selected]");
             Elements options = groupId.select("option");
 
-            for(Element option : options) {
-                if(option.hasAttr("value")) {
+            for (Element option : options) {
+                if (option.hasAttr("value")) {
                     existingGroups.put(option.attr("value"), option.text());
                 }
             }
 
-            if(selectedGroup != null && selectedGroup.hasAttr("value")) {
+            if (selectedGroup != null && selectedGroup.hasAttr("value")) {
                 this.selectedGroup = selectedGroup.attr("value");
             }
         }
 
-        if(folderName != null) {
+        if (folderName != null) {
             this.folderName = folderName.attr("value");
         }
 
-        if(folderDescription != null) {
+        if (folderDescription != null) {
             this.description = folderDescription.html();
         }
 
-        if(keyButton != null) {
+        if (keyButton != null) {
             this.key = keyButton.attr("value");
         }
+
+        if(groupId != null && folderName != null && folderDescription != null && keyButton != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
+    protected Boolean doInBackground(Void... Void) {
         HashMap<String, String> params = new HashMap<>();
-        if(folderId != null) {
+        if (folderId != null) {
             params.put("folder_id", folderId);
         }
 
-        html = webClient[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
-        processPageData(html);
-        return null;
+        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public String getPagePath() {

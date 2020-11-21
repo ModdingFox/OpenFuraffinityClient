@@ -1,6 +1,6 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,11 +13,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class user extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = user.class.getName();
-
+public class user extends abstractPage {
     private static String pagePrefix = "/user/";
 
     private boolean isLoaded = false;
@@ -64,11 +62,17 @@ public class user extends AsyncTask<webClient, Void, Void> {
     private String blockUnBlock;
     private String noteUser;
 
-    public user(String pagePath) {
+    public user(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
     }
 
-    private void processPageData(String html) {
+    public user(user user) {
+        super(user);
+        this.pagePath = user.pagePath;
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element userPageFlexItemUsernameH = doc.selectFirst("div.userpage-flex-item.username").selectFirst("h2");
@@ -151,7 +155,7 @@ public class user extends AsyncTask<webClient, Void, Void> {
 
         Element jsFormShout = doc.selectFirst("form[name=JSForm]");
 
-        if(jsFormShout != null) {
+        if (jsFormShout != null) {
             Element keyInput = jsFormShout.selectFirst("input[name=key]");
             Element nameInput = jsFormShout.selectFirst("input[name=name]");
 
@@ -163,10 +167,10 @@ public class user extends AsyncTask<webClient, Void, Void> {
 
         Element userNavControlsDiv = doc.selectFirst("div.user-nav-controls");
 
-        if(userNavControlsDiv != null) {
+        if (userNavControlsDiv != null) {
             Elements userNavControlsDivElements = userNavControlsDiv.select("a");
 
-            if(userNavControlsDivElements != null) {
+            if (userNavControlsDivElements != null) {
                 for (Element userNavControlsDivElement : userNavControlsDivElements) {
                     switch (userNavControlsDivElement.text()) {
                         case "+Watch":
@@ -178,8 +182,8 @@ public class user extends AsyncTask<webClient, Void, Void> {
                             watchUnWatch = userNavControlsDivElement.attr("href");
                             break;
                         case "Note":
-                            noteUser = userNavControlsDivElement.attr("href").replace(open.furaffinity.client.pages.msgPms.getNotePathPrefix(), "");
-                            noteUser = noteUser.substring(0, noteUser.length() -1);
+                            noteUser = userNavControlsDivElement.attr("href").replace(msgPms.getNotePathPrefix(), "");
+                            noteUser = noteUser.substring(0, noteUser.length() - 1);
                             break;
                         case "Block":
                             isBlocked = false;
@@ -194,18 +198,20 @@ public class user extends AsyncTask<webClient, Void, Void> {
             }
         }
 
-        return;
+        if(userPageFlexItemUsernameH != null && userPageFlexItemUserNavAvatarDesktopImg != null && userPageFlexItemsH2 != null && userPageProfileDiv != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        isLoaded = webClient[0].getLastPageLoaded();
-        if (isLoaded) {
-            processPageData(html);
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
         }
-        return null;
+        return false;
     }
 
     public String getPagePath() {
@@ -335,7 +341,7 @@ public class user extends AsyncTask<webClient, Void, Void> {
                 currentShoutData.put("commentDate", currentElement.selectFirst(".popup_date").text());
                 currentShoutData.put("comment", currentElement.selectFirst(".comment_text").html());
 
-                if(checkboxInput != null) {
+                if (checkboxInput != null) {
                     currentShoutData.put("checkId", checkboxInput.attr("value"));
                 }
 
@@ -374,5 +380,7 @@ public class user extends AsyncTask<webClient, Void, Void> {
         return noteUser;
     }
 
-    public static String getPagePrefix() { return pagePrefix; }
+    public static String getPagePrefix() {
+        return pagePrefix;
+    }
 }

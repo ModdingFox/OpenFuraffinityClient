@@ -46,7 +46,7 @@ public class viewFolders extends Fragment {
 
             if (splitCurrentElement.length == 2) {
                 newDataElement.put("item", splitCurrentElement[0]);
-                newDataElement.put("class", open.furaffinity.client.fragments.user.class.getName());
+                newDataElement.put("class", user.class.getName());
                 newDataElement.put("path", splitCurrentElement[1]);
                 mDataSet.add(newDataElement);
             }
@@ -57,10 +57,6 @@ public class viewFolders extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new stringListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
-    }
-
-    private void updateUIElementListeners(View rootView) {
-
     }
 
     @Override
@@ -74,7 +70,6 @@ public class viewFolders extends Fragment {
         getElements(rootView);
         fetchPageData();
         updateUIElements();
-        updateUIElementListeners(rootView);
         return rootView;
     }
 }

@@ -25,7 +25,7 @@ public class dynamicEditItem {
         this.textView.setText(header);
         this.linearLayout.addView(this.textView);
 
-        if(options == null) {
+        if (options == null) {
             this.editText = new EditText(context);
             this.editText.setText(value);
             this.editText.setHint(placeholder);
@@ -37,9 +37,9 @@ public class dynamicEditItem {
             }
 
             this.linearLayout.addView(this.editText);
-        } else  {
+        } else {
             this.spinner = new Spinner(context);
-            open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(context,this.spinner, options, value, false, false);
+            open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(context, this.spinner, options, value, false, false);
             this.linearLayout.addView(this.spinner);
         }
     }
@@ -64,11 +64,11 @@ public class dynamicEditItem {
         return name;
     }
 
-    public String getValue(){
-        if(this.editText != null) {
+    public String getValue() {
+        if (this.editText != null) {
             return this.editText.getText().toString();
         } else if (this.spinner != null) {
-            return ((kvPair)this.spinner.getSelectedItem()).getKey();
+            return ((kvPair) this.spinner.getSelectedItem()).getKey();
         }
 
         return "";
@@ -77,7 +77,7 @@ public class dynamicEditItem {
     public void removeFromView() {
         this.linearLayout.removeView(textView);
 
-        if(editText != null) {
+        if (editText != null) {
             this.linearLayout.removeView(this.editText);
         } else if (spinner != null) {
             this.linearLayout.removeView(this.spinner);

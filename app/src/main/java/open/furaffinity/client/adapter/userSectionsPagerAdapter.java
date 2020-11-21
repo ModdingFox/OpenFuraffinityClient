@@ -2,15 +2,12 @@ package open.furaffinity.client.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
-import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragments.notImplementedYet;
@@ -20,10 +17,8 @@ import open.furaffinity.client.fragments.userJournals;
 import open.furaffinity.client.fragments.userProfile;
 import open.furaffinity.client.fragments.watch;
 import open.furaffinity.client.fragments.webViewContent;
-import open.furaffinity.client.pages.commissions;
 import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
-import open.furaffinity.client.utilities.webClient;
 
 public class userSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = userSectionsPagerAdapter.class.getName();
@@ -85,15 +80,8 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
                 return newUserJournalsFragment;
             case 5:
                 webViewContent newUserCommissionsFragment = new webViewContent();
-                commissions commissions = new commissions(user.getUserCommissionPath());
-                webClient webClient = new webClient(mContext);
-                try {
-                    commissions.execute(webClient).get();
-                } catch (InterruptedException | ExecutionException e) {
-                    Log.e(TAG, "getItem: ", e);
-                }
-
-                bundle.putString(messageIds.submissionDescription_MESSAGE, "<table>" + commissions.getCommissionBodyBody() + "</table>");
+                bundle.putString(messageIds.pagePath_MESSAGE, user.getUserCommissionPath());
+                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.commissions.class.getName());
                 newUserCommissionsFragment.setArguments(bundle);
                 return newUserCommissionsFragment;
             case 6:

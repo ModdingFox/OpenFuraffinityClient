@@ -1,30 +1,21 @@
 package open.furaffinity.client.adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.fragments.settings;
-import open.furaffinity.client.listener.OnSwipeTouchListener;
 
 public class manageAvatarListAdapter extends RecyclerView.Adapter<manageAvatarListAdapter.ViewHolder> {
     private List<HashMap<String, String>> mDataSet;
@@ -33,6 +24,7 @@ public class manageAvatarListAdapter extends RecyclerView.Adapter<manageAvatarLi
 
     public interface manageAvatarListAdapterListener {
         public void onSet(String url);
+
         public void onDelete(String url);
     }
 

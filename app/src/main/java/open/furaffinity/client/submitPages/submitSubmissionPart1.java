@@ -1,4 +1,4 @@
-package open.furaffinity.client.pages;
+package open.furaffinity.client.submitPages;
 
 import android.os.AsyncTask;
 
@@ -28,12 +28,12 @@ public class submitSubmissionPart1 extends AsyncTask<webClient, Void, Void> {
 
         Elements submissionTypeInputs = doc.select("input[name=submission_type]");
 
-        if(submissionTypeInputs != null) {
-            for(Element submissionTypeInput : submissionTypeInputs) {
+        if (submissionTypeInputs != null) {
+            for (Element submissionTypeInput : submissionTypeInputs) {
                 String key = submissionTypeInput.attr("value");
                 String value = submissionTypeInput.parent().text().trim();
 
-                if(submissionTypeInput.hasAttr("checked")) {
+                if (submissionTypeInput.hasAttr("checked")) {
                     submissionTypeCurrent = key;
                 }
 
@@ -63,7 +63,7 @@ public class submitSubmissionPart1 extends AsyncTask<webClient, Void, Void> {
     }
 
     public void setSubmissionTypeCurrent(String submissionTypeCurrent) {
-        if(submissionType.containsKey(submissionTypeCurrent)) {
+        if (submissionType.containsKey(submissionTypeCurrent)) {
             this.submissionTypeCurrent = submissionTypeCurrent;
         }
     }

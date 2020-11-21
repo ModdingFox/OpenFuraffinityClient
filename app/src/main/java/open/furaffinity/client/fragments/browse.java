@@ -3,7 +3,6 @@ package open.furaffinity.client.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,20 +22,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pages.loginTest;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
-import open.furaffinity.client.utilities.webClient;
 
 public class browse extends Fragment {
-    private static final String TAG = open.furaffinity.client.fragments.browse.class.getName();
-
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private TableLayout settingsTableLayout;
@@ -58,11 +54,12 @@ public class browse extends Fragment {
 
     private FloatingActionButton fab;
 
-    private webClient webClient;
-    private loginTest loginTest;
+    private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.browse page;
 
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private boolean isInitialized = false;
+    private boolean isLoading = false;
+    private List<HashMap<String, String>> mDataSet;
 
     private void getElements(View rootView) {
         Context context = getActivity();
@@ -85,58 +82,32 @@ public class browse extends Fragment {
         browseRatingAdultSwitch = rootView.findViewById(R.id.browseRatingAdultSwitch);
 
         fab = rootView.findViewById(R.id.fab);
-    }
-
-    private void initClientAndPage() {
-        webClient = new webClient(this.getActivity());
-        loginTest = new loginTest();
-        page = new open.furaffinity.client.pages.browse();
+        fab.setVisibility(View.GONE);
     }
 
     private void fetchPageData() {
-        loginTest = new loginTest();
-        page = new open.furaffinity.client.pages.browse(page);
-        try {
-            loginTest.execute(webClient).get();
-            page.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
+        if (!isLoading) {
+            isLoading = true;
+            swipeRefreshLayout.setRefreshing(true);
+            page = new open.furaffinity.client.pages.browse(page);
+            page.execute();
         }
-
-        List<HashMap<String, String>> pageResults = page.getPageResults();
-
-        //Deduplicate results
-        List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-        List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-        newPostPaths.removeAll(oldPostPaths);
-        pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-        mDataSet.addAll(pageResults);
     }
 
-    private void updateUIElements() {
-        if (loginTest.getIsLoggedIn() && loginTest.getIsNSFWAllowed()) {
-            browseRatingMatureSwitch.setVisibility(View.VISIBLE);
-            browseRatingAdultSwitch.setVisibility(View.VISIBLE);
-        } else {
-            browseRatingMatureSwitch.setVisibility(View.GONE);
-            browseRatingAdultSwitch.setVisibility(View.GONE);
-        }
-
-//        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new imageListAdapter(mDataSet, getActivity());
-        recyclerView.setAdapter(mAdapter);
+    private void resetRecycler() {
+        page.setPage(Integer.toString(1));
+        recyclerView.scrollTo(0, 0);
+        mDataSet.clear();
+        mAdapter.notifyDataSetChanged();
+        endlessRecyclerViewScrollListener.resetState();
+        fetchPageData();
     }
 
     private void initCurrentSettings() {
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
-            fetchPageData();
-            mDataSet.clear();
-            page = new open.furaffinity.client.pages.browse(page);
-
+        if (sharedPref.getBoolean(getString(R.string.saveBrowseState), settings.saveBrowseStateDefault)) {
             page.setCat(sharedPref.getString(getString(R.string.browseCatSetting), ""));
             page.setAtype(sharedPref.getString(getString(R.string.browseAtypeSetting), ""));
             page.setSpecies(sharedPref.getString(getString(R.string.browseSpeciesSetting), ""));
@@ -146,6 +117,74 @@ public class browse extends Fragment {
             page.setRatingMature(sharedPref.getBoolean(getString(R.string.browseRatingMatureSetting), false));
             page.setRatingAdult(sharedPref.getBoolean(getString(R.string.browseRatingAdultSetting), false));
         }
+
+        isInitialized = true;
+    }
+
+    private void initPages() {
+        mDataSet = new ArrayList<>();
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        mAdapter = new imageListAdapter(mDataSet, getActivity());
+        recyclerView.setAdapter(mAdapter);
+
+        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
+            private void updateUIElements() {
+                if (loginCheck.getIsLoggedIn() && loginCheck.getIsNSFWAllowed()) {
+                    browseRatingMatureSwitch.setVisibility(View.VISIBLE);
+                    browseRatingAdultSwitch.setVisibility(View.VISIBLE);
+                } else {
+                    browseRatingMatureSwitch.setVisibility(View.GONE);
+                    browseRatingAdultSwitch.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                updateUIElements();
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                updateUIElements();
+                Toast.makeText(getActivity(), "Failed to detect login", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        loginCheck.execute();
+
+        page = new open.furaffinity.client.pages.browse(this.getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if (!isInitialized) {
+                    isLoading = false;
+                    initCurrentSettings();
+                    fab.setVisibility(View.VISIBLE);
+                    resetRecycler();
+                } else {
+                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.browse)abstractPage).getPageResults();
+
+                    int curSize = mAdapter.getItemCount();
+
+                    //Deduplicate results
+                    List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                    List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                    newPostPaths.removeAll(oldPostPaths);
+                    pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+                    mDataSet.addAll(pageResults);
+                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+
+                    isLoading = false;
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "Failed to load data from browse page", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadCurrentSettings() {
@@ -157,13 +196,9 @@ public class browse extends Fragment {
         browsePageEditText.setText(page.getCurrentPage());
         browseRatingGeneralSwitch.setChecked((!page.getCurrentRatingGeneral().equals("")));
 
-        if (loginTest.getIsLoggedIn()) {
-            browseRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
-            browseRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
-        } else {
-            browseRatingMatureSwitch.setChecked(false);
-            browseRatingAdultSwitch.setChecked(false);
-        }
+        //fa will ignore these in sfw mode anyways
+        browseRatingMatureSwitch.setChecked((!page.getCurrentRatingMature().equals("")));
+        browseRatingAdultSwitch.setChecked((!page.getCurrentRatingAdult().equals("")));
     }
 
     private void saveCurrentSettings() {
@@ -229,7 +264,7 @@ public class browse extends Fragment {
             Context context = getActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-            if (sharedPref.getBoolean(getString(R.string.saveBrowseState), open.furaffinity.client.fragments.settings.saveBrowseStateDefault)) {
+            if (sharedPref.getBoolean(getString(R.string.saveBrowseState), settings.saveBrowseStateDefault)) {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.browseCatSetting), selectedCatValue);
                 editor.putString(getString(R.string.browseAtypeSetting), selectedAtypeValue);
@@ -243,12 +278,7 @@ public class browse extends Fragment {
                 editor.commit();
             }
 
-            recyclerView.scrollTo(0, 0);
-            mDataSet.clear();
-            mAdapter.notifyDataSetChanged();
-            endlessRecyclerViewScrollListener.resetState();
-            page = new open.furaffinity.client.pages.browse(page);
-            fetchPageData();
+            resetRecycler();
         }
     }
 
@@ -256,26 +286,17 @@ public class browse extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page.setPage(Integer.toString(1));
-
-                recyclerView.scrollTo(0, 0);
-                mDataSet.clear();
-                mAdapter.notifyDataSetChanged();
-                endlessRecyclerViewScrollListener.resetState();
-                page = new open.furaffinity.client.pages.browse(page);
-                fetchPageData();
-
-                swipeRefreshLayout.setRefreshing(false);
+                resetRecycler();
             }
         });
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
-                page.setPage(Integer.toString(page.getPage() + 1));
-                int curSize = mAdapter.getItemCount();
-                fetchPageData();
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+                if (!isLoading) {
+                    page.setPage(Integer.toString(page.getPage() + 1));
+                    fetchPageData();
+                }
             }
         };
 
@@ -304,10 +325,8 @@ public class browse extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_browse, container, false);
         getElements(rootView);
-        initClientAndPage();
-        initCurrentSettings();
+        initPages();
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

@@ -36,13 +36,13 @@ public class journalSectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 webViewContent newJournalWebViewContentFragment = new webViewContent();
-                bundle.putString(messageIds.submissionDescription_MESSAGE, journal.getJournalContent());
+                bundle.putString(messageIds.pagePath_MESSAGE, journal.getPagePath());
+                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.journal.class.getName());
                 newJournalWebViewContentFragment.setArguments(bundle);
                 return newJournalWebViewContentFragment;
             case 1:
                 comments newJournalCommentsFragment = new comments();
                 bundle.putString(messageIds.pagePath_MESSAGE, journal.getPagePath());
-                bundle.putString(messageIds.submissionComments_MESSAGE, journal.getJournalComments());
                 bundle.putString(messageIds.SubmissionCommentsType_MESSAGE, "journal");
                 newJournalCommentsFragment.setArguments(bundle);
                 return newJournalCommentsFragment;

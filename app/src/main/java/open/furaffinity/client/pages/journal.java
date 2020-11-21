@@ -1,17 +1,15 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class journal extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = journal.class.getName();
-
+public class journal extends abstractPage {
     private String pagePath;
     private String journalUserIcon;
     private String journalUserLink;
@@ -25,11 +23,17 @@ public class journal extends AsyncTask<webClient, Void, Void> {
     private String watchUnWatch;
     private String noteUser;
 
-    public journal(String pagePath) {
+    public journal(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
     }
 
-    private void processPageData(String html) {
+    public journal(journal journal) {
+        super(journal);
+        this.pagePath = journal.pagePath;
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element userPageFlexItemUserNavAvatarDesktop = doc.selectFirst("div.userpage-flex-item.user-nav-avatar-desktop");
@@ -54,10 +58,10 @@ public class journal extends AsyncTask<webClient, Void, Void> {
 
         Element userNavControlsDiv = doc.selectFirst("div.user-nav-controls");
 
-        if(userNavControlsDiv != null) {
+        if (userNavControlsDiv != null) {
             Elements userNavControlsDivElements = userNavControlsDiv.select("a");
 
-            if(userNavControlsDivElements != null) {
+            if (userNavControlsDivElements != null) {
                 for (Element userNavControlsDivElement : userNavControlsDivElements) {
                     switch (userNavControlsDivElement.text()) {
                         case "+Watch":
@@ -69,21 +73,28 @@ public class journal extends AsyncTask<webClient, Void, Void> {
                             watchUnWatch = userNavControlsDivElement.attr("href");
                             break;
                         case "Note":
-                            noteUser = userNavControlsDivElement.attr("href").replace(open.furaffinity.client.pages.msgPms.getNotePathPrefix(), "");
-                            noteUser = noteUser.substring(0, noteUser.length() -1);
+                            noteUser = userNavControlsDivElement.attr("href").replace(msgPms.getNotePathPrefix(), "");
+                            noteUser = noteUser.substring(0, noteUser.length() - 1);
                             break;
                     }
                 }
             }
         }
+
+        if(journalTitleH2 != null && journalContentContainer != null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public String getPagePath() {

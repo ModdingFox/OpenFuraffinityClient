@@ -1,50 +1,60 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class controlsShouts extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = controlsShouts.class.getName();
-
+public class controlsShouts extends abstractPage {
     private static String pagePath = "/controls/shouts/";
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public controlsShouts() {
+    public controlsShouts(Context context, pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageData(String html) {
+    public controlsShouts(controlsShouts controlsShouts) {
+        super(controlsShouts);
+    }
+
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
-        Element aShout = doc.selectFirst("a[id^=shout]");
+        Element shoutsFormform = doc.selectFirst("form[id=shouts-form]");
 
-        if (aShout != null) {
-            Element aShoutParent = aShout.parent();
-            if(aShoutParent != null){
-                Element aShoutParentParent = aShoutParent.parent();
-                if(aShoutParentParent != null){
-                    pageResults = open.furaffinity.client.pages.user.processShouts(aShoutParentParent.html());
+        if(shoutsFormform != null) {
+            Element aShout = shoutsFormform.selectFirst("a[id^=shout]");
+
+            if (aShout != null) {
+                Element aShoutParent = aShout.parent();
+                if (aShoutParent != null) {
+                    Element aShoutParentParent = aShoutParent.parent();
+                    if (aShoutParentParent != null) {
+                        pageResults = user.processShouts(aShoutParentParent.html());
+                    }
                 }
             }
+
+            return true;
         }
 
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public static String getPagePath() {

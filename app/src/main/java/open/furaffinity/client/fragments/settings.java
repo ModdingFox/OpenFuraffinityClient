@@ -16,7 +16,6 @@ import android.widget.Switch;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -31,8 +30,6 @@ import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
 public class settings extends Fragment {
-    private static final String TAG = settings.class.getName();
-
     private Switch notificationsSwitch;
     private EditText notificationsInterval;
     private Switch searchNotificationsSwitch;
@@ -269,7 +266,7 @@ public class settings extends Fragment {
                 Context context = getActivity();
                 SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(context.getString(R.string.imageListOrientation), ((isChecked)?(StaggeredGridLayoutManager.VERTICAL):(StaggeredGridLayoutManager.HORIZONTAL)));
+                editor.putInt(context.getString(R.string.imageListOrientation), ((isChecked) ? (StaggeredGridLayoutManager.VERTICAL) : (StaggeredGridLayoutManager.HORIZONTAL)));
                 editor.apply();
                 editor.commit();
             }

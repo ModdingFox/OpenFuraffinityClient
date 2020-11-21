@@ -1,4 +1,4 @@
-package open.furaffinity.client.pages;
+package open.furaffinity.client.submitPages;
 
 import android.os.AsyncTask;
 
@@ -17,9 +17,9 @@ public class submitSubmissionPart2 extends AsyncTask<webClient, Void, Void> {
     private static String pagePath = "/submit/";
 
     private HashMap<String, String> params = new HashMap<>();
-    private open.furaffinity.client.pages.submitSubmissionPart1 submitSubmissionPart1;
+    private open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1;
 
-    public submitSubmissionPart2(open.furaffinity.client.pages.submitSubmissionPart1 submitSubmissionPart1) {
+    public submitSubmissionPart2(open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1) {
         this.submitSubmissionPart1 = submitSubmissionPart1;
     }
 
@@ -28,13 +28,13 @@ public class submitSubmissionPart2 extends AsyncTask<webClient, Void, Void> {
 
         Element myformForm = doc.selectFirst("form[name=myform]");
 
-        if(myformForm != null) {
+        if (myformForm != null) {
             params = new HashMap<>();
 
             Elements hiddenInputs = myformForm.select("input[type=hidden]");
 
-            if(hiddenInputs != null) {
-                for(Element hiddenInput : hiddenInputs) {
+            if (hiddenInputs != null) {
+                for (Element hiddenInput : hiddenInputs) {
                     params.put(hiddenInput.attr("name"), hiddenInput.attr("value"));
                 }
             }
@@ -57,5 +57,7 @@ public class submitSubmissionPart2 extends AsyncTask<webClient, Void, Void> {
         return pagePath;
     }
 
-    public HashMap<String, String> getParams() { return params; }
+    public HashMap<String, String> getParams() {
+        return params;
+    }
 }

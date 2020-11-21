@@ -1,39 +1,49 @@
 package open.furaffinity.client.pages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class commissions extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = commissions.class.getName();
-
+public class commissions extends abstractPage {
     private String pagePath;
     private String commissionBody = "";
 
-    public commissions(String pagePath) {
+    public commissions(Context context, pageListener pageListener, String pagePath) {
+        super(context, pageListener);
         this.pagePath = pagePath;
     }
 
-    private void processPageData(String html) {
-        if (html != null) {
-            Document doc = Jsoup.parse(html);
+    public commissions(commissions commissions) {
+        super(commissions);
+        this.pagePath = commissions.pagePath;
+    }
 
-            Element userPageFlexItemUsernameH = doc.selectFirst("div.section-body :first-child > table :first-child > table");
+    protected Boolean processPageData(String html) {
+        Document doc = Jsoup.parse(html);
+
+        Element userPageFlexItemUsernameH = doc.selectFirst("div.section-body :first-child > table :first-child > table");
+
+        if(userPageFlexItemUsernameH != null) {
             open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(userPageFlexItemUsernameH);
             commissionBody = userPageFlexItemUsernameH.html();
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageData(html);
-        return null;
+    protected Boolean doInBackground(Void... voids) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+
+        return false;
     }
 
     public String getCommissionBodyBody() {
