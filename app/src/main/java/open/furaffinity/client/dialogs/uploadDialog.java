@@ -41,7 +41,7 @@ public class uploadDialog extends DialogFragment {
     private TextView thumbnailFilePath;
 
     private open.furaffinity.client.utilities.webClient webClient;
-    private open.furaffinity.client.pagesOld.submitSubmissionPart1 page;
+    private open.furaffinity.client.submitPages.submitSubmissionPart1 page;
 
     private void getElements(View rootView) {
         submissionType = rootView.findViewById(R.id.submissionType);
@@ -53,11 +53,11 @@ public class uploadDialog extends DialogFragment {
 
     private void initClientAndPage() {
         webClient = new webClient(requireContext());
-        page = new open.furaffinity.client.pagesOld.submitSubmissionPart1();
+        page = new open.furaffinity.client.submitPages.submitSubmissionPart1();
     }
 
     private void fetchPageData() {
-        page = new open.furaffinity.client.pagesOld.submitSubmissionPart1();
+        page = new open.furaffinity.client.submitPages.submitSubmissionPart1();
         try {
             page.execute(webClient).get();
         } catch (ExecutionException | InterruptedException e) {
@@ -125,11 +125,11 @@ public class uploadDialog extends DialogFragment {
         builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                open.furaffinity.client.pagesOld.submitSubmissionPart2 page2 = new open.furaffinity.client.pagesOld.submitSubmissionPart2(page);
+                open.furaffinity.client.submitPages.submitSubmissionPart2 page2 = new open.furaffinity.client.submitPages.submitSubmissionPart2(page);
                 try {
                     page2.execute(webClient).get();
 
-                    open.furaffinity.client.pagesOld.submitSubmissionPart3 page3 = new open.furaffinity.client.pagesOld.submitSubmissionPart3(page2, sourceFilePath.getText().toString(), thumbnailFilePath.getText().toString());
+                    open.furaffinity.client.submitPages.submitSubmissionPart3 page3 = new open.furaffinity.client.submitPages.submitSubmissionPart3(page2, sourceFilePath.getText().toString(), thumbnailFilePath.getText().toString());
                     page3.execute(webClient).get();
 
                     uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(page3);

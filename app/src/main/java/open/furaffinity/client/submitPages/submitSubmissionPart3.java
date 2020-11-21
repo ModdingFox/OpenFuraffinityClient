@@ -1,4 +1,4 @@
-package open.furaffinity.client.pagesOld;
+package open.furaffinity.client.submitPages;
 
 import android.os.AsyncTask;
 
@@ -35,9 +35,9 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
     private String thumbnailFilePath;
 
     private HashMap<String, String> params = new HashMap<>();
-    private open.furaffinity.client.pagesOld.submitSubmissionPart2 submitSubmissionPart2;
+    private open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2;
 
-    public submitSubmissionPart3(open.furaffinity.client.pagesOld.submitSubmissionPart2 submitSubmissionPart2, String sourceFilePath, String thumbnailFilePath) {
+    public submitSubmissionPart3(open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2, String sourceFilePath, String thumbnailFilePath) {
         this.submitSubmissionPart2 = submitSubmissionPart2;
         this.sourceFilePath = sourceFilePath;
         this.thumbnailFilePath = thumbnailFilePath;

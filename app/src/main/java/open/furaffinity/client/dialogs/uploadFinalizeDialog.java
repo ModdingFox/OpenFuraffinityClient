@@ -41,9 +41,9 @@ public class uploadFinalizeDialog extends DialogFragment {
     private Switch putInScraps;
 
     private webClient webClient;
-    private open.furaffinity.client.pagesOld.submitSubmissionPart3 page;
+    private open.furaffinity.client.submitPages.submitSubmissionPart3 page;
 
-    public uploadFinalizeDialog(open.furaffinity.client.pagesOld.submitSubmissionPart3 page) {
+    public uploadFinalizeDialog(open.furaffinity.client.submitPages.submitSubmissionPart3 page) {
         super();
         this.page = page;
     }
@@ -140,7 +140,7 @@ public class uploadFinalizeDialog extends DialogFragment {
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pagesOld.submitSubmissionPart3.getPagePath(), params);
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.submitPages.submitSubmissionPart3.getPagePath(), params);
                             return null;
                         }
                     }.execute(webClient).get();
