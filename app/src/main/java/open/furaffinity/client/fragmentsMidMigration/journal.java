@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragments;
+package open.furaffinity.client.fragmentsMidMigration;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,6 +30,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.journalSectionsPagerAdapter;
+import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
@@ -133,7 +134,7 @@ public class journal extends Fragment {
         page = new open.furaffinity.client.pages.journal(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-
+                saveHistory();
             }
 
             @Override
@@ -147,7 +148,6 @@ public class journal extends Fragment {
         try {
             loginCheck.execute().get();
             page.execute().get();
-            saveHistory();
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }

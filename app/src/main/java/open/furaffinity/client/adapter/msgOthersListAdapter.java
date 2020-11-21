@@ -20,7 +20,7 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.fragments.journal;
+import open.furaffinity.client.fragmentsMidMigration.journal;
 import open.furaffinity.client.fragments.view;
 
 public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdapter.ViewHolder> {

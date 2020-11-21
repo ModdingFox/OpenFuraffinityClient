@@ -59,10 +59,6 @@ public class viewFolders extends Fragment {
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void updateUIElementListeners(View rootView) {
-
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +70,6 @@ public class viewFolders extends Fragment {
         getElements(rootView);
         fetchPageData();
         updateUIElements();
-        updateUIElementListeners(rootView);
         return rootView;
     }
 }

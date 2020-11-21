@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.fragments.journal;
+import open.furaffinity.client.fragmentsMidMigration.journal;
 import open.furaffinity.client.fragments.view;
 
 public class msgOthers extends abstractPage {

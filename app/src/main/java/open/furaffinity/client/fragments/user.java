@@ -69,6 +69,8 @@ public class user extends Fragment {
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.user page;
 
+    private boolean isLoading = false;
+
     private void saveHistory() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
@@ -151,11 +153,15 @@ public class user extends Fragment {
     }
 
     private void fetchPageData() {
-        loginCheck = new loginCheck(loginCheck);
-        loginCheck.execute();
+        if(!isLoading) {
+            isLoading = true;
 
-        page = new open.furaffinity.client.pages.user(page);
-        page.execute();
+            loginCheck = new loginCheck(loginCheck);
+            loginCheck.execute();
+
+            page = new open.furaffinity.client.pages.user(page);
+            page.execute();
+        }
     }
 
     private void setupViewPager(open.furaffinity.client.pages.user page) {
@@ -242,10 +248,13 @@ public class user extends Fragment {
 
                 saveHistory();
                 setupViewPager(((open.furaffinity.client.pages.user)abstractPage));
+
+                isLoading = false;
             }
 
             @Override
             public void requestFailed(abstractPage abstractPage) {
+                isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
             }
         }, pagePath);
