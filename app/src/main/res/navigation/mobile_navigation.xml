@@ -84,7 +84,7 @@
 
     <fragment
         android:id="@+id/nav_login"
-        android:name="open.furaffinity.client.fragmentsOld.login"
+        android:name="open.furaffinity.client.fragments.login"
         android:label="@string/menu_login"
         tools:layout="@layout/fragment_login" />
 

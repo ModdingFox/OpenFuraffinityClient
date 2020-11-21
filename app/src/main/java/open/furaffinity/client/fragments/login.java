@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsOld;
+package open.furaffinity.client.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,8 +27,6 @@ import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.utilities.webClient;
 
 public class login extends Fragment {
-    private static final String TAG = login.class.getName();
-
     private WebView webView;
     private WebSettings webSettings;
 
