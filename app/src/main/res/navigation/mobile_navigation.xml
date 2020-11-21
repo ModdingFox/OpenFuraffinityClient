@@ -54,7 +54,7 @@
 
     <fragment
         android:id="@+id/nav_journal"
-        android:name="open.furaffinity.client.fragmentsMidMigration.journal"
+        android:name="open.furaffinity.client.fragments.journal"
         android:label="@string/menu_journal"
         tools:layout="@layout/fragment_journal" />
 

@@ -21,7 +21,6 @@ import java.util.TimeZone;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.historyListAdapter;
-import open.furaffinity.client.fragmentsMidMigration.journal;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.messageIds;

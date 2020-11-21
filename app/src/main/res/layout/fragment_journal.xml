@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragmentsMidMigration.journal">
+    tools:context=".fragments.journal">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -22,8 +22,8 @@
 
             <ImageView
                 android:id="@+id/journalUserIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:src="@drawable/loading" />
