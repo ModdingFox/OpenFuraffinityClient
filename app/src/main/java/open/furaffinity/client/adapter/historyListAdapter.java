@@ -19,7 +19,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragments.journal;
 import open.furaffinity.client.fragmentsMidMigration.msgPmsMessage;
-import open.furaffinity.client.fragmentsMidMigration.user;
+import open.furaffinity.client.fragments.user;
 import open.furaffinity.client.fragments.view;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;

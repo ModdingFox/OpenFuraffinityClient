@@ -17,7 +17,6 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.adapter.stringListAdapter;
-import open.furaffinity.client.fragmentsMidMigration.user;
 import open.furaffinity.client.utilities.messageIds;
 
 public class viewFolders extends Fragment {

@@ -66,7 +66,7 @@
 
     <fragment
         android:id="@+id/nav_user"
-        android:name="open.furaffinity.client.fragmentsMidMigration.user"
+        android:name="open.furaffinity.client.fragments.user"
         android:label="@string/menu_user"
         tools:layout="@layout/fragment_user" />
 
