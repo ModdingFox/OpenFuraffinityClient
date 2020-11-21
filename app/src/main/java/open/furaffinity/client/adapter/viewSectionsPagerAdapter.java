@@ -12,12 +12,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragmentsMidMigration.comments;
+import open.furaffinity.client.fragments.comments;
 import open.furaffinity.client.fragments.notImplementedYet;
 import open.furaffinity.client.fragments.viewFolders;
 import open.furaffinity.client.fragments.viewInfo;
 import open.furaffinity.client.fragments.viewKeywords;
-import open.furaffinity.client.fragmentsMidMigration.webViewContent;
+import open.furaffinity.client.fragments.webViewContent;
 import open.furaffinity.client.pages.view;
 import open.furaffinity.client.utilities.messageIds;
 
@@ -41,7 +41,8 @@ public class viewSectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 webViewContent newViewWebViewContentFragment = new webViewContent();
-                bundle.putString(messageIds.submissionDescription_MESSAGE, view.getSubmissionDescription());
+                bundle.putString(messageIds.pagePath_MESSAGE, view.getPagePath());
+                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.view.class.getName());
                 newViewWebViewContentFragment.setArguments(bundle);
                 return newViewWebViewContentFragment;
             case 1:
@@ -65,7 +66,6 @@ public class viewSectionsPagerAdapter extends FragmentPagerAdapter {
             case 3:
                 comments newCommentsFragment = new comments();
                 bundle.putString(messageIds.pagePath_MESSAGE, view.getPagePath());
-                bundle.putString(messageIds.SubmissionComments_MESSAGE, view.getSubmissionComments());
                 bundle.putString(messageIds.SubmissionCommentsType_MESSAGE, "view");
                 newCommentsFragment.setArguments(bundle);
                 return newCommentsFragment;

@@ -97,6 +97,10 @@ public class msgPmsMessage extends abstractPage {
         return false;
     }
 
+    public String getPagePath() {
+        return pagePath;
+    }
+
     public String getMessageSubject() {
         return messageSubject;
     }

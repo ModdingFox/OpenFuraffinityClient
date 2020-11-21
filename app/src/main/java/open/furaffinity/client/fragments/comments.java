@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsMidMigration;
+package open.furaffinity.client.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -141,26 +141,6 @@ public class comments extends Fragment {
         }, pagePath);
     }
 
-    private void fetchInitialPageData() {
-        if(!isLoading) {
-            isLoading = true;
-            swipeRefreshLayout.setRefreshing(true);
-            loginCheck = new loginCheck(loginCheck);
-            loginCheck.execute();
-
-            //for now doing this just for journal will come back and re work view so this always just loads everytime removing the need for this function
-            if (pageType == "journal") {
-                isLoading = false;
-                fetchPageData();
-            } else {
-                mDataSet.addAll(html.commentsToListHash(getArguments().getString(messageIds.SubmissionComments_MESSAGE)));
-                mAdapter.notifyDataSetChanged();
-                isLoading = false;
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }
-    }
-
     private void fetchPageData() {
         if(!isLoading) {
             isLoading = true;
@@ -292,7 +272,7 @@ public class comments extends Fragment {
 
         getElements(rootView);
         initPages();
-        fetchInitialPageData();
+        fetchPageData();
         updateUIElementListeners(rootView);
         return rootView;
     }

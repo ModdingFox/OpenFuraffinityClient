@@ -10,9 +10,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragmentsMidMigration.comments;
+import open.furaffinity.client.fragments.comments;
 import open.furaffinity.client.fragments.notImplementedYet;
-import open.furaffinity.client.fragmentsMidMigration.webViewContent;
+import open.furaffinity.client.fragments.webViewContent;
 import open.furaffinity.client.pages.journal;
 import open.furaffinity.client.utilities.messageIds;
 
@@ -36,7 +36,8 @@ public class journalSectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 webViewContent newJournalWebViewContentFragment = new webViewContent();
-                bundle.putString(messageIds.submissionDescription_MESSAGE, journal.getJournalContent());
+                bundle.putString(messageIds.pagePath_MESSAGE, journal.getPagePath());
+                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.journal.class.getName());
                 newJournalWebViewContentFragment.setArguments(bundle);
                 return newJournalWebViewContentFragment;
             case 1:
