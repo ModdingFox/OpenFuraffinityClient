@@ -168,12 +168,6 @@ public class view extends Fragment {
                 if (((loginCheck)abstractPage).getIsLoggedIn()) {
                     fab.addButton(submissionFavorite, 1.5f, 180);
                     fab.addButton(sendNote, 1.5f, 225);
-
-                    if (page.getIsFav()) {
-                        submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
-                    } else {
-                        submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
-                    }
                 }
             }
 
@@ -196,6 +190,12 @@ public class view extends Fragment {
                 Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionImgLink()).into(submissionImage);
                 Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUserIcon()).into(submissionUserIcon);
                 submissionUser.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUser());
+
+                if (((open.furaffinity.client.pages.view)abstractPage).getIsFav()) {
+                    submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
+                } else {
+                    submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
+                }
 
                 saveHistory();
                 setupViewPager(((open.furaffinity.client.pages.view)abstractPage));
