@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentsMidMigration;
+package open.furaffinity.client.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -39,9 +39,8 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
-import open.furaffinity.client.fragments.settings;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
-import open.furaffinity.client.pagesOld.loginTest;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
@@ -68,7 +67,7 @@ public class view extends Fragment {
     private FloatingActionButton sendNote;
 
     private webClient webClient;
-    private open.furaffinity.client.pagesOld.loginTest loginTest;
+    private loginCheck loginCheck;
     private open.furaffinity.client.pages.view page;
 
     private void saveHistory() {
@@ -126,59 +125,84 @@ public class view extends Fragment {
         coordinatorLayout.addView(submissionDownload);
         coordinatorLayout.addView(sendNote);
 
+        submissionFavorite.setVisibility(View.GONE);
+        sendNote.setVisibility(View.GONE);
+
         fab.addButton(submissionDownload, 1.5f, 270);
+        fab.setVisibility(View.GONE);
     }
 
-    private void initClientAndPage(String pagePath) {
-        webClient = new webClient(this.getActivity());
-        loginTest = new loginTest();
+    private void fetchPageData() {
+        loginCheck = new loginCheck(loginCheck);
+        loginCheck.execute();
 
-        page = new open.furaffinity.client.pages.view(getActivity(), new abstractPage.pageListener() {
+        page = new open.furaffinity.client.pages.view(page);
+        page.execute();
+    }
+
+    private void setupViewPager(open.furaffinity.client.pages.view page) {
+        viewSectionsPagerAdapter sectionsPagerAdapter = new viewSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tabs.setupWithViewPager(viewPager);
+    }
+
+    private void initPages(String pagePath) {
+        webClient = new webClient(this.getActivity());
+
+        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
+                fab.removeButton(submissionFavorite);
+                fab.removeButton(sendNote);
 
+                submissionFavorite.setVisibility(View.GONE);
+                sendNote.setVisibility(View.GONE);
+
+                if (((loginCheck)abstractPage).getIsLoggedIn()) {
+                    fab.addButton(submissionFavorite, 1.5f, 180);
+                    fab.addButton(sendNote, 1.5f, 225);
+
+                    if (page.getIsFav()) {
+                        submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
+                    } else {
+                        submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
+                    }
+                }
             }
 
             @Override
             public void requestFailed(abstractPage abstractPage) {
+                fab.removeButton(submissionFavorite);
+                fab.removeButton(sendNote);
+
+                submissionFavorite.setVisibility(View.GONE);
+                sendNote.setVisibility(View.GONE);
+
+                Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        page = new open.furaffinity.client.pages.view(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                submissionTitle.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionTitle());
+                Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionImgLink()).into(submissionImage);
+                Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUserIcon()).into(submissionUserIcon);
+                submissionUser.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUser());
+
+                saveHistory();
+                setupViewPager(((open.furaffinity.client.pages.view)abstractPage));
+
+                fab.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                fab.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "Failed to load data for view", Toast.LENGTH_SHORT).show();
             }
         }, pagePath);
-    }
-
-    private void fetchPageData() {
-        loginTest = new loginTest();
-        try {
-            loginTest.execute(webClient).get();
-            page.execute().get();
-            saveHistory();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
-        }
-    }
-
-    private void updateUIElements() {
-        submissionTitle.setText(page.getSubmissionTitle());
-        Glide.with(this).load(page.getSubmissionImgLink()).into(submissionImage);
-        Glide.with(this).load(page.getSubmissionUserIcon()).into(submissionUserIcon);
-        submissionUser.setText(page.getSubmissionUser());
-
-        fab.removeButton(submissionFavorite);
-        fab.removeButton(sendNote);
-
-        submissionFavorite.setVisibility(View.GONE);
-        sendNote.setVisibility(View.GONE);
-
-        if (loginTest.getIsLoggedIn()) {
-            fab.addButton(submissionFavorite, 1.5f, 180);
-            fab.addButton(sendNote, 1.5f, 225);
-
-            if (page.getIsFav()) {
-                submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
-            } else {
-                submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
-            }
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -250,10 +274,7 @@ public class view extends Fragment {
                         }
                     }.execute(webClient).get();
 
-                    page = new open.furaffinity.client.pages.view(page);
                     fetchPageData();
-                    updateUIElements();
-                    updateUIElementListeners(rootView);
                 } catch (ExecutionException | InterruptedException e) {
                     Log.e(TAG, "Could not fav post: ", e);
                 }
@@ -268,13 +289,6 @@ public class view extends Fragment {
         });
     }
 
-    private void setupViewPager() {
-        viewSectionsPagerAdapter sectionsPagerAdapter = new viewSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tabs.setupWithViewPager(viewPager);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -284,11 +298,9 @@ public class view extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view, container, false);
         getElements(rootView);
-        initClientAndPage(((mainActivity) getActivity()).getViewPath());
+        initPages(((mainActivity) getActivity()).getViewPath());
         fetchPageData();
-        updateUIElements();
         updateUIElementListeners(rootView);
-        setupViewPager();
         return rootView;
     }
 }

@@ -72,7 +72,7 @@
 
     <fragment
         android:id="@+id/nav_view"
-        android:name="open.furaffinity.client.fragmentsMidMigration.view"
+        android:name="open.furaffinity.client.fragments.view"
         android:label="@string/menu_view"
         tools:layout="@layout/fragment_view" />
 

@@ -11,6 +11,7 @@ import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -20,8 +21,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.pagesOld.loginTest;
+import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.utilities.webClient;
 
 public class login extends Fragment {
@@ -33,82 +35,84 @@ public class login extends Fragment {
     private static final String loginPath = "/login";
 
     private webClient webClient;
-    private loginTest loginTest;
+    private loginCheck loginCheck;
 
     private void getElements(View rootView) {
         webView = rootView.findViewById(R.id.webView);
         webSettings = webView.getSettings();
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-        loginTest = new loginTest();
-    }
-
     private void fetchPageData() {
-        try {
-            loginTest.execute(webClient).get();
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "Could not load page: ", e);
-        }
+        loginCheck.execute();
     }
 
-    private void updateUIElements() {
-        if (loginTest.getIsLoggedIn()) {
-            webView.setVisibility(View.GONE);
+    private void initPages() {
+        webClient = new webClient(requireContext());
+        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                if (((loginCheck)abstractPage).getIsLoggedIn()) {
+                    webView.setVisibility(View.GONE);
 
-            CookieManager.getInstance().removeAllCookies(null);
-            CookieManager.getInstance().flush();
+                    CookieManager.getInstance().removeAllCookies(null);
+                    CookieManager.getInstance().flush();
 
-            SharedPreferences sharedPref = requireContext().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.remove(getString(R.string.webClientCookieA));
-            editor.remove(getString(R.string.webClientCookieB));
-            editor.apply();
-            editor.commit();
+                    SharedPreferences sharedPref = requireContext().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.remove(getString(R.string.webClientCookieA));
+                    editor.remove(getString(R.string.webClientCookieB));
+                    editor.apply();
+                    editor.commit();
 
-            ((mainActivity) getActivity()).updateUILoginState();
-        } else {
-            webView.setVisibility(View.VISIBLE);
-            webSettings.setJavaScriptEnabled(true);
+                    ((mainActivity) getActivity()).updateUILoginState();
+                } else {
+                    webView.setVisibility(View.VISIBLE);
+                    webSettings.setJavaScriptEnabled(true);
 
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    return false;
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    CookieManager cookieManager = CookieManager.getInstance();
-                    String cookies = cookieManager.getCookie(url);
-                    List<String> cookieEntries = Arrays.asList(cookies.split(";"));
-                    HashMap<String, String> cookieMap = new HashMap<>();
-
-                    for (String currentElement : cookieEntries) {
-                        String[] splitCookie = currentElement.split("=");
-                        if (splitCookie.length == 2) {
-                            cookieMap.put(splitCookie[0].trim(), splitCookie[1].trim());
+                    webView.setWebViewClient(new WebViewClient() {
+                        @Override
+                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                            return false;
                         }
-                    }
 
-                    if (cookieMap.containsKey("a") && cookieMap.containsKey("b")) {
-                        SharedPreferences sharedPref = requireContext().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(getString(R.string.webClientCookieA), cookieMap.get("a"));
-                        editor.putString(getString(R.string.webClientCookieB), cookieMap.get("b"));
-                        editor.apply();
-                        editor.commit();
-                        ((mainActivity) getActivity()).updateUILoginState();
-                    }
+                        @Override
+                        public void onPageFinished(WebView view, String url) {
+                            super.onPageFinished(view, url);
+                            CookieManager cookieManager = CookieManager.getInstance();
+                            String cookies = cookieManager.getCookie(url);
+                            List<String> cookieEntries = Arrays.asList(cookies.split(";"));
+                            HashMap<String, String> cookieMap = new HashMap<>();
 
-                    return;
+                            for (String currentElement : cookieEntries) {
+                                String[] splitCookie = currentElement.split("=");
+                                if (splitCookie.length == 2) {
+                                    cookieMap.put(splitCookie[0].trim(), splitCookie[1].trim());
+                                }
+                            }
+
+                            if (cookieMap.containsKey("a") && cookieMap.containsKey("b")) {
+                                SharedPreferences sharedPref = requireContext().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString(getString(R.string.webClientCookieA), cookieMap.get("a"));
+                                editor.putString(getString(R.string.webClientCookieB), cookieMap.get("b"));
+                                editor.apply();
+                                editor.commit();
+                                ((mainActivity) getActivity()).updateUILoginState();
+                            }
+
+                            return;
+                        }
+                    });
+
+                    webView.loadUrl(webClient.getBaseUrl() + loginPath);
                 }
-            });
+            }
 
-            webView.loadUrl(webClient.getBaseUrl() + loginPath);
-        }
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -119,9 +123,8 @@ public class login extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);
         getElements(rootView);
-        initClientAndPage();
+        initPages();
         fetchPageData();
-        updateUIElements();
         return rootView;
     }
 }

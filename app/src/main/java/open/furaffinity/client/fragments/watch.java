@@ -68,7 +68,7 @@ public class watch extends Fragment {
         page = new watchList(getContext(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> pageResults = page.getPageResults();
+                List<HashMap<String, String>> pageResults = ((watchList)abstractPage).getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 

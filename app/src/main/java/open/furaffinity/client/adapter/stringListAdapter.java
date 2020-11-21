@@ -18,7 +18,7 @@ import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragments.journal;
 import open.furaffinity.client.fragmentsMidMigration.msgPmsMessage;
 import open.furaffinity.client.fragmentsMidMigration.user;
-import open.furaffinity.client.fragmentsMidMigration.view;
+import open.furaffinity.client.fragments.view;
 
 public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.ViewHolder> {
     private static final String TAG = stringListAdapter.class.getName();

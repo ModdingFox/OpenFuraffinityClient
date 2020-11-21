@@ -14,8 +14,11 @@ public class loginTest extends AsyncTask<webClient, Void, Void> {
     private String userIcon = "";
     private String userName = "";
 
-    private void checkLoginStatus(String html) {
-        Document doc = Jsoup.parse(html);
+    public loginTest(){}
+
+    @Override
+    protected Void doInBackground(webClient... webClients) {
+        Document doc = Jsoup.parse(webClients[0].sendGetRequest(webClients[0].getBaseUrl()));
         if (doc != null && doc.selectFirst("a[href=/login]") == null) {
             isLoggedIn = true;
 
@@ -31,19 +34,6 @@ public class loginTest extends AsyncTask<webClient, Void, Void> {
             userIcon = userIconImg.attr("src");
             userName = userIconImg.attr("alt");
         }
-    }
-
-
-    public loginTest() {
-    }
-
-    public loginTest(String html) {
-        checkLoginStatus(html);
-    }
-
-    @Override
-    protected Void doInBackground(webClient... webClients) {
-        checkLoginStatus(webClients[0].sendGetRequest(webClients[0].getBaseUrl()));
         return null;
     }
 

@@ -61,7 +61,7 @@ public class loginCheck extends abstractPage {
         String html = webClient.sendGetRequest(webClient.getBaseUrl());
 
         if (html != null && webClient.getLastPageLoaded()) {
-            return processPageData(webClient.sendGetRequest(webClient.getBaseUrl()));
+            return processPageData(html);
         }
 
         return false;
