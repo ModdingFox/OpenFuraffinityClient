@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragmentsMidMigration.msgPmsMessage">
+    tools:context=".fragments.msgPmsMessage">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/userIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:src="@drawable/loading" />
