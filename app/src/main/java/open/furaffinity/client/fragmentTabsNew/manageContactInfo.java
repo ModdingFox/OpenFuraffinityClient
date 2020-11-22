@@ -1,42 +1,35 @@
-package open.furaffinity.client.fragmentTabsOld;
+package open.furaffinity.client.fragmentTabsNew;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsContacts;
 import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
-public class manageContactInfo extends Fragment {
-    private static String TAG = manageContactInfo.class.getName();
-
+public class manageContactInfo extends open.furaffinity.client.abstractClasses.tabFragment {
     private LinearLayout linearLayout;
 
     private fabCircular fab;
 
-    private open.furaffinity.client.utilities.webClient webClient;
     private controlsContacts page;
 
     private boolean isLoading = false;
     List<dynamicEditItem> uiElementList;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_scrollview_with_fab;
+    }
+
+    protected void getElements(View rootView) {
         linearLayout = rootView.findViewById(R.id.linearLayout);
 
         fab = rootView.findViewById(R.id.fab);
@@ -44,15 +37,14 @@ public class manageContactInfo extends Fragment {
         fab.setVisibility(View.GONE);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading) {
             isLoading = true;
             page.execute();
         }
     }
 
-    private void initPages() {
-        webClient = new webClient(requireContext());
+    protected void initPages() {
         page = new controlsContacts(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
@@ -88,44 +80,25 @@ public class manageContactInfo extends Fragment {
         });
     }
 
-    private void updateUIElementListeners(View rootView) {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("do", "update");
-                params.put("key", page.getKey());
+    protected void updateUIElementListeners(View rootView) {
+        fab.setOnClickListener(v -> {
+            HashMap<String, String> params = new HashMap<>();
 
-                for (dynamicEditItem currentItem : uiElementList) {
-                    params.put(currentItem.getName(), currentItem.getValue());
-                }
-
-                try {
-                    new AsyncTask<webClient, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsContacts.getPagePath(), params);
-                            return null;
-                        }
-                    }.execute(webClient).get();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not update contact info: ", e);
-                }
+            for (dynamicEditItem currentItem : uiElementList) {
+                params.put(currentItem.getName(), currentItem.getValue());
             }
+
+            new open.furaffinity.client.submitPages.submitControlsContacts(getActivity(), new abstractPage.pageListener() {
+                @Override
+                public void requestSucceeded(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Successfully uploaded contact info", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void requestFailed(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Failed to update contact info", Toast.LENGTH_SHORT).show();
+                }
+            }, page.getKey(), params).execute();
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_scrollview_with_fab, container, false);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

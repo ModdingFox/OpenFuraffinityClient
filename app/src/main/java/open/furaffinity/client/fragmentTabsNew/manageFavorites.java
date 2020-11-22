@@ -1,16 +1,10 @@
-package open.furaffinity.client.fragmentTabsOld;
+package open.furaffinity.client.fragmentTabsNew;
 
 import android.content.res.ColorStateList;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -20,7 +14,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
@@ -29,32 +22,29 @@ import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
-public class manageFavorites extends Fragment {
-    private static final String TAG = manageFavorites.class.getName();
-
+public class manageFavorites extends open.furaffinity.client.abstractClasses.tabFragment {
+    @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter<manageImageListAdapter.ViewHolder> mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     private fabCircular fab;
     private FloatingActionButton removeSelected;
 
-    private webClient webClient;
     private gallery page;
 
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private String pagePath = null;
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private static final String pagePath = "/controls/favorites/";
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
             List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
@@ -88,7 +78,13 @@ public class manageFavorites extends Fragment {
         }
     };
 
-    private void getElements(View rootView) {
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_refreshable_recycler_view_with_fab;
+    }
+
+    protected void getElements(View rootView) {
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
 
         constraintLayout = rootView.findViewById(R.id.constraintLayout);
@@ -99,9 +95,10 @@ public class manageFavorites extends Fragment {
         fab = rootView.findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
 
-        removeSelected = new FloatingActionButton(getContext());
+        removeSelected = new FloatingActionButton(requireContext());
 
         removeSelected.setImageResource(R.drawable.ic_menu_delete);
+        //noinspection deprecation
         removeSelected.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         constraintLayout.addView(removeSelected);
@@ -109,7 +106,7 @@ public class manageFavorites extends Fragment {
         fab.addButton(removeSelected, 1.5f, 270);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
@@ -129,23 +126,16 @@ public class manageFavorites extends Fragment {
         fetchPageData();
     }
 
-    private void initPages() {
-        webClient = new webClient(requireContext());
-
+    protected void initPages() {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new manageImageListAdapter(mDataSet, getActivity());
+        mAdapter = new manageImageListAdapter(mDataSet, requireActivity());
         recyclerView.setAdapter(mAdapter);
 
         page = new gallery(getActivity(), pageListener, pagePath);
     }
 
-    private void updateUIElementListeners(View rootView) {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                resetRecycler();
-            }
-        });
+    protected void updateUIElementListeners(View rootView) {
+        swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
@@ -155,49 +145,30 @@ public class manageFavorites extends Fragment {
             }
         };
 
+        //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        removeSelected.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> elements = ((manageImageListAdapter) mAdapter).getCheckedItems();
+        removeSelected.setOnClickListener(v -> {
+            List<String> elements = ((manageImageListAdapter) mAdapter).getCheckedItems();
 
-                HashMap<String, String> params = new HashMap<>();
-                params.put("do", "delete");
+            HashMap<String, String> params = new HashMap<>();
 
-                for (int i = 0; i < elements.size(); i++) {
-                    params.put("favorites[" + Integer.toString(i) + "]", elements.get(i));
-                }
-
-                try {
-                    new AsyncTask<webClient, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
-                            return null;
-                        }
-                    }.execute(webClient).get();
-
-                resetRecycler();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not un fav post: ", e);
-                }
+            for (int i = 0; i < elements.size(); i++) {
+                params.put("favorites[" + i + "]", elements.get(i));
             }
+
+            new open.furaffinity.client.submitPages.submitControlsFavorites(getActivity(), new abstractPage.pageListener() {
+                @Override
+                public void requestSucceeded(abstractPage abstractPage) {
+                    resetRecycler();
+                    Toast.makeText(getActivity(), "Successfully updated favorites", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void requestFailed(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Failed to update favorites", Toast.LENGTH_SHORT).show();
+                }
+            }, pagePath, params).execute();
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
-        pagePath = "/controls/favorites/";
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

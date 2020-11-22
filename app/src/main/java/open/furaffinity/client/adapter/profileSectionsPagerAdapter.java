@@ -15,13 +15,13 @@ import open.furaffinity.client.fragmentTabsOld.manageUserSettings;
 import open.furaffinity.client.fragmentTabsOld.notImplementedYet;
 import open.furaffinity.client.fragmentTabsNew.manageAvatar;
 import open.furaffinity.client.fragmentTabsOld.manageWatches;
-import open.furaffinity.client.fragmentTabsOld.manageContactInfo;
-import open.furaffinity.client.fragmentTabsOld.manageFolders;
-import open.furaffinity.client.fragmentTabsOld.manageJournals;
+import open.furaffinity.client.fragmentTabsNew.manageContactInfo;
+import open.furaffinity.client.fragmentTabsNew.manageFolders;
+import open.furaffinity.client.fragmentTabsNew.manageJournals;
 import open.furaffinity.client.fragmentTabsOld.manageUserPageAndProfileInformation;
 import open.furaffinity.client.fragmentTabsOld.manageShouts;
 import open.furaffinity.client.fragmentTabsOld.manageSiteSettings;
-import open.furaffinity.client.fragmentTabsOld.manageFavorites;
+import open.furaffinity.client.fragmentTabsNew.manageFavorites;
 import open.furaffinity.client.fragmentTabsOld.manageSubmissions;
 
 public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
