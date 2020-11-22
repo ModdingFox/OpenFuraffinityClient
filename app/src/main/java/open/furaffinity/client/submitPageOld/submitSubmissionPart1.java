@@ -1,4 +1,4 @@
-package open.furaffinity.client.submitPages;
+package open.furaffinity.client.submitPageOld;
 
 import android.os.AsyncTask;
 

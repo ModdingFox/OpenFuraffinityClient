@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragmentTabsOld.manageAccountSettings;
+import open.furaffinity.client.fragmentTabsNew.manageAccountSettings;
 import open.furaffinity.client.fragmentTabsOld.manageBadges;
 import open.furaffinity.client.fragmentTabsOld.manageUserSettings;
 import open.furaffinity.client.fragmentTabsOld.notImplementedYet;

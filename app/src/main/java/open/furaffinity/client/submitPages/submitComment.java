@@ -7,19 +7,13 @@ import java.util.HashMap;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class submitComment extends open.furaffinity.client.abstractClasses.abstractPage {
-    private String pagePath;
-    private String message;
+    private final String pagePath;
+    private final String message;
 
     public submitComment(Context context, abstractPage.pageListener pageListener, String pagePath, String message) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.message = message;
-    }
-
-    public submitComment(submitComment submitComment) {
-        super(submitComment);
-        this.pagePath = submitComment.pagePath;
-        this.message = submitComment.message;
     }
 
     @Override

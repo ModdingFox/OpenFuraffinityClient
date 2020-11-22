@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.submitPageOld.submitSubmissionPart3;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
@@ -41,9 +42,9 @@ public class uploadFinalizeDialog extends DialogFragment {
     private Switch putInScraps;
 
     private webClient webClient;
-    private open.furaffinity.client.submitPages.submitSubmissionPart3 page;
+    private submitSubmissionPart3 page;
 
-    public uploadFinalizeDialog(open.furaffinity.client.submitPages.submitSubmissionPart3 page) {
+    public uploadFinalizeDialog(submitSubmissionPart3 page) {
         super();
         this.page = page;
     }
@@ -140,7 +141,7 @@ public class uploadFinalizeDialog extends DialogFragment {
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.submitPages.submitSubmissionPart3.getPagePath(), params);
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + submitSubmissionPart3.getPagePath(), params);
                             return null;
                         }
                     }.execute(webClient).get();
