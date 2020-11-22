@@ -10,10 +10,10 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragmentTabsNew.manageAccountSettings;
-import open.furaffinity.client.fragmentTabsOld.manageBadges;
+import open.furaffinity.client.fragmentTabsNew.manageBadges;
 import open.furaffinity.client.fragmentTabsOld.manageUserSettings;
 import open.furaffinity.client.fragmentTabsOld.notImplementedYet;
-import open.furaffinity.client.fragmentTabsOld.manageAvatar;
+import open.furaffinity.client.fragmentTabsNew.manageAvatar;
 import open.furaffinity.client.fragmentTabsOld.manageWatches;
 import open.furaffinity.client.fragmentTabsOld.manageContactInfo;
 import open.furaffinity.client.fragmentTabsOld.manageFolders;

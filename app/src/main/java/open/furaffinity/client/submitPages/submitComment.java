@@ -18,7 +18,7 @@ public class submitComment extends open.furaffinity.client.abstractClasses.abstr
 
     @Override
     protected Boolean processPageData(String html) {
-        //Will at some point add validation to this to ensure that the correct message is displayed
+        //for this page adding validation is really not reasonable at the moment as even in error it just comes back to the original page.
         return true;
     }
 
