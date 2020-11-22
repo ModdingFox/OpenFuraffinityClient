@@ -18,7 +18,7 @@ import java.util.List;
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragmentDrawers.journal;
-import open.furaffinity.client.fragmentTabs.msgPmsMessage;
+import open.furaffinity.client.fragmentTabsOld.msgPmsMessage;
 import open.furaffinity.client.fragmentDrawers.user;
 import open.furaffinity.client.fragmentDrawers.view;
 import open.furaffinity.client.sqlite.historyContract;

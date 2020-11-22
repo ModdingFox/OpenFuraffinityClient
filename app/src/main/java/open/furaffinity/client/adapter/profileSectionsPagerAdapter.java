@@ -9,20 +9,20 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragmentTabs.manageAccountSettings;
-import open.furaffinity.client.fragmentTabs.manageBadges;
-import open.furaffinity.client.fragmentTabs.manageUserSettings;
-import open.furaffinity.client.fragmentTabs.notImplementedYet;
-import open.furaffinity.client.fragmentTabs.manageAvatar;
-import open.furaffinity.client.fragmentTabs.manageWatches;
-import open.furaffinity.client.fragmentTabs.manageContactInfo;
-import open.furaffinity.client.fragmentTabs.manageFolders;
-import open.furaffinity.client.fragmentTabs.manageJournals;
-import open.furaffinity.client.fragmentTabs.manageUserPageAndProfileInformation;
-import open.furaffinity.client.fragmentTabs.manageShouts;
-import open.furaffinity.client.fragmentTabs.manageSiteSettings;
-import open.furaffinity.client.fragmentTabs.manageFavorites;
-import open.furaffinity.client.fragmentTabs.manageSubmissions;
+import open.furaffinity.client.fragmentTabsOld.manageAccountSettings;
+import open.furaffinity.client.fragmentTabsOld.manageBadges;
+import open.furaffinity.client.fragmentTabsOld.manageUserSettings;
+import open.furaffinity.client.fragmentTabsOld.notImplementedYet;
+import open.furaffinity.client.fragmentTabsOld.manageAvatar;
+import open.furaffinity.client.fragmentTabsOld.manageWatches;
+import open.furaffinity.client.fragmentTabsOld.manageContactInfo;
+import open.furaffinity.client.fragmentTabsOld.manageFolders;
+import open.furaffinity.client.fragmentTabsOld.manageJournals;
+import open.furaffinity.client.fragmentTabsOld.manageUserPageAndProfileInformation;
+import open.furaffinity.client.fragmentTabsOld.manageShouts;
+import open.furaffinity.client.fragmentTabsOld.manageSiteSettings;
+import open.furaffinity.client.fragmentTabsOld.manageFavorites;
+import open.furaffinity.client.fragmentTabsOld.manageSubmissions;
 
 public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = profileSectionsPagerAdapter.class.getName();

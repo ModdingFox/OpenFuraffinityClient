@@ -1,13 +1,10 @@
-package open.furaffinity.client.fragmentTabs;
+package open.furaffinity.client.fragmentTabsNew;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,23 +25,41 @@ import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.messageIds;
 
-public class historyList extends Fragment {
+public class historyList extends open.furaffinity.client.abstractClasses.tabFragment {
     private LinearLayoutManager layoutManager;
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    @SuppressWarnings("FieldCanBeLocal")
+    private RecyclerView.Adapter<historyListAdapter.ViewHolder> mAdapter;
 
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     private int currentView = 0;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_recycler_view;
+    }
+
+    protected void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
     }
 
-    private void fetchPageData() {
+    protected void initPages() {
+        if(getArguments() != null) {
+            currentView = getArguments().getInt(messageIds.historyListPage_MESSAGE);
+        } else {
+            Toast.makeText(getActivity(), "Missing current view type", Toast.LENGTH_SHORT).show();
+        }
+
+        recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new historyListAdapter(mDataSet, getActivity());
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    protected void fetchPageData() {
         historyDBHelper dbHelper = new historyDBHelper(getActivity());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -106,27 +121,12 @@ public class historyList extends Fragment {
             mDataSet.add(newItem);
         }
 
+        cursor.close();
         db.close();
     }
 
-    private void updateUIElements() {
-        recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new historyListAdapter(mDataSet, getActivity());
-        recyclerView.setAdapter(mAdapter);
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    protected void updateUIElementListeners(View rootView) {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-        currentView = getArguments().getInt(messageIds.historyListPage_MESSAGE);
-        getElements(rootView);
-        fetchPageData();
-        updateUIElements();
-        return rootView;
     }
 }

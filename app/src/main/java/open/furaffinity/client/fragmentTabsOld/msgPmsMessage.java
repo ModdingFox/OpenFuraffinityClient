@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentTabs;
+package open.furaffinity.client.fragmentTabsOld;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentTabs;
+package open.furaffinity.client.fragmentTabsOld;
 
 import android.content.Context;
 import android.content.SharedPreferences;

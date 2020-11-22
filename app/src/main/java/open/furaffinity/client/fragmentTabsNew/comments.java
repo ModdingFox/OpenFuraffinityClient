@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentTabs;
+package open.furaffinity.client.fragmentTabsNew;
 
 import android.view.View;
 import android.view.ViewGroup;

@@ -1,10 +1,9 @@
-package open.furaffinity.client.fragmentTabs;
+package open.furaffinity.client.fragmentTabsOld;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,56 +18,47 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.adapter.stringListAdapter;
+import open.furaffinity.client.adapter.journalListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
-import open.furaffinity.client.pages.watchList;
+import open.furaffinity.client.pages.journals;
 import open.furaffinity.client.utilities.messageIds;
 
-public class watch extends Fragment {
-    private static final String TAG = watch.class.getName();
-
+public class userJournals extends Fragment {
     private LinearLayoutManager layoutManager;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
-    private Button button;
-
-    private watchList page;
+    private journals page;
 
     private int loadingStopCounter = 3;
-    private boolean isFirstLoad = true;
+    private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     private void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
-
-        button = rootView.findViewById(R.id.button);
     }
 
     private void fetchPageData() {
-        if (isFirstLoad) {
-            mDataSet.addAll(watchList.processWatchList(getArguments().getString(messageIds.userWatchRecent_MESSAGE), true));
-            mAdapter.notifyDataSetChanged();
-            isFirstLoad = false;
-        } else {
-            page = new watchList(page);
+        if(!isLoading && loadingStopCounter > 0) {
+            isLoading = true;
+            page = new journals(page);
             page.execute();
         }
     }
 
     private void initPages() {
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new stringListAdapter(mDataSet, getActivity());
+        mAdapter = new journalListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        page = new watchList(getContext(), new abstractPage.pageListener() {
+        page = new journals(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> pageResults = ((watchList)abstractPage).getPageResults();
+                List<HashMap<String, String>> pageResults = page.getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 
@@ -77,17 +67,21 @@ public class watch extends Fragment {
                 }
 
                 //Deduplicate results
-                List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("item")).collect(Collectors.toList());
-                List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("item")).collect(Collectors.toList());
+                List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("journalPath")).collect(Collectors.toList());
+                List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("journalPath")).collect(Collectors.toList());
                 newPostPaths.removeAll(oldPostPaths);
-                pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("item"))).collect(Collectors.toList());
+                pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("journalPath"))).collect(Collectors.toList());
                 mDataSet.addAll(pageResults);
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+
+                isLoading = false;
             }
 
             @Override
             public void requestFailed(abstractPage abstractPage) {
-                Toast.makeText(getActivity(), "Failed to load data for watch list", Toast.LENGTH_SHORT).show();
+                loadingStopCounter--;
+                isLoading = false;
+                Toast.makeText(getActivity(), "Failed to load data for journals", Toast.LENGTH_SHORT).show();
             }
         }, getArguments().getString(messageIds.pagePath_MESSAGE));
     }
@@ -103,21 +97,6 @@ public class watch extends Fragment {
 
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                button.setVisibility(View.GONE);
-                mDataSet.clear();
-                mAdapter.notifyDataSetChanged();
-                fetchPageData();
-            }
-        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -127,7 +106,7 @@ public class watch extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_watch, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         getElements(rootView);
         initPages();
         fetchPageData();
