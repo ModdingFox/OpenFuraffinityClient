@@ -10,13 +10,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragmentTabsOld.notImplementedYet;
+import open.furaffinity.client.fragmentTabsNew.notImplementedYet;
 import open.furaffinity.client.fragmentTabsOld.shouts;
 import open.furaffinity.client.fragmentTabsOld.userGallery;
 import open.furaffinity.client.fragmentTabsOld.userJournals;
 import open.furaffinity.client.fragmentTabsOld.userProfile;
 import open.furaffinity.client.fragmentTabsOld.watch;
-import open.furaffinity.client.fragmentTabsOld.webViewContent;
+import open.furaffinity.client.fragmentTabsNew.webViewContent;
 import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 

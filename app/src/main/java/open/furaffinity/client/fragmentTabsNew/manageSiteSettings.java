@@ -1,19 +1,9 @@
-package open.furaffinity.client.fragmentTabsOld;
+package open.furaffinity.client.fragmentTabsNew;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import androidx.fragment.app.Fragment;
-
-import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
@@ -21,11 +11,8 @@ import open.furaffinity.client.pages.controlsSiteSettings;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
-import open.furaffinity.client.utilities.webClient;
 
-public class manageSiteSettings extends Fragment {
-    private static String TAG = manageSiteSettings.class.getName();
-
+public class manageSiteSettings extends open.furaffinity.client.abstractClasses.tabFragment {
     private RadioButton disable_avatars_yes;
     private RadioButton disable_avatars_no;
     private RadioButton switch_date_format_full;
@@ -42,12 +29,16 @@ public class manageSiteSettings extends Fragment {
 
     private fabCircular fab;
 
-    private open.furaffinity.client.utilities.webClient webClient;
     private controlsSiteSettings page;
 
     private boolean isLoading = false;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_manage_site_settings;
+    }
+
+    protected void getElements(View rootView) {
         disable_avatars_yes = rootView.findViewById(R.id.disable_avatars_yes);
         disable_avatars_no = rootView.findViewById(R.id.disable_avatars_no);
         switch_date_format_full = rootView.findViewById(R.id.switch_date_format_full);
@@ -67,7 +58,7 @@ public class manageSiteSettings extends Fragment {
         fab.setVisibility(View.GONE);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if(!isLoading) {
             isLoading = true;
             page = new controlsSiteSettings(page);
@@ -75,9 +66,7 @@ public class manageSiteSettings extends Fragment {
         }
     }
 
-    private void initPages() {
-        webClient = new webClient(requireContext());
-
+    protected void initPages() {
         page = new controlsSiteSettings(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
@@ -127,73 +116,20 @@ public class manageSiteSettings extends Fragment {
         });
     }
 
-    private void updateUIElementListeners(View rootView) {
-        fab.setOnClickListener(new View.OnClickListener() {
+    protected void updateUIElementListeners(View rootView) {
+        fab.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitControlsSiteSettings(getActivity(), new abstractPage.pageListener() {
             @Override
-            public void onClick(View v) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("do", "update");
-
-                if (disable_avatars_yes.isChecked()) {
-                    params.put("disable_avatars", "1");
-                }
-
-                if (disable_avatars_no.isChecked()) {
-                    params.put("disable_avatars", "0");
-                }
-
-                if (switch_date_format_full.isChecked()) {
-                    params.put("date_format", "full");
-                }
-
-                if (switch_date_format_fuzzy.isChecked()) {
-                    params.put("date_format", "fuzzy");
-                }
-
-                params.put("perpage", ((kvPair) select_preferred_perpage.getSelectedItem()).getKey());
-                params.put("newsubmissions_direction", ((kvPair) select_newsubmissions_direction.getSelectedItem()).getKey());
-                params.put("thumbnail_size", ((kvPair) select_thumbnail_size.getSelectedItem()).getKey());
-
-                if (gallery_navigation_minigallery.isChecked()) {
-                    params.put("gallery_navigation", "minigallery");
-                }
-
-                if (gallery_navigation_links.isChecked()) {
-                    params.put("gallery_navigation", "links");
-                }
-
-                params.put("hide_favorites", ((kvPair) hide_favorites.getSelectedItem()).getKey());
-                params.put("no_guests", ((kvPair) no_guests.getSelectedItem()).getKey());
-                params.put("no_search_engines", ((kvPair) no_search_engines.getSelectedItem()).getKey());
-                params.put("no_notes", ((kvPair) no_notes.getSelectedItem()).getKey());
-                params.put("save_settings", "Save Settings");
-
-                try {
-                    new AsyncTask<webClient, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsSiteSettings.getPagePath(), params);
-                            return null;
-                        }
-                    }.execute(webClient).get();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not update site settings: ", e);
-                }
+            public void requestSucceeded(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Successfully updated site settings", Toast.LENGTH_SHORT).show();
             }
-        });
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_manage_site_settings, container, false);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to updated site settings", Toast.LENGTH_SHORT).show();
+            }
+        }, disable_avatars_yes.isChecked(), disable_avatars_no.isChecked(), switch_date_format_full.isChecked(), switch_date_format_fuzzy.isChecked(),
+                ((kvPair)select_preferred_perpage.getSelectedItem()).getKey(), ((kvPair) select_newsubmissions_direction.getSelectedItem()).getKey(), ((kvPair) select_thumbnail_size.getSelectedItem()).getKey(),
+                gallery_navigation_minigallery.isChecked(), gallery_navigation_links.isChecked(), ((kvPair) hide_favorites.getSelectedItem()).getKey(), ((kvPair) no_guests.getSelectedItem()).getKey(),
+                ((kvPair) no_search_engines.getSelectedItem()).getKey(), ((kvPair) no_notes.getSelectedItem()).getKey()).execute());
     }
 }

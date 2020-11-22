@@ -11,8 +11,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragmentTabsNew.comments;
-import open.furaffinity.client.fragmentTabsOld.notImplementedYet;
-import open.furaffinity.client.fragmentTabsOld.webViewContent;
+import open.furaffinity.client.fragmentTabsNew.notImplementedYet;
+import open.furaffinity.client.fragmentTabsNew.webViewContent;
 import open.furaffinity.client.pages.journal;
 import open.furaffinity.client.utilities.messageIds;
 

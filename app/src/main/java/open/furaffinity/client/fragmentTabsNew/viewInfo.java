@@ -1,18 +1,12 @@
-package open.furaffinity.client.fragmentTabsOld;
+package open.furaffinity.client.fragmentTabsNew;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.utilities.messageIds;
 
-public class viewInfo extends Fragment {
+public class viewInfo extends open.furaffinity.client.abstractClasses.tabFragment {
     private TextView submissionComments;
     private TextView submissionFavorites;
     private TextView submissionViews;
@@ -33,7 +27,12 @@ public class viewInfo extends Fragment {
     private String submissionDateString;
     private String submissionSizeString;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_view_info;
+    }
+
+    protected void getElements(View rootView) {
         submissionComments = rootView.findViewById(R.id.submissionComments);
         submissionFavorites = rootView.findViewById(R.id.submissionFavorites);
         submissionViews = rootView.findViewById(R.id.submissionViews);
@@ -45,19 +44,23 @@ public class viewInfo extends Fragment {
         submissionSize = rootView.findViewById(R.id.submissionSize);
     }
 
-    private void fetchPageData() {
-        submissionCommentsString = getArguments().getString(messageIds.submissionComments_MESSAGE);
-        submissionFavoritesString = getArguments().getString(messageIds.submissionFavorites_MESSAGE);
-        submissionViewsString = getArguments().getString(messageIds.submissionViews_MESSAGE);
-        submissionRatingString = getArguments().getString(messageIds.submissionRating_MESSAGE);
-        submissionCategoryString = getArguments().getString(messageIds.submissionCategory_MESSAGE);
-        submissionSpeciesString = getArguments().getString(messageIds.submissionSpecies_MESSAGE);
-        submissionGenderString = getArguments().getString(messageIds.submissionGender_MESSAGE);
-        submissionDateString = getArguments().getString(messageIds.submissionDate_MESSAGE);
-        submissionSizeString = getArguments().getString(messageIds.submissionSize_MESSAGE);
+    @Override
+    protected void initPages() {
     }
 
-    private void updateUIElements() {
+    protected void fetchPageData() {
+        if(getArguments() != null) {
+            submissionCommentsString = getArguments().getString(messageIds.submissionComments_MESSAGE);
+            submissionFavoritesString = getArguments().getString(messageIds.submissionFavorites_MESSAGE);
+            submissionViewsString = getArguments().getString(messageIds.submissionViews_MESSAGE);
+            submissionRatingString = getArguments().getString(messageIds.submissionRating_MESSAGE);
+            submissionCategoryString = getArguments().getString(messageIds.submissionCategory_MESSAGE);
+            submissionSpeciesString = getArguments().getString(messageIds.submissionSpecies_MESSAGE);
+            submissionGenderString = getArguments().getString(messageIds.submissionGender_MESSAGE);
+            submissionDateString = getArguments().getString(messageIds.submissionDate_MESSAGE);
+            submissionSizeString = getArguments().getString(messageIds.submissionSize_MESSAGE);
+        }
+
         submissionComments.setText(submissionCommentsString);
         submissionFavorites.setText(submissionFavoritesString);
         submissionViews.setText(submissionViewsString);
@@ -70,16 +73,7 @@ public class viewInfo extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    protected void updateUIElementListeners(View rootView) {
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_view_info, container, false);
-        getElements(rootView);
-        fetchPageData();
-        updateUIElements();
-        return rootView;
     }
 }
