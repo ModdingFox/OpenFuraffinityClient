@@ -7,7 +7,7 @@ import java.util.HashMap;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsJournal;
 
-public class submitControlsFoldersSubmissionsCreateUpdate extends abstractPage {
+public class submitControlsJournal extends abstractPage {
 
     private final String pagePath;
     private final String key;
@@ -17,7 +17,7 @@ public class submitControlsFoldersSubmissionsCreateUpdate extends abstractPage {
     private final boolean lockComments;
     private final boolean makeFeatured;
 
-    public submitControlsFoldersSubmissionsCreateUpdate(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String id, String subject, String body, boolean lockComments, boolean makeFeatured) {
+    public submitControlsJournal(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String id, String subject, String body, boolean lockComments, boolean makeFeatured) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;

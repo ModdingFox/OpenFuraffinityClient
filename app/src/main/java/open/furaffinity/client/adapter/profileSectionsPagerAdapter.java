@@ -19,7 +19,7 @@ import open.furaffinity.client.fragmentTabsNew.manageContactInfo;
 import open.furaffinity.client.fragmentTabsNew.manageFolders;
 import open.furaffinity.client.fragmentTabsNew.manageJournals;
 import open.furaffinity.client.fragmentTabsOld.manageUserPageAndProfileInformation;
-import open.furaffinity.client.fragmentTabsOld.manageShouts;
+import open.furaffinity.client.fragmentTabsNew.manageShouts;
 import open.furaffinity.client.fragmentTabsOld.manageSiteSettings;
 import open.furaffinity.client.fragmentTabsNew.manageFavorites;
 import open.furaffinity.client.fragmentTabsOld.manageSubmissions;

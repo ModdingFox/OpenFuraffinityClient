@@ -91,7 +91,7 @@ public class manageContactInfo extends open.furaffinity.client.abstractClasses.t
             new open.furaffinity.client.submitPages.submitControlsContacts(getActivity(), new abstractPage.pageListener() {
                 @Override
                 public void requestSucceeded(abstractPage abstractPage) {
-                    Toast.makeText(getActivity(), "Successfully uploaded contact info", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Successfully updated contact info", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

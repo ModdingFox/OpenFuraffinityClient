@@ -18,6 +18,7 @@ import open.furaffinity.client.adapter.controlsJournalListAdapter;
 import open.furaffinity.client.dialogs.journalDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.controlsJournal;
+import open.furaffinity.client.submitPages.submitControlsJournal;
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageJournals extends open.furaffinity.client.abstractClasses.tabFragment {
@@ -133,7 +134,7 @@ public class manageJournals extends open.furaffinity.client.abstractClasses.tabF
                     journalDialog journalDialog = new journalDialog();
                     journalDialog.setSubject(((controlsJournal)abstractPage).getSubject());
                     journalDialog.setBody(((controlsJournal)abstractPage).getBody());
-                    journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new open.furaffinity.client.submitPages.submitControlsFoldersSubmissionsCreateUpdate(getActivity(), new abstractPage.pageListener() {
+                    journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new submitControlsJournal(getActivity(), new abstractPage.pageListener() {
                         @Override
                         public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
                             resetRecycler();
@@ -159,7 +160,7 @@ public class manageJournals extends open.furaffinity.client.abstractClasses.tabF
 
         fab.setOnClickListener(v -> {
             journalDialog journalDialog = new journalDialog();
-            journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new open.furaffinity.client.submitPages.submitControlsFoldersSubmissionsCreateUpdate(getActivity(), new abstractPage.pageListener() {
+            journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new submitControlsJournal(getActivity(), new abstractPage.pageListener() {
                 @Override
                 public void requestSucceeded(abstractPage abstractPage) {
                     resetRecycler();
