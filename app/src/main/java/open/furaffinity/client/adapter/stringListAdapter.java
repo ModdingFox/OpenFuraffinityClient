@@ -15,10 +15,10 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.fragments.journal;
-import open.furaffinity.client.fragments.msgPmsMessage;
-import open.furaffinity.client.fragments.user;
-import open.furaffinity.client.fragments.view;
+import open.furaffinity.client.fragmentDrawers.journal;
+import open.furaffinity.client.fragmentTabs.msgPmsMessage;
+import open.furaffinity.client.fragmentDrawers.user;
+import open.furaffinity.client.fragmentDrawers.view;
 
 public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.ViewHolder> {
     private static final String TAG = stringListAdapter.class.getName();

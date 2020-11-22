@@ -9,20 +9,20 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragments.manageAccountSettings;
-import open.furaffinity.client.fragments.manageBadges;
-import open.furaffinity.client.fragments.manageUserSettings;
-import open.furaffinity.client.fragments.notImplementedYet;
-import open.furaffinity.client.fragments.manageAvatar;
-import open.furaffinity.client.fragments.manageWatches;
-import open.furaffinity.client.fragments.manageContactInfo;
-import open.furaffinity.client.fragments.manageFolders;
-import open.furaffinity.client.fragments.manageJournals;
-import open.furaffinity.client.fragments.manageUserPageAndProfileInformation;
-import open.furaffinity.client.fragments.manageShouts;
-import open.furaffinity.client.fragments.manageSiteSettings;
-import open.furaffinity.client.fragments.manageFavorites;
-import open.furaffinity.client.fragments.manageSubmissions;
+import open.furaffinity.client.fragmentTabs.manageAccountSettings;
+import open.furaffinity.client.fragmentTabs.manageBadges;
+import open.furaffinity.client.fragmentTabs.manageUserSettings;
+import open.furaffinity.client.fragmentTabs.notImplementedYet;
+import open.furaffinity.client.fragmentTabs.manageAvatar;
+import open.furaffinity.client.fragmentTabs.manageWatches;
+import open.furaffinity.client.fragmentTabs.manageContactInfo;
+import open.furaffinity.client.fragmentTabs.manageFolders;
+import open.furaffinity.client.fragmentTabs.manageJournals;
+import open.furaffinity.client.fragmentTabs.manageUserPageAndProfileInformation;
+import open.furaffinity.client.fragmentTabs.manageShouts;
+import open.furaffinity.client.fragmentTabs.manageSiteSettings;
+import open.furaffinity.client.fragmentTabs.manageFavorites;
+import open.furaffinity.client.fragmentTabs.manageSubmissions;
 
 public class profileSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = profileSectionsPagerAdapter.class.getName();

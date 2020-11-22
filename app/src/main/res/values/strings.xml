@@ -218,4 +218,5 @@
     <string name="lockComments">Lock Comments</string>
     <string name="makeFeatured">Make Featured</string>
     <string name="notSelected">Not Selected</string>
+    <string name="commentTextBox">Comment...</string>
 </resources>
