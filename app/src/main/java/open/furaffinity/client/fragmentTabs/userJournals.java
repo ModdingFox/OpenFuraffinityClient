@@ -13,12 +13,13 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.journalListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.journals;
 import open.furaffinity.client.utilities.messageIds;
 
-public class userJournals extends open.furaffinity.client.abstractClasses.tabFragment {
+public class userJournals extends appFragment {
     private LinearLayoutManager layoutManager;
 
     private RecyclerView recyclerView;

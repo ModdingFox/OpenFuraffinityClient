@@ -7,13 +7,14 @@ import android.widget.Toast;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.pages.commissions;
 import open.furaffinity.client.pages.journal;
 import open.furaffinity.client.pages.msgPmsMessage;
 import open.furaffinity.client.pages.view;
 import open.furaffinity.client.utilities.messageIds;
 
-public class webViewContent extends open.furaffinity.client.abstractClasses.tabFragment {
+public class webViewContent extends appFragment {
     private WebView webView;
     private String mData = "";
 

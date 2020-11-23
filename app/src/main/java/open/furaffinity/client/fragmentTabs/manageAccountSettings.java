@@ -10,13 +10,14 @@ import androidx.fragment.app.DialogFragment;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.pages.controlsSettings;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class manageAccountSettings extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageAccountSettings extends appFragment {
     private EditText fa_useremail;
     private Spinner ssl_enable;
     private Spinner bdaymonth;

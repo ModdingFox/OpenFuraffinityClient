@@ -22,13 +22,14 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class browse extends open.furaffinity.client.abstractClasses.tabFragment {
+public class browse extends appFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private TableLayout settingsTableLayout;

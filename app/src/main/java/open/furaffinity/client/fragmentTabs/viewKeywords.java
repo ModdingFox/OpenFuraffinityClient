@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.checkboxListAdapter;
 import open.furaffinity.client.utilities.messageIds;
 
-public class viewKeywords extends open.furaffinity.client.abstractClasses.tabFragment {
+public class viewKeywords extends appFragment {
     private RecyclerView.LayoutManager layoutManager;
 
     private RecyclerView recyclerView;

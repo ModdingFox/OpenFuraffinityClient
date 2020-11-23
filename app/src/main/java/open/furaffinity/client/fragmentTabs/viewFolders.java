@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.stringListAdapter;
 import open.furaffinity.client.fragmentDrawersOld.user;
 import open.furaffinity.client.utilities.messageIds;
 
-public class viewFolders extends open.furaffinity.client.abstractClasses.tabFragment {
+public class viewFolders extends appFragment {
     private RecyclerView.LayoutManager layoutManager;
 
     private RecyclerView recyclerView;

@@ -14,10 +14,11 @@ import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.pages.user;
 
-public class about extends open.furaffinity.client.abstractClasses.tabFragment {
+public class about extends appFragment {
     private static final String TAG = about.class.getName();
 
     private LinearLayoutManager layoutManager;

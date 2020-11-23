@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
@@ -28,7 +29,7 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.uiControls;
 
-public class userGallery extends open.furaffinity.client.abstractClasses.tabFragment {
+public class userGallery extends appFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;

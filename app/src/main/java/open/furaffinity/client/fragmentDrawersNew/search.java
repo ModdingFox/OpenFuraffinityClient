@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.adapter.savedSearchListAdapter;
@@ -48,7 +49,7 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.notificationItem;
 import open.furaffinity.client.utilities.uiControls;
 
-public class search extends open.furaffinity.client.abstractClasses.tabFragment {
+public class search extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 

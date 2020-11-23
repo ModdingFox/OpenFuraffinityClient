@@ -20,13 +20,14 @@ import androidx.work.WorkManager;
 import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
-public class settings extends open.furaffinity.client.abstractClasses.tabFragment {
+public class settings extends appFragment {
     private Switch notificationsSwitch;
     private EditText notificationsInterval;
     private Switch searchNotificationsSwitch;

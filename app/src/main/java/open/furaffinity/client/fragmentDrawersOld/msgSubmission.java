@@ -4,19 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,6 +26,7 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
@@ -39,7 +35,7 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
-public class msgSubmission extends open.furaffinity.client.abstractClasses.tabFragment {
+public class msgSubmission extends appFragment {
     private static final String TAG = msgSubmission.class.getName();
 
     @SuppressWarnings("FieldCanBeLocal")

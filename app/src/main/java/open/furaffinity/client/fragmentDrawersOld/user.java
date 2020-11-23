@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
 import open.furaffinity.client.fragmentDrawersNew.settings;
@@ -36,7 +37,7 @@ import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class user extends open.furaffinity.client.abstractClasses.tabFragment {
+public class user extends appFragment {
     private static final String TAG = user.class.getName();
 
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;

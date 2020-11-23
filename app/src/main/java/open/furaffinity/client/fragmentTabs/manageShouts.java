@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.pages.controlsShouts;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageShouts extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageShouts extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 

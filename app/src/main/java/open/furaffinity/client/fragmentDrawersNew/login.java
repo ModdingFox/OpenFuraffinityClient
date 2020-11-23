@@ -14,10 +14,11 @@ import java.util.HashMap;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.pages.loginCheck;
 
-public class login extends open.furaffinity.client.abstractClasses.tabFragment {
+public class login extends appFragment {
     private WebView webView;
     private WebSettings webSettings;
 

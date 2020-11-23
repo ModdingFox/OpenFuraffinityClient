@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.dialogs.textDialog;
@@ -27,7 +28,7 @@ import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.submitPages.submitControlsSubmissionsAssignItemToNewFolder;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageSubmissions extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageSubmissions extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 

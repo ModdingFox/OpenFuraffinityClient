@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
 import open.furaffinity.client.fragmentDrawersNew.settings;
@@ -44,7 +45,7 @@ import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class view extends open.furaffinity.client.abstractClasses.tabFragment {
+public class view extends appFragment {
     private static final String TAG = view.class.getName();
 
     @SuppressWarnings("FieldCanBeLocal")

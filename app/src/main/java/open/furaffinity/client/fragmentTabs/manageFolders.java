@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.manageFolderListAdapter;
 import open.furaffinity.client.dialogs.controlsFoldersSubmissionsFolderDialog;
 import open.furaffinity.client.dialogs.spinnerTextDialog;
@@ -27,7 +28,7 @@ import open.furaffinity.client.pages.controlsFoldersSubmissionsFolder;
 import open.furaffinity.client.pages.controlsFoldersSubmissions;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageFolders extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageFolders extends appFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;
