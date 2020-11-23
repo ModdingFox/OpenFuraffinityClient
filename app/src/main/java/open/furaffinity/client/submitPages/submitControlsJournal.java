@@ -5,7 +5,6 @@ import android.content.Context;
 import java.util.HashMap;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.pages.controlsJournal;
 
 public class submitControlsJournal extends abstractPage {
 
