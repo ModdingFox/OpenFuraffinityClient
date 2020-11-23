@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -59,6 +61,35 @@ public class view extends appFragment {
 
     private loginCheck loginCheck;
     private open.furaffinity.client.pages.view page;
+
+    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            submissionTitle.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionTitle());
+            Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionImgLink()).into(submissionImage);
+            Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUserIcon()).into(submissionUserIcon);
+            submissionUser.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUser());
+
+            if (((open.furaffinity.client.pages.view)abstractPage).getIsFav()) {
+                submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
+            } else {
+                submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
+            }
+
+            saveHistory();
+            setupViewPager(((open.furaffinity.client.pages.view)abstractPage));
+
+            fab.setVisibility(View.VISIBLE);
+            isLoading = false;
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            fab.setVisibility(View.GONE);
+            isLoading = false;
+            Toast.makeText(getActivity(), "Failed to load data for view", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private boolean isLoading = false;
 
@@ -186,34 +217,9 @@ public class view extends appFragment {
             }
         });
 
-        page = new open.furaffinity.client.pages.view(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                submissionTitle.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionTitle());
-                Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionImgLink()).into(submissionImage);
-                Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUserIcon()).into(submissionUserIcon);
-                submissionUser.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUser());
-
-                if (((open.furaffinity.client.pages.view)abstractPage).getIsFav()) {
-                    submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
-                } else {
-                    submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
-                }
-
-                saveHistory();
-                setupViewPager(((open.furaffinity.client.pages.view)abstractPage));
-
-                fab.setVisibility(View.VISIBLE);
-                isLoading = false;
-            }
-
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                fab.setVisibility(View.GONE);
-                isLoading = false;
-                Toast.makeText(getActivity(), "Failed to load data for view", Toast.LENGTH_SHORT).show();
-            }
-        }, pagePath);
+        if(page == null) {
+            page = new open.furaffinity.client.pages.view(getActivity(), pageListener, pagePath);
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -278,5 +284,19 @@ public class view extends appFragment {
         }, page.getFavUnFav()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNote()));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("viewPath", page.getPagePath());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null && savedInstanceState.containsKey("viewPath")) {
+            page = new open.furaffinity.client.pages.view(getActivity(), pageListener, savedInstanceState.getString("viewPath"));
+        }
     }
 }

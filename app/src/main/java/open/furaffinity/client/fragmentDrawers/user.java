@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -58,6 +60,47 @@ public class user extends appFragment {
 
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.user page;
+
+    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            if(((open.furaffinity.client.pages.user)abstractPage).getBlockUnBlock() != null && ((open.furaffinity.client.pages.user)abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.user)abstractPage).getNoteUser() != null) {
+                if (page.getIsWatching()) {
+                    watchUser.setImageResource(R.drawable.ic_menu_user_remove);
+                } else {
+                    watchUser.setImageResource(R.drawable.ic_menu_user_add);
+                }
+
+                if (page.getIsBlocked()) {
+                    blockUser.setImageResource(R.drawable.ic_menu_user_unblock);
+                } else {
+                    blockUser.setImageResource(R.drawable.ic_menu_user_block);
+                }
+            }
+
+            userName.setText(((open.furaffinity.client.pages.user)abstractPage).getUserName());
+            userAccountStatus.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatus());
+            userAccountStatusLine.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatusLine());
+            Glide.with(user.this).load(((open.furaffinity.client.pages.user)abstractPage).getUserIcon()).into(userIcon);
+            userViews.setText(((open.furaffinity.client.pages.user)abstractPage).getUserViews());
+            userSubmissions.setText(((open.furaffinity.client.pages.user)abstractPage).getUserSubmissions());
+            userFavs.setText(((open.furaffinity.client.pages.user)abstractPage).getUserFavs());
+            userCommentsEarned.setText(((open.furaffinity.client.pages.user)abstractPage).getUserCommentsEarned());
+            userCommentsMade.setText(((open.furaffinity.client.pages.user)abstractPage).getUserCommentsMade());
+            userJournals.setText(((open.furaffinity.client.pages.user)abstractPage).getUserJournals());
+
+            saveHistory();
+            setupViewPager(((open.furaffinity.client.pages.user)abstractPage));
+
+            isLoading = false;
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            isLoading = false;
+            Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private boolean isLoading = false;
 
@@ -219,46 +262,9 @@ public class user extends appFragment {
             }
         });
 
-        page = new open.furaffinity.client.pages.user(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                if(((open.furaffinity.client.pages.user)abstractPage).getBlockUnBlock() != null && ((open.furaffinity.client.pages.user)abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.user)abstractPage).getNoteUser() != null) {
-                    if (page.getIsWatching()) {
-                        watchUser.setImageResource(R.drawable.ic_menu_user_remove);
-                    } else {
-                        watchUser.setImageResource(R.drawable.ic_menu_user_add);
-                    }
-
-                    if (page.getIsBlocked()) {
-                        blockUser.setImageResource(R.drawable.ic_menu_user_unblock);
-                    } else {
-                        blockUser.setImageResource(R.drawable.ic_menu_user_block);
-                    }
-                }
-
-                userName.setText(((open.furaffinity.client.pages.user)abstractPage).getUserName());
-                userAccountStatus.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatus());
-                userAccountStatusLine.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatusLine());
-                Glide.with(user.this).load(((open.furaffinity.client.pages.user)abstractPage).getUserIcon()).into(userIcon);
-                userViews.setText(((open.furaffinity.client.pages.user)abstractPage).getUserViews());
-                userSubmissions.setText(((open.furaffinity.client.pages.user)abstractPage).getUserSubmissions());
-                userFavs.setText(((open.furaffinity.client.pages.user)abstractPage).getUserFavs());
-                userCommentsEarned.setText(((open.furaffinity.client.pages.user)abstractPage).getUserCommentsEarned());
-                userCommentsMade.setText(((open.furaffinity.client.pages.user)abstractPage).getUserCommentsMade());
-                userJournals.setText(((open.furaffinity.client.pages.user)abstractPage).getUserJournals());
-
-                saveHistory();
-                setupViewPager(((open.furaffinity.client.pages.user)abstractPage));
-
-                isLoading = false;
-            }
-
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                isLoading = false;
-                Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
-            }
-        }, getPagePath());
+        if(page == null) {
+            page = new open.furaffinity.client.pages.user(getActivity(), pageListener, getPagePath());
+        }
     }
 
     protected void updateUIElementListeners(View rootView) {
@@ -289,5 +295,21 @@ public class user extends appFragment {
         }, page.getBlockUnBlock()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser()));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("userPath", page.getPagePath());
+        outState.putString("currentPage", currentPage);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null && savedInstanceState.containsKey("userPath") && savedInstanceState.containsKey("currentPage")) {
+            page = new open.furaffinity.client.pages.user(getActivity(), pageListener, savedInstanceState.getString("userPath"));
+            currentPage = savedInstanceState.getString("currentPage");
+        }
     }
 }

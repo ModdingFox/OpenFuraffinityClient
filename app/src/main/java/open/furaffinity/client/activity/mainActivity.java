@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -24,19 +24,16 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.loginCheck;
-import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
 
 public class mainActivity extends AppCompatActivity {
-    private static final String TAG = mainActivity.class.getName();
     private AppBarConfiguration mAppBarConfiguration;
 
     private Toolbar toolbar;
@@ -45,6 +42,7 @@ public class mainActivity extends AppCompatActivity {
     private Menu navMenu;
     private NavController navController;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private View headerView;
     private ImageView imageView;
     private TextView userName;
@@ -68,9 +66,9 @@ public class mainActivity extends AppCompatActivity {
         }
 
         if (incomingPagePath != null) {
-            String pagePath = incomingPagePath.getPath().toString();
+            String pagePath = incomingPagePath.getPath();
 
-            Matcher pathMatcher = Pattern.compile("^\\/(view|user|gallery|scraps|favorites|journals|commissions|watchlist\\/to|watchlist\\/by|journal|msg\\/pms)\\/(.+)$").matcher(pagePath);
+            Matcher pathMatcher = Pattern.compile("^/(view|user|gallery|scraps|favorites|journals|commissions|watchlist/to|watchlist/by|journal|msg/pms)/(.+)$").matcher(pagePath);
 
             if (pathMatcher.find()) {
                 switch (pathMatcher.group(1)) {
@@ -166,35 +164,11 @@ public class mainActivity extends AppCompatActivity {
     public void updateUIElements() {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (!sharedPref.getBoolean(getString(R.string.trackHistorySetting), false)) {
-            navMenu.findItem(R.id.nav_history).setVisible(false);
-        } else {
-            navMenu.findItem(R.id.nav_history).setVisible(true);
-        }
-
-        if (journalPath == null) {
-            navMenu.findItem(R.id.nav_journal).setVisible(false);
-        } else {
-            navMenu.findItem(R.id.nav_journal).setVisible(true);
-        }
-
-        if (msgPmsPath == null) {
-            navMenu.findItem(R.id.nav_msg_pms_message).setVisible(false);
-        } else {
-            navMenu.findItem(R.id.nav_msg_pms_message).setVisible(true);
-        }
-
-        if (userPath == null) {
-            navMenu.findItem(R.id.nav_user).setVisible(false);
-        } else {
-            navMenu.findItem(R.id.nav_user).setVisible(true);
-        }
-
-        if (viewPath == null) {
-            navMenu.findItem(R.id.nav_view).setVisible(false);
-        } else {
-            navMenu.findItem(R.id.nav_view).setVisible(true);
-        }
+        navMenu.findItem(R.id.nav_history).setVisible(sharedPref.getBoolean(getString(R.string.trackHistorySetting), false));
+        navMenu.findItem(R.id.nav_journal).setVisible(journalPath != null);
+        navMenu.findItem(R.id.nav_msg_pms_message).setVisible(msgPmsPath != null);
+        navMenu.findItem(R.id.nav_user).setVisible(userPath != null);
+        navMenu.findItem(R.id.nav_view).setVisible(viewPath != null);
     }
 
     private void setupNavigationUI() {
@@ -299,6 +273,30 @@ public class mainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("searchSelected", searchSelected);
+        outState.putString("searchQuery", searchQuery);
+        outState.putString("journalPath", journalPath);
+        outState.putString("msgPmsPath", msgPmsPath);
+        outState.putString("userPath", userPath);
+        outState.putString("viewPath", viewPath);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        searchSelected = savedInstanceState.getString("searchSelected");
+        searchQuery = savedInstanceState.getString("searchQuery");
+        journalPath = savedInstanceState.getString("journalPath");
+        msgPmsPath = savedInstanceState.getString("msgPmsPath");
+        userPath = savedInstanceState.getString("userPath");
+        viewPath = savedInstanceState.getString("viewPath");
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.navigation_drawer, menu);
         return true;
@@ -306,10 +304,7 @@ public class mainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

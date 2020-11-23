@@ -1,11 +1,13 @@
 package open.furaffinity.client.fragmentTabs;
 
 import android.content.res.ColorStateList;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -37,6 +39,27 @@ public class msgPmsMessage extends appFragment {
     private FloatingActionButton sendNote;
 
     private open.furaffinity.client.pages.msgPmsMessage page;
+
+    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            subject.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSubject());
+            Glide.with(msgPmsMessage.this).load(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageUserIcon()).into(userIcon);
+            sentBy.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentBy());
+            //sentTo.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentTo());
+            sentDate.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentDate());
+
+            setupViewPager((open.furaffinity.client.pages.msgPmsMessage)abstractPage);
+
+            isLoading = false;
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            isLoading = false;
+            Toast.makeText(getActivity(), "Failed to load data for message", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private boolean isLoading = false;
 
@@ -90,26 +113,7 @@ public class msgPmsMessage extends appFragment {
     }
 
     protected void initPages() {
-        page = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                subject.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSubject());
-                Glide.with(msgPmsMessage.this).load(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageUserIcon()).into(userIcon);
-                sentBy.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentBy());
-                //sentTo.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentTo());
-                sentDate.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentDate());
-
-                setupViewPager((open.furaffinity.client.pages.msgPmsMessage)abstractPage);
-
-                isLoading = false;
-            }
-
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                isLoading = false;
-                Toast.makeText(getActivity(), "Failed to load data for message", Toast.LENGTH_SHORT).show();
-            }
-        }, ((mainActivity)requireActivity()).getMsgPmsPath());
+        page = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), pageListener, ((mainActivity)requireActivity()).getMsgPmsPath());
     }
 
     @Override
@@ -119,5 +123,19 @@ public class msgPmsMessage extends appFragment {
         sentBy.setOnClickListener(v -> ((mainActivity)requireActivity()).setUserPath(page.getMessageUserLink()));
 
         sendNote.setOnClickListener(v -> sendPM(requireActivity(), getChildFragmentManager(), page.getMessageUser()));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("messagePath", page.getPagePath());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null && savedInstanceState.containsKey("messagePath")) {
+            page = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), pageListener, savedInstanceState.getString("messagePath"));
+        }
     }
 }

@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -48,6 +50,35 @@ public class journal extends appFragment {
 
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.journal page;
+
+    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+        @Override
+        public void requestSucceeded(abstractPage abstractPage) {
+            if (((open.furaffinity.client.pages.journal)abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.journal)abstractPage).getNoteUser() != null) {
+                if (((open.furaffinity.client.pages.journal)abstractPage).getIsWatching()) {
+                    watchUser.setImageResource(R.drawable.ic_menu_user_remove);
+                } else {
+                    watchUser.setImageResource(R.drawable.ic_menu_user_add);
+                }
+            }
+
+            Glide.with(journal.this).load(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserIcon()).into(journalUserIcon);
+            journalUserName.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserName());
+            journalTitle.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalTitle());
+            journalDate.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalDate());
+
+            saveHistory();
+            setupViewPager(((open.furaffinity.client.pages.journal)abstractPage));
+
+            isLoading = false;
+        }
+
+        @Override
+        public void requestFailed(abstractPage abstractPage) {
+            isLoading = false;
+            Toast.makeText(getActivity(), "Failed to load data for journal", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private boolean isLoading = false;
 
@@ -157,34 +188,9 @@ public class journal extends appFragment {
             }
         });
 
-        page = new open.furaffinity.client.pages.journal(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                if (((open.furaffinity.client.pages.journal)abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.journal)abstractPage).getNoteUser() != null) {
-                    if (((open.furaffinity.client.pages.journal)abstractPage).getIsWatching()) {
-                        watchUser.setImageResource(R.drawable.ic_menu_user_remove);
-                    } else {
-                        watchUser.setImageResource(R.drawable.ic_menu_user_add);
-                    }
-                }
-
-                Glide.with(journal.this).load(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserIcon()).into(journalUserIcon);
-                journalUserName.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserName());
-                journalTitle.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalTitle());
-                journalDate.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalDate());
-
-                saveHistory();
-                setupViewPager(((open.furaffinity.client.pages.journal)abstractPage));
-
-                isLoading = false;
-            }
-
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                isLoading = false;
-                Toast.makeText(getActivity(), "Failed to load data for journal", Toast.LENGTH_SHORT).show();
-            }
-        }, ((mainActivity)requireActivity()).getJournalPath());
+        if(page == null) {
+            page = new open.furaffinity.client.pages.journal(getActivity(), pageListener, ((mainActivity) requireActivity()).getJournalPath());
+        }
     }
 
     protected void updateUIElementListeners(View rootView) {
@@ -204,5 +210,19 @@ public class journal extends appFragment {
         }, page.getWatchUnWatch()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser()));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("journalPath", page.getPagePath());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null && savedInstanceState.containsKey("journalPath")) {
+            page = new open.furaffinity.client.pages.journal(getActivity(), pageListener, savedInstanceState.getString("journalPath"));
+        }
     }
 }
