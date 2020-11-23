@@ -51,6 +51,11 @@ public class manageWatches extends open.furaffinity.client.abstractClasses.tabFr
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     private void resetRecycler() {
         recyclerView.scrollTo(0, 0);
         mDataSet.clear();

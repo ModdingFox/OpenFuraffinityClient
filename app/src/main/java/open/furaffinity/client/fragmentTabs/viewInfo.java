@@ -73,6 +73,11 @@ public class viewInfo extends open.furaffinity.client.abstractClasses.tabFragmen
     }
 
     @Override
+    protected void updateUIElements() {
+
+    }
+
+    @Override
     protected void updateUIElementListeners(View rootView) {
 
     }

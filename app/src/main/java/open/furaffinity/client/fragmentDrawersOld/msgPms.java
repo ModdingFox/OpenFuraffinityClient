@@ -34,7 +34,7 @@ import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class msgPms extends Fragment {
+public class msgPms extends open.furaffinity.client.abstractClasses.tabFragment {
     private static final String TAG = msgPms.class.getName();
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -59,7 +59,12 @@ public class msgPms extends Fragment {
     private boolean isLoading = false;
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_refreshable_recycler_view_with_fab;
+    }
+
+    protected void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
 
         constraintLayout = rootView.findViewById(R.id.constraintLayout);
@@ -100,13 +105,18 @@ public class msgPms extends Fragment {
         fab.addButton(messageListOptions, 2.625f, 270);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new open.furaffinity.client.pages.msgPms(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {
@@ -119,7 +129,7 @@ public class msgPms extends Fragment {
         fetchPageData();
     }
 
-    private void initPages() {
+    protected void initPages() {
         webClient = new webClient(this.requireActivity());
 
         recyclerView.setLayoutManager(layoutManager);
@@ -156,7 +166,7 @@ public class msgPms extends Fragment {
         });
     }
 
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -284,19 +294,5 @@ public class msgPms extends Fragment {
             });
             spinnerDialog.show(getChildFragmentManager(), "selectPriority");
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

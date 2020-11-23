@@ -10,19 +10,15 @@ import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +34,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
+import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
@@ -47,7 +44,7 @@ import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class view extends Fragment {
+public class view extends open.furaffinity.client.abstractClasses.tabFragment {
     private static final String TAG = view.class.getName();
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -99,7 +96,12 @@ public class view extends Fragment {
         }
     }
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_view;
+    }
+
+    protected void getElements(View rootView) {
         coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
 
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
@@ -137,7 +139,7 @@ public class view extends Fragment {
         fab.setVisibility(View.GONE);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if(!isLoading) {
             isLoading = true;
 
@@ -149,6 +151,11 @@ public class view extends Fragment {
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     private void setupViewPager(open.furaffinity.client.pages.view page) {
         viewSectionsPagerAdapter sectionsPagerAdapter = new viewSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -156,8 +163,10 @@ public class view extends Fragment {
         tabs.setupWithViewPager(viewPager);
     }
 
-    private void initPages(String pagePath) {
+    protected void initPages() {
         webClient = new webClient(this.requireActivity());
+
+        String pagePath = ((mainActivity)requireActivity()).getViewPath();
 
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             @Override
@@ -217,7 +226,7 @@ public class view extends Fragment {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         submissionUserLinearLayout.setOnClickListener(v -> ((mainActivity) requireActivity()).setUserPath(page.getSubmissionUserPage()));
 
         submissionImage.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
@@ -281,20 +290,5 @@ public class view extends Fragment {
         });
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNote()));
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_view, container, false);
-        getElements(rootView);
-        initPages(((mainActivity) requireActivity()).getViewPath());
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

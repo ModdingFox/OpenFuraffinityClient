@@ -33,7 +33,7 @@ public class webViewContent extends open.furaffinity.client.abstractClasses.tabF
 
     }
 
-    private void updateUIElements() {
+    protected void updateUIElements() {
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.loadData("<font color='white'>" + mData + "</font>", "text/html; charset=utf-8", "UTF-8");
     }

@@ -27,6 +27,11 @@ public class manageBadges extends open.furaffinity.client.abstractClasses.tabFra
     }
 
     @Override
+    protected void updateUIElements() {
+
+    }
+
+    @Override
     protected void updateUIElementListeners(View rootView) {
 
     }

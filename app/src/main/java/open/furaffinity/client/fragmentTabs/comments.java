@@ -167,6 +167,11 @@ public class comments extends open.furaffinity.client.abstractClasses.tabFragmen
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 

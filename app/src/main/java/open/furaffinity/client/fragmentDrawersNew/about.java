@@ -1,13 +1,9 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawersNew;
 
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +17,7 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.pages.user;
 
-public class about extends Fragment {
+public class about extends open.furaffinity.client.abstractClasses.tabFragment {
     private static final String TAG = about.class.getName();
 
     private LinearLayoutManager layoutManager;
@@ -62,27 +58,25 @@ public class about extends Fragment {
     private final List<contributor> contributorsList = new ArrayList<>();
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_recycler_view;
+    }
+
+    protected void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
     }
 
-    private void initPages() {
+    protected void initPages() {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new commentListAdapter(mDataSet, getActivity(), false);
         recyclerView.setAdapter(mAdapter);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-
+    protected void fetchPageData() {
         contributorsList.add(new contributor("/user/moddingfox/",
                 "<p>\n" +
                         "  This is an unofficial opensource client for Furaffinity. This application is provided as-is with no warranties/guarantees other than the following. This application is provided for free and you will never have to pay for it, if you have paid for this application request a refund from whoever sold it to you. No feature of this application now or in the future will ever require a payment to use or be locked behind a subscription of any kind. Advertisements(once added) will only come from Furaffinity directly and will always have the option to be disabled or enabled by the user. That being said Furaffinity has server costs and this application does not, we will respect that fact and once added they will be enabled by default.\n" +
@@ -95,9 +89,6 @@ public class about extends Fragment {
                         "</p>",
                 "Initial Project Creator(2020-09-01)",
                 "Tyst Jal"));
-
-        getElements(rootView);
-        initPages();
 
         for (contributor currentElement : contributorsList) {
             try {
@@ -123,6 +114,15 @@ public class about extends Fragment {
                 Log.e(TAG, "onCreateView: Failed to load data for contributor", e);
             }
         }
-        return rootView;
+    }
+
+    @Override
+    protected void updateUIElements() {
+
+    }
+
+    @Override
+    protected void updateUIElementListeners(View rootView) {
+
     }
 }

@@ -43,6 +43,11 @@ public class userProfile extends open.furaffinity.client.abstractClasses.tabFrag
     }
 
     @Override
+    protected void updateUIElements() {
+
+    }
+
+    @Override
     protected void updateUIElementListeners(View rootView) {
 
     }

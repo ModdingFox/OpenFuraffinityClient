@@ -22,7 +22,7 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.fragmentDrawersOld.settings;
+import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
 
 public class manageImageListAdapter extends RecyclerView.Adapter<manageImageListAdapter.ViewHolder> {

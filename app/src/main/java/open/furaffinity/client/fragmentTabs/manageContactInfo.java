@@ -44,6 +44,11 @@ public class manageContactInfo extends open.furaffinity.client.abstractClasses.t
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     protected void initPages() {
         page = new controlsContacts(getActivity(), new abstractPage.pageListener() {
             @Override

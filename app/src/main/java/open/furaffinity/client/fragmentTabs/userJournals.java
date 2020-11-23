@@ -51,6 +51,11 @@ public class userJournals extends open.furaffinity.client.abstractClasses.tabFra
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     protected void initPages() {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new journalListAdapter(mDataSet, getActivity());

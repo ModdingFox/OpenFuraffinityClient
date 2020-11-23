@@ -50,6 +50,11 @@ public class manageUserSettings extends open.furaffinity.client.abstractClasses.
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     protected void initPages() {
         page = new controlsUserSettings(getActivity(), new abstractPage.pageListener() {
             @Override

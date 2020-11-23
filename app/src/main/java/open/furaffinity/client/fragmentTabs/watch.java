@@ -61,6 +61,11 @@ public class watch extends open.furaffinity.client.abstractClasses.tabFragment {
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     protected void initPages() {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new stringListAdapter(mDataSet, getActivity());

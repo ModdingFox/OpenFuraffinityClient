@@ -115,6 +115,11 @@ public class manageFavorites extends open.furaffinity.client.abstractClasses.tab
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     private void resetRecycler() {
         loadingStopCounter = 3;
         page = new gallery(getActivity(), pageListener, pagePath);

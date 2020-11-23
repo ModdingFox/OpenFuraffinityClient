@@ -77,6 +77,11 @@ public class msgPmsMessage extends open.furaffinity.client.abstractClasses.tabFr
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     private void setupViewPager(open.furaffinity.client.pages.msgPmsMessage page) {
         msgPmsMessageSectionsPagerAdapter sectionsPagerAdapter = new msgPmsMessageSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);

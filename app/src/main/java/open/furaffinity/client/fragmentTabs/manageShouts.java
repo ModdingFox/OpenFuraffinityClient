@@ -78,6 +78,11 @@ public class manageShouts extends open.furaffinity.client.abstractClasses.tabFra
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     private void resetRecycler() {
         recyclerView.scrollTo(0, 0);
         mDataSet.clear();

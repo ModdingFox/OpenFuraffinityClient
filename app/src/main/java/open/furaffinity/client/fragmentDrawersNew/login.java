@@ -1,19 +1,14 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawersNew;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
-
-import androidx.fragment.app.Fragment;
 
 import java.util.HashMap;
 
@@ -22,7 +17,7 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.pages.loginCheck;
 
-public class login extends Fragment {
+public class login extends open.furaffinity.client.abstractClasses.tabFragment {
     private WebView webView;
     private WebSettings webSettings;
 
@@ -30,16 +25,31 @@ public class login extends Fragment {
 
     private loginCheck loginCheck;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_login;
+    }
+
+    protected void getElements(View rootView) {
         webView = rootView.findViewById(R.id.webView);
         webSettings = webView.getSettings();
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         loginCheck.execute();
     }
 
-    private void initPages() {
+    @Override
+    protected void updateUIElements() {
+
+    }
+
+    @Override
+    protected void updateUIElementListeners(View rootView) {
+
+    }
+
+    protected void initPages() {
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             @SuppressLint("SetJavaScriptEnabled")
             @Override
@@ -105,18 +115,5 @@ public class login extends Fragment {
                 Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_login, container, false);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        return rootView;
     }
 }

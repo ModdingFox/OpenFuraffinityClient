@@ -66,6 +66,11 @@ public class manageSiteSettings extends open.furaffinity.client.abstractClasses.
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     protected void initPages() {
         page = new controlsSiteSettings(getActivity(), new abstractPage.pageListener() {
             @Override

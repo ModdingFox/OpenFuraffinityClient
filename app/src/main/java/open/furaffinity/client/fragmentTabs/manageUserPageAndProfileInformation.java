@@ -45,6 +45,11 @@ public class manageUserPageAndProfileInformation extends open.furaffinity.client
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     protected void initPages() {
         page = new controlsProfile(getActivity(), new abstractPage.pageListener() {
             @Override

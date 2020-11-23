@@ -17,6 +17,7 @@ public abstract class tabFragment extends Fragment {
     protected abstract void getElements(View rootView);
     protected abstract void initPages();
     protected abstract void fetchPageData();
+    protected abstract void updateUIElements();
     protected abstract void updateUIElementListeners(View rootView);
 
     @Override
@@ -30,6 +31,7 @@ public abstract class tabFragment extends Fragment {
         getElements(rootView);
         initPages();
         fetchPageData();
+        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

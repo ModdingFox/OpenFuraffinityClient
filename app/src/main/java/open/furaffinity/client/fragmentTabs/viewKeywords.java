@@ -59,6 +59,11 @@ public class viewKeywords extends open.furaffinity.client.abstractClasses.tabFra
         ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     protected void updateUIElementListeners(View rootView) {
         searchButton.setOnClickListener(v -> ((mainActivity) requireActivity()).setSearchQuery("@keywords " + String.join(" ", ((checkboxListAdapter) mAdapter).getCheckedItems())));
     }

@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawersNew;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,9 +18,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -48,7 +48,7 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.notificationItem;
 import open.furaffinity.client.utilities.uiControls;
 
-public class search extends Fragment {
+public class search extends open.furaffinity.client.abstractClasses.tabFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 
@@ -102,7 +102,12 @@ public class search extends Fragment {
 
     private List<notificationItem> savedMDataSet = new ArrayList<>();
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_search;
+    }
+
+    protected void getElements(View rootView) {
         constraintLayout = rootView.findViewById(R.id.constraintLayout);
 
         SharedPreferences sharedPref = requireContext().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
@@ -174,7 +179,7 @@ public class search extends Fragment {
         fab.addButton(saveSearch, 1.5f, 180);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
@@ -369,7 +374,7 @@ public class search extends Fragment {
 
     }
 
-    private void initPages() {
+    protected void initPages() {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, requireActivity());
         recyclerView.setAdapter(mAdapter);
@@ -696,13 +701,13 @@ public class search extends Fragment {
         }
     }
 
-    private void updateUIElements() {
+    protected void updateUIElements() {
         savedSearchRecyclerView.setLayoutManager(saveLayoutManager);
         savedMAdapter = new savedSearchListAdapter(savedMDataSet, getActivity());
         savedSearchRecyclerView.setAdapter(savedMAdapter);
     }
 
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
@@ -775,12 +780,8 @@ public class search extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(getLayout(), container, false);
         getElements(rootView);
         initPages();
         fetchPageData();

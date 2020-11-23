@@ -72,6 +72,11 @@ public class shouts extends open.furaffinity.client.abstractClasses.tabFragment 
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     private void resetRecycler() {
         recyclerView.scrollTo(0, 0);
         mDataSet.clear();

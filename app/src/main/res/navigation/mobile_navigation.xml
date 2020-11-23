@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/nav_browse"
-        android:name="open.furaffinity.client.fragmentDrawersOld.browse"
+        android:name="open.furaffinity.client.fragmentDrawersNew.browse"
         android:label="@string/menu_browse"
         tools:layout="@layout/fragment_browse" />
 
     <fragment
         android:id="@+id/nav_search"
-        android:name="open.furaffinity.client.fragmentDrawersOld.search"
+        android:name="open.furaffinity.client.fragmentDrawersNew.search"
         android:label="@string/menu_search"
         tools:layout="@layout/fragment_search" />
 
@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/nav_msg_others"
-        android:name="open.furaffinity.client.fragmentDrawersOld.msgOthers"
+        android:name="open.furaffinity.client.fragmentDrawersNew.msgOthers"
         android:label="@string/menu_msg_others"
         tools:layout="@layout/fragment_msg_others" />
 
@@ -42,13 +42,13 @@
 
     <fragment
         android:id="@+id/nav_history"
-        android:name="open.furaffinity.client.fragmentDrawersOld.history"
+        android:name="open.furaffinity.client.fragmentDrawersNew.history"
         android:label="@string/menu_history"
         tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="open.furaffinity.client.fragmentDrawersOld.profile"
+        android:name="open.furaffinity.client.fragmentDrawersNew.profile"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" />
 
@@ -78,19 +78,19 @@
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="open.furaffinity.client.fragmentDrawersOld.settings"
+        android:name="open.furaffinity.client.fragmentDrawersNew.settings"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/nav_login"
-        android:name="open.furaffinity.client.fragmentDrawersOld.login"
+        android:name="open.furaffinity.client.fragmentDrawersNew.login"
         android:label="@string/menu_login"
         tools:layout="@layout/fragment_login" />
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="open.furaffinity.client.fragmentDrawersOld.about"
+        android:name="open.furaffinity.client.fragmentDrawersNew.about"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_recycler_view" />
 </navigation>

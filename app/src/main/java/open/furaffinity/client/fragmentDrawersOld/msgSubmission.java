@@ -32,13 +32,14 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.manageImageListAdapter;
+import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
 
-public class msgSubmission extends Fragment {
+public class msgSubmission extends open.furaffinity.client.abstractClasses.tabFragment {
     private static final String TAG = msgSubmission.class.getName();
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -102,7 +103,12 @@ public class msgSubmission extends Fragment {
         }
     };
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_msg_submission;
+    }
+
+    protected void getElements(View rootView) {
         SharedPreferences sharedPref = requireContext().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
         constraintLayout = rootView.findViewById(R.id.constraintLayout);
@@ -144,13 +150,18 @@ public class msgSubmission extends Fragment {
         fab.addButton(deleteAll, 1.5f, 225);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new open.furaffinity.client.pages.msgSubmission(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {
@@ -162,7 +173,7 @@ public class msgSubmission extends Fragment {
         fetchPageData();
     }
 
-    private void initClientAndPage() {
+    protected void initPages() {
         webClient = new webClient(requireActivity());
 
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
@@ -196,7 +207,7 @@ public class msgSubmission extends Fragment {
         }
     }
 
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
@@ -297,20 +308,5 @@ public class msgSubmission extends Fragment {
                 Log.e(TAG, "Could not delete all msgSubmissions: ", e);
             }
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_msg_submission, container, false);
-        getElements(rootView);
-        initClientAndPage();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

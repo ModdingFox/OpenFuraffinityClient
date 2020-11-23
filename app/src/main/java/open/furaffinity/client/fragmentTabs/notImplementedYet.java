@@ -26,6 +26,11 @@ public class notImplementedYet extends open.furaffinity.client.abstractClasses.t
     }
 
     @Override
+    protected void updateUIElements() {
+
+    }
+
+    @Override
     protected void updateUIElementListeners(View rootView) {
 
     }

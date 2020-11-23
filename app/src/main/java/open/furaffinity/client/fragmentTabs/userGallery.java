@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.adapter.imageListAdapter;
-import open.furaffinity.client.fragmentDrawersOld.settings;
+import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.kvPair;
@@ -118,6 +118,11 @@ public class userGallery extends open.furaffinity.client.abstractClasses.tabFrag
             page = new gallery(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {

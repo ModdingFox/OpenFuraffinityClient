@@ -6,16 +6,12 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +27,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
+import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
@@ -39,7 +36,7 @@ import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class user extends Fragment {
+public class user extends open.furaffinity.client.abstractClasses.tabFragment {
     private static final String TAG = user.class.getName();
 
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
@@ -99,7 +96,12 @@ public class user extends Fragment {
         }
     }
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_user;
+    }
+
+    protected void getElements(View rootView) {
         coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
 
         userName = rootView.findViewById(R.id.userName);
@@ -155,7 +157,7 @@ public class user extends Fragment {
         return result;
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if(!isLoading) {
             isLoading = true;
 
@@ -165,6 +167,11 @@ public class user extends Fragment {
             page = new open.furaffinity.client.pages.user(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void setupViewPager(open.furaffinity.client.pages.user page) {
@@ -201,7 +208,7 @@ public class user extends Fragment {
         }
     }
 
-    private void initPages(String pagePath) {
+    protected void initPages() {
         webClient = new webClient(this.requireActivity());
 
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
@@ -260,10 +267,10 @@ public class user extends Fragment {
                 isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
             }
-        }, pagePath);
+        }, getPagePath());
     }
 
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         watchUser.setOnClickListener(v -> {
             try {
                 new AsyncTask<webClient, Void, Void>() {
@@ -297,20 +304,5 @@ public class user extends Fragment {
         });
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser()));
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_user, container, false);
-        getElements(rootView);
-        initPages(getPagePath());
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

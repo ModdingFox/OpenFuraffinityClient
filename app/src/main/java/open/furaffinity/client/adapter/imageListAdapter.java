@@ -19,7 +19,7 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.fragmentDrawersOld.settings;
+import open.furaffinity.client.fragmentDrawersNew.settings;
 
 public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.ViewHolder> {
     private List<HashMap<String, String>> mDataSet;

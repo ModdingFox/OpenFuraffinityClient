@@ -96,6 +96,11 @@ public class manageJournals extends open.furaffinity.client.abstractClasses.tabF
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     private void resetRecycler() {
         page = new controlsJournal(getActivity(), pageListener);
         recyclerView.scrollTo(0, 0);
