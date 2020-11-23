@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.controlsJournalListAdapter;
 import open.furaffinity.client.dialogs.journalDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
@@ -21,7 +22,7 @@ import open.furaffinity.client.pages.controlsJournal;
 import open.furaffinity.client.submitPages.submitControlsJournal;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageJournals extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageJournals extends appFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -94,6 +95,11 @@ public class manageJournals extends open.furaffinity.client.abstractClasses.tabF
             page = new controlsJournal(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {

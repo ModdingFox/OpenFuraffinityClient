@@ -4,9 +4,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.utilities.messageIds;
 
-public class viewInfo extends open.furaffinity.client.abstractClasses.tabFragment {
+public class viewInfo extends appFragment {
     private TextView submissionComments;
     private TextView submissionFavorites;
     private TextView submissionViews;
@@ -70,6 +71,11 @@ public class viewInfo extends open.furaffinity.client.abstractClasses.tabFragmen
         submissionGender.setText(submissionGenderString);
         submissionDate.setText(submissionDateString);
         submissionSize.setText(submissionSizeString);
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     @Override

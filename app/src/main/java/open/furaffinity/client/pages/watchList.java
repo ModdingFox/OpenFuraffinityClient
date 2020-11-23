@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.fragmentDrawersOld.user;
+import open.furaffinity.client.fragmentDrawers.user;
 import open.furaffinity.client.utilities.messageIds;
 
 public class watchList extends abstractPage {

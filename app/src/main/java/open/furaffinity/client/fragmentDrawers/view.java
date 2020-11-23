@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -9,20 +9,14 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -30,12 +24,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
@@ -43,13 +37,10 @@ import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class view extends Fragment {
-    private static final String TAG = view.class.getName();
-
+public class view extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private CoordinatorLayout coordinatorLayout;
 
@@ -66,7 +57,6 @@ public class view extends Fragment {
     private FloatingActionButton submissionDownload;
     private FloatingActionButton sendNote;
 
-    private webClient webClient;
     private loginCheck loginCheck;
     private open.furaffinity.client.pages.view page;
 
@@ -99,7 +89,12 @@ public class view extends Fragment {
         }
     }
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_view;
+    }
+
+    protected void getElements(View rootView) {
         coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
 
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
@@ -137,7 +132,7 @@ public class view extends Fragment {
         fab.setVisibility(View.GONE);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if(!isLoading) {
             isLoading = true;
 
@@ -149,6 +144,11 @@ public class view extends Fragment {
         }
     }
 
+    @Override
+    protected void updateUIElements() {
+
+    }
+
     private void setupViewPager(open.furaffinity.client.pages.view page) {
         viewSectionsPagerAdapter sectionsPagerAdapter = new viewSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -156,8 +156,8 @@ public class view extends Fragment {
         tabs.setupWithViewPager(viewPager);
     }
 
-    private void initPages(String pagePath) {
-        webClient = new webClient(this.requireActivity());
+    protected void initPages() {
+        String pagePath = ((mainActivity)requireActivity()).getViewPath();
 
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             @Override
@@ -217,7 +217,7 @@ public class view extends Fragment {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         submissionUserLinearLayout.setOnClickListener(v -> ((mainActivity) requireActivity()).setUserPath(page.getSubmissionUserPage()));
 
         submissionImage.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
@@ -264,37 +264,19 @@ public class view extends Fragment {
             }
         });
 
-        submissionFavorite.setOnClickListener(v -> {
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getFavUnFav());
-                        return null;
-                    }
-                }.execute(webClient).get();
-
+        submissionFavorite.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 fetchPageData();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not fav post: ", e);
+                Toast.makeText(getActivity(), "Successfully updated favorites", Toast.LENGTH_SHORT).show();
             }
-        });
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to update favorites", Toast.LENGTH_SHORT).show();
+            }
+        }, page.getFavUnFav()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNote()));
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_view, container, false);
-        getElements(rootView);
-        initPages(((mainActivity) requireActivity()).getViewPath());
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

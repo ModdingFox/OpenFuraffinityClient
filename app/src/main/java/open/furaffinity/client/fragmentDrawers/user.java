@@ -1,21 +1,15 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -23,25 +17,22 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class user extends Fragment {
-    private static final String TAG = user.class.getName();
-
+public class user extends appFragment {
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
 
     private TextView userName;
@@ -65,7 +56,6 @@ public class user extends Fragment {
     private String currentPage;
     private String currentPagePath = null;
 
-    private webClient webClient;
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.user page;
 
@@ -99,7 +89,12 @@ public class user extends Fragment {
         }
     }
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_user;
+    }
+
+    protected void getElements(View rootView) {
         coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
 
         userName = rootView.findViewById(R.id.userName);
@@ -155,7 +150,7 @@ public class user extends Fragment {
         return result;
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if(!isLoading) {
             isLoading = true;
 
@@ -165,6 +160,11 @@ public class user extends Fragment {
             page = new open.furaffinity.client.pages.user(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void setupViewPager(open.furaffinity.client.pages.user page) {
@@ -201,9 +201,7 @@ public class user extends Fragment {
         }
     }
 
-    private void initPages(String pagePath) {
-        webClient = new webClient(this.requireActivity());
-
+    protected void initPages() {
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
@@ -260,57 +258,36 @@ public class user extends Fragment {
                 isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
             }
-        }, pagePath);
+        }, getPagePath());
     }
 
-    private void updateUIElementListeners(View rootView) {
-        watchUser.setOnClickListener(v -> {
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getWatchUnWatch());
-                        return null;
-                    }
-                }.execute(webClient).get();
-
+    protected void updateUIElementListeners(View rootView) {
+        watchUser.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 fetchPageData();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not watch/unwatch user: ", e);
+                Toast.makeText(getActivity(), "Successfully updated watches", Toast.LENGTH_SHORT).show();
             }
-        });
 
-        blockUser.setOnClickListener(v -> {
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getBlockUnBlock());
-                        return null;
-                    }
-                }.execute(webClient).get();
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to update watches", Toast.LENGTH_SHORT).show();
+            }
+        }, page.getWatchUnWatch()).execute());
 
+        blockUser.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 fetchPageData();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not block/unblock user: ", e);
+                Toast.makeText(getActivity(), "Successfully updated block status", Toast.LENGTH_SHORT).show();
             }
-        });
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to update block status", Toast.LENGTH_SHORT).show();
+            }
+        }, page.getBlockUnBlock()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser()));
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_user, container, false);
-        getElements(rootView);
-        initPages(getPagePath());
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

@@ -1,22 +1,15 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,21 +19,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
-import open.furaffinity.client.utilities.webClient;
 
-public class msgSubmission extends Fragment {
-    private static final String TAG = msgSubmission.class.getName();
-
+public class msgSubmission extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 
@@ -61,7 +51,6 @@ public class msgSubmission extends Fragment {
     private FloatingActionButton deleteSelected;
     private FloatingActionButton deleteAll;
 
-    private webClient webClient;
     private open.furaffinity.client.pages.msgSubmission page;
 
     private int loadingStopCounter = 3;
@@ -102,7 +91,12 @@ public class msgSubmission extends Fragment {
         }
     };
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_msg_submission;
+    }
+
+    protected void getElements(View rootView) {
         SharedPreferences sharedPref = requireContext().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
         constraintLayout = rootView.findViewById(R.id.constraintLayout);
@@ -144,13 +138,18 @@ public class msgSubmission extends Fragment {
         fab.addButton(deleteAll, 1.5f, 225);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new open.furaffinity.client.pages.msgSubmission(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {
@@ -162,9 +161,7 @@ public class msgSubmission extends Fragment {
         fetchPageData();
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(requireActivity());
-
+    protected void initPages() {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageImageListAdapter(mDataSet, requireActivity());
         recyclerView.setAdapter(mAdapter);
@@ -196,7 +193,7 @@ public class msgSubmission extends Fragment {
         }
     }
 
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
@@ -222,22 +219,20 @@ public class msgSubmission extends Fragment {
             @Override
             public void onSwipeRight(String postId) {
                 HashMap<String, String> params = new HashMap<>();
-                params.put("messagecenter-action", "remove_checked");
                 params.put("submissions[]", postId);
 
-                try {
-                    new AsyncTask<webClient, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
-                            return null;
-                        }
-                    }.execute(webClient).get();
+                new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(getActivity(), new abstractPage.pageListener() {
+                    @Override
+                    public void requestSucceeded(abstractPage abstractPage) {
+                        resetRecycler();
+                        Toast.makeText(getActivity(), "Successfully deleted submission notification", Toast.LENGTH_SHORT).show();
+                    }
 
-                    resetRecycler();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not delete selected msgSubmissions: ", e);
-                }
+                    @Override
+                    public void requestFailed(abstractPage abstractPage) {
+                        Toast.makeText(getActivity(), "Failed to delete submission notification", Toast.LENGTH_SHORT).show();
+                    }
+                }, page.getPagePath(), params).execute();
             }
         });
 
@@ -258,59 +253,36 @@ public class msgSubmission extends Fragment {
             List<String> elements = ((manageImageListAdapter) mAdapter).getCheckedItems();
 
             HashMap<String, String> params = new HashMap<>();
-            params.put("messagecenter-action", "remove_checked");
 
             for (int i = 0; i < elements.size(); i++) {
                 params.put("submissions[" + i + "]", elements.get(i));
             }
 
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
-                        return null;
-                    }
-                }.execute(webClient).get();
+            new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(getActivity(), new abstractPage.pageListener() {
+                @Override
+                public void requestSucceeded(abstractPage abstractPage) {
+                    resetRecycler();
+                    Toast.makeText(getActivity(), "Successfully deleted selected submission notifications", Toast.LENGTH_SHORT).show();
+                }
 
-                resetRecycler();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not delete selected msgSubmissions: ", e);
-            }
+                @Override
+                public void requestFailed(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Failed to delete selected submission notifications", Toast.LENGTH_SHORT).show();
+                }
+            }, page.getPagePath(), params).execute();
         });
 
-        deleteAll.setOnClickListener(v -> {
-            try {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("messagecenter-action", "nuke_notifications");
-
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
-                        return null;
-                    }
-                }.execute(webClient).get();
-
+        deleteAll.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteAll(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 resetRecycler();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not delete all msgSubmissions: ", e);
+                Toast.makeText(getActivity(), "Successfully deleted submission notifications", Toast.LENGTH_SHORT).show();
             }
-        });
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_msg_submission, container, false);
-        getElements(rootView);
-        initClientAndPage();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to delete submission notifications", Toast.LENGTH_SHORT).show();
+            }
+        }, page.getPagePath()).execute());
     }
 }

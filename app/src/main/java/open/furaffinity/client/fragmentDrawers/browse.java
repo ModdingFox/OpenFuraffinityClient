@@ -1,18 +1,14 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,13 +22,14 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class browse extends Fragment {
+public class browse extends appFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private TableLayout settingsTableLayout;
@@ -61,7 +58,12 @@ public class browse extends Fragment {
     private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_browse;
+    }
+
+    protected void getElements(View rootView) {
         Context context = requireActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
@@ -85,13 +87,18 @@ public class browse extends Fragment {
         fab.setVisibility(View.GONE);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new open.furaffinity.client.pages.browse(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {
@@ -121,7 +128,7 @@ public class browse extends Fragment {
         isInitialized = true;
     }
 
-    private void initPages() {
+    protected void initPages() {
         mDataSet = new ArrayList<>();
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, requireActivity());
@@ -281,7 +288,7 @@ public class browse extends Fragment {
         }
     }
 
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
@@ -309,19 +316,5 @@ public class browse extends Fragment {
                 settingsTableLayout.setVisibility(View.VISIBLE);
             }
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_browse, container, false);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

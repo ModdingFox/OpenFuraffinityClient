@@ -3,8 +3,9 @@ package open.furaffinity.client.fragmentTabs;
 import android.view.View;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 
-public class notImplementedYet extends open.furaffinity.client.abstractClasses.tabFragment {
+public class notImplementedYet extends appFragment {
     @Override
     protected int getLayout() {
         return R.layout.not_implemented_yet;
@@ -22,6 +23,11 @@ public class notImplementedYet extends open.furaffinity.client.abstractClasses.t
 
     @Override
     protected void fetchPageData() {
+
+    }
+
+    @Override
+    protected void updateUIElements() {
 
     }
 

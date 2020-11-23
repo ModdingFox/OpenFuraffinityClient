@@ -8,15 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import open.furaffinity.client.R;
-
-public abstract class tabFragment extends Fragment {
-    protected static final String TAG = tabFragment.class.getName();
+public abstract class appFragment extends Fragment {
+    protected static final String TAG = appFragment.class.getName();
 
     protected abstract int getLayout();
     protected abstract void getElements(View rootView);
     protected abstract void initPages();
     protected abstract void fetchPageData();
+    protected abstract void updateUIElements();
     protected abstract void updateUIElementListeners(View rootView);
 
     @Override
@@ -30,6 +29,7 @@ public abstract class tabFragment extends Fragment {
         getElements(rootView);
         initPages();
         fetchPageData();
+        updateUIElements();
         updateUIElementListeners(rootView);
         return rootView;
     }

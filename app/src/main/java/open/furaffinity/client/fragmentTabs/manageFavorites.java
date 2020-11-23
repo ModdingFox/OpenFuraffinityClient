@@ -18,12 +18,13 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageFavorites extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageFavorites extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 
@@ -113,6 +114,11 @@ public class manageFavorites extends open.furaffinity.client.abstractClasses.tab
             page = new gallery(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {

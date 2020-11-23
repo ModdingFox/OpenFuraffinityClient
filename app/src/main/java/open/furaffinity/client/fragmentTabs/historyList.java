@@ -17,15 +17,16 @@ import java.util.List;
 import java.util.TimeZone;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.historyListAdapter;
-import open.furaffinity.client.fragmentDrawersOld.journal;
-import open.furaffinity.client.fragmentDrawersOld.user;
-import open.furaffinity.client.fragmentDrawersOld.view;
+import open.furaffinity.client.fragmentDrawers.journal;
+import open.furaffinity.client.fragmentDrawers.user;
+import open.furaffinity.client.fragmentDrawers.view;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.messageIds;
 
-public class historyList extends open.furaffinity.client.abstractClasses.tabFragment {
+public class historyList extends appFragment {
     private LinearLayoutManager layoutManager;
 
     private RecyclerView recyclerView;
@@ -123,6 +124,11 @@ public class historyList extends open.furaffinity.client.abstractClasses.tabFrag
 
         cursor.close();
         db.close();
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     @Override

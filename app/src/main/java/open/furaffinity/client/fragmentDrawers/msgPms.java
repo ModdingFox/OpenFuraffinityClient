@@ -1,17 +1,11 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.content.res.ColorStateList;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -21,22 +15,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.msgPmsListAdapter;
 import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class msgPms extends Fragment {
-    private static final String TAG = msgPms.class.getName();
-
+public class msgPms extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 
@@ -53,13 +44,17 @@ public class msgPms extends Fragment {
     private FloatingActionButton setSelectedMessagesPriority;
     private FloatingActionButton messageListOptions;
 
-    private webClient webClient;
     private open.furaffinity.client.pages.msgPms page;
 
     private boolean isLoading = false;
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_refreshable_recycler_view_with_fab;
+    }
+
+    protected void getElements(View rootView) {
         layoutManager = new LinearLayoutManager(getActivity());
 
         constraintLayout = rootView.findViewById(R.id.constraintLayout);
@@ -100,13 +95,18 @@ public class msgPms extends Fragment {
         fab.addButton(messageListOptions, 2.625f, 270);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new open.furaffinity.client.pages.msgPms(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {
@@ -119,9 +119,7 @@ public class msgPms extends Fragment {
         fetchPageData();
     }
 
-    private void initPages() {
-        webClient = new webClient(this.requireActivity());
-
+    protected void initPages() {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new msgPmsListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
@@ -156,7 +154,7 @@ public class msgPms extends Fragment {
         });
     }
 
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
@@ -177,26 +175,22 @@ public class msgPms extends Fragment {
             List<String> itemIds = ((msgPmsListAdapter) mAdapter).getCheckedItems();
 
             HashMap<String, String> params = new HashMap<>();
-            params.put("manage_notes", "1");
-            params.put("move_to", "trash");
-
             for (int i = 0; i < itemIds.size(); i++) {
                 params.put("items[" + i + "]", itemIds.get(i));
             }
 
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
-                        return null;
-                    }
-                }.execute(webClient).get();
+            new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new abstractPage.pageListener() {
+                @Override
+                public void requestSucceeded(abstractPage abstractPage) {
+                    resetRecycler();
+                    Toast.makeText(getActivity(), "Successfully deleted selected notes", Toast.LENGTH_SHORT).show();
+                }
 
-                resetRecycler();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not remove notification: ", e);
-            }
+                @Override
+                public void requestFailed(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Failed to delete selected notes", Toast.LENGTH_SHORT).show();
+                }
+            }, page.getPagePath(), "move_to", "trash", params).execute();
         });
 
         setSelectedMessagesPriority.setOnClickListener(view ->
@@ -214,33 +208,32 @@ public class msgPms extends Fragment {
                 public void onDialogPositiveClick(DialogFragment dialog) {
                     List<String> itemIds = ((msgPmsListAdapter) mAdapter).getCheckedItems();
 
-                    HashMap<String, String> params = new HashMap<>();
-                    params.put("manage_notes", "1");
+                    String moveKey;
+                    String moveValue = spinnerDialog.getSpinnerSelection();
 
                     if (spinnerDialog.getSpinnerSelection().equals(open.furaffinity.client.pages.msgPms.priorities.archive.toString())) {
-                        params.put("move_to", spinnerDialog.getSpinnerSelection());
+                        moveKey = "move_to";
                     } else {
-                        params.put("set_prio", spinnerDialog.getSpinnerSelection());
+                        moveKey = "set_prio";
                     }
 
+                    HashMap<String, String> params = new HashMap<>();
                     for (int i = 0; i < itemIds.size(); i++) {
                         params.put("items[" + i + "]", itemIds.get(i));
                     }
 
-                    try {
-                        new AsyncTask<webClient, Void, Void>() {
-                            @Override
-                            protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                                webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath(), params);
-                                return null;
-                            }
-                        }.execute(webClient).get();
+                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new abstractPage.pageListener() {
+                        @Override
+                        public void requestSucceeded(abstractPage abstractPage) {
+                            resetRecycler();
+                            Toast.makeText(getActivity(), "Successfully moved selected notes", Toast.LENGTH_SHORT).show();
+                        }
 
-                        resetRecycler();
-                    } catch (ExecutionException | InterruptedException e) {
-                        Log.e(TAG, "Could not remove notification: ", e);
-                    }
-
+                        @Override
+                        public void requestFailed(abstractPage abstractPage) {
+                            Toast.makeText(getActivity(), "Failed to move selected notes", Toast.LENGTH_SHORT).show();
+                        }
+                    }, page.getPagePath(), moveKey, moveValue, params).execute();
                 }
 
                 @Override
@@ -284,19 +277,5 @@ public class msgPms extends Fragment {
             });
             spinnerDialog.show(getChildFragmentManager(), "selectPriority");
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view_with_fab, container, false);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

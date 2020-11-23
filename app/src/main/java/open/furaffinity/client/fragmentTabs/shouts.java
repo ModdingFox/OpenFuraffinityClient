@@ -17,12 +17,13 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 
-public class shouts extends open.furaffinity.client.abstractClasses.tabFragment {
+public class shouts extends appFragment {
     private RecyclerView.LayoutManager layoutManager;
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -70,6 +71,11 @@ public class shouts extends open.furaffinity.client.abstractClasses.tabFragment 
             user = new open.furaffinity.client.pages.user(user);
             user.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {

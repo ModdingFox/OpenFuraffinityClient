@@ -17,11 +17,12 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.msgOthersListAdapter;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.messageIds;
 
-public class msgOthersList extends open.furaffinity.client.abstractClasses.tabFragment {
+public class msgOthersList extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 
@@ -82,6 +83,11 @@ public class msgOthersList extends open.furaffinity.client.abstractClasses.tabFr
             page = new open.furaffinity.client.pages.msgOthers(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {

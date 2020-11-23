@@ -5,9 +5,10 @@ import android.view.View;
 import android.webkit.WebView;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.utilities.messageIds;
 
-public class userProfile extends open.furaffinity.client.abstractClasses.tabFragment {
+public class userProfile extends appFragment {
     private WebView userPageProfile;
     private WebView userProfile;
 
@@ -40,6 +41,11 @@ public class userProfile extends open.furaffinity.client.abstractClasses.tabFrag
 
         userPageProfile.loadData("<font color='white'>" + userPageProfileData + "</font>", "text/html; charset=utf-8", "UTF-8");
         userProfile.loadData("<font color='white'>" + userProfileData + "</font>", "text/html; charset=utf-8", "UTF-8");
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     @Override

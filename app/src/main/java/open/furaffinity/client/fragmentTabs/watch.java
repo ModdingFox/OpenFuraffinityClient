@@ -14,12 +14,13 @@ import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.stringListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.watchList;
 import open.furaffinity.client.utilities.messageIds;
 
-public class watch extends open.furaffinity.client.abstractClasses.tabFragment {
+public class watch extends appFragment {
     private LinearLayoutManager layoutManager;
 
     private RecyclerView recyclerView;
@@ -59,6 +60,11 @@ public class watch extends open.furaffinity.client.abstractClasses.tabFragment {
             page = new watchList(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     protected void initPages() {

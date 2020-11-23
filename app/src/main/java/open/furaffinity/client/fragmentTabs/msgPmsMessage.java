@@ -14,13 +14,14 @@ import com.google.android.material.tabs.TabLayout;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsMessageSectionsPagerAdapter;
 import open.furaffinity.client.utilities.fabCircular;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class msgPmsMessage extends open.furaffinity.client.abstractClasses.tabFragment {
+public class msgPmsMessage extends appFragment {
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
 
     private TextView subject;
@@ -75,6 +76,11 @@ public class msgPmsMessage extends open.furaffinity.client.abstractClasses.tabFr
             page = new open.furaffinity.client.pages.msgPmsMessage(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void setupViewPager(open.furaffinity.client.pages.msgPmsMessage page) {

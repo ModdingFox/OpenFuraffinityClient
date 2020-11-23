@@ -10,11 +10,12 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.pages.controlsProfile;
 import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageUserPageAndProfileInformation extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageUserPageAndProfileInformation extends appFragment {
     private LinearLayout linearLayout;
 
     private fabCircular fab;
@@ -43,6 +44,11 @@ public class manageUserPageAndProfileInformation extends open.furaffinity.client
             page = new controlsProfile(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     protected void initPages() {

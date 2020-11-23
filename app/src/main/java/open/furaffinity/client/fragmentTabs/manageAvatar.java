@@ -12,13 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.manageAvatarListAdapter;
 import open.furaffinity.client.dialogs.uploadAvatarDialog;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsAvatar;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageAvatar extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageAvatar extends appFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -55,6 +56,11 @@ public class manageAvatar extends open.furaffinity.client.abstractClasses.tabFra
             page = new controlsAvatar(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {

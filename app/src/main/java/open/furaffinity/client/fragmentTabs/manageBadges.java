@@ -3,8 +3,9 @@ package open.furaffinity.client.fragmentTabs;
 import android.view.View;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 
-public class manageBadges extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageBadges extends appFragment {
 
     @Override
     protected int getLayout() {
@@ -23,6 +24,11 @@ public class manageBadges extends open.furaffinity.client.abstractClasses.tabFra
 
     @Override
     protected void fetchPageData() {
+
+    }
+
+    @Override
+    protected void updateUIElements() {
 
     }
 

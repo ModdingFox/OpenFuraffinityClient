@@ -1,20 +1,17 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
-import androidx.fragment.app.Fragment;
+
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
@@ -23,13 +20,14 @@ import androidx.work.WorkManager;
 import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
-public class settings extends Fragment {
+public class settings extends appFragment {
     private Switch notificationsSwitch;
     private EditText notificationsInterval;
     private Switch searchNotificationsSwitch;
@@ -55,7 +53,12 @@ public class settings extends Fragment {
     public static boolean saveBrowseStateDefault = true;
     public static boolean saveSearchStateDefault = true;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_settings;
+    }
+
+    protected void getElements(View rootView) {
         notificationsSwitch = rootView.findViewById(R.id.notificationsSwitch);
         notificationsInterval = rootView.findViewById(R.id.notificationsInterval);
         searchNotificationsSwitch = rootView.findViewById(R.id.searchNotificationsSwitch);
@@ -70,7 +73,17 @@ public class settings extends Fragment {
         clearHistory = rootView.findViewById(R.id.clearHistory);
     }
 
-    private void updateUIElements() {
+    @Override
+    protected void initPages() {
+
+    }
+
+    @Override
+    protected void fetchPageData() {
+
+    }
+
+    protected void updateUIElements() {
         Context context = requireActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
@@ -87,7 +100,7 @@ public class settings extends Fragment {
         trackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackHistorySetting), trackHistoryDefault));
     }
 
-    private void updateUIElementListeners(View rootView) {
+    protected void updateUIElementListeners(View rootView) {
         notificationsSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -308,19 +321,5 @@ public class settings extends Fragment {
             db.close();
         });
 
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
-        getElements(rootView);
-        updateUIElements();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

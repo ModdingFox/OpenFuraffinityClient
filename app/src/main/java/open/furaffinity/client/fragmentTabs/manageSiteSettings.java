@@ -7,12 +7,13 @@ import android.widget.Toast;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.pages.controlsSiteSettings;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class manageSiteSettings extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageSiteSettings extends appFragment {
     private RadioButton disable_avatars_yes;
     private RadioButton disable_avatars_no;
     private RadioButton switch_date_format_full;
@@ -64,6 +65,11 @@ public class manageSiteSettings extends open.furaffinity.client.abstractClasses.
             page = new controlsSiteSettings(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     protected void initPages() {

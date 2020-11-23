@@ -7,12 +7,13 @@ import android.widget.Toast;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.pages.controlsUserSettings;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class manageUserSettings extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageUserSettings extends appFragment {
     private RadioButton accept_trades_yes;
     private RadioButton accept_trades_no;
     private RadioButton accept_commissions_yes;
@@ -48,6 +49,11 @@ public class manageUserSettings extends open.furaffinity.client.abstractClasses.
             page = new controlsUserSettings(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     protected void initPages() {

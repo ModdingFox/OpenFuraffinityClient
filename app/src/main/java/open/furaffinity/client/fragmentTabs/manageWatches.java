@@ -13,11 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.watchListAdapter;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsBuddyList;
 
-public class manageWatches extends open.furaffinity.client.abstractClasses.tabFragment {
+public class manageWatches extends appFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -49,6 +50,11 @@ public class manageWatches extends open.furaffinity.client.abstractClasses.tabFr
             page = new controlsBuddyList(page);
             page.execute();
         }
+    }
+
+    @Override
+    protected void updateUIElements() {
+
     }
 
     private void resetRecycler() {

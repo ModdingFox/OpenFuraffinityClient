@@ -1,29 +1,50 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.profileSectionsPagerAdapter;
 
-public class profile extends Fragment {
+public class profile extends appFragment {
 
     private TabLayout tabs;
     private ViewPager viewPager;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_profile;
+    }
+
+    protected void getElements(View rootView) {
         tabs = rootView.findViewById(R.id.tabs);
         viewPager = rootView.findViewById(R.id.view_pager);
     }
 
-    private void updateUIElementListeners(View rootView) {
+    @Override
+    protected void initPages() {
+
+    }
+
+    @Override
+    protected void fetchPageData() {
+
+    }
+
+    @Override
+    protected void updateUIElements() {
+
+    }
+
+    protected void updateUIElementListeners(View rootView) {
 
     }
 
@@ -35,14 +56,8 @@ public class profile extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
-        getElements(rootView);
-        updateUIElementListeners(rootView);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
         setupViewPager();
         return rootView;
     }
