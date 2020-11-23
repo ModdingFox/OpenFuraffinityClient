@@ -20,8 +20,8 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.fragmentDrawers.journal;
-import open.furaffinity.client.fragmentDrawers.view;
+import open.furaffinity.client.fragmentDrawersOld.journal;
+import open.furaffinity.client.fragmentDrawersOld.view;
 
 public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdapter.ViewHolder> {
     private static final String TAG = msgOthersListAdapter.class.getName();

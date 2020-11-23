@@ -9,7 +9,7 @@ import org.jsoup.nodes.Element;
 import java.util.HashMap;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.fragmentTabsNew.manageSubmissions;
+import open.furaffinity.client.fragmentTabs.manageSubmissions;
 
 public class submitControlsSubmissionsDeleteItem extends abstractPage {
 

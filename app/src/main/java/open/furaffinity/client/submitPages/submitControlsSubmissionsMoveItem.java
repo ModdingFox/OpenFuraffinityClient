@@ -5,7 +5,7 @@ import android.content.Context;
 import java.util.HashMap;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.fragmentTabsNew.manageSubmissions;
+import open.furaffinity.client.fragmentTabs.manageSubmissions;
 
 public class submitControlsSubmissionsMoveItem extends abstractPage {
 
