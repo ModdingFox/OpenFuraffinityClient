@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentDrawersNew;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.content.ContentValues;
 import android.content.Context;

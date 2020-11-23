@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentDrawersNew;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -9,9 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +24,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,19 +32,15 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
-import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class view extends appFragment {
-    private static final String TAG = view.class.getName();
-
     @SuppressWarnings("FieldCanBeLocal")
     private CoordinatorLayout coordinatorLayout;
 
@@ -64,7 +57,6 @@ public class view extends appFragment {
     private FloatingActionButton submissionDownload;
     private FloatingActionButton sendNote;
 
-    private webClient webClient;
     private loginCheck loginCheck;
     private open.furaffinity.client.pages.view page;
 
@@ -165,8 +157,6 @@ public class view extends appFragment {
     }
 
     protected void initPages() {
-        webClient = new webClient(this.requireActivity());
-
         String pagePath = ((mainActivity)requireActivity()).getViewPath();
 
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
@@ -274,21 +264,18 @@ public class view extends appFragment {
             }
         });
 
-        submissionFavorite.setOnClickListener(v -> {
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getFavUnFav());
-                        return null;
-                    }
-                }.execute(webClient).get();
-
+        submissionFavorite.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 fetchPageData();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not fav post: ", e);
+                Toast.makeText(getActivity(), "Successfully updated favorites", Toast.LENGTH_SHORT).show();
             }
-        });
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to update favorites", Toast.LENGTH_SHORT).show();
+            }
+        }, page.getFavUnFav()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNote()));
     }

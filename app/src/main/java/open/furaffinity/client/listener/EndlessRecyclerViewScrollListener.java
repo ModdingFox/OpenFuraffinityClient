@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.Objects;
 
-import open.furaffinity.client.fragmentDrawersNew.settings;
+import open.furaffinity.client.fragmentDrawers.settings;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
     private int visibleThreshold = settings.recyclerVisibleThresholdDefault;

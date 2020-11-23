@@ -1,12 +1,10 @@
-package open.furaffinity.client.fragmentDrawersOld;
+package open.furaffinity.client.fragmentDrawers;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +17,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,18 +25,14 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
-import open.furaffinity.client.fragmentDrawersNew.settings;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class user extends appFragment {
-    private static final String TAG = user.class.getName();
-
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
 
     private TextView userName;
@@ -63,7 +56,6 @@ public class user extends appFragment {
     private String currentPage;
     private String currentPagePath = null;
 
-    private webClient webClient;
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.user page;
 
@@ -210,8 +202,6 @@ public class user extends appFragment {
     }
 
     protected void initPages() {
-        webClient = new webClient(this.requireActivity());
-
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
@@ -272,37 +262,31 @@ public class user extends appFragment {
     }
 
     protected void updateUIElementListeners(View rootView) {
-        watchUser.setOnClickListener(v -> {
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getWatchUnWatch());
-                        return null;
-                    }
-                }.execute(webClient).get();
-
+        watchUser.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 fetchPageData();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not watch/unwatch user: ", e);
+                Toast.makeText(getActivity(), "Successfully updated watches", Toast.LENGTH_SHORT).show();
             }
-        });
 
-        blockUser.setOnClickListener(v -> {
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getBlockUnBlock());
-                        return null;
-                    }
-                }.execute(webClient).get();
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to update watches", Toast.LENGTH_SHORT).show();
+            }
+        }, page.getWatchUnWatch()).execute());
 
+        blockUser.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 fetchPageData();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not block/unblock user: ", e);
+                Toast.makeText(getActivity(), "Successfully updated block status", Toast.LENGTH_SHORT).show();
             }
-        });
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(getActivity(), "Failed to update block status", Toast.LENGTH_SHORT).show();
+            }
+        }, page.getBlockUnBlock()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser()));
     }

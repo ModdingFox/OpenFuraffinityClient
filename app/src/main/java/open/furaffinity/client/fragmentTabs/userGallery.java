@@ -22,7 +22,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.imageListAdapter;
-import open.furaffinity.client.fragmentDrawersNew.settings;
+import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.kvPair;
