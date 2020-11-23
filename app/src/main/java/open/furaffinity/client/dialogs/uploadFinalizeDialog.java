@@ -141,7 +141,7 @@ public class uploadFinalizeDialog extends DialogFragment {
                     new AsyncTask<webClient, Void, Void>() {
                         @Override
                         protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + submitSubmissionPart3.getPagePath(), params);
+                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + submitSubmissionPart3.getPagePath(), params, false);
                             return null;
                         }
                     }.execute(webClient).get();
