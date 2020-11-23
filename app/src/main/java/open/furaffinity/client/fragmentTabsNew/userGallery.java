@@ -1,9 +1,7 @@
-package open.furaffinity.client.fragmentTabsOld;
+package open.furaffinity.client.fragmentTabsNew;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,8 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,32 +27,28 @@ import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.uiControls;
-import open.furaffinity.client.utilities.webClient;
 
-public class userGallery extends Fragment {
-    private static final String TAG = userGallery.class.getName();
-
+public class userGallery extends open.furaffinity.client.abstractClasses.tabFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter<imageListAdapter.ViewHolder> mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     private LinearLayout controls;
     private Spinner folderSpinner;
 
-    private webClient webClient;
     private gallery page;
 
     private int loadingStopCounter = 3;
     private boolean isInitialized = false;
     private boolean isLoading = false;
     private String pagePath = null;
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private HashMap<String, String> folderList = new HashMap<>();
 
-    private abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
             List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
@@ -102,9 +94,13 @@ public class userGallery extends Fragment {
         }
     };
 
-    private void getElements(View rootView) {
-        Context context = getActivity();
-        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_refreshable_recycler_view;
+    }
+
+    protected void getElements(View rootView) {
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
 
@@ -115,7 +111,7 @@ public class userGallery extends Fragment {
         folderSpinner = new Spinner(requireContext());
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
@@ -134,23 +130,20 @@ public class userGallery extends Fragment {
         fetchPageData();
     }
 
-    private void initPages() {
-        webClient = new webClient(this.getActivity());
+    protected void initPages() {
+        if(getArguments() != null) {
+            pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new imageListAdapter(mDataSet, getActivity());
-        recyclerView.setAdapter(mAdapter);
+            recyclerView.setLayoutManager(staggeredGridLayoutManager);
+            mAdapter = new imageListAdapter(mDataSet, requireActivity());
+            recyclerView.setAdapter(mAdapter);
 
-        page = new gallery(getActivity(), pageListener, pagePath);
+            page = new gallery(getActivity(), pageListener, pagePath);
+        }
     }
 
-    private void updateUIElementListeners(View rootView) {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                resetRecycler();
-            }
-        });
+    protected void updateUIElementListeners(View rootView) {
+        swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
@@ -167,7 +160,7 @@ public class userGallery extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String newPagePath = ((kvPair) folderSpinner.getItemAtPosition(position)).getKey();
-                if (newPagePath != pagePath) {
+                if (!newPagePath.equals(pagePath)) {
                     pagePath = newPagePath;
                     folderList = new HashMap<>();
                     resetRecycler();
@@ -179,21 +172,5 @@ public class userGallery extends Fragment {
 
             }
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view, container, false);
-        pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }

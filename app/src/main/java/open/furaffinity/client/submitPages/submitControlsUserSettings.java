@@ -2,14 +2,9 @@ package open.furaffinity.client.submitPages;
 
 import android.content.Context;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import java.util.HashMap;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.pages.controlsSettings;
 import open.furaffinity.client.pages.controlsUserSettings;
 
 public class submitControlsUserSettings extends abstractPage {
@@ -17,8 +12,6 @@ public class submitControlsUserSettings extends abstractPage {
     private final String accept_trades;
     private final String accept_commissions;
     private final String featured_journal_id;
-
-    private String errorMessage;
 
     public submitControlsUserSettings(Context context, abstractPage.pageListener pageListener, String key, String accept_trades, String accept_commissions, String featured_journal_id) {
         super(context, pageListener);
@@ -47,9 +40,5 @@ public class submitControlsUserSettings extends abstractPage {
             return processPageData(html);
         }
         return false;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
     }
 }

@@ -11,9 +11,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragmentTabsNew.notImplementedYet;
-import open.furaffinity.client.fragmentTabsOld.shouts;
-import open.furaffinity.client.fragmentTabsOld.userGallery;
-import open.furaffinity.client.fragmentTabsOld.userJournals;
+import open.furaffinity.client.fragmentTabsNew.shouts;
+import open.furaffinity.client.fragmentTabsNew.userGallery;
+import open.furaffinity.client.fragmentTabsNew.userJournals;
 import open.furaffinity.client.fragmentTabsNew.userProfile;
 import open.furaffinity.client.fragmentTabsNew.watch;
 import open.furaffinity.client.fragmentTabsNew.webViewContent;

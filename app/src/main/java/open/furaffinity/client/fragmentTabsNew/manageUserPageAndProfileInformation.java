@@ -1,7 +1,5 @@
-package open.furaffinity.client.fragmentTabsOld;
+package open.furaffinity.client.fragmentTabsNew;
 
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -9,23 +7,18 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsProfile;
 import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
 public class manageUserPageAndProfileInformation extends open.furaffinity.client.abstractClasses.tabFragment {
-    private static String TAG = manageUserPageAndProfileInformation.class.getName();
-
     private LinearLayout linearLayout;
 
     private fabCircular fab;
 
-    private open.furaffinity.client.utilities.webClient webClient;
     private controlsProfile page;
 
     private boolean isLoading = false;
@@ -53,7 +46,6 @@ public class manageUserPageAndProfileInformation extends open.furaffinity.client
     }
 
     protected void initPages() {
-        webClient = new webClient(requireContext());
         page = new controlsProfile(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
@@ -91,24 +83,22 @@ public class manageUserPageAndProfileInformation extends open.furaffinity.client
     protected void updateUIElementListeners(View rootView) {
         fab.setOnClickListener(v -> {
             HashMap<String, String> params = new HashMap<>();
-            params.put("do", "update");
-            params.put("key", page.getKey());
 
             for (dynamicEditItem currentItem : uiElementList) {
                 params.put(currentItem.getName(), currentItem.getValue());
             }
 
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                        webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsProfile.getPagePath(), params);
-                        return null;
-                    }
-                }.execute(webClient).get();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not update profile/user info: ", e);
-            }
+            new open.furaffinity.client.submitPages.submitControlsProfile(getActivity(), new abstractPage.pageListener() {
+                @Override
+                public void requestSucceeded(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Successfully updated user page and profile info", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void requestFailed(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Failed to update user page and profile info", Toast.LENGTH_SHORT).show();
+                }
+            }, page.getKey(), params).execute();
         });
     }
 }
