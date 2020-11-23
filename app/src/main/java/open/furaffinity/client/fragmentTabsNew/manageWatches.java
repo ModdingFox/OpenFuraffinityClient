@@ -1,12 +1,8 @@
-package open.furaffinity.client.fragmentTabsOld;
+package open.furaffinity.client.fragmentTabsNew;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -21,27 +17,32 @@ import open.furaffinity.client.adapter.watchListAdapter;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsBuddyList;
 
-public class manageWatches extends Fragment {
+public class manageWatches extends open.furaffinity.client.abstractClasses.tabFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter<watchListAdapter.ViewHolder> mAdapter;
 
     private controlsBuddyList page;
 
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_refreshable_recycler_view;
+    }
+
+    protected void getElements(View rootView) {
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
@@ -57,7 +58,7 @@ public class manageWatches extends Fragment {
         fetchPageData();
     }
 
-    private void initPages() {
+    protected void initPages() {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new watchListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
@@ -95,26 +96,7 @@ public class manageWatches extends Fragment {
         });
     }
 
-    private void updateUIElementListeners(View rootView) {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                resetRecycler();
-            }
-        });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_refreshable_recycler_view, container, false);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
+    protected void updateUIElementListeners(View rootView) {
+        swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
     }
 }

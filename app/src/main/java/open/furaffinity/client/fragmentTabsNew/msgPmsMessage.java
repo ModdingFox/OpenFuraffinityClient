@@ -1,16 +1,11 @@
-package open.furaffinity.client.fragmentTabsOld;
+package open.furaffinity.client.fragmentTabsNew;
 
 import android.content.res.ColorStateList;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -22,13 +17,10 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsMessageSectionsPagerAdapter;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
-public class msgPmsMessage extends Fragment {
-    private static final String TAG = msgPmsMessage.class.getName();
-
+public class msgPmsMessage extends open.furaffinity.client.abstractClasses.tabFragment {
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
 
     private TextView subject;
@@ -36,19 +28,23 @@ public class msgPmsMessage extends Fragment {
     private TextView sentBy;
     //private TextView sentTo;
     private TextView sentDate;
-    private WebView webView;
     private ViewPager viewPager;
     private TabLayout tabs;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private fabCircular fab;
     private FloatingActionButton sendNote;
 
-    private webClient webClient;
     private open.furaffinity.client.pages.msgPmsMessage page;
 
     private boolean isLoading = false;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_msgpmsmessage;
+    }
+
+    protected void getElements(View rootView) {
         coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
 
         subject = rootView.findViewById(R.id.subject);
@@ -56,15 +52,15 @@ public class msgPmsMessage extends Fragment {
         sentBy = rootView.findViewById(R.id.sentBy);
         //sentTo = rootView.findViewById(R.id.sentTo);
         sentDate = rootView.findViewById(R.id.sentDate);
-        webView = rootView.findViewById(R.id.webView);
         viewPager = rootView.findViewById(R.id.view_pager);
         tabs = rootView.findViewById(R.id.tabs);
 
         fab = rootView.findViewById(R.id.fab);
-        sendNote = new FloatingActionButton(getContext());
+        sendNote = new FloatingActionButton(requireContext());
 
         sendNote.setImageResource(R.drawable.ic_menu_newmessage);
 
+        //noinspection deprecation
         sendNote.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         coordinatorLayout.addView(sendNote);
@@ -72,7 +68,7 @@ public class msgPmsMessage extends Fragment {
         fab.addButton(sendNote, 1.5f, 270);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading) {
             isLoading = true;
 
@@ -87,8 +83,7 @@ public class msgPmsMessage extends Fragment {
         tabs.setupWithViewPager(viewPager);
     }
 
-    private void initPages(String pagePath) {
-        webClient = new webClient(this.getActivity());
+    protected void initPages() {
         page = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
@@ -108,44 +103,15 @@ public class msgPmsMessage extends Fragment {
                 isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data for message", Toast.LENGTH_SHORT).show();
             }
-        }, pagePath);
-    }
-
-    private void updateUIElementListeners() {
-        userIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((mainActivity) getActivity()).setUserPath(page.getMessageUserLink());
-            }
-        });
-
-        sentBy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((mainActivity) getActivity()).setUserPath(page.getMessageUserLink());
-            }
-        });
-
-        sendNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendPM(getActivity(), getChildFragmentManager(), page.getMessageUser());
-            }
-        });
+        }, ((mainActivity)requireActivity()).getMsgPmsPath());
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    protected void updateUIElementListeners(View rootView) {
+        userIcon.setOnClickListener(v -> ((mainActivity)requireActivity()).setUserPath(page.getMessageUserLink()));
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_msgpmsmessage, container, false);
-        getElements(rootView);
-        initPages(((mainActivity) getActivity()).getMsgPmsPath());
-        fetchPageData();
-        updateUIElementListeners();
-        return rootView;
+        sentBy.setOnClickListener(v -> ((mainActivity)requireActivity()).setUserPath(page.getMessageUserLink()));
+
+        sendNote.setOnClickListener(v -> sendPM(requireActivity(), getChildFragmentManager(), page.getMessageUser()));
     }
 }

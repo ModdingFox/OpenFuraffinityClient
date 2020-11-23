@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragmentTabsNew.comments;
 import open.furaffinity.client.fragmentTabsNew.notImplementedYet;
-import open.furaffinity.client.fragmentTabsOld.viewFolders;
+import open.furaffinity.client.fragmentTabsNew.viewFolders;
 import open.furaffinity.client.fragmentTabsNew.viewInfo;
 import open.furaffinity.client.fragmentTabsNew.viewKeywords;
 import open.furaffinity.client.fragmentTabsNew.webViewContent;

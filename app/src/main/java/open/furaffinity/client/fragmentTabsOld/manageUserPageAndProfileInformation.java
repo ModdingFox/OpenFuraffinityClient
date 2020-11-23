@@ -1,15 +1,10 @@
 package open.furaffinity.client.fragmentTabsOld;
 
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +18,7 @@ import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.webClient;
 
-public class manageUserPageAndProfileInformation extends Fragment {
+public class manageUserPageAndProfileInformation extends open.furaffinity.client.abstractClasses.tabFragment {
     private static String TAG = manageUserPageAndProfileInformation.class.getName();
 
     private LinearLayout linearLayout;
@@ -36,7 +31,12 @@ public class manageUserPageAndProfileInformation extends Fragment {
     private boolean isLoading = false;
     List<dynamicEditItem> uiElementList;
 
-    private void getElements(View rootView) {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_scrollview_with_fab;
+    }
+
+    protected void getElements(View rootView) {
         linearLayout = rootView.findViewById(R.id.linearLayout);
 
         fab = rootView.findViewById(R.id.fab);
@@ -44,7 +44,7 @@ public class manageUserPageAndProfileInformation extends Fragment {
         fab.setVisibility(View.GONE);
     }
 
-    private void fetchPageData() {
+    protected void fetchPageData() {
         if (!isLoading) {
             isLoading = true;
             page = new controlsProfile(page);
@@ -52,7 +52,7 @@ public class manageUserPageAndProfileInformation extends Fragment {
         }
     }
 
-    private void initPages() {
+    protected void initPages() {
         webClient = new webClient(requireContext());
         page = new controlsProfile(getActivity(), new abstractPage.pageListener() {
             @Override
@@ -88,44 +88,27 @@ public class manageUserPageAndProfileInformation extends Fragment {
         });
     }
 
-    private void updateUIElementListeners(View rootView) {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("do", "update");
-                params.put("key", page.getKey());
+    protected void updateUIElementListeners(View rootView) {
+        fab.setOnClickListener(v -> {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("do", "update");
+            params.put("key", page.getKey());
 
-                for (dynamicEditItem currentItem : uiElementList) {
-                    params.put(currentItem.getName(), currentItem.getValue());
-                }
+            for (dynamicEditItem currentItem : uiElementList) {
+                params.put(currentItem.getName(), currentItem.getValue());
+            }
 
-                try {
-                    new AsyncTask<webClient, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsProfile.getPagePath(), params);
-                            return null;
-                        }
-                    }.execute(webClient).get();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not update profile/user info: ", e);
-                }
+            try {
+                new AsyncTask<webClient, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                        webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsProfile.getPagePath(), params);
+                        return null;
+                    }
+                }.execute(webClient).get();
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e(TAG, "Could not update profile/user info: ", e);
             }
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_scrollview_with_fab, container, false);
-        getElements(rootView);
-        initPages();
-        fetchPageData();
-        updateUIElementListeners(rootView);
-        return rootView;
     }
 }
