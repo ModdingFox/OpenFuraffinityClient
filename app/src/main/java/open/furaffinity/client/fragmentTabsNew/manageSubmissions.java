@@ -26,11 +26,8 @@ import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.submitPages.submitControlsSubmissionsAssignItemToNewFolder;
 import open.furaffinity.client.utilities.fabCircular;
-import open.furaffinity.client.utilities.webClient;
 
 public class manageSubmissions extends open.furaffinity.client.abstractClasses.tabFragment {
-    private static final String TAG = manageSubmissions.class.getName();
-
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 
@@ -49,7 +46,6 @@ public class manageSubmissions extends open.furaffinity.client.abstractClasses.t
     private FloatingActionButton moveSelectedToGallery;
     private FloatingActionButton removeSelected;
 
-    private webClient webClient;
     private gallery page;
 
     private int loadingStopCounter = 3;
@@ -172,8 +168,6 @@ public class manageSubmissions extends open.furaffinity.client.abstractClasses.t
     }
 
     protected void initPages() {
-        webClient = new webClient(requireContext());
-
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageImageListAdapter(mDataSet, requireActivity());
         recyclerView.setAdapter(mAdapter);
