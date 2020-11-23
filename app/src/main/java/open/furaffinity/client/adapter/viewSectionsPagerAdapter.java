@@ -12,12 +12,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.fragments.comments;
-import open.furaffinity.client.fragments.notImplementedYet;
-import open.furaffinity.client.fragments.viewFolders;
-import open.furaffinity.client.fragments.viewInfo;
-import open.furaffinity.client.fragments.viewKeywords;
-import open.furaffinity.client.fragments.webViewContent;
+import open.furaffinity.client.fragmentTabs.comments;
+import open.furaffinity.client.fragmentTabs.notImplementedYet;
+import open.furaffinity.client.fragmentTabs.viewFolders;
+import open.furaffinity.client.fragmentTabs.viewInfo;
+import open.furaffinity.client.fragmentTabs.viewKeywords;
+import open.furaffinity.client.fragmentTabs.webViewContent;
 import open.furaffinity.client.pages.view;
 import open.furaffinity.client.utilities.messageIds;
 

@@ -2,6 +2,7 @@ package open.furaffinity.client.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -12,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -204,7 +206,7 @@ public class webClient {
         return sendPostRequest(urlIn, paramsIn, null);
     }
 
-    public String sendPostRequest(String urlIn, List<HashMap<String, String>> paramsIn, HashMap<String, String> cookies) {
+    public String sendPostRequest(String urlIn, List<HashMap<String, String>> paramsIn, HashMap<String, String> cookies, boolean includeBountryAtFoot) {
         lastPageLoaded = false;
         String result = null;
 
@@ -261,7 +263,10 @@ public class webClient {
                     }
                 }
 
-                outputStream.writeBytes(boundry + "--" + LINE_FEED);
+                if(includeBountryAtFoot) {
+                    outputStream.writeBytes(boundry + "--" + LINE_FEED);
+                }
+
                 outputStream.flush();
                 outputStream.close();
 
@@ -288,7 +293,11 @@ public class webClient {
     }
 
     public String sendPostRequest(String urlIn, List<HashMap<String, String>> paramsIn) {
-        return sendPostRequest(urlIn, paramsIn, null);
+        return sendPostRequest(urlIn, paramsIn, null, false);
+    }
+
+    public String sendPostRequest(String urlIn, List<HashMap<String, String>> paramsIn, boolean includeBountryAtFoot) {
+        return sendPostRequest(urlIn, paramsIn, null, includeBountryAtFoot);
     }
 
     public boolean getLastPageLoaded() {

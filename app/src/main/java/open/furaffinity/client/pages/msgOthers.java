@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.fragments.journal;
-import open.furaffinity.client.fragments.view;
+import open.furaffinity.client.fragmentDrawersOld.journal;
+import open.furaffinity.client.fragmentDrawersOld.view;
 
 public class msgOthers extends abstractPage {
     private String pagePath = "/msg/others";
