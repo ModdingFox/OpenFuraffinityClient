@@ -82,11 +82,10 @@
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
 
-    <fragment
+    <dialog
         android:id="@+id/nav_login"
-        android:name="open.furaffinity.client.fragmentDrawers.login"
-        android:label="@string/menu_login"
-        tools:layout="@layout/fragment_login" />
+        android:name="open.furaffinity.client.dialogs.loginDialog"
+        android:label="@string/menu_login" />
 
     <fragment
         android:id="@+id/nav_about"

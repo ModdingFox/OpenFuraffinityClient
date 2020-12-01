@@ -220,4 +220,8 @@
     <string name="notSelected">Not Selected</string>
     <string name="commentTextBox">Comment...</string>
     <string name="searchSelected">Search Selected</string>
+
+    <string name="loginButton">Login</string>
+    <string name="userNameText">Username:</string>
+    <string name="passwordText">Password:</string>
 </resources>
