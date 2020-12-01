@@ -113,16 +113,19 @@ public class msgOthersList extends appFragment {
                         case 0:
                             mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processWatchNotifications(page.getWatches(), "started watching you"));
                             break;
-                        case 2:
-                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processShoutNotifications(page.getShouts(), "left a shout"));
-                            break;
                         case 1:
                             mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getSubmissionComments(), "replied to"));
                             break;
+                        case 2:
+                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processJournalLineNotifications(page.getJournalComments(), "replied to"));
+                            break;
                         case 3:
-                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getFavorites(), "favorited"));
+                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processShoutNotifications(page.getShouts(), "left a shout"));
                             break;
                         case 4:
+                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getFavorites(), "favorited"));
+                            break;
+                        case 5:
                             mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processJournalNotifications(page.getJournals(), "created journal"));
                             break;
                         default:
@@ -191,16 +194,19 @@ public class msgOthersList extends appFragment {
                 case 0:
                     deleteSelected("watches", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                     break;
-                case 2:
-                    deleteSelected("shouts", ((msgOthersListAdapter) mAdapter).getCheckedItems());
-                    break;
                 case 1:
                     deleteSelected("comments-submissions", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                     break;
+                case 2:
+                    deleteSelected("comments-journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                    break;
                 case 3:
-                    deleteSelected("favorites", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                    deleteSelected("shouts", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                     break;
                 case 4:
+                    deleteSelected("favorites", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                    break;
+                case 5:
                     deleteSelected("journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
                     break;
                 default:
@@ -213,16 +219,19 @@ public class msgOthersList extends appFragment {
                 case 0:
                     deleteAllOfType("nuke-watches", "Nuke Watches");
                     break;
-                case 2:
-                    deleteAllOfType("nuke-shouts", "Nuke Shouts");
-                    break;
                 case 1:
                     deleteAllOfType("nuke-submission-comments", "Nuke Submission Comments");
                     break;
+                case 2:
+                    deleteAllOfType("nuke-journal-comments", "Nuke Journal Comments");
+                    break;
                 case 3:
-                    deleteAllOfType("nuke-favorites", "Nuke Favorites");
+                    deleteAllOfType("nuke-shouts", "Nuke Shouts");
                     break;
                 case 4:
+                    deleteAllOfType("nuke-favorites", "Nuke Favorites");
+                    break;
+                case 5:
                     deleteAllOfType("nuke-journals", "Nuke Journals");
                     break;
                 default:

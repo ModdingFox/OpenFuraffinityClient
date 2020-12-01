@@ -155,9 +155,10 @@
 
     <string name="msgOthersTab0">Watches</string>
     <string name="msgOthersTab1">Submission Comments</string>
-    <string name="msgOthersTab2">Shouts</string>
-    <string name="msgOthersTab3">Favorites</string>
-    <string name="msgOthersTab4">Journals</string>
+    <string name="msgOthersTab2">Journal Comments</string>
+    <string name="msgOthersTab3">Shouts</string>
+    <string name="msgOthersTab4">Favorites</string>
+    <string name="msgOthersTab5">Journals</string>
 
     <string name="msgPmsUserNameTextView">User</string>
     <string name="msgPmsSubjectTextView">Subject</string>
