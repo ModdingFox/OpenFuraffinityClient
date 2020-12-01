@@ -2,7 +2,6 @@ package open.furaffinity.client.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -13,29 +12,34 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import okhttp3.Cookie;
+import okhttp3.HttpUrl;
 import open.furaffinity.client.R;
 
 public class webClient {
     private static final String TAG = webClient.class.getName();
 
     private boolean lastPageLoaded = false;
+    private List<Cookie> lastPageResponceCookies = new ArrayList<>();
     private String cookieA = null;
     private String cookieB = null;
     private boolean hasLoginCookie = false;
+    private boolean followRedirects = true;
 
     private void checkPageForErrors(String html) {
         Document doc = Jsoup.parse(html);
@@ -80,7 +84,18 @@ public class webClient {
 
         Log.i(TAG, "Http Request: Response Code :: " + responseCode);
 
-        if (responseCode == HttpURLConnection.HTTP_OK) {
+        if (responseCode == HttpURLConnection.HTTP_OK || (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP)) {
+            List<String> cookies = httpURLConnection.getHeaderFields().get("set-cookie");
+            for(String currentCookie : cookies) {
+                try {
+                    Cookie cookie = Cookie.parse(HttpUrl.get(httpURLConnection.getURL().toURI()), currentCookie);
+
+                    if(cookie != null) {
+                        lastPageResponceCookies.add(cookie);
+                    }
+                } catch (URISyntaxException e) { e.printStackTrace(); }
+            }
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
             StringBuilder html = new StringBuilder();
             String line;
@@ -90,7 +105,11 @@ public class webClient {
             }
             result = html.toString();
 
-            checkPageForErrors(result);
+            if(responseCode == HttpURLConnection.HTTP_OK) {
+                checkPageForErrors(result);
+            } else if (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
+                lastPageLoaded = true;
+            }
 
             Log.i(TAG, "Http Request: " + result);
         } else {
@@ -124,9 +143,12 @@ public class webClient {
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("GET");
                 httpURLConnection.setRequestProperty("Cookie", cookieSetup(cookies));
+
+                httpURLConnection.setInstanceFollowRedirects(followRedirects);
+
                 responseCode = httpURLConnection.getResponseCode();
 
-                if (responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK || (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP)) {
                     break;
                 } else {
                     retry--;
@@ -177,12 +199,14 @@ public class webClient {
                 httpURLConnection.setRequestProperty("Content-Length", Integer.toString(params.length));
                 httpURLConnection.setRequestProperty("Cookie", cookieSetup(cookies));
 
+                httpURLConnection.setInstanceFollowRedirects(followRedirects);
+
                 DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
                 outputStream.write(params);
 
                 responseCode = httpURLConnection.getResponseCode();
 
-                if (responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK || (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP)) {
                     break;
                 } else {
                     retry--;
@@ -225,6 +249,8 @@ public class webClient {
                 httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundry);
                 httpURLConnection.setRequestProperty("charset", "utf-8");
                 httpURLConnection.setRequestProperty("Cookie", cookieSetup(cookies));
+
+                httpURLConnection.setInstanceFollowRedirects(followRedirects);
 
                 DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
 
@@ -272,7 +298,7 @@ public class webClient {
 
                 responseCode = httpURLConnection.getResponseCode();
 
-                if (responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK || (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP)) {
                     break;
                 } else {
                     retry--;
@@ -304,8 +330,15 @@ public class webClient {
         return lastPageLoaded;
     }
 
+    public List<Cookie> getLastPageResponceCookies() {
+        return lastPageResponceCookies;
+    }
+
     public static String getBaseUrl() {
         return "https://www.furaffinity.net";
     }
 
+    public void setFollowRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
+    }
 }
