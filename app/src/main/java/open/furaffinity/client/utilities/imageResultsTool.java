@@ -57,7 +57,16 @@ public class imageResultsTool {
 
             Element figcaption = rootElement.selectFirst("figcaption");
             Element checkbox = figcaption.selectFirst("input");
-            Element post = figcaption.select("a").get(0);
+
+            Elements posts = figcaption.select("a");
+
+            if(posts.size() > 0) {
+                Element post = posts.get(0);
+
+                currentPostData.put("postPath", post.attr("href"));
+                currentPostData.put("postTitle", post.html());
+            }
+
 
             if (figcaption.select("a").size() > 1) {
                 Element user = figcaption.select("a").get(1);
@@ -72,8 +81,6 @@ public class imageResultsTool {
                 currentPostData.put("postId", checkbox.attr("value"));
             }
 
-            currentPostData.put("postPath", post.attr("href"));
-            currentPostData.put("postTitle", post.html());
             currentPostData.put("postRatingCode", ratingCode);
 
             result.add(currentPostData);

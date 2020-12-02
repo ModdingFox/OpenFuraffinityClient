@@ -83,8 +83,19 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Picasso.get().load("https:" + mDataSet.get(position).get("imgUrl")).into(holder.postImage);
-        holder.postName.setText(String.format("%s", mDataSet.get(position).get("postTitle")));
-        holder.postUser.setText("");//Setting this as empty as the submissions page does not return the user name in the listing
+
+        if(mDataSet.get(position).containsKey("postTitle")){
+            holder.postName.setText(String.format("%s", mDataSet.get(position).get("postTitle")));
+        } else {
+            holder.postName.setText(String.format("%s", "Missing Title/Deleted"));
+        }
+
+        if(mDataSet.get(position).containsKey("postUserName")) {
+            holder.postUser.setText(String.format("By: %s", mDataSet.get(position).get("postUserName")));
+        } else {
+            holder.postUser.setText("");//Setting this as empty as the submissions page does not return the user name in the listing
+        }
+
         holder.postRating.setText(mDataSet.get(position).get("postRatingCode"));
 
         if (checkedItems.contains(mDataSet.get(position).get("postId"))) {
@@ -115,7 +126,9 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
 
             @Override
             public void onClick() {
-                ((mainActivity) context).setViewPath(mDataSet.get(position).get("postPath"));
+                if(mDataSet.get(position).containsKey("postPath")) {
+                    ((mainActivity) context).setViewPath(mDataSet.get(position).get("postPath"));
+                }
             }
         });
 
