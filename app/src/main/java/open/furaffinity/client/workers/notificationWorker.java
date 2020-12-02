@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
+import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.pages.msgOthers;
 import open.furaffinity.client.pages.msgPms;
 import open.furaffinity.client.pages.msgSubmission;
@@ -137,38 +139,45 @@ public class notificationWorker extends Worker {
 
         if (loginCheck.getIsLoggedIn()) {
             List<HashMap<String, String>> watches = open.furaffinity.client.pages.msgOthers.processWatchNotifications(msgOthers.getWatches(), "");
-            List<HashMap<String, String>> comments = open.furaffinity.client.utilities.html.commentsToListHash(msgOthers.getSubmissionComments());
+            List<HashMap<String, String>> submissionComments = open.furaffinity.client.pages.msgOthers.processLineNotifications(msgOthers.getSubmissionComments(), "");
+            List<HashMap<String, String>> journalComments = open.furaffinity.client.pages.msgOthers.processJournalLineNotifications(msgOthers.getJournalComments(), "");
             List<HashMap<String, String>> shouts = open.furaffinity.client.pages.msgOthers.processShoutNotifications(msgOthers.getShouts(), "");
             List<HashMap<String, String>> favorites = open.furaffinity.client.pages.msgOthers.processLineNotifications(msgOthers.getFavorites(), "");
             List<HashMap<String, String>> journals = open.furaffinity.client.pages.msgOthers.processLineNotifications(msgOthers.getJournals(), "");
 
             HashMap<String, Integer> newNotifications = new HashMap<>();
 
-            if (watches.size() > 0) {
+            SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+            if (watches.size() > 0 && sharedPref.getBoolean(context.getString(R.string.watchNotificationsEnabledSetting), settings.standardNotificationsDefault)) {
                 newNotifications.put("watch" + ((watches.size() > 1) ? ("es") : ("")), watches.size());
             }
 
-            if (comments.size() > 0) {
-                newNotifications.put("comment" + ((comments.size() > 1) ? ("s") : ("")), comments.size());
+            if (submissionComments.size() > 0 && sharedPref.getBoolean(context.getString(R.string.submissionCommentNotificationsEnabledSetting), settings.standardNotificationsDefault)) {
+                newNotifications.put("submission comment" + ((submissionComments.size() > 1) ? ("s") : ("")), submissionComments.size());
             }
 
-            if (shouts.size() > 0) {
+            if (journalComments.size() > 0 && sharedPref.getBoolean(context.getString(R.string.journalCommentNotificationsEnabledSetting), settings.standardNotificationsDefault)) {
+                newNotifications.put("journal comment" + ((journalComments.size() > 1) ? ("s") : ("")), journalComments.size());
+            }
+
+            if (shouts.size() > 0 && sharedPref.getBoolean(context.getString(R.string.shoutNotificationsEnabledSetting), settings.standardNotificationsDefault)) {
                 newNotifications.put("shout" + ((shouts.size() > 1) ? ("s") : ("")), shouts.size());
             }
 
-            if (favorites.size() > 0) {
+            if (favorites.size() > 0 && sharedPref.getBoolean(context.getString(R.string.favoriteNotificationsEnabledSetting), settings.standardNotificationsDefault)) {
                 newNotifications.put("favorite" + ((favorites.size() > 1) ? ("s") : ("")), favorites.size());
             }
 
-            if (journals.size() > 0) {
+            if (journals.size() > 0 && sharedPref.getBoolean(context.getString(R.string.journalNotificationsEnabledSetting), settings.standardNotificationsDefault)) {
                 newNotifications.put("journal" + ((journals.size() > 1) ? ("s") : ("")), journals.size());
             }
 
-            if (msgPmsData.size() > 0) {
+            if (msgPmsData.size() > 0 && sharedPref.getBoolean(context.getString(R.string.noteNotificationsEnabledSetting), settings.standardNotificationsDefault)) {
                 newNotifications.put("note" + ((msgPmsData.size() > 1) ? ("s") : ("")), msgPmsData.size());
             }
 
-            if (msgSubmissionData.size() > 0) {
+            if (msgSubmissionData.size() > 0 && sharedPref.getBoolean(context.getString(R.string.submissionNotificationsEnabledSetting), settings.standardNotificationsDefault)) {
                 newNotifications.put("submission" + ((msgSubmissionData.size() > 1) ? ("s") : ("")), msgSubmissionData.size());
             }
 

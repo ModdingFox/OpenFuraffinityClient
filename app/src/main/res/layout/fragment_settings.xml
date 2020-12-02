@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,6 +36,63 @@
                 android:ems="10"
                 android:inputType="number" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
+
+            <Switch
+                android:id="@+id/watchNotificationsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/watchNotificationsSwitch" />
+
+            <Switch
+                android:id="@+id/submissionCommentNotificationsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/submissionCommentNotificationsSwitch" />
+
+            <Switch
+                android:id="@+id/journalCommentNotificationsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/journalCommentNotificationsSwitch" />
+
+            <Switch
+                android:id="@+id/shoutNotificationsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shoutNotificationsSwitch" />
+
+            <Switch
+                android:id="@+id/favoriteNotificationsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/favoriteNotificationsSwitch" />
+
+            <Switch
+                android:id="@+id/journalNotificationsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/journalNotificationsSwitch" />
+
+            <Switch
+                android:id="@+id/noteNotificationsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/noteNotificationsSwitch" />
+
+            <Switch
+                android:id="@+id/submissionNotificationsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/submissionNotificationsSwitch" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
             <Switch
                 android:id="@+id/searchNotificationsSwitch"
                 android:layout_width="match_parent"
@@ -54,6 +112,10 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="number" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -95,6 +157,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/enablePostLabels" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
 
             <Switch
                 android:id="@+id/saveBrowseStateSwitch"
@@ -107,6 +172,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/saveSearchStateSwitch" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
 
             <Switch
                 android:id="@+id/trackHistory"
