@@ -15,7 +15,7 @@ import open.furaffinity.client.utilities.messageIds;
 
 public class msgOthersSectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.msgOthersTab0, R.string.msgOthersTab1, R.string.msgOthersTab2, R.string.msgOthersTab3, R.string.msgOthersTab4};
+    private static final int[] TAB_TITLES = new int[]{R.string.msgOthersTab0, R.string.msgOthersTab1, R.string.msgOthersTab2, R.string.msgOthersTab3, R.string.msgOthersTab4, R.string.msgOthersTab5};
     private final Context mContext;
 
     public msgOthersSectionsPagerAdapter(Context context, FragmentManager fm) {

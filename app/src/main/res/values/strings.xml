@@ -155,9 +155,10 @@
 
     <string name="msgOthersTab0">Watches</string>
     <string name="msgOthersTab1">Submission Comments</string>
-    <string name="msgOthersTab2">Shouts</string>
-    <string name="msgOthersTab3">Favorites</string>
-    <string name="msgOthersTab4">Journals</string>
+    <string name="msgOthersTab2">Journal Comments</string>
+    <string name="msgOthersTab3">Shouts</string>
+    <string name="msgOthersTab4">Favorites</string>
+    <string name="msgOthersTab5">Journals</string>
 
     <string name="msgPmsUserNameTextView">User</string>
     <string name="msgPmsSubjectTextView">Subject</string>
@@ -193,6 +194,15 @@
     <string name="imageListInfo">imageListInfo</string>
     <string name="notificationsSwitch">Standard Notifications</string>
     <string name="notificationsInterval">Standard Notification Interval(Min):</string>
+    <string name="watchNotificationsSwitch">Watch Notifications</string>
+    <string name="submissionCommentNotificationsSwitch">Submission Comment Notifications</string>
+    <string name="journalCommentNotificationsSwitch">Journal Comment Notifications</string>
+    <string name="shoutNotificationsSwitch">Shout Notifications</string>
+    <string name="favoriteNotificationsSwitch">Favorite Notifications</string>
+    <string name="journalNotificationsSwitch">Journal Notifications</string>
+    <string name="noteNotificationsSwitch">Note Notifications</string>
+    <string name="submissionNotificationsSwitch">Submission Notifications</string>
+
     <string name="searchNotificationsSwitch">Search Notifications</string>
     <string name="searchNotificationsInterval">Search Notification Interval(Min):</string>
     <string name="saveBrowseStateSwitch">Persist browse options</string>
@@ -205,6 +215,14 @@
 
     <string name="notificationsEnabledSetting">notificationsEnabledSetting</string>
     <string name="notificationsIntervalSetting">notificationsIntervalSetting</string>
+    <string name="watchNotificationsEnabledSetting">watchNotificationsEnabledSetting</string>
+    <string name="submissionCommentNotificationsEnabledSetting">submissionCommentNotificationsEnabledSetting</string>
+    <string name="journalCommentNotificationsEnabledSetting">journalCommentNotificationsEnabledSetting</string>
+    <string name="shoutNotificationsEnabledSetting">shoutNotificationsEnabledSetting</string>
+    <string name="favoriteNotificationsEnabledSetting">favoriteNotificationsEnabledSetting</string>
+    <string name="journalNotificationsEnabledSetting">journalNotificationsEnabledSetting</string>
+    <string name="noteNotificationsEnabledSetting">noteNotificationsEnabledSetting</string>
+    <string name="submissionNotificationsEnabledSetting">submissionNotificationsEnabledSetting</string>
     <string name="searchNotificationsEnabledSetting">searchNotificationsEnabledSetting</string>
     <string name="searchNotificationsIntervalSetting">searchNotificationsIntervalSetting</string>
     <string name="trackHistorySetting">trackHistorySetting</string>

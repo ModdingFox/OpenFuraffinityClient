@@ -30,6 +30,14 @@ import open.furaffinity.client.workers.searchNotificationWorker;
 public class settings extends appFragment {
     private Switch notificationsSwitch;
     private EditText notificationsInterval;
+    private Switch watchNotificationsSwitch;
+    private Switch submissionCommentNotificationsSwitch;
+    private Switch journalCommentNotificationsSwitch;
+    private Switch shoutNotificationsSwitch;
+    private Switch favoriteNotificationsSwitch;
+    private Switch journalNotificationsSwitch;
+    private Switch noteNotificationsSwitch;
+    private Switch submissionNotificationsSwitch;
     private Switch searchNotificationsSwitch;
     private EditText searchNotificationsInterval;
     private EditText recyclerVisibleThresholdCount;
@@ -43,6 +51,7 @@ public class settings extends appFragment {
 
     public static boolean notificationsEnabledDefault = false;
     public static int notificationsIntervalDefault = 15;
+    public static boolean standardNotificationsDefault = true;
     public static boolean searchNotificationsEnabledDefault = false;
     public static int searchNotificationsIntervalDefault = 15;
     public static int recyclerVisibleThresholdDefault = 16;
@@ -61,6 +70,14 @@ public class settings extends appFragment {
     protected void getElements(View rootView) {
         notificationsSwitch = rootView.findViewById(R.id.notificationsSwitch);
         notificationsInterval = rootView.findViewById(R.id.notificationsInterval);
+        watchNotificationsSwitch = rootView.findViewById(R.id.watchNotificationsSwitch);
+        submissionCommentNotificationsSwitch = rootView.findViewById(R.id.submissionCommentNotificationsSwitch);
+        journalCommentNotificationsSwitch = rootView.findViewById(R.id.journalCommentNotificationsSwitch);
+        shoutNotificationsSwitch = rootView.findViewById(R.id.shoutNotificationsSwitch);
+        favoriteNotificationsSwitch = rootView.findViewById(R.id.favoriteNotificationsSwitch);
+        journalNotificationsSwitch = rootView.findViewById(R.id.journalNotificationsSwitch);
+        noteNotificationsSwitch = rootView.findViewById(R.id.noteNotificationsSwitch);
+        submissionNotificationsSwitch = rootView.findViewById(R.id.submissionNotificationsSwitch);
         searchNotificationsSwitch = rootView.findViewById(R.id.searchNotificationsSwitch);
         searchNotificationsInterval = rootView.findViewById(R.id.searchNotificationsInterval);
         recyclerVisibleThresholdCount = rootView.findViewById(R.id.recyclerVisibleThresholdCount);
@@ -89,6 +106,14 @@ public class settings extends appFragment {
 
         notificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), notificationsEnabledDefault));
         notificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault)));
+        watchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.watchNotificationsEnabledSetting), standardNotificationsDefault));
+        submissionCommentNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.submissionCommentNotificationsEnabledSetting), standardNotificationsDefault));
+        journalCommentNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.journalCommentNotificationsEnabledSetting), standardNotificationsDefault));
+        shoutNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.shoutNotificationsEnabledSetting), standardNotificationsDefault));
+        favoriteNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.favoriteNotificationsEnabledSetting), standardNotificationsDefault));
+        journalNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.journalNotificationsEnabledSetting), standardNotificationsDefault));
+        noteNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.noteNotificationsEnabledSetting), standardNotificationsDefault));
+        submissionNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.submissionNotificationsEnabledSetting), standardNotificationsDefault));
         searchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), searchNotificationsEnabledDefault));
         searchNotificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault)));
         recyclerVisibleThresholdCount.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.recyclerVisibleThreshold), recyclerVisibleThresholdDefault)));
@@ -155,21 +180,82 @@ public class settings extends appFragment {
             }
         });
 
-        searchNotificationsSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Context context = requireActivity();
-                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(context.getString(R.string.searchNotificationsEnabledSetting), isChecked);
-                editor.apply();
+        watchNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.watchNotificationsEnabledSetting), isChecked);
+            editor.apply();
+        });
 
-                WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
+        submissionCommentNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.submissionCommentNotificationsEnabledSetting), isChecked);
+            editor.apply();
+        });
 
-                if (isChecked) {
-                    PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
-                    WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
-                }
+        journalCommentNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.journalCommentNotificationsEnabledSetting), isChecked);
+            editor.apply();
+        });
+
+        shoutNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.shoutNotificationsEnabledSetting), isChecked);
+            editor.apply();
+        });
+
+        favoriteNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.favoriteNotificationsEnabledSetting), isChecked);
+            editor.apply();
+        });
+
+        journalNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.journalNotificationsEnabledSetting), isChecked);
+            editor.apply();
+        });
+
+        noteNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.noteNotificationsEnabledSetting), isChecked);
+            editor.apply();
+        });
+
+        submissionNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.submissionNotificationsEnabledSetting), isChecked);
+            editor.apply();
+        });
+
+        searchNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.searchNotificationsEnabledSetting), isChecked);
+            editor.apply();
+
+            WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
+
+            if (isChecked) {
+                PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
+                WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
             }
         });
 

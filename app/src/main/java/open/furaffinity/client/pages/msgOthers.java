@@ -20,6 +20,7 @@ public class msgOthers extends abstractPage {
 
     private String watches = "";
     private String submissionComments = "";
+    private String journalComments = "";
     private String shouts = "";
     private String favorites = "";
     private String journals = "";
@@ -43,6 +44,11 @@ public class msgOthers extends abstractPage {
         Element msgOthersMessagesCommentsSubmissionMessageStream = doc.selectFirst("section[id=messages-comments-submission]");
         if (msgOthersMessagesCommentsSubmissionMessageStream != null) {
             submissionComments = msgOthersMessagesCommentsSubmissionMessageStream.selectFirst("ul.message-stream").html();
+        }
+
+        Element msgOthersMessagesCommentsJournalMessageStream = doc.selectFirst("section[id=messages-comments-journal]");
+        if (msgOthersMessagesCommentsJournalMessageStream != null) {
+            journalComments = msgOthersMessagesCommentsJournalMessageStream.selectFirst("ul.message-stream").html();
         }
 
         Element msgOthersMessagesShoutsMessageStream = doc.selectFirst("section[id=messages-shouts]");
@@ -80,6 +86,8 @@ public class msgOthers extends abstractPage {
     public String getSubmissionComments() {
         return submissionComments;
     }
+
+    public String getJournalComments() { return journalComments; }
 
     public String getShouts() {
         return shouts;
@@ -182,6 +190,38 @@ public class msgOthers extends abstractPage {
                 currentElementResult.put("postLink", currentElementAHref.get(1).attr("href"));
                 currentElementResult.put("postName", currentElementStrong.get(1).text());
                 currentElementResult.put("postClass", view.class.getName());
+                currentElementResult.put("time", currentElementSpan.text());
+                currentElementResult.put("actionText", actionText);
+
+                result.add(currentElementResult);
+            }
+        }
+
+        return result;
+    }
+
+    public static List<HashMap<String, String>> processJournalLineNotifications(String html, String actionText) {
+        List<HashMap<String, String>> result = new ArrayList<>();
+
+        if (html != null && html.length() > 0) {
+            Document doc = Jsoup.parse(html);
+            Elements listElements = doc.select("li");
+
+            for (Element currentElement : listElements) {
+                HashMap<String, String> currentElementResult = new HashMap<>();
+
+                Element currentElementInputCheckbox = currentElement.selectFirst("input[type=checkbox]");
+                Elements currentElementAHref = currentElement.select("a");
+                Elements currentElementStrong = currentElement.select("strong");
+                Elements currentElementB = currentElement.select("b");
+                Element currentElementSpan = currentElement.selectFirst("span.popup_date");
+
+                currentElementResult.put("notificationId", currentElementInputCheckbox.attr("value"));
+                currentElementResult.put("userLink", currentElementAHref.get(0).attr("href"));
+                currentElementResult.put("userName", currentElementStrong.get(0).text());
+                currentElementResult.put("postLink", currentElementAHref.get(1).attr("href"));
+                currentElementResult.put("postName", currentElementB.get(0).text());
+                currentElementResult.put("postClass", journal.class.getName());
                 currentElementResult.put("time", currentElementSpan.text());
                 currentElementResult.put("actionText", actionText);
 
