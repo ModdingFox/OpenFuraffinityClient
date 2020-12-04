@@ -14,7 +14,18 @@ import java.util.stream.Collectors;
 
 public class imageResultsTool {
     public static enum imageResolutions {
-        High(1600, "High - 1600"), Medium(800, "Medium - 800"), Low(400, "Low - 400"), Original(0, "Original - Site Default");
+        UltraHigh(1600, "Ultra High - 1600"),
+        VeryHigh(800, "Very High - 800"),
+        High(600, "High - 600"),
+        MediumHigh(400, "Medium High - 400"),
+        Medium(300, "Medium - 300"),
+        MediumLow(250, "Medium Low - 250"),
+        Low(200, "Low - 200"),
+        VeryLow(150, "Very Low - 150"),
+        UltraLow(100, "Ultra Low - 100"),
+        ExtremeLow(75, "Extreme Low - 75"),
+        Minimal(50, "Minimal - 50"),
+        Original(0, "Site Default");
 
         private int value;
         private String printableName;
