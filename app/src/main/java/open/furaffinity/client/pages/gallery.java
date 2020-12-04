@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.fragmentDrawers.settings;
+import open.furaffinity.client.utilities.imageResultsTool;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
@@ -28,18 +31,22 @@ public class gallery extends abstractPage {
     private String moveFromScrapsSubmit;
     private String moveToScrapsSubmit;
 
+    private imageResultsTool.imageResolutions currentResolution = imageResultsTool.imageResolutions.Original;
+
     public gallery(Context context, pageListener pageListener, String pagePath) {
         super(context, pageListener);
         this.pagePath = pagePath;
+        currentResolution = imageResultsTool.getimageResolutionFromInt(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault));
     }
 
     public gallery(gallery gallery) {
         super(gallery);
         this.pagePath = gallery.pagePath;
+        this.currentResolution = gallery.currentResolution;
     }
 
     protected Boolean processPageData(String html) {
-        pageResults = getResultsData(html);
+        pageResults = getResultsData(html, currentResolution);
 
         Document doc = Jsoup.parse(html);
         Element folderListDiv = doc.selectFirst("div.folder-list");

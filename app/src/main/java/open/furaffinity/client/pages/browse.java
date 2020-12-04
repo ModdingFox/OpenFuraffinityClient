@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.fragmentDrawers.settings;
+import open.furaffinity.client.utilities.imageResultsTool;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
@@ -27,10 +30,14 @@ public class browse extends abstractPage {
 
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
+    private imageResultsTool.imageResolutions currentResolution = imageResultsTool.imageResolutions.Original;
+
     public browse(Context context, pageListener pageListener) {
         super(context, pageListener);
         setPage("1");
         setRatingGeneral(true);
+
+        currentResolution = imageResultsTool.getimageResolutionFromInt(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault));
     }
 
     public browse(browse browse) {
@@ -42,6 +49,7 @@ public class browse extends abstractPage {
         this.perpage = browse.perpage;
         this.requestParameters = browse.requestParameters;
         this.pageResults = browse.pageResults;
+        this.currentResolution = browse.currentResolution;
     }
 
     protected Boolean processPageData(String html) {
@@ -50,7 +58,7 @@ public class browse extends abstractPage {
         species = getDropDownOptions("species", html);
         gender = getDropDownOptions("gender", html);
         perpage = getDropDownOptions("perpage", html);
-        pageResults = getResultsData(html);
+        pageResults = getResultsData(html, currentResolution);
 
         if (cat != null && atype != null && species != null && gender != null && perpage != null && pageResults != null) {
             return true;

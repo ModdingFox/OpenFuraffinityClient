@@ -1,14 +1,18 @@
 package open.furaffinity.client.abstractClasses;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import open.furaffinity.client.R;
 import open.furaffinity.client.utilities.webClient;
 
 public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
     protected static final String TAG = abstractPage.class.getName();
 
     protected Context context;
+    protected SharedPreferences sharedPref;
+
     protected webClient webClient;
 
     public interface pageListener {
@@ -21,6 +25,8 @@ public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
 
     public abstractPage(Context context, pageListener pageListener) {
         this.context = context;
+        this.sharedPref = this.context.getSharedPreferences(this.context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
         this.webClient = new webClient(context);
         this.pageListener = pageListener;
     }

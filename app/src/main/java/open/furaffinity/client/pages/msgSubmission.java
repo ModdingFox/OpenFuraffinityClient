@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.fragmentDrawers.settings;
+import open.furaffinity.client.utilities.imageResultsTool;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
@@ -27,6 +30,8 @@ public class msgSubmission extends abstractPage {
 
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
+    private imageResultsTool.imageResolutions currentResolution = imageResultsTool.imageResolutions.Original;
+
     public msgSubmission(Context context, pageListener pageListener, boolean isNewestFirst) {
         super(context, pageListener);
         this.isNewestFirst = isNewestFirst;
@@ -36,6 +41,8 @@ public class msgSubmission extends abstractPage {
         } else {
             pagePath = "/msg/submissions/old@" + perPage;
         }
+
+        currentResolution = imageResultsTool.getimageResolutionFromInt(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault));
     }
 
     public msgSubmission(msgSubmission msgSubmission) {
@@ -46,6 +53,7 @@ public class msgSubmission extends abstractPage {
         this.perPage = msgSubmission.perPage;
         this.prevPage = msgSubmission.prevPage;
         this.nextPage = msgSubmission.nextPage;
+        this.currentResolution = msgSubmission.currentResolution;
     }
 
     protected Boolean processPageData(String html) {
@@ -62,7 +70,7 @@ public class msgSubmission extends abstractPage {
             nextPage = moreA.attr("href");
         }
 
-        pageResults = getResultsData(html);
+        pageResults = getResultsData(html, currentResolution);
 
         //not the greatest here. need to eventually find a good way to check the page is loaded/valid
         return true;

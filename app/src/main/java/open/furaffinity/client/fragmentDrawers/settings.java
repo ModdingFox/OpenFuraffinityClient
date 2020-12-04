@@ -6,9 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 
@@ -17,6 +19,7 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
@@ -24,6 +27,9 @@ import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
+import open.furaffinity.client.utilities.imageResultsTool;
+import open.furaffinity.client.utilities.kvPair;
+import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
@@ -40,6 +46,7 @@ public class settings extends appFragment {
     private Switch submissionNotificationsSwitch;
     private Switch searchNotificationsSwitch;
     private EditText searchNotificationsInterval;
+    private Spinner imageResolution;
     private EditText recyclerVisibleThresholdCount;
     private EditText imageListColumnsCount;
     private Switch imageListOrientation;
@@ -54,6 +61,7 @@ public class settings extends appFragment {
     public static boolean standardNotificationsDefault = true;
     public static boolean searchNotificationsEnabledDefault = false;
     public static int searchNotificationsIntervalDefault = 15;
+    public static int imageResolutionDefault = imageResultsTool.imageResolutions.High.getValue();
     public static int recyclerVisibleThresholdDefault = 16;
     public static int imageListColumnsDefault = 1;
     public static boolean imageListInfoDefault = true;
@@ -80,6 +88,7 @@ public class settings extends appFragment {
         submissionNotificationsSwitch = rootView.findViewById(R.id.submissionNotificationsSwitch);
         searchNotificationsSwitch = rootView.findViewById(R.id.searchNotificationsSwitch);
         searchNotificationsInterval = rootView.findViewById(R.id.searchNotificationsInterval);
+        imageResolution = rootView.findViewById(R.id.imageResolution);
         recyclerVisibleThresholdCount = rootView.findViewById(R.id.recyclerVisibleThresholdCount);
         imageListColumnsCount = rootView.findViewById(R.id.imageListColumnsCount);
         imageListOrientation = rootView.findViewById(R.id.imageListOrientation);
@@ -116,6 +125,14 @@ public class settings extends appFragment {
         submissionNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.submissionNotificationsEnabledSetting), standardNotificationsDefault));
         searchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), searchNotificationsEnabledDefault));
         searchNotificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault)));
+
+        HashMap<String, String> imageResolutionOptions = new HashMap<String, String>();
+        for(imageResultsTool.imageResolutions currentImageResolution : imageResultsTool.imageResolutions.values()) {
+            imageResolutionOptions.put(currentImageResolution.toString(), currentImageResolution.getPrintableName());
+        }
+
+        uiControls.spinnerSetAdapter(requireContext(), imageResolution, imageResolutionOptions, Integer.toString(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault)), true, true);
+
         recyclerVisibleThresholdCount.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.recyclerVisibleThreshold), recyclerVisibleThresholdDefault)));
         imageListColumnsCount.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.imageListColumns), imageListColumnsDefault)));
         imageListOrientation.setChecked(sharedPref.getInt(context.getString(R.string.imageListOrientation), imageListOrientationDefault) == StaggeredGridLayoutManager.VERTICAL);
@@ -292,6 +309,23 @@ public class settings extends appFragment {
                 } catch (NumberFormatException e) {
 
                 }
+            }
+        });
+
+        imageResolution.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int selectedValue = Integer.parseInt(((kvPair)imageResolution.getSelectedItem()).getKey());
+                Context context = requireActivity();
+                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(context.getString(R.string.imageResolutionSetting), selectedValue);
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
