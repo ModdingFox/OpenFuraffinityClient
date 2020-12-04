@@ -1,6 +1,7 @@
 package open.furaffinity.client.pages;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,7 +11,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.fragmentDrawers.settings;
+import open.furaffinity.client.utilities.imageResultsTool;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
@@ -28,6 +32,8 @@ public class search extends abstractPage {
 
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
+    private imageResultsTool.imageResolutions currentResolution = imageResultsTool.imageResolutions.Original;
+
     public search(Context context, pageListener pageListener) {
         super(context, pageListener);
         setPage("1");
@@ -35,6 +41,8 @@ public class search extends abstractPage {
         requestParameters.put("order-by", "relevancy");//hacky but works for now
         requestParameters.put("order-direction", "desc");//hacky but works for now
         setTypeArt(true);
+
+        currentResolution = imageResultsTool.getimageResolutionFromInt(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault));
     }
 
     public search(search search) {
@@ -43,12 +51,13 @@ public class search extends abstractPage {
         this.orderDirection = search.orderDirection;
         this.requestParameters = search.requestParameters;
         this.pageResults = search.pageResults;
+        this.currentResolution = search.currentResolution;
     }
 
     protected Boolean processPageData(String html) {
         orderBy = getDropDownOptions("order-by", html);
         orderDirection = getDropDownOptions("order-direction", html);
-        pageResults = getResultsData(html);
+        pageResults = getResultsData(html, currentResolution);
 
         if (orderBy != null && orderDirection != null && pageResults != null) {
             return true;

@@ -6,11 +6,47 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class imageResultsTool {
+    public static enum imageResolutions {
+        High(1600, "High - 1600"), Medium(800, "Medium - 800"), Low(400, "Low - 400"), Original(0, "Original - Site Default");
+
+        private int value;
+        private String printableName;
+
+        imageResolutions(int value, String printableName) {
+            this.value = value;
+            this.printableName = printableName;
+        }
+
+        @Override
+        public String toString() { return Integer.toString(this.value); }
+
+        public String getPrintableName() {
+            return this.printableName;
+        }
+        public int getValue() { return this.value; }
+
+    }
+
+    public static imageResolutions getimageResolutionFromInt(int input) {
+        List<imageResolutions> imageResolutionsList = Arrays.asList(imageResolutions.values());
+        imageResolutionsList = imageResolutionsList.stream().sorted((p1, p2) -> Integer.compare(p1.getValue(), p2.getValue())).collect(Collectors.toList());
+
+        for(imageResolutions currentImageResolution : imageResolutionsList) {
+            if(input <= currentImageResolution.getValue()) {
+                return currentImageResolution;
+            }
+        }
+
+        return imageResolutions.Original;
+    }
+
     public static HashMap<String, String> getDropDownOptions(String name, String html) {
         HashMap<String, String> result = new HashMap<>();
 
@@ -33,7 +69,7 @@ public class imageResultsTool {
         return null;
     }
 
-    public static List<HashMap<String, String>> getResultsData(String html) {
+    public static List<HashMap<String, String>> getResultsData(String html, imageResolutions imageResolution) {
         List<HashMap<String, String>> result = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);
@@ -54,6 +90,14 @@ public class imageResultsTool {
             }
 
             Element img = rootElement.selectFirst("img");
+            if(img != null) {
+                if(imageResolution == imageResolutions.Original) {
+                    currentPostData.put("imgUrl", img.attr("src"));
+                } else {
+                    String changedUrl = img.attr("src").replaceFirst("@\\d+-", "@" + imageResolution.toString() + "-");
+                    currentPostData.put("imgUrl", changedUrl);
+                }
+            }
 
             Element figcaption = rootElement.selectFirst("figcaption");
             Element checkbox = figcaption.selectFirst("input");
@@ -74,8 +118,6 @@ public class imageResultsTool {
                 currentPostData.put("postUserPath", user.attr("href"));
                 currentPostData.put("postUserName", user.html());
             }
-
-            currentPostData.put("imgUrl", img.attr("src"));
 
             if (checkbox != null) {
                 currentPostData.put("postId", checkbox.attr("value"));

@@ -202,9 +202,9 @@
     <string name="journalNotificationsSwitch">Journal Notifications</string>
     <string name="noteNotificationsSwitch">Note Notifications</string>
     <string name="submissionNotificationsSwitch">Submission Notifications</string>
-
     <string name="searchNotificationsSwitch">Search Notifications</string>
     <string name="searchNotificationsInterval">Search Notification Interval(Min):</string>
+    <string name="imageResolutionTextView">Select Results Image Resolution:</string>
     <string name="saveBrowseStateSwitch">Persist browse options</string>
     <string name="saveSearchStateSwitch">Persist search options</string>
     <string name="trackHistory">Keep History</string>
@@ -225,6 +225,7 @@
     <string name="submissionNotificationsEnabledSetting">submissionNotificationsEnabledSetting</string>
     <string name="searchNotificationsEnabledSetting">searchNotificationsEnabledSetting</string>
     <string name="searchNotificationsIntervalSetting">searchNotificationsIntervalSetting</string>
+    <string name="imageResolutionSetting">imageResolutionSetting</string>
     <string name="trackHistorySetting">trackHistorySetting</string>
 
     <string name="acceptButton">Accept</string>
