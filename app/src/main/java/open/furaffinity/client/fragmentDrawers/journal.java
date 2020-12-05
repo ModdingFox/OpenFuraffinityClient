@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -62,7 +63,7 @@ public class journal extends appFragment {
                 }
             }
 
-            Glide.with(journal.this).load(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserIcon()).into(journalUserIcon);
+            Glide.with(journal.this).load(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(journalUserIcon);
             journalUserName.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalUserName());
             journalTitle.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalTitle());
             journalDate.setText(((open.furaffinity.client.pages.journal)abstractPage).getJournalDate());

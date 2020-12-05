@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +67,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
         String actionText = " ";
 
         if (mDataSet.get(position).containsKey("userIcon")) {
-            Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon")).into(holder.userIcon);
+            Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.userIcon);
 
             if (mDataSet.get(position).containsKey("userLink")) {
                 holder.userIcon.setOnClickListener(new View.OnClickListener() {

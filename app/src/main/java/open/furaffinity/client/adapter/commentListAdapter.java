@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
             }
         });
 
-        Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon")).into(holder.commentUserIcon);
+        Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.commentUserIcon);
         holder.commentUserName.setText(mDataSet.get(position).get("userName"));
 
         try {

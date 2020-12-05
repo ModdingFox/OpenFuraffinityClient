@@ -21,8 +21,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.navigation.NavigationView;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,7 +119,7 @@ public class mainActivity extends AppCompatActivity {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
                 if (((loginCheck)abstractPage).getIsLoggedIn()) {
-                    Picasso.get().load(((loginCheck)abstractPage).getUserIcon()).into(imageView);
+                    Glide.with(mainActivity.this).load(((loginCheck)abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(imageView);
                     userName.setText(((loginCheck)abstractPage).getUserName());
 
                     navMenu.findItem(R.id.nav_upload).setVisible(true);

@@ -10,7 +10,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,7 @@ public class manageAvatarListAdapter extends RecyclerView.Adapter<manageAvatarLi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Picasso.get().load(mDataSet.get(position).get("imgUrl")).into(holder.imageView);
+        Glide.with(context).load(mDataSet.get(position).get("imgUrl")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.imageView);
 
         holder.setButton.setOnClickListener(new View.OnClickListener() {
             @Override

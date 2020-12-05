@@ -22,6 +22,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -66,8 +67,8 @@ public class view extends appFragment {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
             submissionTitle.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionTitle());
-            Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionImgLink()).into(submissionImage);
-            Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUserIcon()).into(submissionUserIcon);
+            Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+            Glide.with(view.this).load(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionUserIcon);
             submissionUser.setText(((open.furaffinity.client.pages.view)abstractPage).getSubmissionUser());
 
             if (((open.furaffinity.client.pages.view)abstractPage).getIsFav()) {
