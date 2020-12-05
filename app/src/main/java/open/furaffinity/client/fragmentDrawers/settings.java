@@ -61,7 +61,7 @@ public class settings extends appFragment {
     public static boolean standardNotificationsDefault = true;
     public static boolean searchNotificationsEnabledDefault = false;
     public static int searchNotificationsIntervalDefault = 15;
-    public static int imageResolutionDefault = imageResultsTool.imageResolutions.High.getValue();
+    public static int imageResolutionDefault = imageResultsTool.imageResolutions.Original.getValue();
     public static int recyclerVisibleThresholdDefault = 16;
     public static int imageListColumnsDefault = 1;
     public static boolean imageListInfoDefault = true;

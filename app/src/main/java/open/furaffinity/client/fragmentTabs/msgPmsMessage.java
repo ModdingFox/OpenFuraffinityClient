@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -44,7 +45,7 @@ public class msgPmsMessage extends appFragment {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
             subject.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSubject());
-            Glide.with(msgPmsMessage.this).load(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageUserIcon()).into(userIcon);
+            Glide.with(msgPmsMessage.this).load(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
             sentBy.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentBy());
             //sentTo.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentTo());
             sentDate.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentDate());

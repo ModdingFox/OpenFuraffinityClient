@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -81,7 +82,7 @@ public class user extends appFragment {
             userName.setText(((open.furaffinity.client.pages.user)abstractPage).getUserName());
             userAccountStatus.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatus());
             userAccountStatusLine.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatusLine());
-            Glide.with(user.this).load(((open.furaffinity.client.pages.user)abstractPage).getUserIcon()).into(userIcon);
+            Glide.with(user.this).load(((open.furaffinity.client.pages.user)abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
             userViews.setText(((open.furaffinity.client.pages.user)abstractPage).getUserViews());
             userSubmissions.setText(((open.furaffinity.client.pages.user)abstractPage).getUserSubmissions());
             userFavs.setText(((open.furaffinity.client.pages.user)abstractPage).getUserFavs());

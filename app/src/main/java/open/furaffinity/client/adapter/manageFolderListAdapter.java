@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +76,7 @@ public class manageFolderListAdapter extends RecyclerView.Adapter<manageFolderLi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(holder.itemView).load(mDataSet.get(position).get("iconLink")).into(holder.itemIcon);
+        Glide.with(holder.itemView).load(mDataSet.get(position).get("iconLink")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.itemIcon);
         holder.itemName.setText(mDataSet.get(position).get("name"));
 
         holder.upButton.setOnClickListener(new View.OnClickListener() {
