@@ -179,7 +179,7 @@ public class browse extends appFragment {
                     initCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
 
-                    if(recyclerViewPosition == -1) {
+                    if(recyclerViewPosition <= 1) {
                         resetRecycler();
                     } else if (pageNumber >= 0) {
                         page.setPage(Integer.toString(pageNumber));
