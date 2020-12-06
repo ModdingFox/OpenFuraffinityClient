@@ -28,6 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,10 +99,16 @@ public class search extends appFragment {
 
     private boolean isInitialized = false;
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private List<HashMap<String, String>> mDataSet;
     private boolean loadedMainActivitySearchQuery = false;
+    private String selectedSearch = null;
+    private String mainActivitySearchQuery = null;
 
     private List<notificationItem> savedMDataSet = new ArrayList<>();
+
+    private int recyclerViewPosition = -1;
+    private int pageNumber = -1;
+    private String query = null;
 
     @Override
     protected int getLayout() {
@@ -232,7 +239,6 @@ public class search extends appFragment {
     }
 
     private void loadCurrentSettings() {
-        String selectedSearch = ((mainActivity)requireActivity()).getSearchSelected();
         if (selectedSearch != null) {
             searchDBHelper dbHelper = new searchDBHelper(getActivity());
             SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -313,7 +319,6 @@ public class search extends appFragment {
         }
 
         if (!loadedMainActivitySearchQuery) {
-            String mainActivitySearchQuery = ((mainActivity)requireActivity()).getSearchQuery();
             if (mainActivitySearchQuery != null) {
                 searchEditText.setText(mainActivitySearchQuery);
             } else {
@@ -376,9 +381,17 @@ public class search extends appFragment {
     }
 
     protected void initPages() {
+        if(mDataSet == null) {
+            mDataSet = new ArrayList<>();
+        }
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, requireActivity());
         recyclerView.setAdapter(mAdapter);
+
+        if(recyclerViewPosition > -1) {
+            staggeredGridLayoutManager.scrollToPosition(recyclerViewPosition);
+        }
 
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             private void updateUIElements() {
@@ -413,7 +426,20 @@ public class search extends appFragment {
                     initCurrentSettings();
                     loadCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
-                    resetRecycler();
+
+                    if(recyclerViewPosition == -1) {
+                        resetRecycler();
+                    } else if (pageNumber >= 0) {
+                        page.setQuery(query);
+
+                        searchOptionsScrollView.setVisibility(View.GONE);
+                        savedSearchRecyclerView.setVisibility(View.GONE);
+                        swipeRefreshLayout.setVisibility(View.VISIBLE);
+                        setFabSearchMode();
+
+                        page.setPage(Integer.toString(pageNumber));
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                 } else {
                     List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.search)abstractPage).getPageResults();
 
@@ -736,6 +762,11 @@ public class search extends appFragment {
             setFabSearchMode();
         });
 
+        fab.setOnLongClickListener(v -> {
+            resetRecycler();
+            return false;
+        });
+
         savedSearches.setOnClickListener(v -> {
             searchOptionsScrollView.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.GONE);
@@ -791,4 +822,51 @@ public class search extends appFragment {
         updateUIElementListeners(rootView);
         return rootView;
     }
+
+    private int getRecyclerFirstItem() {
+        int[] firstVisibleItems = null;
+        firstVisibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItems);
+        if(firstVisibleItems != null && firstVisibleItems.length > 0) {
+            return firstVisibleItems[0];
+        }
+
+        return -1;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        selectedSearch = ((mainActivity)requireActivity()).getSearchSelected();
+        mainActivitySearchQuery = ((mainActivity)requireActivity()).getSearchQuery();
+
+        if(selectedSearch == null && mainActivitySearchQuery == null) {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            String mDataSetString = sharedPref.getString(context.getString(R.string.searchSessionDataSet), null);
+            pageNumber = sharedPref.getInt(context.getString(R.string.searchSessionPage), -1);
+            recyclerViewPosition = sharedPref.getInt(context.getString(R.string.searchSessionRecyclerView), -1);
+            query = sharedPref.getString(context.getString(R.string.searchSessionQuery), null);
+
+            if (mDataSetString != null) {
+                mDataSet = (List<HashMap<String, String>>) open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mDataSet != null && page != null && recyclerView != null) {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(context.getString(R.string.searchSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
+            editor.putInt(context.getString(R.string.searchSessionPage), page.getPage());
+            editor.putInt(context.getString(R.string.searchSessionRecyclerView), getRecyclerFirstItem());
+            editor.putString(context.getString(R.string.searchSessionQuery), page.getCurrentQuery());
+            editor.apply();
+        }
+    }
+
 }

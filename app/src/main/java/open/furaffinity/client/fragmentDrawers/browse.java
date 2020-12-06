@@ -2,6 +2,7 @@ package open.furaffinity.client.fragmentDrawers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +59,9 @@ public class browse extends appFragment {
     private boolean isInitialized = false;
     private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet;
+
+    private int recyclerViewPosition = -1;
+    private int pageNumber = -1;
 
     @Override
     protected int getLayout() {
@@ -129,10 +134,17 @@ public class browse extends appFragment {
     }
 
     protected void initPages() {
-        mDataSet = new ArrayList<>();
+        if(mDataSet == null) {
+            mDataSet = new ArrayList<>();
+        }
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new imageListAdapter(mDataSet, requireActivity());
         recyclerView.setAdapter(mAdapter);
+
+        if(recyclerViewPosition > -1) {
+            staggeredGridLayoutManager.scrollToPosition(recyclerViewPosition);
+        }
 
         loginCheck = new loginCheck(requireActivity(), new abstractPage.pageListener() {
             private void updateUIElements() {
@@ -166,7 +178,13 @@ public class browse extends appFragment {
                     isLoading = false;
                     initCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
-                    resetRecycler();
+
+                    if(recyclerViewPosition == -1) {
+                        resetRecycler();
+                    } else if (pageNumber >= 0) {
+                        page.setPage(Integer.toString(pageNumber));
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                 } else {
                     List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.browse)abstractPage).getPageResults();
 
@@ -316,5 +334,51 @@ public class browse extends appFragment {
                 settingsTableLayout.setVisibility(View.VISIBLE);
             }
         });
+
+        fab.setOnLongClickListener(v -> {
+            if (settingsTableLayout.getVisibility() == View.VISIBLE) {
+                resetRecycler();
+            }
+            return false;
+        });
+    }
+
+    private int getRecyclerFirstItem() {
+        int[] firstVisibleItems = null;
+        firstVisibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItems);
+        if(firstVisibleItems != null && firstVisibleItems.length > 0) {
+            return firstVisibleItems[0];
+        }
+
+        return -1;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Context context = requireActivity();
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        String mDataSetString = sharedPref.getString(context.getString(R.string.browseSessionDataSet), null);
+        pageNumber = sharedPref.getInt(context.getString(R.string.browseSessionPage), -1);
+        recyclerViewPosition = sharedPref.getInt(context.getString(R.string.browseSessionRecyclerView), -1);
+
+        if(mDataSetString != null) {
+            mDataSet = (List<HashMap<String, String>>)open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mDataSet != null && page != null && recyclerView != null) {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(context.getString(R.string.browseSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
+            editor.putInt(context.getString(R.string.browseSessionPage), page.getPage());
+            editor.putInt(context.getString(R.string.browseSessionRecyclerView), getRecyclerFirstItem());
+            editor.apply();
+        }
     }
 }
