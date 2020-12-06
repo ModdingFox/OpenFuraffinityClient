@@ -243,4 +243,13 @@
     <string name="loginButton">Login</string>
     <string name="userNameText">Username:</string>
     <string name="passwordText">Password:</string>
+
+    <string name="browseSessionDataSet">browseSessionDataSet</string>
+    <string name="browseSessionPage">browseSessionPage</string>
+    <string name="browseSessionRecyclerView">browseSessionRecyclerView</string>
+
+    <string name="searchSessionDataSet">searchSessionDataSet</string>
+    <string name="searchSessionPage">searchSessionPage</string>
+    <string name="searchSessionRecyclerView">searchSessionRecyclerView</string>
+    <string name="searchSessionQuery">searchSessionQuery</string>
 </resources>
