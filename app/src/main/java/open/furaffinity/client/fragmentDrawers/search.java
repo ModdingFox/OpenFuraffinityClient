@@ -427,7 +427,7 @@ public class search extends appFragment {
                     loadCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
 
-                    if(recyclerViewPosition == -1) {
+                    if(recyclerViewPosition < 1) {
                         resetRecycler();
                     } else if (pageNumber >= 0) {
                         page.setQuery(query);
