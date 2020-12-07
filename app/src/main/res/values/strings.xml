@@ -43,6 +43,9 @@
     <string name="browseRatingAdult">Adult</string>
 
     <string name="saveBrowseState">saveBrowseState</string>
+    <string name="cachedBrowseStateSetting">cachedBrowseStateSetting</string>
+    <string name="InvalidateCachedBrowseTimeSetting">InvalidateCachedBrowseTimeSetting</string>
+    <string name="InvalidateCachedBrowseAfterSetting">InvalidateCachedBrowseAfterSetting</string>
     <string name="browseCatSetting">browseCat</string>
     <string name="browseAtypeSetting">browseAtype</string>
     <string name="browseSpeciesSetting">browseSpecies</string>
@@ -79,6 +82,9 @@
     <string name="searchSave">Save Current Search</string>
 
     <string name="saveSearchState">saveSearchState</string>
+    <string name="cachedSearchStateSetting">cachedSearchStateSetting</string>
+    <string name="InvalidateCachedSearchTimeSetting">InvalidateCachedSearchTimeSetting</string>
+    <string name="InvalidateCachedSearchAfterSetting">InvalidateCachedSearchAfterSetting</string>
     <string name="searchOrderBySetting">searchOrderBySetting</string>
     <string name="searchOrderDirectionSetting">searchOrderDirectionSetting</string>
     <string name="searchRangeSetting">searchRangeSetting</string>
@@ -205,8 +211,17 @@
     <string name="searchNotificationsSwitch">Search Notifications</string>
     <string name="searchNotificationsInterval">Search Notification Interval(Min):</string>
     <string name="imageResolutionTextView">Select Results Image Resolution:</string>
+
     <string name="saveBrowseStateSwitch">Persist browse options</string>
+    <string name="cachedBrowse">Cached Browse:</string>
+    <string name="InvalidateCachedBrowseTime">Invalidate After(Mins):</string>
+    <string name="InvalidateCachedBrowseAfter">Invalidate On X New Results:</string>
+
     <string name="saveSearchStateSwitch">Persist search options</string>
+    <string name="cachedSearch">Cached Search:</string>
+    <string name="InvalidateCachedSearchTime">Invalidate After(Mins):</string>
+    <string name="InvalidateCachedSearchAfter">Invalidate On X New Results:</string>
+
     <string name="trackHistory">Keep History</string>
     <string name="clearHistory">Clear History</string>
 
@@ -244,10 +259,12 @@
     <string name="userNameText">Username:</string>
     <string name="passwordText">Password:</string>
 
+    <string name="browseSessionTimestamp">browseSessionTimestamp</string>
     <string name="browseSessionDataSet">browseSessionDataSet</string>
     <string name="browseSessionPage">browseSessionPage</string>
     <string name="browseSessionRecyclerView">browseSessionRecyclerView</string>
 
+    <string name="searchSessionTimestamp">searchSessionTimestamp</string>
     <string name="searchSessionDataSet">searchSessionDataSet</string>
     <string name="searchSessionPage">searchSessionPage</string>
     <string name="searchSessionRecyclerView">searchSessionRecyclerView</string>

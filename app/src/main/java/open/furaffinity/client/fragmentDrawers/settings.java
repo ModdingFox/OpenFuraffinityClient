@@ -52,7 +52,13 @@ public class settings extends appFragment {
     private Switch imageListOrientation;
     private Switch enablePostLabels;
     private Switch saveBrowseStateSwitch;
+    private Switch cachedBrowseStateSwitch;
+    private EditText InvalidateCachedBrowseTimeEditText;
+    private EditText InvalidateCachedBrowseAfterEditText;
     private Switch saveSearchStateSwitch;
+    private Switch cachedSearchStateSwitch;
+    private EditText InvalidateCachedSearchTimeEditText;
+    private EditText InvalidateCachedSearchAfterEditText;
     private Switch trackHistory;
     private Button clearHistory;
 
@@ -68,7 +74,13 @@ public class settings extends appFragment {
     public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;//Likely not gunna expose this as some views break with it as HORIZONTAL though the option would be nice
     public static boolean trackHistoryDefault = false;
     public static boolean saveBrowseStateDefault = true;
+    public static boolean cachedBrowseDefault = true; //Tied to saveBrowseStateDefault
+    public static int InvalidateCachedBrowseTimeDefault = 5;
+    public static int InvalidateCachedBrowseAfterDefault = 12;
     public static boolean saveSearchStateDefault = true;
+    public static boolean cachedSearchDefault = true; //Tied to saveSearchStateDefault
+    public static int InvalidateCachedSearchTimeDefault = 5;
+    public static int InvalidateCachedSearchAfterDefault = 12;
 
     @Override
     protected int getLayout() {
@@ -94,7 +106,13 @@ public class settings extends appFragment {
         imageListOrientation = rootView.findViewById(R.id.imageListOrientation);
         enablePostLabels = rootView.findViewById(R.id.enablePostLabels);
         saveBrowseStateSwitch = rootView.findViewById(R.id.saveBrowseStateSwitch);
+        cachedBrowseStateSwitch = rootView.findViewById(R.id.cachedBrowseStateSwitch);
+        InvalidateCachedBrowseTimeEditText = rootView.findViewById(R.id.InvalidateCachedBrowseTimeEditText);
+        InvalidateCachedBrowseAfterEditText = rootView.findViewById(R.id.InvalidateCachedBrowseAfterEditText);
         saveSearchStateSwitch = rootView.findViewById(R.id.saveSearchStateSwitch);
+        cachedSearchStateSwitch = rootView.findViewById(R.id.cachedSearchStateSwitch);
+        InvalidateCachedSearchTimeEditText = rootView.findViewById(R.id.InvalidateCachedSearchTimeEditText);
+        InvalidateCachedSearchAfterEditText = rootView.findViewById(R.id.InvalidateCachedSearchAfterEditText);
         trackHistory = rootView.findViewById(R.id.trackHistory);
         clearHistory = rootView.findViewById(R.id.clearHistory);
     }
@@ -138,7 +156,13 @@ public class settings extends appFragment {
         imageListOrientation.setChecked(sharedPref.getInt(context.getString(R.string.imageListOrientation), imageListOrientationDefault) == StaggeredGridLayoutManager.VERTICAL);
         enablePostLabels.setChecked(sharedPref.getBoolean(context.getString(R.string.imageListInfo), imageListInfoDefault));
         saveBrowseStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.saveBrowseState), saveBrowseStateDefault));
+        cachedBrowseStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.cachedBrowseStateSetting), cachedBrowseDefault));
+        InvalidateCachedBrowseTimeEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseTimeSetting), InvalidateCachedBrowseTimeDefault)));
+        InvalidateCachedBrowseAfterEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting), InvalidateCachedBrowseAfterDefault)));
         saveSearchStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.saveSearchState), saveSearchStateDefault));
+        cachedSearchStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.cachedSearchStateSetting), cachedSearchDefault));
+        InvalidateCachedSearchTimeEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchTimeSetting), InvalidateCachedSearchTimeDefault)));
+        InvalidateCachedSearchAfterEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchAfterSetting), InvalidateCachedSearchAfterDefault)));
         trackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackHistorySetting), trackHistoryDefault));
     }
 
@@ -404,6 +428,10 @@ public class settings extends appFragment {
         });
 
         saveBrowseStateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(!isChecked) {
+                cachedBrowseStateSwitch.setChecked(false);
+            }
+
             Context context = requireActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -411,12 +439,156 @@ public class settings extends appFragment {
             editor.apply();
         });
 
+        cachedBrowseStateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                saveBrowseStateSwitch.setChecked(true);
+            }
+
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.cachedBrowseStateSetting), isChecked);
+            editor.apply();
+        });
+
+        InvalidateCachedBrowseTimeEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int value = Integer.parseInt(InvalidateCachedBrowseTimeEditText.getText().toString());
+
+                    if (value > 0 && value <= Integer.MAX_VALUE) {
+                        Context context = requireActivity();
+                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt(context.getString(R.string.InvalidateCachedBrowseTimeSetting), value);
+                        editor.apply();
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+            }
+        });
+
+        InvalidateCachedBrowseAfterEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int value = Integer.parseInt(InvalidateCachedBrowseAfterEditText.getText().toString());
+
+                    if (value > 0 && value <= 24) {
+                        Context context = requireActivity();
+                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting), value);
+                        editor.apply();
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+            }
+        });
+
         saveSearchStateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(!isChecked) {
+                cachedSearchStateSwitch.setChecked(false);
+            }
+
             Context context = requireActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(context.getString(R.string.saveSearchState), isChecked);
             editor.apply();
+        });
+
+        cachedSearchStateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                saveSearchStateSwitch.setChecked(true);
+            }
+
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.cachedSearchStateSetting), isChecked);
+            editor.apply();
+        });
+
+        InvalidateCachedSearchTimeEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int value = Integer.parseInt(InvalidateCachedSearchTimeEditText.getText().toString());
+
+                    if (value > 0 && value <= Integer.MAX_VALUE) {
+                        Context context = requireActivity();
+                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt(context.getString(R.string.InvalidateCachedSearchTimeSetting), value);
+                        editor.apply();
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+            }
+        });
+
+        InvalidateCachedSearchAfterEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int value = Integer.parseInt(InvalidateCachedSearchAfterEditText.getText().toString());
+
+                    if (value > 0 && value <= 24) {
+                        Context context = requireActivity();
+                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt(context.getString(R.string.InvalidateCachedSearchAfterSetting), value);
+                        editor.apply();
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+            }
         });
 
         trackHistory.setOnCheckedChangeListener((buttonView, isChecked) -> {
