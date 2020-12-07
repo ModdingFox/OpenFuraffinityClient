@@ -319,6 +319,8 @@ public class search extends appFragment {
             searchOptionsScrollView.setVisibility(View.GONE);
             savedSearchRecyclerView.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.VISIBLE);
+
+            selectedSearch = null;
         }
 
         if (!loadedMainActivitySearchQuery) {
