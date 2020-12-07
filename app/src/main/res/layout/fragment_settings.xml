@@ -183,10 +183,74 @@
                 android:text="@string/saveBrowseStateSwitch" />
 
             <Switch
+                android:id="@+id/cachedBrowseStateSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cachedBrowse" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/InvalidateCachedBrowseTime" />
+
+            <EditText
+                android:id="@+id/InvalidateCachedBrowseTimeEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/InvalidateCachedBrowseAfter" />
+
+            <EditText
+                android:id="@+id/InvalidateCachedBrowseAfterEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
+            <Switch
                 android:id="@+id/saveSearchStateSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/saveSearchStateSwitch" />
+
+            <Switch
+                android:id="@+id/cachedSearchStateSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cachedSearch" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/InvalidateCachedSearchTime" />
+
+            <EditText
+                android:id="@+id/InvalidateCachedSearchTimeEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/InvalidateCachedSearchAfter" />
+
+            <EditText
+                android:id="@+id/InvalidateCachedSearchAfterEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number" />
 
             <Space
                 android:layout_width="match_parent"

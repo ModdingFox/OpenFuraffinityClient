@@ -29,6 +29,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -843,13 +844,25 @@ public class search extends appFragment {
         if(selectedSearch == null && mainActivitySearchQuery == null) {
             Context context = requireActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
-            String mDataSetString = sharedPref.getString(context.getString(R.string.searchSessionDataSet), null);
-            pageNumber = sharedPref.getInt(context.getString(R.string.searchSessionPage), -1);
-            recyclerViewPosition = sharedPref.getInt(context.getString(R.string.searchSessionRecyclerView), -1);
-            query = sharedPref.getString(context.getString(R.string.searchSessionQuery), null);
 
-            if (mDataSetString != null) {
-                mDataSet = (List<HashMap<String, String>>) open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
+            if(sharedPref.getBoolean(getString(R.string.cachedSearchStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedSearchDefault)) {
+                long sessionTimestamp = sharedPref.getLong(getString(R.string.searchSessionTimestamp), 0);
+                long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedSearchTimeSetting), 0);
+                sessionInvalidateCachedTime = sessionInvalidateCachedTime * 60;//convert min to seconds
+
+                long currentTimestamp = Instant.now().getEpochSecond();
+                long minTimestamp = currentTimestamp - sessionInvalidateCachedTime;
+
+                if(sessionTimestamp >= minTimestamp && sessionTimestamp <= currentTimestamp) {
+                    String mDataSetString = sharedPref.getString(context.getString(R.string.searchSessionDataSet), null);
+                    pageNumber = sharedPref.getInt(context.getString(R.string.searchSessionPage), -1);
+                    recyclerViewPosition = sharedPref.getInt(context.getString(R.string.searchSessionRecyclerView), -1);
+                    query = sharedPref.getString(context.getString(R.string.searchSessionQuery), null);
+
+                    if (mDataSetString != null) {
+                        mDataSet = (List<HashMap<String, String>>) open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
+                    }
+                }
             }
         }
     }
@@ -861,10 +874,21 @@ public class search extends appFragment {
             Context context = requireActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(context.getString(R.string.searchSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
-            editor.putInt(context.getString(R.string.searchSessionPage), page.getPage());
-            editor.putInt(context.getString(R.string.searchSessionRecyclerView), getRecyclerFirstItem());
-            editor.putString(context.getString(R.string.searchSessionQuery), page.getCurrentQuery());
+
+            if(sharedPref.getBoolean(getString(R.string.cachedSearchStateSetting), settings.cachedSearchDefault)) {
+                editor.putLong(context.getString(R.string.searchSessionTimestamp), Instant.now().getEpochSecond());
+                editor.putString(context.getString(R.string.searchSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
+                editor.putInt(context.getString(R.string.searchSessionPage), page.getPage());
+                editor.putInt(context.getString(R.string.searchSessionRecyclerView), getRecyclerFirstItem());
+                editor.putString(context.getString(R.string.searchSessionQuery), page.getCurrentQuery());
+            } else {
+                editor.putLong(context.getString(R.string.searchSessionTimestamp), 0);
+                editor.putString(context.getString(R.string.searchSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
+                editor.putInt(context.getString(R.string.searchSessionPage), page.getPage());
+                editor.putInt(context.getString(R.string.searchSessionRecyclerView), getRecyclerFirstItem());
+                editor.putString(context.getString(R.string.searchSessionQuery), page.getCurrentQuery());
+            }
+
             editor.apply();
         }
     }

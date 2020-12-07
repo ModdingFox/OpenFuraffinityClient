@@ -17,7 +17,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,11 +60,13 @@ public class browse extends appFragment {
     private open.furaffinity.client.pages.browse page;
 
     private boolean isInitialized = false;
+    private boolean isCacheInitialized = false;
     private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet;
 
     private int recyclerViewPosition = -1;
     private int pageNumber = -1;
+    private int pageCacheCheckResultCount = 0;
 
     @Override
     protected int getLayout() {
@@ -179,11 +184,26 @@ public class browse extends appFragment {
                     initCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
 
-                    if(recyclerViewPosition <= 1) {
+                    if(isCacheInitialized || mDataSet.size() == 0) {
+                        isCacheInitialized = true;
                         resetRecycler();
-                    } else if (pageNumber >= 0) {
+                    } else {
+                        fetchPageData();
+                    }
+                } else if(!isCacheInitialized) {
+                    isLoading = false;
+                    isCacheInitialized = true;
+
+                    List<HashMap<String, String>> pageResults = page.getPageResults();
+                    if(pageResults.size() > pageCacheCheckResultCount) {
+                        pageResults = pageResults.subList(0, pageCacheCheckResultCount);
+                    }
+
+                    if(mDataSet.size() > 0 && pageResults.contains(mDataSet.get(0))) {
                         page.setPage(Integer.toString(pageNumber));
                         swipeRefreshLayout.setRefreshing(false);
+                    } else {
+                        resetRecycler();
                     }
                 } else {
                     List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.browse)abstractPage).getPageResults();
@@ -359,12 +379,30 @@ public class browse extends appFragment {
 
         Context context = requireActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
-        String mDataSetString = sharedPref.getString(context.getString(R.string.browseSessionDataSet), null);
-        pageNumber = sharedPref.getInt(context.getString(R.string.browseSessionPage), -1);
-        recyclerViewPosition = sharedPref.getInt(context.getString(R.string.browseSessionRecyclerView), -1);
 
-        if(mDataSetString != null) {
-            mDataSet = (List<HashMap<String, String>>)open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
+        if(sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
+            long sessionTimestamp = sharedPref.getLong(getString(R.string.browseSessionTimestamp), 0);
+            long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedBrowseTimeSetting), 0);
+            sessionInvalidateCachedTime = sessionInvalidateCachedTime * 60;//convert min to seconds
+
+            long currentTimestamp = Instant.now().getEpochSecond();
+            long minTimestamp = currentTimestamp - sessionInvalidateCachedTime;
+
+            if(sessionTimestamp >= minTimestamp && sessionTimestamp <= currentTimestamp) {
+                pageCacheCheckResultCount = sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting), settings.InvalidateCachedBrowseAfterDefault);
+
+                String mDataSetString = sharedPref.getString(context.getString(R.string.browseSessionDataSet), null);
+                pageNumber = sharedPref.getInt(context.getString(R.string.browseSessionPage), -1);
+                recyclerViewPosition = sharedPref.getInt(context.getString(R.string.browseSessionRecyclerView), -1);
+
+                if (mDataSetString != null) {
+                    mDataSet = (List<HashMap<String, String>>) open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
+                }
+            } else {
+                isCacheInitialized = true;
+            }
+        } else {
+            isCacheInitialized = true;
         }
     }
 
@@ -375,9 +413,19 @@ public class browse extends appFragment {
             Context context = requireActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(context.getString(R.string.browseSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
-            editor.putInt(context.getString(R.string.browseSessionPage), page.getPage());
-            editor.putInt(context.getString(R.string.browseSessionRecyclerView), getRecyclerFirstItem());
+
+            if(sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
+                editor.putLong(context.getString(R.string.browseSessionTimestamp), Instant.now().getEpochSecond());
+                editor.putString(context.getString(R.string.browseSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
+                editor.putInt(context.getString(R.string.browseSessionPage), page.getPage());
+                editor.putInt(context.getString(R.string.browseSessionRecyclerView), getRecyclerFirstItem());
+            } else {
+                editor.putLong(context.getString(R.string.browseSessionTimestamp), 0);
+                editor.putString(context.getString(R.string.browseSessionDataSet), "");
+                editor.putInt(context.getString(R.string.browseSessionPage), -1);
+                editor.putInt(context.getString(R.string.browseSessionRecyclerView), -1);
+            }
+
             editor.apply();
         }
     }
