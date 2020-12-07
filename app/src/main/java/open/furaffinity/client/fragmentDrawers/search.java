@@ -99,6 +99,7 @@ public class search extends appFragment {
     private open.furaffinity.client.pages.search page;
 
     private boolean isInitialized = false;
+    private boolean isCacheInitialized = false;
     private boolean isLoading = false;
     private List<HashMap<String, String>> mDataSet;
     private boolean loadedMainActivitySearchQuery = false;
@@ -109,6 +110,7 @@ public class search extends appFragment {
 
     private int recyclerViewPosition = -1;
     private int pageNumber = -1;
+    private int pageCacheCheckResultCount = 0;
     private String query = null;
 
     @Override
@@ -428,11 +430,23 @@ public class search extends appFragment {
                     loadCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
 
-                    if(recyclerViewPosition < 1) {
+                    if(isCacheInitialized || mDataSet == null || mDataSet.size() == 0) {
+                        isCacheInitialized = true;
                         resetRecycler();
-                    } else if (pageNumber >= 0) {
+                    } else {
                         page.setQuery(query);
+                        fetchPageData();
+                    }
+                } else if(!isCacheInitialized) {
+                    isLoading = false;
+                    isCacheInitialized = true;
 
+                    List<HashMap<String, String>> pageResults = page.getPageResults();
+                    if(pageResults.size() > pageCacheCheckResultCount) {
+                        pageResults = pageResults.subList(0, pageCacheCheckResultCount);
+                    }
+
+                    if(mDataSet.size() > 0 && pageResults.contains(mDataSet.get(0))) {
                         searchOptionsScrollView.setVisibility(View.GONE);
                         savedSearchRecyclerView.setVisibility(View.GONE);
                         swipeRefreshLayout.setVisibility(View.VISIBLE);
@@ -440,6 +454,8 @@ public class search extends appFragment {
 
                         page.setPage(Integer.toString(pageNumber));
                         swipeRefreshLayout.setRefreshing(false);
+                    } else {
+                        resetRecycler();
                     }
                 } else {
                     List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.search)abstractPage).getPageResults();
@@ -854,6 +870,8 @@ public class search extends appFragment {
                 long minTimestamp = currentTimestamp - sessionInvalidateCachedTime;
 
                 if(sessionTimestamp >= minTimestamp && sessionTimestamp <= currentTimestamp) {
+                    pageCacheCheckResultCount = sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchAfterSetting), settings.InvalidateCachedSearchAfterDefault);
+
                     String mDataSetString = sharedPref.getString(context.getString(R.string.searchSessionDataSet), null);
                     pageNumber = sharedPref.getInt(context.getString(R.string.searchSessionPage), -1);
                     recyclerViewPosition = sharedPref.getInt(context.getString(R.string.searchSessionRecyclerView), -1);
@@ -861,9 +879,17 @@ public class search extends appFragment {
 
                     if (mDataSetString != null) {
                         mDataSet = (List<HashMap<String, String>>) open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
+                    } else {
+                        isCacheInitialized = true;
                     }
+                } else {
+                    isCacheInitialized = true;
                 }
+            } else {
+                isCacheInitialized = true;
             }
+        } else {
+            isCacheInitialized = true;
         }
     }
 

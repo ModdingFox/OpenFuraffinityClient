@@ -184,7 +184,7 @@ public class browse extends appFragment {
                     initCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
 
-                    if(isCacheInitialized || mDataSet.size() == 0) {
+                    if(isCacheInitialized || mDataSet == null || mDataSet.size() == 0) {
                         isCacheInitialized = true;
                         resetRecycler();
                     } else {
@@ -397,6 +397,8 @@ public class browse extends appFragment {
 
                 if (mDataSetString != null) {
                     mDataSet = (List<HashMap<String, String>>) open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
+                } else {
+                    isCacheInitialized = true;
                 }
             } else {
                 isCacheInitialized = true;
