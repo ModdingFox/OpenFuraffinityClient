@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,29 +18,14 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 
 public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.ViewHolder> {
-    private List<HashMap<String, String>> mDataSet;
+    private final List<HashMap<String, String>> mDataSet;
+    private final Context context;
     private List<String> checkedItems;
-
-    private Context context;
 
     public msgPmsListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
         this.context = context;
         checkedItems = new ArrayList<>();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView userName;
-        private final TextView messageText;
-        private final CheckBox checkBox;
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            userName = itemView.findViewById(R.id.userName);
-            messageText = itemView.findViewById(R.id.messageText);
-            checkBox = itemView.findViewById(R.id.checkBox);
-        }
     }
 
     @NonNull
@@ -58,12 +42,7 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
             holder.userName.setText(mDataSet.get(position).get("messageSender"));
 
             if (mDataSet.get(position).containsKey("messageSenderLink")) {
-                holder.userName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((mainActivity) context).setUserPath(mDataSet.get(position).get("messageSenderLink"));
-                    }
-                });
+                holder.userName.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("messageSenderLink")));
             }
         } else {
             holder.userName.setVisibility(View.GONE);
@@ -81,28 +60,16 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
         holder.messageText.setText(messageText);
 
         if (mDataSet.get(position).containsKey("messageLink")) {
-            holder.messageText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("messageLink"));
-                }
-            });
+            holder.messageText.setOnClickListener(v -> ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("messageLink")));
         }
 
-        if (checkedItems.contains(mDataSet.get(position).get("messageid"))) {
-            holder.checkBox.setChecked(true);
-        } else {
-            holder.checkBox.setChecked(false);
-        }
+        holder.checkBox.setChecked(checkedItems.contains(mDataSet.get(position).get("messageid")));
 
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    checkedItems.add(mDataSet.get(position).get("messageid"));
-                } else {
-                    checkedItems.remove(mDataSet.get(position).get("messageid"));
-                }
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                checkedItems.add(mDataSet.get(position).get("messageid"));
+            } else {
+                checkedItems.remove(mDataSet.get(position).get("messageid"));
             }
         });
     }
@@ -118,5 +85,19 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView userName;
+        private final TextView messageText;
+        private final CheckBox checkBox;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            userName = itemView.findViewById(R.id.userName);
+            messageText = itemView.findViewById(R.id.messageText);
+            checkBox = itemView.findViewById(R.id.checkBox);
+        }
     }
 }

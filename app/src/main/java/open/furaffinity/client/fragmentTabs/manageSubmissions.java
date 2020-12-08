@@ -29,16 +29,15 @@ import open.furaffinity.client.submitPages.submitControlsSubmissionsAssignItemTo
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageSubmissions extends appFragment {
+    private static final String pagePath = "/controls/submissions/";
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
-
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<manageImageListAdapter.ViewHolder> mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
     private fabCircular fab;
     private FloatingActionButton assignSelectedToFolder;
     private FloatingActionButton assignSelectedToNewFolder;
@@ -46,18 +45,13 @@ public class manageSubmissions extends appFragment {
     private FloatingActionButton moveSelectedToScraps;
     private FloatingActionButton moveSelectedToGallery;
     private FloatingActionButton removeSelected;
-
     private gallery page;
-
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private static final String pagePath = "/controls/submissions/";
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
-
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
+            List<HashMap<String, String>> pageResults = ((gallery) abstractPage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -87,6 +81,10 @@ public class manageSubmissions extends appFragment {
             Toast.makeText(getActivity(), "Failed to load data for submissions", Toast.LENGTH_SHORT).show();
         }
     };
+
+    public static String getPagePath() {
+        return pagePath;
+    }
 
     @Override
     protected int getLayout() {
@@ -365,7 +363,7 @@ public class manageSubmissions extends appFragment {
                         public void requestFailed(abstractPage abstractPage) {
                             Toast.makeText(getActivity(), "Failed to deleted submission", Toast.LENGTH_SHORT).show();
                         }
-                    }, params, ((textDialog)dialog).getText()).execute();
+                    }, params, ((textDialog) dialog).getText()).execute();
                 }
 
                 @Override
@@ -377,9 +375,5 @@ public class manageSubmissions extends appFragment {
             textDialog.setIsPassword();
             textDialog.show(getChildFragmentManager(), "passwordConfirm");
         });
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 }

@@ -26,8 +26,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/browseCat"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:text="@string/browseCat" />
 
             <Spinner
                 android:id="@+id/browseCatSpinner"
@@ -41,8 +41,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/browseAtype"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:text="@string/browseAtype" />
 
             <Spinner
                 android:id="@+id/browseAtypeSpinner"
@@ -56,8 +56,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/browseSpecies"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:text="@string/browseSpecies" />
 
             <Spinner
                 android:id="@+id/browseSpeciesSpinner"
@@ -71,8 +71,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/browseGender"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:text="@string/browseGender" />
 
             <Spinner
                 android:id="@+id/browseGenderSpinner"
@@ -86,8 +86,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/browsePerpage"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:text="@string/browsePerpage" />
 
             <Spinner
                 android:id="@+id/browsePerpageSpinner"
@@ -101,8 +101,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/browsePage"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:text="@string/browsePage" />
 
             <EditText
                 android:id="@+id/browsePageEditText"
@@ -117,8 +117,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/browseOptionsRating"
                 android:layout_gravity="center_vertical"
+                android:text="@string/browseOptionsRating"
                 android:textSize="18sp" />
         </TableRow>
 
@@ -157,9 +157,9 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollbars="vertical"
             android:visibility="visible" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

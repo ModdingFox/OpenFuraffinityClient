@@ -14,21 +14,24 @@ import java.util.List;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsFoldersSubmissions extends abstractPage {
-    private static String pagePath = "/controls/folders/submissions/";
-    
-    private List<HashMap<String, String>> pageResults = new ArrayList<>();
+    private static final String pagePath = "/controls/folders/submissions/";
 
-    private String createGroupKey = "";
-    private String renameGroupKey = "";
+    private final List<HashMap<String, String>> pageResults = new ArrayList<>();
     HashMap<String, String> existingGroups = new HashMap<>();
     String selectedGroup;
+    private String createGroupKey = "";
+    private String renameGroupKey = "";
 
     public controlsFoldersSubmissions(Context context, pageListener pageListener) {
         super(context, pageListener);
     }
 
-    public controlsFoldersSubmissions(controlsFoldersSubmissions controlsFoldersSubmissions){
+    public controlsFoldersSubmissions(controlsFoldersSubmissions controlsFoldersSubmissions) {
         super(controlsFoldersSubmissions);
+    }
+
+    public static String getPagePath() {
+        return pagePath;
     }
 
     private HashMap<String, String> extractFormelements(Element form, String name) {
@@ -163,11 +166,7 @@ public class controlsFoldersSubmissions extends abstractPage {
             }
         }
 
-        if(addGroupForm != null &&  renameGroupForm != null) {
-            return true;
-        }
-
-        return false;
+        return addGroupForm != null && renameGroupForm != null;
     }
 
     @Override
@@ -177,10 +176,6 @@ public class controlsFoldersSubmissions extends abstractPage {
             return processPageData(html);
         }
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public List<HashMap<String, String>> getPageResults() {

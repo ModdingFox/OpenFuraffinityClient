@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,28 +22,12 @@ import open.furaffinity.client.sqlite.searchDBHelper;
 import open.furaffinity.client.utilities.notificationItem;
 
 public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchListAdapter.ViewHolder> {
-    private static final String TAG = savedSearchListAdapter.class.getName();
-
-    private List<notificationItem> mDataSet;
-    private Context context;
+    private final List<notificationItem> mDataSet;
+    private final Context context;
 
     public savedSearchListAdapter(List<notificationItem> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
         this.context = context;
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView nameTextView;
-        private final Switch notificationSwitch;
-        private final Button deleteButton;
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            nameTextView = itemView.findViewById(R.id.nameTextView);
-            notificationSwitch = itemView.findViewById(R.id.notificationSwitch);
-            deleteButton = itemView.findViewById(R.id.deleteButton);
-        }
     }
 
     @NonNull
@@ -60,55 +43,58 @@ public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchList
         holder.nameTextView.setText(mDataSet.get(position).getName());
         holder.notificationSwitch.setChecked(mDataSet.get(position).getState());
 
-        holder.nameTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((mainActivity) context).setSearchSelected(Integer.toString(mDataSet.get(position).getRowId()));
-            }
+        holder.nameTextView.setOnClickListener(v -> ((mainActivity) context).setSearchSelected(Integer.toString(mDataSet.get(position).getRowId())));
+
+        holder.notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            searchDBHelper dbHelper = new searchDBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE, ((isChecked) ? (1) : (0)));
+
+            String selection = "rowid = ?";
+            String[] selectionArgs = {Integer.toString(mDataSet.get(position).getRowId())};
+
+            db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
+            db.close();
+
+            mDataSet.get(position).setState(isChecked);
         });
 
-        holder.notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                searchDBHelper dbHelper = new searchDBHelper(context);
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
+        holder.deleteButton.setOnClickListener(v -> {
+            searchDBHelper dbHelper = new searchDBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                ContentValues values = new ContentValues();
-                values.put(searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE, ((isChecked) ? (1) : (0)));
+            String selection = "rowid = ?";
+            String[] selectionArgs = {Integer.toString(mDataSet.get(position).getRowId())};
+            db.delete(searchItemEntry.TABLE_NAME, selection, selectionArgs);
+            db.close();
 
-                String selection = "rowid = ?";
-                String[] selectionArgs = {Integer.toString(mDataSet.get(position).getRowId())};
+            //This is cheap but it works
+            ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+            layoutParams.height = 0;
+            holder.itemView.setLayoutParams(layoutParams);
 
-                db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
-                db.close();
-
-                mDataSet.get(position).setState(isChecked);
-            }
-        });
-
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchDBHelper dbHelper = new searchDBHelper(context);
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-                String selection = "rowid = ?";
-                String[] selectionArgs = {Integer.toString(mDataSet.get(position).getRowId())};
-                db.delete(searchItemEntry.TABLE_NAME, selection, selectionArgs);
-                db.close();
-
-                //This is cheap but it works
-                ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-                layoutParams.height = 0;
-                holder.itemView.setLayoutParams(layoutParams);
-
-                holder.itemView.setVisibility(View.GONE);
-            }
+            holder.itemView.setVisibility(View.GONE);
         });
     }
 
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView nameTextView;
+        private final Switch notificationSwitch;
+        private final Button deleteButton;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            nameTextView = itemView.findViewById(R.id.nameTextView);
+            notificationSwitch = itemView.findViewById(R.id.notificationSwitch);
+            deleteButton = itemView.findViewById(R.id.deleteButton);
+        }
     }
 }

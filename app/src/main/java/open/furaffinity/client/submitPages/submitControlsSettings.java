@@ -69,13 +69,13 @@ public class submitControlsSettings extends open.furaffinity.client.abstractClas
 
         Element sectionBody = doc.selectFirst("div.success-msg-box");
 
-        if(sectionBody != null) {
+        if (sectionBody != null) {
             return true;
         }
 
         Element errorMsgBox = doc.selectFirst("div.error-msg-box");
 
-        if(errorMsgBox != null) {
+        if (errorMsgBox != null) {
             errorMessage = errorMsgBox.text();
         } else {
             errorMessage = "unknown";

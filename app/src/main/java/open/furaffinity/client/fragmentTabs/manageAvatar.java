@@ -12,26 +12,22 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.manageAvatarListAdapter;
 import open.furaffinity.client.dialogs.uploadAvatarDialog;
-import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsAvatar;
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageAvatar extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<manageAvatarListAdapter.ViewHolder> mAdapter;
-
     private fabCircular fab;
-
     private controlsAvatar page;
-
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {
@@ -50,7 +46,7 @@ public class manageAvatar extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(!isLoading) {
+        if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new controlsAvatar(page);
@@ -77,7 +73,7 @@ public class manageAvatar extends appFragment {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
                 mDataSet.clear();
-                mDataSet.addAll(((controlsAvatar)abstractPage).getPageResults());
+                mDataSet.addAll(((controlsAvatar) abstractPage).getPageResults());
                 mAdapter.notifyDataSetChanged();
                 //fab.setVisibility(View.VISIBLE);
                 isLoading = false;

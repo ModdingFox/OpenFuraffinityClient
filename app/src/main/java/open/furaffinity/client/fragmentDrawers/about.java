@@ -20,44 +20,11 @@ import open.furaffinity.client.pages.user;
 
 public class about extends appFragment {
     private static final String TAG = about.class.getName();
-
-    private LinearLayoutManager layoutManager;
-
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter<commentListAdapter.ViewHolder> mAdapter;
-
-    private static class contributor {
-        private final String userPage;
-        private final String userDescription;
-        private final String userDate;
-        private final String userAlias;
-
-        public contributor(String userPage, String userDescription, String userDate, String userAlias) {
-            this.userPage = userPage;
-            this.userDescription = userDescription;
-            this.userDate = userDate;
-            this.userAlias = userAlias;
-        }
-
-        public String getUserPage() {
-            return userPage;
-        }
-
-        public String getUserDescription() {
-            return userDescription;
-        }
-
-        public String getUserDate() {
-            return userDate;
-        }
-
-        public String getUserAlias() {
-            return userAlias;
-        }
-    }
-
     private final List<contributor> contributorsList = new ArrayList<>();
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    private LinearLayoutManager layoutManager;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter<commentListAdapter.ViewHolder> mAdapter;
 
     @Override
     protected int getLayout() {
@@ -125,5 +92,35 @@ public class about extends appFragment {
     @Override
     protected void updateUIElementListeners(View rootView) {
 
+    }
+
+    private static class contributor {
+        private final String userPage;
+        private final String userDescription;
+        private final String userDate;
+        private final String userAlias;
+
+        public contributor(String userPage, String userDescription, String userDate, String userAlias) {
+            this.userPage = userPage;
+            this.userDescription = userDescription;
+            this.userDate = userDate;
+            this.userAlias = userAlias;
+        }
+
+        public String getUserPage() {
+            return userPage;
+        }
+
+        public String getUserDescription() {
+            return userDescription;
+        }
+
+        public String getUserDate() {
+            return userDate;
+        }
+
+        public String getUserAlias() {
+            return userAlias;
+        }
     }
 }

@@ -18,19 +18,15 @@ import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOpti
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class browse extends abstractPage {
-    private static String pagePath = "/browse";
-
+    private static final String pagePath = "/browse";
+    private final imageResultsTool.imageResolutions currentResolution;
     private HashMap<String, String> requestParameters = new HashMap<>();
-
     private HashMap<String, String> cat = new HashMap<>();
     private HashMap<String, String> atype = new HashMap<>();
     private HashMap<String, String> species = new HashMap<>();
     private HashMap<String, String> gender = new HashMap<>();
     private HashMap<String, String> perpage = new HashMap<>();
-
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
-
-    private imageResultsTool.imageResolutions currentResolution = imageResultsTool.imageResolutions.Original;
 
     public browse(Context context, pageListener pageListener) {
         super(context, pageListener);
@@ -60,11 +56,7 @@ public class browse extends abstractPage {
         perpage = getDropDownOptions("perpage", html);
         pageResults = getResultsData(html, currentResolution);
 
-        if (cat != null && atype != null && species != null && gender != null && perpage != null && pageResults != null) {
-            return true;
-        }
-
-        return false;
+        return cat != null && atype != null && species != null && gender != null && perpage != null;
     }
 
     @Override
@@ -88,60 +80,60 @@ public class browse extends abstractPage {
         return cat;
     }
 
-    public String getCurrentCat() {
-        return Optional.ofNullable(requestParameters.get("cat")).orElse("");
-    }
-
     public void setCat(String value) {
         setRestrictedKeyValuePairState("cat", value, cat);
+    }
+
+    public String getCurrentCat() {
+        return Optional.ofNullable(requestParameters.get("cat")).orElse("");
     }
 
     public HashMap<String, String> getAtype() {
         return atype;
     }
 
-    public String getCurrentAtype() {
-        return Optional.ofNullable(requestParameters.get("atype")).orElse("");
-    }
-
     public void setAtype(String value) {
         setRestrictedKeyValuePairState("atype", value, atype);
+    }
+
+    public String getCurrentAtype() {
+        return Optional.ofNullable(requestParameters.get("atype")).orElse("");
     }
 
     public HashMap<String, String> getSpecies() {
         return species;
     }
 
-    public String getCurrentSpecies() {
-        return Optional.ofNullable(requestParameters.get("species")).orElse("");
-    }
-
     public void setSpecies(String value) {
         setRestrictedKeyValuePairState("species", value, species);
+    }
+
+    public String getCurrentSpecies() {
+        return Optional.ofNullable(requestParameters.get("species")).orElse("");
     }
 
     public HashMap<String, String> getGender() {
         return gender;
     }
 
-    public String getCurrentGender() {
-        return Optional.ofNullable(requestParameters.get("gender")).orElse("");
-    }
-
     public void setGender(String value) {
         setRestrictedKeyValuePairState("gender", value, gender);
+    }
+
+    public String getCurrentGender() {
+        return Optional.ofNullable(requestParameters.get("gender")).orElse("");
     }
 
     public HashMap<String, String> getPerpage() {
         return perpage;
     }
 
-    public String getCurrentPerpage() {
-        return Optional.ofNullable(requestParameters.get("perpage")).orElse("");
-    }
-
     public void setPerpage(String value) {
         setRestrictedKeyValuePairState("perpage", value, perpage);
+    }
+
+    public String getCurrentPerpage() {
+        return Optional.ofNullable(requestParameters.get("perpage")).orElse("");
     }
 
     public int getPage() {
@@ -151,14 +143,8 @@ public class browse extends abstractPage {
             } catch (NumberFormatException e) {
                 Log.e(TAG, "getPage: ", e);
             }
-            return 1;
-        } else {
-            return 1;
         }
-    }
-
-    public String getCurrentPage() {
-        return Optional.ofNullable(requestParameters.get("page")).orElse("1");
+        return 1;
     }
 
     public void setPage(String value) {
@@ -169,6 +155,10 @@ public class browse extends abstractPage {
         } catch (NumberFormatException e) {
             Log.e(TAG, "setPage: ", e);
         }
+    }
+
+    public String getCurrentPage() {
+        return Optional.ofNullable(requestParameters.get("page")).orElse("1");
     }
 
     private void setCheckboxState(String key, boolean state) {

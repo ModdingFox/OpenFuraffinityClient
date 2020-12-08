@@ -13,44 +13,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class imageResultsTool {
-    public static enum imageResolutions {
-        UltraHigh(1600, "Ultra High - 1600"),
-        VeryHigh(800, "Very High - 800"),
-        High(600, "High - 600"),
-        MediumHigh(400, "Medium High - 400"),
-        Medium(300, "Medium - 300"),
-        MediumLow(250, "Medium Low - 250"),
-        Low(200, "Low - 200"),
-        VeryLow(150, "Very Low - 150"),
-        UltraLow(100, "Ultra Low - 100"),
-        ExtremeLow(75, "Extreme Low - 75"),
-        Minimal(50, "Minimal - 50"),
-        Original(0, "Site Default");
-
-        private int value;
-        private String printableName;
-
-        imageResolutions(int value, String printableName) {
-            this.value = value;
-            this.printableName = printableName;
-        }
-
-        @Override
-        public String toString() { return Integer.toString(this.value); }
-
-        public String getPrintableName() {
-            return this.printableName;
-        }
-        public int getValue() { return this.value; }
-
-    }
-
     public static imageResolutions getimageResolutionFromInt(int input) {
         List<imageResolutions> imageResolutionsList = Arrays.asList(imageResolutions.values());
         imageResolutionsList = imageResolutionsList.stream().sorted((p1, p2) -> Integer.compare(p1.getValue(), p2.getValue())).collect(Collectors.toList());
 
-        for(imageResolutions currentImageResolution : imageResolutionsList) {
-            if(input <= currentImageResolution.getValue()) {
+        for (imageResolutions currentImageResolution : imageResolutionsList) {
+            if (input <= currentImageResolution.getValue()) {
                 return currentImageResolution;
             }
         }
@@ -101,8 +69,8 @@ public class imageResultsTool {
             }
 
             Element img = rootElement.selectFirst("img");
-            if(img != null) {
-                if(imageResolution == imageResolutions.Original) {
+            if (img != null) {
+                if (imageResolution == imageResolutions.Original) {
                     currentPostData.put("imgUrl", img.attr("src"));
                 } else {
                     String changedUrl = img.attr("src").replaceFirst("@\\d+-", "@" + imageResolution.toString() + "-");
@@ -115,7 +83,7 @@ public class imageResultsTool {
 
             Elements posts = figcaption.select("a");
 
-            if(posts.size() > 0) {
+            if (posts.size() > 0) {
                 Element post = posts.get(0);
 
                 currentPostData.put("postPath", post.attr("href"));
@@ -140,6 +108,43 @@ public class imageResultsTool {
         }
 
         return result;
+    }
+
+    public enum imageResolutions {
+        UltraHigh(1600, "Ultra High - 1600"),
+        VeryHigh(800, "Very High - 800"),
+        High(600, "High - 600"),
+        MediumHigh(400, "Medium High - 400"),
+        Medium(300, "Medium - 300"),
+        MediumLow(250, "Medium Low - 250"),
+        Low(200, "Low - 200"),
+        VeryLow(150, "Very Low - 150"),
+        UltraLow(100, "Ultra Low - 100"),
+        ExtremeLow(75, "Extreme Low - 75"),
+        Minimal(50, "Minimal - 50"),
+        Original(0, "Site Default");
+
+        private final int value;
+        private final String printableName;
+
+        imageResolutions(int value, String printableName) {
+            this.value = value;
+            this.printableName = printableName;
+        }
+
+        @Override
+        public String toString() {
+            return Integer.toString(this.value);
+        }
+
+        public String getPrintableName() {
+            return this.printableName;
+        }
+
+        public int getValue() {
+            return this.value;
+        }
+
     }
 
 }

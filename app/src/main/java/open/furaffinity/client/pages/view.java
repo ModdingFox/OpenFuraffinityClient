@@ -13,8 +13,9 @@ import java.util.List;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class view extends abstractPage {
-    private String pagePath;
-
+    private final String pagePath;
+    private final List<String> submissionTags = new ArrayList<>();
+    private final List<String> folderList = new ArrayList<>();
     private String prev;
     private boolean isFav;
     private String favUnFav;
@@ -22,30 +23,22 @@ public class view extends abstractPage {
     private String download;
     private String note;
     private String next;
-
     private String submissionImgLink;
-
     private String submissionUserIcon;
     private String submissionUser;
     private String submissionUserPage;
     private String submissionTitle;
     private String submissionDate;
     private String submissionDescription;
-
     private String submissionCommentCount;
     private String submissionViews;
     private String submissionFavorites;
     private String submissionRating;
-
     private String submissionCategory;
     private String submissionSpecies;
     private String submissionGender;
     private String submissionSize;
-
-    private List<String> submissionTags = new ArrayList<>();
     private String submissionComments;
-
-    private List<String> folderList = new ArrayList<>();
 
     public view(Context context, pageListener pageListener, String pagePath) {
         super(context, pageListener);
@@ -152,7 +145,7 @@ public class view extends abstractPage {
         }
 
         Element submissionStatsContainer = doc.selectFirst("section.stats-container");
-        if(submissionStatsContainer != null) {
+        if (submissionStatsContainer != null) {
             Element submissionCommentsDiv = submissionStatsContainer.selectFirst("div.comments");
             if (submissionCommentsDiv != null) {
                 Element submissionCommentsSpan = submissionCommentsDiv.selectFirst("span");
@@ -187,36 +180,36 @@ public class view extends abstractPage {
         }
 
         Element submissionInfoSection = doc.selectFirst("section.info");
-        if(submissionInfoSection != null) {
+        if (submissionInfoSection != null) {
             Element submissionCategoryDiv = submissionInfoSection.selectFirst("div");
-            if(submissionCategoryDiv != null) {
+            if (submissionCategoryDiv != null) {
                 Element submissionCategoryNameSpan = submissionCategoryDiv.selectFirst("span.category-name");
-                if(submissionCategoryNameSpan != null) {
+                if (submissionCategoryNameSpan != null) {
                     Element submissionCategoryNameTypeSpan = submissionCategoryDiv.selectFirst("span.type-name");
-                    if(submissionCategoryNameTypeSpan != null) {
+                    if (submissionCategoryNameTypeSpan != null) {
                         submissionCategory = submissionCategoryNameSpan.text() + " / " + submissionCategoryNameTypeSpan.text();
                     }
                 }
             }
 
             Element submissionSpeciesDiv = submissionCategoryDiv.nextElementSibling();
-            if(submissionSpeciesDiv != null) {
+            if (submissionSpeciesDiv != null) {
                 submissionSpecies = submissionSpeciesDiv.text();
             }
 
             Element submissionGenderDiv = submissionSpeciesDiv.nextElementSibling();
-            if(submissionGenderDiv != null) {
+            if (submissionGenderDiv != null) {
                 submissionGender = submissionGenderDiv.text();
             }
 
             Element submissionSizeDiv = submissionGenderDiv.nextElementSibling();
-            if(submissionSizeDiv != null) {
+            if (submissionSizeDiv != null) {
                 submissionSize = submissionSizeDiv.text();
             }
         }
 
         Element submissionTagsSection = doc.selectFirst("section.tags-row");
-        if(submissionTagsSection != null) {
+        if (submissionTagsSection != null) {
             Elements submissionTagsSpans = submissionTagsSection.select("span.tags");
             for (Element currentElement : submissionTagsSpans) {
                 submissionTags.add(currentElement.text());
@@ -224,7 +217,7 @@ public class view extends abstractPage {
         }
 
         Element submissionCommentsList = doc.selectFirst("div.comments-list");
-        if(submissionCommentsList != null) {
+        if (submissionCommentsList != null) {
             submissionComments = submissionCommentsList.html();
         }
 
@@ -241,11 +234,7 @@ public class view extends abstractPage {
             }
         }
 
-        if(submissionIdContainer != null ) {
-            return true;
-        }
-
-        return false;
+        return submissionIdContainer != null;
     }
 
     @Override

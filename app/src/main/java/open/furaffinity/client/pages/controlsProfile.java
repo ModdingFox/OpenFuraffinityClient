@@ -17,74 +17,19 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 public class controlsProfile extends abstractPage {
     private static final String TAG = controlsProfile.class.getName();
 
-    private static String pagePath = "/controls/profile/";
-
-    public class inputItem {
-        String name;
-        String header;
-        String value;
-        int maxLength;
-        HashMap<String, String> options;
-
-        private void initInputItem(String name, String header, String value, int maxLength, HashMap<String, String> options) {
-            this.name = name;
-            this.header = header;
-            this.value = value;
-            this.maxLength = maxLength;
-            this.options = options;
-        }
-
-        public inputItem(String name, String header, String value) {
-            initInputItem(name, header, value, Integer.MAX_VALUE, null);
-        }
-
-        public inputItem(String name, String header, String value, int maxLength) {
-            initInputItem(name, header, value, maxLength, null);
-        }
-
-        public inputItem(String name, String header, HashMap<String, String> options) {
-            initInputItem(name, header, "", 0, options);
-        }
-
-        public inputItem(String name, String header, String value, HashMap<String, String> options) {
-            initInputItem(name, header, value, 0, options);
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getHeader() {
-            return header;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public int getMaxLength() {
-            return maxLength;
-        }
-
-        public HashMap<String, String> getOptions() {
-            return options;
-        }
-
-        public boolean isSelect() {
-            return ((options == null) ? (false) : (true));
-        }
-    }
-
-    private List<inputItem> pageResults = new ArrayList<>();
+    private static final String pagePath = "/controls/profile/";
+    private final List<inputItem> pageResults = new ArrayList<>();
     private String key;
-
     public controlsProfile(Context context, pageListener pageListener) {
         super(context, pageListener);
     }
 
-
     public controlsProfile(controlsProfile controlsProfile) {
         super(controlsProfile);
+    }
+
+    public static String getPagePath() {
+        return pagePath;
     }
 
     protected Boolean processPageData(String html) {
@@ -167,11 +112,7 @@ public class controlsProfile extends abstractPage {
             }
         }
 
-        if(controlPanelItemContainerDiv.size() > 0 && msgFormForm != null){
-            return true;
-        }
-
-        return false;
+        return controlPanelItemContainerDiv != null && controlPanelItemContainerDiv.size() > 0 && msgFormForm != null;
     }
 
     @Override
@@ -183,15 +124,63 @@ public class controlsProfile extends abstractPage {
         return false;
     }
 
-    public static String getPagePath() {
-        return pagePath;
-    }
-
     public List<inputItem> getPageResults() {
         return pageResults;
     }
 
     public String getKey() {
         return key;
+    }
+
+    public static class inputItem {
+        String name;
+        String header;
+        String value;
+        int maxLength;
+        HashMap<String, String> options;
+
+        public inputItem(String name, String header, String value) {
+            initInputItem(name, header, value, Integer.MAX_VALUE, null);
+        }
+
+        public inputItem(String name, String header, String value, int maxLength) {
+            initInputItem(name, header, value, maxLength, null);
+        }
+
+        public inputItem(String name, String header, String value, HashMap<String, String> options) {
+            initInputItem(name, header, value, 0, options);
+        }
+
+        private void initInputItem(String name, String header, String value, int maxLength, HashMap<String, String> options) {
+            this.name = name;
+            this.header = header;
+            this.value = value;
+            this.maxLength = maxLength;
+            this.options = options;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getHeader() {
+            return header;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public int getMaxLength() {
+            return maxLength;
+        }
+
+        public HashMap<String, String> getOptions() {
+            return options;
+        }
+
+        public boolean isSelect() {
+            return (options != null);
+        }
     }
 }

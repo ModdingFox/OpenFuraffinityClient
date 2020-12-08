@@ -11,12 +11,11 @@ import java.util.Objects;
 import open.furaffinity.client.fragmentDrawers.settings;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
-    private int visibleThreshold = settings.recyclerVisibleThresholdDefault;
+    private final int visibleThreshold = settings.recyclerVisibleThresholdDefault;
+    private final RecyclerView.LayoutManager mLayoutManager;
     private int currentPage = 0;
     private int previousTotalItemCount = 0;
     private boolean loading = true;
-
-    private RecyclerView.LayoutManager mLayoutManager;
 
     protected EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;

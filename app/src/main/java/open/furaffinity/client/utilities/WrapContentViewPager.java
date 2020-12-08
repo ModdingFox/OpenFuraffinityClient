@@ -7,10 +7,6 @@ import android.view.View;
 import androidx.viewpager.widget.ViewPager;
 
 public class WrapContentViewPager extends ViewPager {
-    private static final String TAG = WrapContentViewPager.class.getName();
-
-    private int mCurrentPagePosition = 0;
-
     public WrapContentViewPager(Context context) {
         super(context);
         initPageChangeListener();
@@ -25,7 +21,6 @@ public class WrapContentViewPager extends ViewPager {
         addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                mCurrentPagePosition = position;
                 requestLayout();
             }
         });

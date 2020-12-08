@@ -44,7 +44,7 @@ public class manageUserSettings extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(!isLoading) {
+        if (!isLoading) {
             isLoading = true;
             page = new controlsUserSettings(page);
             page.execute();
@@ -60,19 +60,19 @@ public class manageUserSettings extends appFragment {
         page = new controlsUserSettings(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                if (((controlsUserSettings)abstractPage).getAcceptTrades()) {
+                if (((controlsUserSettings) abstractPage).getAcceptTrades()) {
                     accept_trades_yes.setChecked(true);
                 } else {
                     accept_trades_no.setChecked(true);
                 }
 
-                if (((controlsUserSettings)abstractPage).getAcceptCommissions()) {
+                if (((controlsUserSettings) abstractPage).getAcceptCommissions()) {
                     accept_commissions_yes.setChecked(true);
                 } else {
                     accept_commissions_no.setChecked(true);
                 }
 
-                uiControls.spinnerSetAdapter(requireContext(), featured_journal_id, ((controlsUserSettings)abstractPage).getFeaturedJournalId(), ((controlsUserSettings)abstractPage).getFeaturedJournalIdCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), featured_journal_id, ((controlsUserSettings) abstractPage).getFeaturedJournalId(), ((controlsUserSettings) abstractPage).getFeaturedJournalIdCurrent(), true, false);
 
                 fab.setVisibility(View.VISIBLE);
                 isLoading = false;

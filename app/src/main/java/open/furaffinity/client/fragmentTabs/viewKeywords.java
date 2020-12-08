@@ -50,7 +50,7 @@ public class viewKeywords extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             mDataSet = getArguments().getStringArrayList(messageIds.SubmissionTags_MESSAGE);
         }
 

@@ -20,18 +20,15 @@ import open.furaffinity.client.pages.journals;
 import open.furaffinity.client.utilities.messageIds;
 
 public class userJournals extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private LinearLayoutManager layoutManager;
-
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<journalListAdapter.ViewHolder> mAdapter;
     @SuppressWarnings("FieldCanBeLocal")
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
     private journals page;
-
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {
@@ -45,7 +42,7 @@ public class userJournals extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(!isLoading && loadingStopCounter > 0) {
+        if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             page = new journals(page);
             page.execute();
@@ -62,7 +59,7 @@ public class userJournals extends appFragment {
         mAdapter = new journalListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             page = new journals(getActivity(), new abstractPage.pageListener() {
                 @Override
                 public void requestSucceeded(abstractPage abstractPage) {

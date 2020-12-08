@@ -16,6 +16,18 @@ public class dynamicEditItem {
     private Spinner spinner;
     private String name;
 
+    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, String placeholder) {
+        initDynamicEditItem(context, linearLayout, name, header, value, placeholder, Integer.MAX_VALUE, null);
+    }
+
+    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, String placeholder, int maxLength) {
+        initDynamicEditItem(context, linearLayout, name, header, value, placeholder, maxLength, null);
+    }
+
+    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, HashMap<String, String> options) {
+        initDynamicEditItem(context, linearLayout, name, header, value, "", 0, options);
+    }
+
     private void initDynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, String placeholder, int maxLength, HashMap<String, String> options) {
         this.name = name;
 
@@ -42,22 +54,6 @@ public class dynamicEditItem {
             open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(context, this.spinner, options, value, false, false);
             this.linearLayout.addView(this.spinner);
         }
-    }
-
-    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, String placeholder) {
-        initDynamicEditItem(context, linearLayout, name, header, value, placeholder, Integer.MAX_VALUE, null);
-    }
-
-    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, String placeholder, int maxLength) {
-        initDynamicEditItem(context, linearLayout, name, header, value, placeholder, maxLength, null);
-    }
-
-    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, HashMap<String, String> options) {
-        initDynamicEditItem(context, linearLayout, name, header, "", "", 0, options);
-    }
-
-    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, HashMap<String, String> options) {
-        initDynamicEditItem(context, linearLayout, name, header, value, "", 0, options);
     }
 
     public String getName() {

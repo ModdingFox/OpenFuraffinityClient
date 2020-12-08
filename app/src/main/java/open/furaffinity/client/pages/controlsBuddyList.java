@@ -14,10 +14,8 @@ import java.util.List;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsBuddyList extends abstractPage {
-    private static final String TAG = controlsBuddyList.class.getName();
-
-    private static String pagePath = "/controls/buddylist/";
-    private List<HashMap<String, String>> pageResults = new ArrayList<>();
+    private static final String pagePath = "/controls/buddylist/";
+    private final List<HashMap<String, String>> pageResults = new ArrayList<>();
 
     public controlsBuddyList(Context context, pageListener pageListener) {
         super(context, pageListener);
@@ -25,6 +23,10 @@ public class controlsBuddyList extends abstractPage {
 
     public controlsBuddyList(controlsBuddyList controlsBuddyList) {
         super(controlsBuddyList);
+    }
+
+    public static String getPagePath() {
+        return pagePath;
     }
 
     protected Boolean processPageData(String html) {
@@ -70,10 +72,6 @@ public class controlsBuddyList extends abstractPage {
         }
 
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public List<HashMap<String, String>> getPageResults() {

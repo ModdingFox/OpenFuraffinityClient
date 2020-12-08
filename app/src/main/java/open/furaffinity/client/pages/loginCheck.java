@@ -58,7 +58,7 @@ public class loginCheck extends abstractPage {
 
     @Override
     protected Boolean doInBackground(Void... voids) {
-        String html = webClient.sendGetRequest(webClient.getBaseUrl());
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl());
 
         if (html != null && webClient.getLastPageLoaded()) {
             return processPageData(html);
@@ -82,4 +82,4 @@ public class loginCheck extends abstractPage {
     public String getUserName() {
         return userName;
     }
-};
+}

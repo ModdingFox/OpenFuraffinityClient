@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,10 +15,8 @@ import java.util.List;
 import open.furaffinity.client.R;
 
 public class checkboxListAdapter extends RecyclerView.Adapter<checkboxListAdapter.ViewHolder> {
-    private static final String TAG = checkboxListAdapter.class.getName();
-
-    private List<HashMap<String, String>> mDataSet;
-    private List<String> checkedItems = new ArrayList<>();
+    private final List<HashMap<String, String>> mDataSet;
+    private final List<String> checkedItems = new ArrayList<>();
 
     public checkboxListAdapter(ArrayList<String> mDataSetIn) {
         mDataSet = new ArrayList<>();
@@ -28,20 +25,6 @@ public class checkboxListAdapter extends RecyclerView.Adapter<checkboxListAdapte
             HashMap<String, String> newDataItem = new HashMap<>();
             newDataItem.put("item", currentItem);
             mDataSet.add(newDataItem);
-        }
-    }
-
-    public checkboxListAdapter(List<HashMap<String, String>> mDataSetIn) {
-        mDataSet = mDataSetIn;
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final CheckBox item;
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            item = itemView.findViewById(R.id.checkBox);
         }
     }
 
@@ -57,23 +40,19 @@ public class checkboxListAdapter extends RecyclerView.Adapter<checkboxListAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.item.setText(mDataSet.get(position).get("item"));
 
-        holder.item.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    checkedItems.add(holder.item.getText().toString());
-                } else {
-                    int removeIndex = -1;
-                    for (int i = 0; i < checkedItems.size(); i++) {
-                        if (checkedItems.get(i).equals(holder.item.getText().toString())) {
-                            removeIndex = i;
-                            break;
-                        }
+        holder.item.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                checkedItems.add(holder.item.getText().toString());
+            } else {
+                int removeIndex = -1;
+                for (int i = 0; i < checkedItems.size(); i++) {
+                    if (checkedItems.get(i).equals(holder.item.getText().toString())) {
+                        removeIndex = i;
+                        break;
                     }
-                    if (removeIndex > -1) {
-                        checkedItems.remove(removeIndex);
-                    }
+                }
+                if (removeIndex > -1) {
+                    checkedItems.remove(removeIndex);
                 }
             }
         });
@@ -86,5 +65,15 @@ public class checkboxListAdapter extends RecyclerView.Adapter<checkboxListAdapte
 
     public List<String> getCheckedItems() {
         return checkedItems;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final CheckBox item;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            item = itemView.findViewById(R.id.checkBox);
+        }
     }
 }

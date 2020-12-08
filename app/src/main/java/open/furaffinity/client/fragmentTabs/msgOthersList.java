@@ -23,23 +23,18 @@ import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.messageIds;
 
 public class msgOthersList extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
-
     private LinearLayoutManager layoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<msgOthersListAdapter.ViewHolder> mAdapter;
-
     private fabCircular fab;
     private FloatingActionButton removeSelected;
     private FloatingActionButton removeAll;
-
     private open.furaffinity.client.pages.msgOthers page;
-
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private int msgOthersType;
 
     @Override
@@ -77,7 +72,7 @@ public class msgOthersList extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(!isLoading) {
+        if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new open.furaffinity.client.pages.msgOthers(page);
@@ -99,7 +94,7 @@ public class msgOthersList extends appFragment {
     }
 
     protected void initPages() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             msgOthersType = getArguments().getInt(messageIds.msgOthersType_MESSAGE);
 
             recyclerView.setLayoutManager(layoutManager);

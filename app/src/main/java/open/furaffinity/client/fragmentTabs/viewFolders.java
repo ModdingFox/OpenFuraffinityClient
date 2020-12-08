@@ -16,13 +16,11 @@ import open.furaffinity.client.fragmentDrawers.user;
 import open.furaffinity.client.utilities.messageIds;
 
 public class viewFolders extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private RecyclerView.LayoutManager layoutManager;
-
     private RecyclerView recyclerView;
     @SuppressWarnings("FieldCanBeLocal")
     private RecyclerView.Adapter<stringListAdapter.ViewHolder> mAdapter;
-
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {
@@ -41,7 +39,7 @@ public class viewFolders extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             List<String> dataIn = getArguments().getStringArrayList(messageIds.SubmissionFolders_MESSAGE);
 
             for (String currentElement : dataIn) {

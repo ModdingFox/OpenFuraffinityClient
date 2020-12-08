@@ -10,11 +10,12 @@ import org.jsoup.select.Elements;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class msgPmsMessage extends abstractPage {
-    private String pagePath;
+    private final String pagePath;
     private String messageSubject;
     private String messageUserIcon;
     private String messageUserLink;
     private String messageSentBy;
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private String messageSentTo;
     private String messageSentDate;
     private String messageBody;
@@ -34,20 +35,20 @@ public class msgPmsMessage extends abstractPage {
 
         Element messageSection = doc.selectFirst("section[id=message]");
 
-        if(messageSection != null) {
+        if (messageSection != null) {
             Element messageSectionSectionHeaderDiv = messageSection.selectFirst("div.section-header");
-            if(messageSectionSectionHeaderDiv != null) {
+            if (messageSectionSectionHeaderDiv != null) {
                 Element messageSectionSectionHeaderDivH2 = messageSectionSectionHeaderDiv.selectFirst("h2");
-                if(messageSectionSectionHeaderDivH2 != null) {
+                if (messageSectionSectionHeaderDivH2 != null) {
                     messageSubject = messageSectionSectionHeaderDivH2.text();
                 }
 
                 Element messageSectionSectionHeaderDivAvatarDiv = messageSectionSectionHeaderDiv.selectFirst("div.avatar");
-                if(messageSectionSectionHeaderDivAvatarDiv != null) {
+                if (messageSectionSectionHeaderDivAvatarDiv != null) {
                     Element messageSectionSectionHeaderDivAvatarDivA = messageSectionSectionHeaderDivAvatarDiv.selectFirst("a");
-                    if(messageSectionSectionHeaderDivAvatarDivA != null) {
+                    if (messageSectionSectionHeaderDivAvatarDivA != null) {
                         Element messageSectionSectionHeaderDivAvatarDivAvatarImg = messageSectionSectionHeaderDivAvatarDiv.selectFirst("img.avatar");
-                        if(messageSectionSectionHeaderDivAvatarDivAvatarImg != null) {
+                        if (messageSectionSectionHeaderDivAvatarDivAvatarImg != null) {
                             open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(messageSectionSectionHeaderDivAvatarDivAvatarImg);
                             messageUserIcon = messageSectionSectionHeaderDivAvatarDivAvatarImg.attr("src");
                         }
@@ -56,32 +57,30 @@ public class msgPmsMessage extends abstractPage {
                 }
 
                 Element messageSectionSectionHeaderDivAddressesDiv = messageSectionSectionHeaderDiv.selectFirst("div.addresses");
-                if(messageSectionSectionHeaderDivAddressesDiv != null) {
+                if (messageSectionSectionHeaderDivAddressesDiv != null) {
                     Elements messageSectionSectionHeaderDivAddressesDivA = messageSectionSectionHeaderDivAddressesDiv.select("a");
-                    if(messageSectionSectionHeaderDivAddressesDivA != null && messageSectionSectionHeaderDivAddressesDivA.size() == 2) {
+                    if (messageSectionSectionHeaderDivAddressesDivA != null && messageSectionSectionHeaderDivAddressesDivA.size() == 2) {
                         messageSentBy = messageSectionSectionHeaderDivAddressesDivA.get(0).text();
                         messageSentTo = messageSectionSectionHeaderDivAddressesDivA.get(1).text();
                     }
 
                     Element messageSectionSectionHeaderDivAddressesDivPopupDateSpan = messageSectionSectionHeaderDivAddressesDiv.selectFirst("span.popup_date");
-                    if(messageSectionSectionHeaderDivAddressesDivPopupDateSpan != null) {
+                    if (messageSectionSectionHeaderDivAddressesDivPopupDateSpan != null) {
                         messageSentDate = messageSectionSectionHeaderDivAddressesDivPopupDateSpan.text();
                     }
                 }
             }
 
             Element messageSectionSectionBodyDiv = messageSection.selectFirst("div.section-body");
-            if(messageSectionSectionBodyDiv != null) {
+            if (messageSectionSectionBodyDiv != null) {
                 Element messageSectionSectionBodyDivUserSubmittedLinksDiv = messageSectionSectionBodyDiv.selectFirst("div.user-submitted-links");
-                if(messageSectionSectionBodyDivUserSubmittedLinksDiv != null) {
+                if (messageSectionSectionBodyDivUserSubmittedLinksDiv != null) {
                     open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(messageSectionSectionBodyDivUserSubmittedLinksDiv);
                     messageBody = messageSectionSectionBodyDivUserSubmittedLinksDiv.outerHtml();
                 }
             }
 
-            if(messageSectionSectionHeaderDiv != null && messageSectionSectionBodyDiv != null) {
-                return true;
-            }
+            return messageSectionSectionHeaderDiv != null && messageSectionSectionBodyDiv != null;
         }
 
         return false;
@@ -115,10 +114,6 @@ public class msgPmsMessage extends abstractPage {
 
     public String getMessageSentBy() {
         return messageSentBy;
-    }
-
-    public String getMessageSentTo() {
-        return messageSentTo;
     }
 
     public String getMessageSentDate() {

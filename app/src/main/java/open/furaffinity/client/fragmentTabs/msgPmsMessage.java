@@ -40,17 +40,17 @@ public class msgPmsMessage extends appFragment {
     private FloatingActionButton sendNote;
 
     private open.furaffinity.client.pages.msgPmsMessage page;
-
+    private boolean isLoading = false;
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
-            subject.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSubject());
-            Glide.with(msgPmsMessage.this).load(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
-            sentBy.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentBy());
+            subject.setText(((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageSubject());
+            Glide.with(msgPmsMessage.this).load(((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
+            sentBy.setText(((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageSentBy());
             //sentTo.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentTo());
-            sentDate.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentDate());
+            sentDate.setText(((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageSentDate());
 
-            setupViewPager((open.furaffinity.client.pages.msgPmsMessage)abstractPage);
+            setupViewPager((open.furaffinity.client.pages.msgPmsMessage) abstractPage);
 
             isLoading = false;
         }
@@ -61,8 +61,6 @@ public class msgPmsMessage extends appFragment {
             Toast.makeText(getActivity(), "Failed to load data for message", Toast.LENGTH_SHORT).show();
         }
     };
-
-    private boolean isLoading = false;
 
     @Override
     protected int getLayout() {
@@ -114,14 +112,14 @@ public class msgPmsMessage extends appFragment {
     }
 
     protected void initPages() {
-        page = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), pageListener, ((mainActivity)requireActivity()).getMsgPmsPath());
+        page = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), pageListener, ((mainActivity) requireActivity()).getMsgPmsPath());
     }
 
     @Override
     protected void updateUIElementListeners(View rootView) {
-        userIcon.setOnClickListener(v -> ((mainActivity)requireActivity()).setUserPath(page.getMessageUserLink()));
+        userIcon.setOnClickListener(v -> ((mainActivity) requireActivity()).setUserPath(page.getMessageUserLink()));
 
-        sentBy.setOnClickListener(v -> ((mainActivity)requireActivity()).setUserPath(page.getMessageUserLink()));
+        sentBy.setOnClickListener(v -> ((mainActivity) requireActivity()).setUserPath(page.getMessageUserLink()));
 
         sendNote.setOnClickListener(v -> sendPM(requireActivity(), getChildFragmentManager(), page.getMessageUser()));
     }
@@ -135,7 +133,7 @@ public class msgPmsMessage extends appFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null && savedInstanceState.containsKey("messagePath")) {
+        if (savedInstanceState != null && savedInstanceState.containsKey("messagePath")) {
             page = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), pageListener, savedInstanceState.getString("messagePath"));
         }
     }

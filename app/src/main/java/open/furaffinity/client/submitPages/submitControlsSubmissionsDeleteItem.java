@@ -28,7 +28,7 @@ public class submitControlsSubmissionsDeleteItem extends abstractPage {
 
         Element errorMessage = doc.selectFirst("div.error");
 
-        if(errorMessage != null) {
+        if (errorMessage != null) {
             return false;
         }
 
@@ -52,7 +52,7 @@ public class submitControlsSubmissionsDeleteItem extends abstractPage {
 
         String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + manageSubmissions.getPagePath(), params);
         if (webClient.getLastPageLoaded() && html != null) {
-            if(processPageData(html)){
+            if (processPageData(html)) {
                 params.clear();
                 params.put("delete_submissions_submit", "1");
                 params.putAll(this.params);

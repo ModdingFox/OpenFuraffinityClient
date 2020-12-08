@@ -20,7 +20,7 @@ public class msgPmsMessageSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final int[] TAB_TITLES = new int[]{R.string.msgPmsMessageTab0};
     private final Context mContext;
 
-    private msgPmsMessage msgPmsMessage;
+    private final msgPmsMessage msgPmsMessage;
 
     public msgPmsMessageSectionsPagerAdapter(Context context, FragmentManager fm, msgPmsMessage msgPmsMessage) {
         super(fm);

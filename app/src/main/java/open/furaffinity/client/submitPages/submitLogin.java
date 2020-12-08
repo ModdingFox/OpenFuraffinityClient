@@ -2,9 +2,6 @@ package open.furaffinity.client.submitPages;
 
 import android.content.Context;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import java.util.HashMap;
 
 import okhttp3.Cookie;
@@ -27,8 +24,8 @@ public class submitLogin extends abstractPage {
 
     @Override
     protected Boolean processPageData(String html) {
-        for(Cookie currentCookie : webClient.getLastPageResponceCookies()) {
-            switch(currentCookie.name()) {
+        for (Cookie currentCookie : webClient.getLastPageResponceCookies()) {
+            switch (currentCookie.name()) {
                 case "a":
                     a = currentCookie;
                     break;
@@ -38,11 +35,7 @@ public class submitLogin extends abstractPage {
             }
         }
 
-        if(a != null && b != null) {
-            return true;
-        }
-
-        return false;
+        return a != null && b != null;
     }
 
     @Override

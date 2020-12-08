@@ -12,9 +12,7 @@ import java.util.HashMap;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsSettings extends abstractPage {
-    private static final String TAG = controlsSettings.class.getName();
-
-    private static String pagePath = "/controls/settings/";
+    private static final String pagePath = "/controls/settings/";
 
     private String fa_useremail;
     private HashMap<String, String> ssl_enable;
@@ -53,6 +51,10 @@ public class controlsSettings extends abstractPage {
         super(context, pageListener);
     }
 
+    public static String getPagePath() {
+        return pagePath;
+    }
+
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -66,7 +68,7 @@ public class controlsSettings extends abstractPage {
                         fa_useremail = input.attr("value");
                         break;
                     case "timezone_dst":
-                        timezone_dst = ((input.attr("value").equals("0")) ? (false) : (true));
+                        timezone_dst = (!input.attr("value").equals("0"));
                         break;
                     case "paypal_email":
                         paypal_email = input.attr("value");
@@ -156,11 +158,7 @@ public class controlsSettings extends abstractPage {
         }
 
         //not really a great way of doing it but sure
-        if(inputs.size() > 0 && selects.size() > 0) {
-            return true;
-        }
-
-        return false;
+        return inputs != null && inputs.size() > 0 && selects != null && selects.size() > 0;
     }
 
     @Override
@@ -170,10 +168,6 @@ public class controlsSettings extends abstractPage {
             return processPageData(html);
         }
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public String getFaUserEmail() {

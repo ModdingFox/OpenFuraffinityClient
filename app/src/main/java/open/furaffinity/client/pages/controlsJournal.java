@@ -103,11 +103,7 @@ public class controlsJournal extends abstractPage {
             body = messageTextarea.text();
         }
 
-        if(msgFormForm != null && formGet != null && subjectInput != null && messageTextarea != null) {
-            return true;
-        }
-
-        return false;
+        return msgFormForm != null && subjectInput != null && messageTextarea != null;
     }
 
     @Override

@@ -21,25 +21,22 @@ import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.pages.journal;
-import open.furaffinity.client.pages.view;
 import open.furaffinity.client.pages.loginCheck;
+import open.furaffinity.client.pages.view;
 import open.furaffinity.client.utilities.html;
 import open.furaffinity.client.utilities.messageIds;
 
 
 public class comments extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     RecyclerView.LayoutManager layoutManager;
-
+    RecyclerView.Adapter<commentListAdapter.ViewHolder> mAdapter;
     @SuppressWarnings("FieldCanBeLocal")
     private LinearLayout controls;
     private EditText comment;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    RecyclerView.Adapter<commentListAdapter.ViewHolder> mAdapter;
-
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private String pagePath;
     private String pageType;
 
@@ -76,7 +73,7 @@ public class comments extends appFragment {
     }
 
     protected void initPages() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
             pageType = getArguments().getString(messageIds.SubmissionCommentsType_MESSAGE);
 
@@ -144,7 +141,7 @@ public class comments extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(!isLoading) {
+        if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
 

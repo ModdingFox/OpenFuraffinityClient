@@ -319,6 +319,8 @@ public class search extends appFragment {
             searchOptionsScrollView.setVisibility(View.GONE);
             savedSearchRecyclerView.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.VISIBLE);
+
+            selectedSearch = null;
         }
 
         if (!loadedMainActivitySearchQuery) {
@@ -384,7 +386,7 @@ public class search extends appFragment {
     }
 
     protected void initPages() {
-        if(mDataSet == null) {
+        if (mDataSet == null) {
             mDataSet = new ArrayList<>();
         }
 
@@ -392,7 +394,7 @@ public class search extends appFragment {
         mAdapter = new imageListAdapter(mDataSet, requireActivity());
         recyclerView.setAdapter(mAdapter);
 
-        if(recyclerViewPosition > -1) {
+        if (recyclerViewPosition > -1) {
             staggeredGridLayoutManager.scrollToPosition(recyclerViewPosition);
         }
 
@@ -430,23 +432,23 @@ public class search extends appFragment {
                     loadCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
 
-                    if(isCacheInitialized || mDataSet == null || mDataSet.size() == 0) {
+                    if (isCacheInitialized || mDataSet == null || mDataSet.size() == 0) {
                         isCacheInitialized = true;
                         resetRecycler();
                     } else {
                         page.setQuery(query);
                         fetchPageData();
                     }
-                } else if(!isCacheInitialized) {
+                } else if (!isCacheInitialized) {
                     isLoading = false;
                     isCacheInitialized = true;
 
                     List<HashMap<String, String>> pageResults = page.getPageResults();
-                    if(pageResults.size() > pageCacheCheckResultCount) {
+                    if (pageResults.size() > pageCacheCheckResultCount) {
                         pageResults = pageResults.subList(0, pageCacheCheckResultCount);
                     }
 
-                    if(mDataSet.size() > 0 && pageResults.contains(mDataSet.get(0))) {
+                    if (mDataSet.size() > 0 && pageResults.contains(mDataSet.get(0))) {
                         searchOptionsScrollView.setVisibility(View.GONE);
                         savedSearchRecyclerView.setVisibility(View.GONE);
                         swipeRefreshLayout.setVisibility(View.VISIBLE);
@@ -458,7 +460,7 @@ public class search extends appFragment {
                         resetRecycler();
                     }
                 } else {
-                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.search)abstractPage).getPageResults();
+                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.search) abstractPage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 
@@ -470,13 +472,13 @@ public class search extends appFragment {
                     mDataSet.addAll(pageResults);
                     mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
-                    if (((open.furaffinity.client.pages.search)abstractPage).getPageResults() != null && ((open.furaffinity.client.pages.search)abstractPage).getPageResults().size() > 0 && ((open.furaffinity.client.pages.search)abstractPage).getCurrentPage().equals("1")) {
+                    if (((open.furaffinity.client.pages.search) abstractPage).getPageResults() != null && ((open.furaffinity.client.pages.search) abstractPage).getPageResults().size() > 0 && ((open.furaffinity.client.pages.search) abstractPage).getCurrentPage().equals("1")) {
                         //Find any saved searches that meet the current search criteria and apply the most recent link to them
                         searchDBHelper dbHelper = new searchDBHelper(getActivity());
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                         ContentValues values = new ContentValues();
-                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, ((open.furaffinity.client.pages.search)abstractPage).getPageResults().get(0).get("postPath"));
+                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, ((open.furaffinity.client.pages.search) abstractPage).getPageResults().get(0).get("postPath"));
 
                         String selection = "";
                         selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
@@ -495,20 +497,20 @@ public class search extends appFragment {
                         selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
 
                         String[] selectionArgs = {
-                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentQuery(),
-                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentOrderBy(),
-                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentOrderDirection(),
-                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentRange(),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentRatingMature().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypeArt().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypeStory().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search)abstractPage).getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
-                                ((open.furaffinity.client.pages.search)abstractPage).getCurrentMode()
+                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentQuery(),
+                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentOrderBy(),
+                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentOrderDirection(),
+                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentRange(),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingMature().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeArt().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeStory().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
+                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentMode()
                         };
 
                         db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
@@ -843,7 +845,7 @@ public class search extends appFragment {
     private int getRecyclerFirstItem() {
         int[] firstVisibleItems = null;
         firstVisibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItems);
-        if(firstVisibleItems != null && firstVisibleItems.length > 0) {
+        if (firstVisibleItems != null && firstVisibleItems.length > 0) {
             return firstVisibleItems[0];
         }
 
@@ -854,14 +856,14 @@ public class search extends appFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        selectedSearch = ((mainActivity)requireActivity()).getSearchSelected();
-        mainActivitySearchQuery = ((mainActivity)requireActivity()).getSearchQuery();
+        selectedSearch = ((mainActivity) requireActivity()).getSearchSelected();
+        mainActivitySearchQuery = ((mainActivity) requireActivity()).getSearchQuery();
 
-        if(selectedSearch == null && mainActivitySearchQuery == null) {
+        if (selectedSearch == null && mainActivitySearchQuery == null) {
             Context context = requireActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-            if(sharedPref.getBoolean(getString(R.string.cachedSearchStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedSearchDefault)) {
+            if (sharedPref.getBoolean(getString(R.string.cachedSearchStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedSearchDefault)) {
                 long sessionTimestamp = sharedPref.getLong(getString(R.string.searchSessionTimestamp), 0);
                 long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedSearchTimeSetting), 0);
                 sessionInvalidateCachedTime = sessionInvalidateCachedTime * 60;//convert min to seconds
@@ -869,7 +871,7 @@ public class search extends appFragment {
                 long currentTimestamp = Instant.now().getEpochSecond();
                 long minTimestamp = currentTimestamp - sessionInvalidateCachedTime;
 
-                if(sessionTimestamp >= minTimestamp && sessionTimestamp <= currentTimestamp) {
+                if (sessionTimestamp >= minTimestamp && sessionTimestamp <= currentTimestamp) {
                     pageCacheCheckResultCount = sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchAfterSetting), settings.InvalidateCachedSearchAfterDefault);
 
                     String mDataSetString = sharedPref.getString(context.getString(R.string.searchSessionDataSet), null);
@@ -896,12 +898,12 @@ public class search extends appFragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(mDataSet != null && page != null && recyclerView != null) {
+        if (mDataSet != null && page != null && recyclerView != null) {
             Context context = requireActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
 
-            if(sharedPref.getBoolean(getString(R.string.cachedSearchStateSetting), settings.cachedSearchDefault)) {
+            if (sharedPref.getBoolean(getString(R.string.cachedSearchStateSetting), settings.cachedSearchDefault)) {
                 editor.putLong(context.getString(R.string.searchSessionTimestamp), Instant.now().getEpochSecond());
                 editor.putString(context.getString(R.string.searchSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
                 editor.putInt(context.getString(R.string.searchSessionPage), page.getPage());

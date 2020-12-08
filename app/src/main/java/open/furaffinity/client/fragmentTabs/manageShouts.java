@@ -24,23 +24,18 @@ import open.furaffinity.client.pages.controlsShouts;
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageShouts extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
-
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<commentListAdapter.ViewHolder> mAdapter;
-
     private fabCircular fab;
     private FloatingActionButton removeSelected;
-
     private controlsShouts page;
-
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {
@@ -71,7 +66,7 @@ public class manageShouts extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(!isLoading && loadingStopCounter > 0) {
+        if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
             page = new controlsShouts(page);
@@ -87,7 +82,7 @@ public class manageShouts extends appFragment {
     private void resetRecycler() {
         recyclerView.scrollTo(0, 0);
         mDataSet.clear();
-        ((commentListAdapter)(mAdapter)).clearChecked();
+        ((commentListAdapter) (mAdapter)).clearChecked();
         mAdapter.notifyDataSetChanged();
         fetchPageData();
     }
@@ -100,7 +95,7 @@ public class manageShouts extends appFragment {
         page = new controlsShouts(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> pageResults = ((controlsShouts)abstractPage).getPageResults();
+                List<HashMap<String, String>> pageResults = ((controlsShouts) abstractPage).getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 

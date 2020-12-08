@@ -78,10 +78,6 @@ public class watchList extends abstractPage {
         return 1;
     }
 
-    public String getCurrentPage() {
-        return page;
-    }
-
     public void setPage(String value) {
         try {
             if (Integer.parseInt(value) > 0) {
@@ -90,6 +86,10 @@ public class watchList extends abstractPage {
         } catch (NumberFormatException e) {
             Log.e(TAG, "setPage: ", e);
         }
+    }
+
+    public String getCurrentPage() {
+        return page;
     }
 
     public List<HashMap<String, String>> getPageResults() {

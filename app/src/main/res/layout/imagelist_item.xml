@@ -33,9 +33,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
+                android:background="@drawable/image_list_text_background"
                 app:layout_constraintBottom_toBottomOf="@+id/imageListCardViewPostImage"
-                app:layout_constraintStart_toStartOf="parent"
-                android:background="@drawable/image_list_text_background">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
                     android:id="@+id/imageListCardPostName"
@@ -45,9 +45,9 @@
                     android:text="@string/notLoaded"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toStartOf="@+id/imageListCardPostRating"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/imageListCardPostUser"
@@ -57,20 +57,20 @@
                     android:text="@string/notLoaded"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/imageListCardPostRating"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageListCardPostName"
-                    app:layout_constraintHorizontal_bias="0.0" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageListCardPostName" />
 
                 <TextView
                     android:id="@+id/imageListCardPostRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingRight="8dp"
                     android:text="@string/notLoaded"
                     android:textSize="32sp"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:paddingRight="8dp" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

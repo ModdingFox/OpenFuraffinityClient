@@ -18,9 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -139,7 +137,7 @@ public class browse extends appFragment {
     }
 
     protected void initPages() {
-        if(mDataSet == null) {
+        if (mDataSet == null) {
             mDataSet = new ArrayList<>();
         }
 
@@ -147,7 +145,7 @@ public class browse extends appFragment {
         mAdapter = new imageListAdapter(mDataSet, requireActivity());
         recyclerView.setAdapter(mAdapter);
 
-        if(recyclerViewPosition > -1) {
+        if (recyclerViewPosition > -1) {
             staggeredGridLayoutManager.scrollToPosition(recyclerViewPosition);
         }
 
@@ -184,29 +182,29 @@ public class browse extends appFragment {
                     initCurrentSettings();
                     fab.setVisibility(View.VISIBLE);
 
-                    if(isCacheInitialized || mDataSet == null || mDataSet.size() == 0) {
+                    if (isCacheInitialized || mDataSet == null || mDataSet.size() == 0) {
                         isCacheInitialized = true;
                         resetRecycler();
                     } else {
                         fetchPageData();
                     }
-                } else if(!isCacheInitialized) {
+                } else if (!isCacheInitialized) {
                     isLoading = false;
                     isCacheInitialized = true;
 
                     List<HashMap<String, String>> pageResults = page.getPageResults();
-                    if(pageResults.size() > pageCacheCheckResultCount) {
+                    if (pageResults.size() > pageCacheCheckResultCount) {
                         pageResults = pageResults.subList(0, pageCacheCheckResultCount);
                     }
 
-                    if(mDataSet.size() > 0 && pageResults.contains(mDataSet.get(0))) {
+                    if (mDataSet.size() > 0 && pageResults.contains(mDataSet.get(0))) {
                         page.setPage(Integer.toString(pageNumber));
                         swipeRefreshLayout.setRefreshing(false);
                     } else {
                         resetRecycler();
                     }
                 } else {
-                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.browse)abstractPage).getPageResults();
+                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.browse) abstractPage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 
@@ -366,7 +364,7 @@ public class browse extends appFragment {
     private int getRecyclerFirstItem() {
         int[] firstVisibleItems = null;
         firstVisibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItems);
-        if(firstVisibleItems != null && firstVisibleItems.length > 0) {
+        if (firstVisibleItems != null && firstVisibleItems.length > 0) {
             return firstVisibleItems[0];
         }
 
@@ -380,7 +378,7 @@ public class browse extends appFragment {
         Context context = requireActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if(sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
+        if (sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
             long sessionTimestamp = sharedPref.getLong(getString(R.string.browseSessionTimestamp), 0);
             long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedBrowseTimeSetting), 0);
             sessionInvalidateCachedTime = sessionInvalidateCachedTime * 60;//convert min to seconds
@@ -388,7 +386,7 @@ public class browse extends appFragment {
             long currentTimestamp = Instant.now().getEpochSecond();
             long minTimestamp = currentTimestamp - sessionInvalidateCachedTime;
 
-            if(sessionTimestamp >= minTimestamp && sessionTimestamp <= currentTimestamp) {
+            if (sessionTimestamp >= minTimestamp && sessionTimestamp <= currentTimestamp) {
                 pageCacheCheckResultCount = sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting), settings.InvalidateCachedBrowseAfterDefault);
 
                 String mDataSetString = sharedPref.getString(context.getString(R.string.browseSessionDataSet), null);
@@ -411,12 +409,12 @@ public class browse extends appFragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(mDataSet != null && page != null && recyclerView != null) {
+        if (mDataSet != null && page != null && recyclerView != null) {
             Context context = requireActivity();
             SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
 
-            if(sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
+            if (sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
                 editor.putLong(context.getString(R.string.browseSessionTimestamp), Instant.now().getEpochSecond());
                 editor.putString(context.getString(R.string.browseSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
                 editor.putInt(context.getString(R.string.browseSessionPage), page.getPage());

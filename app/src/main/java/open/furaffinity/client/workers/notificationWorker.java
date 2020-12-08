@@ -28,20 +28,22 @@ import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.pages.msgOthers;
 import open.furaffinity.client.pages.msgPms;
 import open.furaffinity.client.pages.msgSubmission;
-import open.furaffinity.client.utilities.webClient;
 
 public class notificationWorker extends Worker {
     private static final String TAG = notificationWorker.class.getName();
 
-    private Context context;
-
+    private final Context context;
+    private final List<HashMap<String, String>> msgPmsData = new ArrayList<>();
+    private final List<HashMap<String, String>> msgSubmissionData = new ArrayList<>();
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.msgOthers msgOthers;
     private open.furaffinity.client.pages.msgPms msgPms;
     private open.furaffinity.client.pages.msgSubmission msgSubmission;
 
-    private List<HashMap<String, String>> msgPmsData = new ArrayList<>();
-    private List<HashMap<String, String>> msgSubmissionData = new ArrayList<>();
+    public notificationWorker(@NonNull Context context, @NonNull WorkerParameters params) {
+        super(context, params);
+        this.context = context;
+    }
 
     private void initClientAndPage() {
         loginCheck = new open.furaffinity.client.pages.loginCheck(context, new abstractPage.pageListener() {
@@ -125,11 +127,6 @@ public class notificationWorker extends Worker {
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
-    }
-
-    public notificationWorker(@NonNull Context context, @NonNull WorkerParameters params) {
-        super(context, params);
-        this.context = context;
     }
 
     @Override

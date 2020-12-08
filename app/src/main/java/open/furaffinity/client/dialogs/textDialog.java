@@ -2,7 +2,6 @@ package open.furaffinity.client.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -17,20 +16,12 @@ import androidx.fragment.app.DialogFragment;
 import open.furaffinity.client.R;
 
 public class textDialog extends DialogFragment {
-    private String TAG = textDialog.class.getName();
-
+    @SuppressWarnings("FieldCanBeLocal")
     private TextView dialogText;
     private EditText editText;
 
     private String text = null;
     private boolean isPassword = false;
-
-    public interface dialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-
-        public void onDialogNegativeClick(DialogFragment dialog);
-    }
-
     private dialogListener listener;
 
     public void setListener(dialogListener dialogListener) {
@@ -55,18 +46,8 @@ public class textDialog extends DialogFragment {
         }
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogPositiveClick(textDialog.this);
-            }
-        });
-        builder.setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogNegativeClick(textDialog.this);
-            }
-        });
+        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> listener.onDialogPositiveClick(textDialog.this));
+        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> listener.onDialogNegativeClick(textDialog.this));
 
         return builder.create();
     }
@@ -81,5 +62,11 @@ public class textDialog extends DialogFragment {
 
     public String getText() {
         return editText.getText().toString();
+    }
+
+    public interface dialogListener {
+        void onDialogPositiveClick(DialogFragment dialog);
+
+        void onDialogNegativeClick(DialogFragment dialog);
     }
 }

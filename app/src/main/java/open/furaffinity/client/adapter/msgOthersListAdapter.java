@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,33 +24,14 @@ import open.furaffinity.client.fragmentDrawers.journal;
 import open.furaffinity.client.fragmentDrawers.view;
 
 public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdapter.ViewHolder> {
-    private static final String TAG = msgOthersListAdapter.class.getName();
-
-    private List<HashMap<String, String>> mDataSet;
+    private final List<HashMap<String, String>> mDataSet;
+    private final Context context;
     private List<String> checkedItems;
-
-    private Context context;
 
     public msgOthersListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
         this.context = context;
         checkedItems = new ArrayList<>();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView userIcon;
-        private final TextView userName;
-        private final TextView actionText;
-        private final CheckBox checkBox;
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            userIcon = itemView.findViewById(R.id.userIcon);
-            userName = itemView.findViewById(R.id.userName);
-            actionText = itemView.findViewById(R.id.actionText);
-            checkBox = itemView.findViewById(R.id.checkBox);
-        }
     }
 
     @NonNull
@@ -70,12 +50,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
             Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.userIcon);
 
             if (mDataSet.get(position).containsKey("userLink")) {
-                holder.userIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink"));
-                    }
-                });
+                holder.userIcon.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink")));
             }
         } else {
             holder.userIcon.setVisibility(View.GONE);
@@ -85,12 +60,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
             holder.userName.setText(mDataSet.get(position).get("userName"));
 
             if (mDataSet.get(position).containsKey("userLink")) {
-                holder.userName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink"));
-                    }
-                });
+                holder.userName.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink")));
             }
         } else {
             holder.userName.setVisibility(View.GONE);
@@ -109,32 +79,22 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
         holder.actionText.setText(actionText);
 
         if (mDataSet.get(position).containsKey("postLink") && mDataSet.get(position).containsKey("postClass")) {
-            holder.actionText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mDataSet.get(position).get("postClass").equals(journal.class.getName())) {
-                        ((mainActivity) context).setJournalPath(mDataSet.get(position).get("postLink"));
-                    } else if (mDataSet.get(position).get("postClass").equals(view.class.getName())) {
-                        ((mainActivity) context).setViewPath(mDataSet.get(position).get("postLink"));
-                    }
+            holder.actionText.setOnClickListener(v -> {
+                if (mDataSet.get(position).get("postClass").equals(journal.class.getName())) {
+                    ((mainActivity) context).setJournalPath(mDataSet.get(position).get("postLink"));
+                } else if (mDataSet.get(position).get("postClass").equals(view.class.getName())) {
+                    ((mainActivity) context).setViewPath(mDataSet.get(position).get("postLink"));
                 }
             });
         }
 
-        if (checkedItems.contains(mDataSet.get(position).get("notificationId"))) {
-            holder.checkBox.setChecked(true);
-        } else {
-            holder.checkBox.setChecked(false);
-        }
+        holder.checkBox.setChecked(checkedItems.contains(mDataSet.get(position).get("notificationId")));
 
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    checkedItems.add(mDataSet.get(position).get("notificationId"));
-                } else {
-                    checkedItems.remove(mDataSet.get(position).get("notificationId"));
-                }
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                checkedItems.add(mDataSet.get(position).get("notificationId"));
+            } else {
+                checkedItems.remove(mDataSet.get(position).get("notificationId"));
             }
         });
     }
@@ -150,5 +110,21 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView userIcon;
+        private final TextView userName;
+        private final TextView actionText;
+        private final CheckBox checkBox;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            userIcon = itemView.findViewById(R.id.userIcon);
+            userName = itemView.findViewById(R.id.userName);
+            actionText = itemView.findViewById(R.id.actionText);
+            checkBox = itemView.findViewById(R.id.checkBox);
+        }
     }
 }

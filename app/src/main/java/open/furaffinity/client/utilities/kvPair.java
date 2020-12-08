@@ -1,16 +1,22 @@
 package open.furaffinity.client.utilities;
 
+import android.widget.Spinner;
+
 import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
 public class kvPair {
-    private String key;
-    private String value;
+    private final String key;
+    private final String value;
 
     public kvPair(String key, String value) {
         this.key = key;
         this.value = value;
+    }
+
+    public static String getSelectedValue(Spinner spinnerIn) {
+        return ((kvPair) spinnerIn.getSelectedItem()).getKey();
     }
 
     public String getKey() {

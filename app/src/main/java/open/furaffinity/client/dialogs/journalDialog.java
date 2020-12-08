@@ -15,15 +15,8 @@ import androidx.fragment.app.DialogFragment;
 import open.furaffinity.client.R;
 
 public class journalDialog extends DialogFragment {
-    private String TAG = journalDialog.class.getName();
-
     private String subject;
     private String body;
-
-    public interface journalDialogListener {
-        public void onDialogPositiveClick(String subject, String body, boolean lockComments, boolean makeFeatured);
-    }
-
     private journalDialogListener listener;
 
     public void setListener(journalDialogListener journalDialogListener) {
@@ -56,9 +49,7 @@ public class journalDialog extends DialogFragment {
             dismiss();
         });
 
-        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> {
-            dismiss();
-        });
+        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dismiss());
 
         builder.setView(rootView);
 
@@ -71,5 +62,9 @@ public class journalDialog extends DialogFragment {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public interface journalDialogListener {
+        void onDialogPositiveClick(String subject, String body, boolean lockComments, boolean makeFeatured);
     }
 }

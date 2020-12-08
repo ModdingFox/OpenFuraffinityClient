@@ -1,7 +1,6 @@
 package open.furaffinity.client.pages;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -20,19 +19,15 @@ import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOpti
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class search extends abstractPage {
-    private static String pagePath = "/search";
+    private static final String pagePath = "/search";
 
-    private static List<String> rangeAllowedKeys = Arrays.asList("day", "3days", "week", "month", "all");
-    private static List<String> modeAllowedKeys = Arrays.asList("all", "any", "extended");
-
+    private static final List<String> rangeAllowedKeys = Arrays.asList("day", "3days", "week", "month", "all");
+    private static final List<String> modeAllowedKeys = Arrays.asList("all", "any", "extended");
+    private final imageResultsTool.imageResolutions currentResolution;
     private HashMap<String, String> requestParameters = new HashMap<>();
-
     private HashMap<String, String> orderBy = new HashMap<>();
     private HashMap<String, String> orderDirection = new HashMap<>();
-
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
-
-    private imageResultsTool.imageResolutions currentResolution = imageResultsTool.imageResolutions.Original;
 
     public search(Context context, pageListener pageListener) {
         super(context, pageListener);
@@ -59,11 +54,7 @@ public class search extends abstractPage {
         orderDirection = getDropDownOptions("order-direction", html);
         pageResults = getResultsData(html, currentResolution);
 
-        if (orderBy != null && orderDirection != null && pageResults != null) {
-            return true;
-        }
-
-        return false;
+        return orderBy != null && orderDirection != null;
     }
 
     @Override
@@ -87,28 +78,28 @@ public class search extends abstractPage {
         return orderBy;
     }
 
-    public String getCurrentOrderBy() {
-        return Optional.ofNullable(requestParameters.get("order-by")).orElse("");
-    }
-
     public void setOrderBy(String value) {
         if (orderBy.containsKey(value)) {
             requestParameters.put("order-by", value);
         }
     }
 
-    public HashMap<String, String> getOrderDirection() {
-        return orderDirection;
+    public String getCurrentOrderBy() {
+        return Optional.ofNullable(requestParameters.get("order-by")).orElse("");
     }
 
-    public String getCurrentOrderDirection() {
-        return Optional.ofNullable(requestParameters.get("order-direction")).orElse("");
+    public HashMap<String, String> getOrderDirection() {
+        return orderDirection;
     }
 
     public void setOrderDirection(String value) {
         if (orderDirection.containsKey(value)) {
             requestParameters.put("order-direction", value);
         }
+    }
+
+    public String getCurrentOrderDirection() {
+        return Optional.ofNullable(requestParameters.get("order-direction")).orElse("");
     }
 
     public String getCurrentRange() {
@@ -218,14 +209,8 @@ public class search extends abstractPage {
             } catch (NumberFormatException e) {
                 Log.e(TAG, "getPage: ", e);
             }
-            return 1;
-        } else {
-            return 1;
         }
-    }
-
-    public String getCurrentPage() {
-        return Optional.ofNullable(requestParameters.get("page")).orElse("1");
+        return 1;
     }
 
     public void setPage(String value) {
@@ -236,6 +221,10 @@ public class search extends abstractPage {
         } catch (NumberFormatException e) {
             Log.e(TAG, "setPage: ", e);
         }
+    }
+
+    public String getCurrentPage() {
+        return Optional.ofNullable(requestParameters.get("page")).orElse("1");
     }
 
     public List<HashMap<String, String>> getPageResults() {

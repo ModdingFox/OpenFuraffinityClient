@@ -25,7 +25,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.navigation.NavigationView;
 
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,9 +117,9 @@ public class mainActivity extends AppCompatActivity {
         loginCheck = new loginCheck(this, new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                if (((loginCheck)abstractPage).getIsLoggedIn()) {
-                    Glide.with(mainActivity.this).load(((loginCheck)abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(imageView);
-                    userName.setText(((loginCheck)abstractPage).getUserName());
+                if (((loginCheck) abstractPage).getIsLoggedIn()) {
+                    Glide.with(mainActivity.this).load(((loginCheck) abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(imageView);
+                    userName.setText(((loginCheck) abstractPage).getUserName());
 
                     navMenu.findItem(R.id.nav_upload).setVisible(true);
                     navMenu.findItem(R.id.nav_profile).setVisible(true);

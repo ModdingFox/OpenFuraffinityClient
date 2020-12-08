@@ -14,9 +14,9 @@ import java.util.List;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsAvatar extends abstractPage {
-    private static String pagePath = "/controls/avatar/";
+    private static final String pagePath = "/controls/avatar/";
 
-    private List<HashMap<String, String>> pageResults = new ArrayList<>();
+    private final List<HashMap<String, String>> pageResults = new ArrayList<>();
 
     public controlsAvatar(Context context, pageListener pageListener) {
         super(context, pageListener);
@@ -24,6 +24,10 @@ public class controlsAvatar extends abstractPage {
 
     public controlsAvatar(controlsAvatar controlsAvatar) {
         super(controlsAvatar);
+    }
+
+    public static String getPagePath() {
+        return pagePath;
     }
 
     protected Boolean processPageData(String html) {
@@ -75,10 +79,6 @@ public class controlsAvatar extends abstractPage {
             return processPageData(html);
         }
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public List<HashMap<String, String>> getPageResults() {

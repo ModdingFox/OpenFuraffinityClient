@@ -14,16 +14,16 @@ import java.util.List;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsContacts extends abstractPage {
-    private static String pagePath = "/controls/contacts/";
-    private List<HashMap<String, String>> pageResults = new ArrayList<>();
+    private static final String pagePath = "/controls/contacts/";
+    private final List<HashMap<String, String>> pageResults = new ArrayList<>();
     private String key;
 
     public controlsContacts(Context context, pageListener pageListener) {
         super(context, pageListener);
     }
 
-    public controlsContacts(controlsContacts controlsContacts) {
-        super(controlsContacts);
+    public static String getPagePath() {
+        return pagePath;
     }
 
     protected Boolean processPageData(String html) {
@@ -62,11 +62,7 @@ public class controlsContacts extends abstractPage {
             }
         }
 
-        if(pageResults.size() > 0 && key != null) {
-            return true;
-        }
-
-        return false;
+        return pageResults.size() > 0 && key != null;
     }
 
     @Override
@@ -76,10 +72,6 @@ public class controlsContacts extends abstractPage {
             return processPageData(html);
         }
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public List<HashMap<String, String>> getPageResults() {

@@ -1,6 +1,6 @@
-package open.furaffinity.client.submitPageOld;
+package open.furaffinity.client.submitPages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,38 +12,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = submitSubmissionPart3.class.getName();
-
-    private static String pagePath = "/submit/";
-
+public class submitSubmissionPart3 extends open.furaffinity.client.abstractClasses.abstractPage {
+    private static final String pagePath = "/submit/";
+    private final HashMap<String, String> rating = new HashMap<>();
+    private final String sourceFilePath;
+    private final String thumbnailFilePath;
+    private final open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2;
     private HashMap<String, String> cat = new HashMap<>();
     private HashMap<String, String> aType = new HashMap<>();
     private HashMap<String, String> species = new HashMap<>();
     private HashMap<String, String> gender = new HashMap<>();
-    private HashMap<String, String> rating = new HashMap<>();
-
-    private String catCurrent = "";
-    private String aTypeCurrent = "";
-    private String speciesCurrent = "";
-    private String genderCurrent = "";
-    private String ratingCurrent = "";
-
-    private String sourceFilePath;
-    private String thumbnailFilePath;
-
     private HashMap<String, String> params = new HashMap<>();
-    private open.furaffinity.client.submitPageOld.submitSubmissionPart2 submitSubmissionPart2;
 
-    public submitSubmissionPart3(open.furaffinity.client.submitPageOld.submitSubmissionPart2 submitSubmissionPart2, String sourceFilePath, String thumbnailFilePath) {
+    public submitSubmissionPart3(Context context, abstractPage.pageListener pageListener, open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2, String sourceFilePath, String thumbnailFilePath) {
+        super(context, pageListener);
         this.submitSubmissionPart2 = submitSubmissionPart2;
         this.sourceFilePath = sourceFilePath;
         this.thumbnailFilePath = thumbnailFilePath;
     }
 
-    private void processPageDataPart(String html) {
+    public static String getPagePath() {
+        return pagePath;
+    }
+
+    @Override
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element catSelect = doc.selectFirst("select[name=cat]");
@@ -77,14 +72,16 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
                 for (Element hiddenInput : hiddenInputs) {
                     params.put(hiddenInput.attr("name"), hiddenInput.attr("value"));
                 }
+
+                return true;
             }
         }
 
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
+    protected Boolean doInBackground(Void... voids) {
         List<HashMap<String, String>> postParams = new ArrayList<>();
 
         for (String key : submitSubmissionPart2.getParams().keySet()) {
@@ -116,13 +113,11 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
             postParams.add(newParam);
         }
 
-        html = webClient[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, postParams);
-        processPageDataPart(html);
-        return null;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
+        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, postParams);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
     }
 
     public HashMap<String, String> getParams() {
@@ -148,26 +143,4 @@ public class submitSubmissionPart3 extends AsyncTask<webClient, Void, Void> {
     public HashMap<String, String> getRating() {
         return rating;
     }
-
-    public String getCatCurrent() {
-        return catCurrent;
-    }
-
-    public String getaTypeCurrent() {
-        return aTypeCurrent;
-    }
-
-    public String getSpeciesCurrent() {
-        return speciesCurrent;
-    }
-
-    public String getGenderCurrent() {
-        return genderCurrent;
-    }
-
-    public String getRatingCurrent() {
-        return ratingCurrent;
-    }
-
-
 }

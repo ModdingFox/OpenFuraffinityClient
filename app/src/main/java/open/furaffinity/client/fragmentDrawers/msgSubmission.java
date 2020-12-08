@@ -31,36 +31,28 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
 public class msgSubmission extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
+    TableLayout settingsTableLayout;
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
-
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<manageImageListAdapter.ViewHolder> mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
-    TableLayout settingsTableLayout;
-
     private Switch msgSubmissionOrder;
     private Spinner msgSubmissionPerPageSpinner;
-
     private fabCircular fab;
     private FloatingActionButton pageSettings;
     private FloatingActionButton deleteSelected;
     private FloatingActionButton deleteAll;
-
     private open.furaffinity.client.pages.msgSubmission page;
-
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
-
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.msgSubmission)abstractPage).getPageResults();
+            List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.msgSubmission) abstractPage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -155,7 +147,7 @@ public class msgSubmission extends appFragment {
     private void resetRecycler() {
         recyclerView.scrollTo(0, 0);
         mDataSet.clear();
-        ((manageImageListAdapter)mAdapter).clearChecked();
+        ((manageImageListAdapter) mAdapter).clearChecked();
         mAdapter.notifyDataSetChanged();
         endlessRecyclerViewScrollListener.resetState();
         fetchPageData();

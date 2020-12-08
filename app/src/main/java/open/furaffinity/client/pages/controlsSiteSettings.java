@@ -12,7 +12,7 @@ import java.util.HashMap;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsSiteSettings extends abstractPage {
-    private static String pagePath = "/controls/site-settings/";
+    private static final String pagePath = "/controls/site-settings/";
 
     private boolean disable_avatars;
     private String date_format;
@@ -40,6 +40,10 @@ public class controlsSiteSettings extends abstractPage {
         super(controlsSiteSettings);
     }
 
+    public static String getPagePath() {
+        return pagePath;
+    }
+
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -50,7 +54,7 @@ public class controlsSiteSettings extends abstractPage {
             for (Element input : inputs) {
                 switch (input.attr("name")) {
                     case "disable_avatars":
-                        disable_avatars = ((input.attr("value").equals("1")) ? (true) : (false));
+                        disable_avatars = (input.attr("value").equals("1"));
                         break;
                     case "date_format":
                         date_format = input.attr("value");
@@ -107,11 +111,7 @@ public class controlsSiteSettings extends abstractPage {
             }
         }
 
-        if(inputs.size() > 0 && selects.size() > 0) {
-            return true;
-        }
-
-        return false;
+        return inputs != null && inputs.size() > 0 && selects != null && selects.size() > 0;
     }
 
     @Override
@@ -121,10 +121,6 @@ public class controlsSiteSettings extends abstractPage {
             return processPageData(html);
         }
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public boolean getDisableAvatars() {

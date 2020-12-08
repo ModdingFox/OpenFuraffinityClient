@@ -15,48 +15,22 @@ import java.util.List;
 
 public class fabCircular extends FloatingActionButton implements View.OnClickListener {
 
-    private class FloatingActionButtonContainer {
-        private FloatingActionButton floatingActionButton;
-        private float radiusMultiplier;
-        private float angle;
-
-        public FloatingActionButtonContainer(FloatingActionButton floatingActionButton, float radiusMultiplier, float angle) {
-            this.floatingActionButton = floatingActionButton;
-            this.radiusMultiplier = radiusMultiplier;
-            this.angle = angle;
-        }
-
-        public FloatingActionButton getFloatingActionButton() {
-            return floatingActionButton;
-        }
-
-        public void setradiusMultiplier(float radiusMultiplier) {
-            this.radiusMultiplier = radiusMultiplier;
-        }
-
-        public void setAngle(float angle) {
-            this.angle = angle;
-        }
-
-        public void setPosition(float radius) {
-            float xCosine = (radius * this.radiusMultiplier) * (float) java.lang.Math.cos(this.angle * Math.PI / 180);
-            float ySine = (radius * this.radiusMultiplier) * (float) java.lang.Math.sin(this.angle * Math.PI / 180);
-
-            this.floatingActionButton.setTranslationX(xCosine);
-            this.floatingActionButton.setTranslationY(ySine);
-        }
-
-        public void setVisibility(boolean visible) {
-            if (visible) {
-                this.floatingActionButton.show();
-            } else {
-                this.floatingActionButton.hide();
-            }
-        }
+    private final List<FloatingActionButtonContainer> floatingActionButtons = new ArrayList<>();
+    private boolean isVisible = false;
+    public fabCircular(@NonNull Context context) {
+        super(context);
+        setOnClickListener(this);
     }
 
-    private List<FloatingActionButtonContainer> floatingActionButtons = new ArrayList<>();
-    private boolean isVisible = false;
+    public fabCircular(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        setOnClickListener(this);
+    }
+
+    public fabCircular(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        setOnClickListener(this);
+    }
 
     @Override
     public void onClick(View v) {
@@ -66,21 +40,6 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
         }
 
         isVisible = !isVisible;
-    }
-
-    public fabCircular(@NonNull Context context) {
-        super(context);
-        setOnClickListener(this::onClick);
-    }
-
-    public fabCircular(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        setOnClickListener(this::onClick);
-    }
-
-    public fabCircular(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        setOnClickListener(this::onClick);
     }
 
     public void addButton(FloatingActionButton floatingActionButton, float radiusMultiplier, float angle) {
@@ -114,6 +73,38 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
         for (int i : positions) {
             floatingActionButtons.get(i).setVisibility(false);
             floatingActionButtons.remove(i);
+        }
+    }
+
+    private static class FloatingActionButtonContainer {
+        private final FloatingActionButton floatingActionButton;
+        private final float radiusMultiplier;
+        private final float angle;
+
+        public FloatingActionButtonContainer(FloatingActionButton floatingActionButton, float radiusMultiplier, float angle) {
+            this.floatingActionButton = floatingActionButton;
+            this.radiusMultiplier = radiusMultiplier;
+            this.angle = angle;
+        }
+
+        public FloatingActionButton getFloatingActionButton() {
+            return floatingActionButton;
+        }
+
+        public void setPosition(float radius) {
+            float xCosine = (radius * this.radiusMultiplier) * (float) java.lang.Math.cos(this.angle * Math.PI / 180);
+            float ySine = (radius * this.radiusMultiplier) * (float) java.lang.Math.sin(this.angle * Math.PI / 180);
+
+            this.floatingActionButton.setTranslationX(xCosine);
+            this.floatingActionButton.setTranslationY(ySine);
+        }
+
+        public void setVisibility(boolean visible) {
+            if (visible) {
+                this.floatingActionButton.show();
+            } else {
+                this.floatingActionButton.hide();
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsShouts extends abstractPage {
-    private static String pagePath = "/controls/shouts/";
+    private static final String pagePath = "/controls/shouts/";
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
     public controlsShouts(Context context, pageListener pageListener) {
@@ -24,12 +24,16 @@ public class controlsShouts extends abstractPage {
         super(controlsShouts);
     }
 
+    public static String getPagePath() {
+        return pagePath;
+    }
+
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element shoutsFormform = doc.selectFirst("form[id=shouts-form]");
 
-        if(shoutsFormform != null) {
+        if (shoutsFormform != null) {
             Element aShout = shoutsFormform.selectFirst("a[id^=shout]");
 
             if (aShout != null) {
@@ -55,10 +59,6 @@ public class controlsShouts extends abstractPage {
             return processPageData(html);
         }
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public List<HashMap<String, String>> getPageResults() {
