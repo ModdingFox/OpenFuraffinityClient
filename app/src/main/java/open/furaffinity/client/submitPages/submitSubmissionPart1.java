@@ -1,6 +1,6 @@
-package open.furaffinity.client.submitPageOld;
+package open.furaffinity.client.submitPages;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,21 +9,27 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.utilities.webClient;
+import open.furaffinity.client.abstractClasses.abstractPage;
 
-public class submitSubmissionPart1 extends AsyncTask<webClient, Void, Void> {
-    private static final String TAG = submitSubmissionPart1.class.getName();
-
+public class submitSubmissionPart1 extends open.furaffinity.client.abstractClasses.abstractPage {
     private static String pagePath = "/submit/";
 
     private HashMap<String, String> submissionType = new HashMap<>();
 
     private String submissionTypeCurrent = "";
 
-    public submitSubmissionPart1() {
+    public submitSubmissionPart1(Context context, abstractPage.pageListener pageListener) {
+        super(context, pageListener);
     }
 
-    private void processPageDataPart(String html) {
+    public submitSubmissionPart1(submitSubmissionPart1 submitSubmissionPart1) {
+        super(submitSubmissionPart1.context, submitSubmissionPart1.pageListener);
+        this.submissionType = submitSubmissionPart1.submissionType;
+        this.submissionTypeCurrent = submitSubmissionPart1.submissionTypeCurrent;
+    }
+
+    @Override
+    protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Elements submissionTypeInputs = doc.select("input[name=submission_type]");
@@ -39,14 +45,17 @@ public class submitSubmissionPart1 extends AsyncTask<webClient, Void, Void> {
 
                 submissionType.put(key, value);
             }
+            return true;
         }
+        return false;
     }
 
     @Override
-    protected Void doInBackground(webClient... webClient) {
-        String html;
-        html = webClient[0].sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        processPageDataPart(html);
+    protected Boolean doInBackground(Void... voids) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
         return null;
     }
 

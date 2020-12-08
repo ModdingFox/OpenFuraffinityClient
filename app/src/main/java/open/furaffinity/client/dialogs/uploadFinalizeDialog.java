@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.submitPageOld.submitSubmissionPart3;
+import open.furaffinity.client.submitPages.submitSubmissionPart3;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.utilities.webClient;
