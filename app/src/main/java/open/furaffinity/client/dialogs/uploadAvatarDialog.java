@@ -1,8 +1,10 @@
 package open.furaffinity.client.dialogs;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -41,12 +44,19 @@ public class uploadAvatarDialog extends DialogFragment {
 
     private void updateUIElementListeners() {
         Fragment uploadFrag = this;
-        selectSourceFile.setOnClickListener(v -> new MaterialFilePicker()
-                .withSupportFragment(uploadFrag)
-                .withPath(Environment.getRootDirectory().getPath())
-                .withFilterDirectories(false)
-                .withRequestCode(submissionFileRequestCode)
-                .start());
+        selectSourceFile.setOnClickListener(v -> {
+            if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                new MaterialFilePicker()
+                        .withSupportFragment(uploadFrag)
+                        .withPath(Environment.getRootDirectory().getPath())
+                        .withFilterDirectories(false)
+                        .withRequestCode(submissionFileRequestCode)
+                        .start();
+            } else {
+                String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE };
+                requestPermissions(permissions, 0);
+            }
+        });
     }
 
     @NonNull
