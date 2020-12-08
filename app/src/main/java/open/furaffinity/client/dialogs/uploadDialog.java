@@ -130,6 +130,7 @@ public class uploadDialog extends DialogFragment {
                     public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
                         uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(((submitSubmissionPart3)abstractPage));
                         uploadFinalizeDialog.show(fragmentManager, "uploadFinalizeDialog");
+                        uploadDialog.this.dismiss();
                     }
 
                     @Override

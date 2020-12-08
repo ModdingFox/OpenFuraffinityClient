@@ -41,6 +41,13 @@ public class webClient {
     private boolean hasLoginCookie = false;
     private boolean followRedirects = true;
 
+    public static HashMap<String, String> nameValueToHashMap(String name, String value) {
+        HashMap<String, String> result = new HashMap<>();
+        result.put("name", name);
+        result.put("value", value);
+        return result;
+    }
+
     private void checkPageForErrors(String html) {
         Document doc = Jsoup.parse(html);
         Element head = doc.selectFirst("head");

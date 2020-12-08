@@ -1,5 +1,7 @@
 package open.furaffinity.client.utilities;
 
+import android.widget.Spinner;
+
 import androidx.annotation.NonNull;
 
 import java.util.Objects;
@@ -35,5 +37,9 @@ public class kvPair {
         }
 
         return false;
+    }
+
+    public static String getSelectedValue(Spinner spinnerIn) {
+        return ((kvPair) spinnerIn.getSelectedItem()).getKey();
     }
 }
