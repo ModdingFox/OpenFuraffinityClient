@@ -1,14 +1,13 @@
 package open.furaffinity.client.adapter;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,15 +17,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.utilities.webClient;
 
 public class watchListAdapter extends RecyclerView.Adapter<watchListAdapter.ViewHolder> {
-    private static final String TAG = watchListAdapter.class.getName();
-
     private final List<HashMap<String, String>> mDataSet;
     private final Context context;
 
@@ -53,22 +49,19 @@ public class watchListAdapter extends RecyclerView.Adapter<watchListAdapter.View
             holder.userName.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink")));
         }
 
-        holder.deleteButton.setOnClickListener(v -> {
-            try {
-                new AsyncTask<webClient, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(webClient... webClients) {
-                        webClients[0].sendGetRequest(webClient.getBaseUrl() + mDataSet.get(position).get("userRemoveLink"));
-                        return null;
-                    }
-                }.execute(new webClient(context)).get();
-
+        holder.deleteButton.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(context, new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
                 mDataSet.remove(position);
                 notifyDataSetChanged();
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Could not unWatch user: ", e);
+                Toast.makeText(context, "Successfully removed watch", Toast.LENGTH_SHORT).show();
             }
-        });
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(context, "Failed to remove watch", Toast.LENGTH_SHORT).show();
+            }
+        }, mDataSet.get(position).get("userRemoveLink")).execute());
     }
 
     @Override
