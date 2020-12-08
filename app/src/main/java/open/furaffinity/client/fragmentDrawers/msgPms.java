@@ -167,6 +167,12 @@ public class msgPms extends appFragment {
 
         deleteSelectedMessages.setOnClickListener(view ->
         {
+            String action = "trash";
+
+            if(page.getSelectedFolder().equals(open.furaffinity.client.pages.msgPms.mailFolders.trash)) {
+                action = "delete";
+            }
+
             List<String> itemIds = ((msgPmsListAdapter) mAdapter).getCheckedItems();
 
             HashMap<String, String> params = new HashMap<>();
@@ -185,7 +191,7 @@ public class msgPms extends appFragment {
                 public void requestFailed(abstractPage abstractPage) {
                     Toast.makeText(getActivity(), "Failed to delete selected notes", Toast.LENGTH_SHORT).show();
                 }
-            }, page.getPagePath(), "move_to", "trash", params).execute();
+            }, page.getPagePath(), "move_to", action, params).execute();
         });
 
         setSelectedMessagesPriority.setOnClickListener(view ->
