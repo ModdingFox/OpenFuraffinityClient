@@ -20,19 +20,15 @@ import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.utilities.webClient;
 
 public class uploadAvatarDialog extends DialogFragment {
-    private String TAG = uploadAvatarDialog.class.getName();
     private static final int submissionFileRequestCode = 132;
 
     private Button selectSourceFile;
     private TextView sourceFilePath;
 
-    private open.furaffinity.client.utilities.webClient webClient;
-
     public interface uploadAvatarDialogListener {
-        public void onDialogPositiveClick(String filePath);
+        void onDialogPositiveClick(String filePath);
     }
 
     private uploadAvatarDialogListener listener;
@@ -46,23 +42,16 @@ public class uploadAvatarDialog extends DialogFragment {
         sourceFilePath = rootView.findViewById(R.id.sourceFilePath);
     }
 
-    private void initClientAndPage() {
-        webClient = new webClient(requireContext());
-    }
+    private void initClientAndPage() { }
 
     private void updateUIElementListeners(View rootView) {
         Fragment uploadFrag = this;
-        selectSourceFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new MaterialFilePicker()
-                        .withSupportFragment(uploadFrag)
-                        .withPath(Environment.getRootDirectory().getPath())
-                        .withFilterDirectories(false)
-                        .withRequestCode(submissionFileRequestCode)
-                        .start();
-            }
-        });
+        selectSourceFile.setOnClickListener(v -> new MaterialFilePicker()
+                .withSupportFragment(uploadFrag)
+                .withPath(Environment.getRootDirectory().getPath())
+                .withFilterDirectories(false)
+                .withRequestCode(submissionFileRequestCode)
+                .start());
     }
 
     @NonNull
@@ -77,19 +66,11 @@ public class uploadAvatarDialog extends DialogFragment {
         updateUIElementListeners(rootView);
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogPositiveClick(sourceFilePath.getText().toString());
-                dismiss();
-            }
+        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> {
+            listener.onDialogPositiveClick(sourceFilePath.getText().toString());
+            dismiss();
         });
-        builder.setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dismiss();
-            }
-        });
+        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dismiss());
 
         return builder.create();
     }

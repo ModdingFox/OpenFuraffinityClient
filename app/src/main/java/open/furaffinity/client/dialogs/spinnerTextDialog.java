@@ -2,7 +2,6 @@ package open.furaffinity.client.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +18,6 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.utilities.kvPair;
 
 public class spinnerTextDialog extends DialogFragment {
-    private String TAG = spinnerTextDialog.class.getName();
-
     private Spinner spinner;
     private EditText editText;
 
@@ -28,7 +25,7 @@ public class spinnerTextDialog extends DialogFragment {
     private String currentValue;
 
     public interface spinnerTextDialogListener {
-        public void onDialogPositiveClick(String selectedKey, String userText);
+        void onDialogPositiveClick(String selectedKey, String userText);
     }
 
     private spinnerTextDialogListener listener;
@@ -51,19 +48,11 @@ public class spinnerTextDialog extends DialogFragment {
         open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data, ((currentValue == null) ? ("") : (currentValue)), true, false);
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                listener.onDialogPositiveClick(((kvPair) spinner.getSelectedItem()).getKey(), editText.getText().toString());
-                dismiss();
-            }
+        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> {
+            listener.onDialogPositiveClick(((kvPair) spinner.getSelectedItem()).getKey(), editText.getText().toString());
+            dismiss();
         });
-        builder.setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dismiss();
-            }
-        });
+        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dismiss());
 
         return builder.create();
     }

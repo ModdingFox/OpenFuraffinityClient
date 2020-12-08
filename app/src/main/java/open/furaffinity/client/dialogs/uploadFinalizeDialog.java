@@ -2,7 +2,6 @@ package open.furaffinity.client.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,7 +41,7 @@ public class uploadFinalizeDialog extends DialogFragment {
     private Switch putInScraps;
 
     private webClient webClient;
-    private submitSubmissionPart3 page;
+    private final submitSubmissionPart3 page;
 
     public uploadFinalizeDialog(submitSubmissionPart3 page) {
         super();
@@ -101,60 +100,54 @@ public class uploadFinalizeDialog extends DialogFragment {
         updateUIElements();
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    List<HashMap<String, String>> params = new ArrayList<>();
+        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> {
+            try {
+                List<HashMap<String, String>> params = new ArrayList<>();
 
-                    for (String key : page.getParams().keySet()) {
-                        HashMap<String, String> newParam = new HashMap<>();
-                        newParam.put("name", key);
-                        newParam.put("value", page.getParams().get(key));
-                        params.add(newParam);
-                    }
-
-                    params.add(getSelected(cat, "cat"));
-                    params.add(getSelected(aType, "atype"));
-                    params.add(getSelected(species, "species"));
-                    params.add(getSelected(gender, "gender"));
-                    params.add(getSelected(rating, "rating"));
-
-                    params.add(getText(title, "title"));
-                    params.add(getText(description, "message"));
-                    params.add(getText(keywords, "keywords"));
-
-                    if (disableComments.isChecked()) {
-                        HashMap<String, String> disableCommentsHashMap = new HashMap<>();
-                        disableCommentsHashMap.put("name", "lock_comments");
-                        disableCommentsHashMap.put("value", "on");
-                        params.add(disableCommentsHashMap);
-                    }
-
-                    if (putInScraps.isChecked()) {
-                        HashMap<String, String> putInScrapsHashMap = new HashMap<>();
-                        putInScrapsHashMap.put("name", "scrap");
-                        putInScrapsHashMap.put("value", "1");
-                        params.add(putInScrapsHashMap);
-                    }
-
-                    new AsyncTask<webClient, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
-                            webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + submitSubmissionPart3.getPagePath(), params, false);
-                            return null;
-                        }
-                    }.execute(webClient).get();
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.e(TAG, "Could not upload submission user: ", e);
+                for (String key : page.getParams().keySet()) {
+                    HashMap<String, String> newParam = new HashMap<>();
+                    newParam.put("name", key);
+                    newParam.put("value", page.getParams().get(key));
+                    params.add(newParam);
                 }
+
+                params.add(getSelected(cat, "cat"));
+                params.add(getSelected(aType, "atype"));
+                params.add(getSelected(species, "species"));
+                params.add(getSelected(gender, "gender"));
+                params.add(getSelected(rating, "rating"));
+
+                params.add(getText(title, "title"));
+                params.add(getText(description, "message"));
+                params.add(getText(keywords, "keywords"));
+
+                if (disableComments.isChecked()) {
+                    HashMap<String, String> disableCommentsHashMap = new HashMap<>();
+                    disableCommentsHashMap.put("name", "lock_comments");
+                    disableCommentsHashMap.put("value", "on");
+                    params.add(disableCommentsHashMap);
+                }
+
+                if (putInScraps.isChecked()) {
+                    HashMap<String, String> putInScrapsHashMap = new HashMap<>();
+                    putInScrapsHashMap.put("name", "scrap");
+                    putInScrapsHashMap.put("value", "1");
+                    params.add(putInScrapsHashMap);
+                }
+
+                new AsyncTask<webClient, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(open.furaffinity.client.utilities.webClient... webClients) {
+                        webClients[0].sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + submitSubmissionPart3.getPagePath(), params, false);
+                        return null;
+                    }
+                }.execute(webClient).get();
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e(TAG, "Could not upload submission user: ", e);
             }
         });
-        builder.setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> {
 
-            }
         });
 
         return builder.create();

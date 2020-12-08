@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,14 +25,12 @@ public class loginDialog extends DialogFragment {
     private EditText userName;
     private EditText password;
 
-    private static final String loginPath = "/login";
-
     private Activity activity;
     private FragmentManager fragmentManager;
     private SharedPreferences sharedPref;
     private CookieManager cookieManager;
 
-    private abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
             cookieManager.setCookie(((open.furaffinity.client.submitPages.submitLogin)abstractPage).getA().domain(), ((open.furaffinity.client.submitPages.submitLogin)abstractPage).getA().toString());
@@ -94,40 +91,27 @@ public class loginDialog extends DialogFragment {
         }
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> new open.furaffinity.client.pages.login(activity, new abstractPage.pageListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                new open.furaffinity.client.pages.login(activity, new abstractPage.pageListener() {
-                    @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
-                        if(((open.furaffinity.client.pages.login)abstractPage).isRecaptchaRequired()) {
-                            recaptchaV2Dialog recaptchaV2Dialog = new recaptchaV2Dialog();
-                            recaptchaV2Dialog.setPagePath(open.furaffinity.client.utilities.webClient.getBaseUrl() + ((open.furaffinity.client.pages.login)abstractPage).getPagePath());
+            public void requestSucceeded(abstractPage abstractPage) {
+                if(((open.furaffinity.client.pages.login)abstractPage).isRecaptchaRequired()) {
+                    recaptchaV2Dialog recaptchaV2Dialog = new recaptchaV2Dialog();
+                    recaptchaV2Dialog.setPagePath(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pages.login.getPagePath());
 
-                            recaptchaV2Dialog.setListener(new recaptchaV2Dialog.recaptchaV2DialogListener() {
-                                @Override
-                                public void gRecaptchaResponseFound(String gRecaptchaResponse) {
-                                    new open.furaffinity.client.submitPages.submitLogin(activity, pageListener, userName.getText().toString(), password.getText().toString(), gRecaptchaResponse).execute();
-                                }
-                            });
-                            recaptchaV2Dialog.show(fragmentManager, "recaptchaV2");
-                        } else {
-                            new open.furaffinity.client.submitPages.submitLogin(activity, pageListener, userName.getText().toString(), password.getText().toString(), "").execute();
-                        }
-                    }
-
-                    @Override
-                    public void requestFailed(abstractPage abstractPage) {
-                        Toast.makeText(activity, "Failed to determine if reCaptcha is needed", Toast.LENGTH_SHORT).show();
-                    }
-                }).execute();
+                    recaptchaV2Dialog.setListener(gRecaptchaResponse -> new open.furaffinity.client.submitPages.submitLogin(activity, pageListener, userName.getText().toString(), password.getText().toString(), gRecaptchaResponse).execute());
+                    recaptchaV2Dialog.show(fragmentManager, "recaptchaV2");
+                } else {
+                    new open.furaffinity.client.submitPages.submitLogin(activity, pageListener, userName.getText().toString(), password.getText().toString(), "").execute();
+                }
             }
-        });
-        builder.setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(activity, "Failed to determine if reCaptcha is needed", Toast.LENGTH_SHORT).show();
             }
+        }).execute());
+        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> {
+
         });
 
         return builder.create();

@@ -16,7 +16,7 @@ import open.furaffinity.client.dialogs.recaptchaV2Dialog;
 import open.furaffinity.client.pages.msgPms;
 
 public class sendPm {
-    private static String TAG = sendPm.class.getName();
+    private static final String TAG = sendPm.class.getName();
 
     private static void sendMessage(Context context, String postKey, String user, String subject, String body, String gRecaptchaResponse) {
         HashMap<String, String> params = new HashMap<>();
@@ -54,12 +54,7 @@ public class sendPm {
                         recaptchaV2Dialog recaptchaV2Dialog = new recaptchaV2Dialog();
                         recaptchaV2Dialog.setPagePath(open.furaffinity.client.utilities.webClient.getBaseUrl() + ((msgPms)abstractPage).getPagePath());
 
-                        recaptchaV2Dialog.setListener(new recaptchaV2Dialog.recaptchaV2DialogListener() {
-                            @Override
-                            public void gRecaptchaResponseFound(String gRecaptchaResponse) {
-                                sendMessage(context, ((msgPms)abstractPage).getPostKey(), user, subject, body, gRecaptchaResponse);
-                            }
-                        });
+                        recaptchaV2Dialog.setListener(gRecaptchaResponse -> sendMessage(context, ((msgPms)abstractPage).getPostKey(), user, subject, body, gRecaptchaResponse));
                         recaptchaV2Dialog.show(fragmentManager, "recaptchaV2");
                     } else {
                         sendMessage(context, ((msgPms)abstractPage).getPostKey(), user, subject, body, "");
