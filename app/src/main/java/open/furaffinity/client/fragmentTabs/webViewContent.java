@@ -40,7 +40,7 @@ public class webViewContent extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             String submissionDescription = getArguments().getString(messageIds.submissionDescription_MESSAGE);
             String pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 

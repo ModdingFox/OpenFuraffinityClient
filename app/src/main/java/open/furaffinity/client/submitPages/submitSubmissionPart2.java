@@ -22,6 +22,10 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
         this.submitSubmissionPart1 = submitSubmissionPart1;
     }
 
+    public static String getPagePath() {
+        return pagePath;
+    }
+
     @Override
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
@@ -54,10 +58,6 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
             return processPageData(html);
         }
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public HashMap<String, String> getParams() {

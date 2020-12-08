@@ -16,14 +16,11 @@ import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageContactInfo extends appFragment {
-    private LinearLayout linearLayout;
-
-    private fabCircular fab;
-
-    private controlsContacts page;
-
-    private boolean isLoading = false;
     List<dynamicEditItem> uiElementList;
+    private LinearLayout linearLayout;
+    private fabCircular fab;
+    private controlsContacts page;
+    private boolean isLoading = false;
 
     @Override
     protected int getLayout() {
@@ -62,8 +59,8 @@ public class manageContactInfo extends appFragment {
 
                 uiElementList = new ArrayList<>();
 
-                if (((controlsContacts)abstractPage).getPageResults() != null) {
-                    for (HashMap<String, String> currentItem : ((controlsContacts)abstractPage).getPageResults()) {
+                if (((controlsContacts) abstractPage).getPageResults() != null) {
+                    for (HashMap<String, String> currentItem : ((controlsContacts) abstractPage).getPageResults()) {
                         String label = ((currentItem.containsKey("label")) ? (currentItem.get("label")) : (""));
                         String value = ((currentItem.containsKey("value")) ? (currentItem.get("value")) : (""));
                         String name = ((currentItem.containsKey("name")) ? (currentItem.get("name")) : (""));

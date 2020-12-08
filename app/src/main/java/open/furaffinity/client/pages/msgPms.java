@@ -14,69 +14,14 @@ import java.util.List;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class msgPms extends abstractPage {
-    public static enum mailFolders {
-        inbox("inbox", "Inbox"), unread("unread", "Unread"), outbox("outbox", "Outbox"), high_prio("high_prio", "High priority"), medium_prio("medium_prio", "Medium priority"), low_prio("low_prio", "Low priority"), archive("archive", "Archive"), trash("trash", "Trash");
-
-        private String value;
-        private String printableName;
-
-        mailFolders(String value) {
-            this.value = value;
-            this.printableName = value;
-        }
-
-        mailFolders(String value, String printableName) {
-            this.value = value;
-            this.printableName = printableName;
-        }
-
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-        public String getPrintableName() {
-            return this.printableName;
-        }
-    }
-
-    public static enum priorities {
-        high("high", "High"), medium("medium", "Medium"), low("low", "Low"), none("none", "None"), archive("archive", "Archive"), unread("unread", "Mark Unread");
-
-        private String value;
-        private String printableName;
-
-        priorities(String value) {
-            this.value = value;
-            this.printableName = value;
-        }
-
-        priorities(String value, String printableName) {
-            this.value = value;
-            this.printableName = printableName;
-        }
-
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-        public String getPrintableName() {
-            return this.printableName;
-        }
-    }
-
-    private String pagePath = "/msg/pms";
-    private static String sendPath = "/msg/send";
-    private static String notePathPrefix = "/newpm/";
+    private static final String sendPath = "/msg/send";
+    private static final String notePathPrefix = "/newpm/";
+    private final String pagePath = "/msg/pms";
+    List<HashMap<String, String>> messages;
     private int currentPage = 1;
-
     private mailFolders selectedFolder = mailFolders.inbox;
     private String postKey;
     private boolean recaptchaRequired;
-
-    List<HashMap<String, String>> messages;
-
     public msgPms(Context context, pageListener pageListener) {
         super(context, pageListener);
     }
@@ -87,6 +32,14 @@ public class msgPms extends abstractPage {
         this.selectedFolder = msgPms.selectedFolder;
     }
 
+    public static String getSendPath() {
+        return sendPath;
+    }
+
+    public static String getNotePathPrefix() {
+        return notePathPrefix;
+    }
+
     protected Boolean processPageData(String html) {
         messages = new ArrayList<>();
 
@@ -94,7 +47,7 @@ public class msgPms extends abstractPage {
 
         Element MessagecenterMailListPane = doc.selectFirst("div.messagecenter-mail-list-pane");
 
-        if(MessagecenterMailListPane != null) {
+        if (MessagecenterMailListPane != null) {
             Elements NoteListContainer = MessagecenterMailListPane.select("div.note-list-container");
 
             for (Element currentElement : NoteListContainer) {
@@ -135,11 +88,7 @@ public class msgPms extends abstractPage {
             }
 
             Element gRecaptcha = doc.selectFirst("[id=g-recaptcha]");
-            if (gRecaptcha == null) {
-                recaptchaRequired = false;
-            } else {
-                recaptchaRequired = true;
-            }
+            recaptchaRequired = gRecaptcha != null;
 
             return true;
         }
@@ -188,15 +137,49 @@ public class msgPms extends abstractPage {
         return postKey;
     }
 
-    public static String getSendPath() {
-        return sendPath;
-    }
-
-    public static String getNotePathPrefix() {
-        return notePathPrefix;
-    }
-
     public boolean isRecaptchaRequired() {
         return recaptchaRequired;
+    }
+
+    public enum mailFolders {
+        inbox("inbox", "Inbox"), unread("unread", "Unread"), outbox("outbox", "Outbox"), high_prio("high_prio", "High priority"), medium_prio("medium_prio", "Medium priority"), low_prio("low_prio", "Low priority"), archive("archive", "Archive"), trash("trash", "Trash");
+
+        private final String value;
+        private final String printableName;
+
+        mailFolders(String value, String printableName) {
+            this.value = value;
+            this.printableName = printableName;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        public String getPrintableName() {
+            return this.printableName;
+        }
+    }
+
+    public enum priorities {
+        high("high", "High"), medium("medium", "Medium"), low("low", "Low"), none("none", "None"), archive("archive", "Archive"), unread("unread", "Mark Unread");
+
+        private final String value;
+        private final String printableName;
+
+        priorities(String value, String printableName) {
+            this.value = value;
+            this.printableName = printableName;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        public String getPrintableName() {
+            return this.printableName;
+        }
     }
 }

@@ -30,9 +30,9 @@
                 android:id="@+id/searcheditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints="Search Query"
                 android:ems="10"
-                android:inputType="text"
-                android:autofillHints="Search Query" />
+                android:inputType="text" />
 
             <TableRow>
 
@@ -255,17 +255,17 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/savedSearchRecyclerView"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="vertical"
         android:visibility="gone" />
 
     <open.furaffinity.client.utilities.fabCircular
@@ -274,8 +274,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/cardview_dark_background"
-        app:srcCompat="@drawable/ic_menu_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_menu_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

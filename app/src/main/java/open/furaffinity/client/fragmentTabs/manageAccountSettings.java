@@ -151,7 +151,7 @@ public class manageAccountSettings extends appFragment {
 
                         @Override
                         public void requestFailed(abstractPage abstractPage) {
-                            Toast.makeText(getActivity(), "Failed to update account settings:" + ((open.furaffinity.client.submitPages.submitControlsSettings)abstractPage).getErrorMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Failed to update account settings:" + ((open.furaffinity.client.submitPages.submitControlsSettings) abstractPage).getErrorMessage(), Toast.LENGTH_SHORT).show();
                         }
                     },
                             fa_useremail.getText().toString(),

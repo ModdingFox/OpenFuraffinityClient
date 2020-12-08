@@ -33,19 +33,32 @@ import open.furaffinity.client.R;
 
 public class webClient {
     private static final String TAG = webClient.class.getName();
-
+    private final List<Cookie> lastPageResponceCookies = new ArrayList<>();
+    private final String cookieA;
+    private final String cookieB;
     private boolean lastPageLoaded = false;
-    private List<Cookie> lastPageResponceCookies = new ArrayList<>();
-    private String cookieA = null;
-    private String cookieB = null;
     private boolean hasLoginCookie = false;
     private boolean followRedirects = true;
+
+    public webClient(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        cookieA = sharedPref.getString(context.getString(R.string.webClientCookieA), null);
+        cookieB = sharedPref.getString(context.getString(R.string.webClientCookieB), null);
+
+        if (cookieA != null && cookieB != null) {
+            hasLoginCookie = true;
+        }
+    }
 
     public static HashMap<String, String> nameValueToHashMap(String name, String value) {
         HashMap<String, String> result = new HashMap<>();
         result.put("name", name);
         result.put("value", value);
         return result;
+    }
+
+    public static String getBaseUrl() {
+        return "https://www.furaffinity.net";
     }
 
     private void checkPageForErrors(String html) {
@@ -74,13 +87,11 @@ public class webClient {
             cookies.put("b", cookieB);
         }
 
-        if (cookies != null) {
-            for (String key : cookies.keySet()) {
-                additionalCookies += key;
-                additionalCookies += "=";
-                additionalCookies += cookies.get(key);
-                additionalCookies += "; ";
-            }
+        for (String key : cookies.keySet()) {
+            additionalCookies += key;
+            additionalCookies += "=";
+            additionalCookies += cookies.get(key);
+            additionalCookies += "; ";
         }
 
         return additionalCookies;
@@ -93,14 +104,16 @@ public class webClient {
 
         if (responseCode == HttpURLConnection.HTTP_OK || (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP)) {
             List<String> cookies = httpURLConnection.getHeaderFields().get("set-cookie");
-            for(String currentCookie : cookies) {
+            for (String currentCookie : cookies) {
                 try {
                     Cookie cookie = Cookie.parse(HttpUrl.get(httpURLConnection.getURL().toURI()), currentCookie);
 
-                    if(cookie != null) {
+                    if (cookie != null) {
                         lastPageResponceCookies.add(cookie);
                     }
-                } catch (URISyntaxException e) { e.printStackTrace(); }
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
@@ -112,7 +125,7 @@ public class webClient {
             }
             result = html.toString();
 
-            if(responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 checkPageForErrors(result);
             } else if (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
                 lastPageLoaded = true;
@@ -124,16 +137,6 @@ public class webClient {
         }
 
         return result;
-    }
-
-    public webClient(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
-        cookieA = sharedPref.getString(context.getString(R.string.webClientCookieA), null);
-        cookieB = sharedPref.getString(context.getString(R.string.webClientCookieB), null);
-
-        if (cookieA != null && cookieB != null) {
-            hasLoginCookie = true;
-        }
     }
 
     public String sendGetRequest(String urlIn, HashMap<String, String> cookies) {
@@ -277,7 +280,7 @@ public class webClient {
                                 FileInputStream inputStream = new FileInputStream(currentFile);
 
                                 byte[] buffer = new byte[4096];
-                                int bytesRead = -1;
+                                int bytesRead;
                                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                                     outputStream.write(buffer, 0, bytesRead);
                                 }
@@ -296,7 +299,7 @@ public class webClient {
                     }
                 }
 
-                if(includeBountryAtFoot) {
+                if (includeBountryAtFoot) {
                     outputStream.writeBytes(boundry + "--" + LINE_FEED);
                 }
 
@@ -339,10 +342,6 @@ public class webClient {
 
     public List<Cookie> getLastPageResponceCookies() {
         return lastPageResponceCookies;
-    }
-
-    public static String getBaseUrl() {
-        return "https://www.furaffinity.net";
     }
 
     public void setFollowRedirects(boolean followRedirects) {

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class submitSubmissionPart1 extends open.furaffinity.client.abstractClasses.abstractPage {
-    private static String pagePath = "/submit/";
+    private static final String pagePath = "/submit/";
 
     private HashMap<String, String> submissionType = new HashMap<>();
 
@@ -26,6 +26,10 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
         super(submitSubmissionPart1.context, submitSubmissionPart1.pageListener);
         this.submissionType = submitSubmissionPart1.submissionType;
         this.submissionTypeCurrent = submitSubmissionPart1.submissionTypeCurrent;
+    }
+
+    public static String getPagePath() {
+        return pagePath;
     }
 
     @Override
@@ -57,10 +61,6 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
             return processPageData(html);
         }
         return null;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public HashMap<String, String> getSubmissionType() {

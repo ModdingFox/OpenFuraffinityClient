@@ -76,7 +76,7 @@ public class uploadDialog extends DialogFragment {
     }
 
 
-    private void updateUIElementListeners(View rootView) {
+    private void updateUIElementListeners() {
         submissionType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -116,7 +116,7 @@ public class uploadDialog extends DialogFragment {
         initClientAndPage();
         fetchPageData();
         updateUIElements();
-        updateUIElementListeners(rootView);
+        updateUIElementListeners();
 
         Context context = requireContext();
         FragmentManager fragmentManager = getParentFragmentManager();
@@ -128,7 +128,7 @@ public class uploadDialog extends DialogFragment {
                 new submitSubmissionPart3(context, new abstractPage.pageListener() {
                     @Override
                     public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
-                        uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(((submitSubmissionPart3)abstractPage));
+                        uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(((submitSubmissionPart3) abstractPage));
                         uploadFinalizeDialog.show(fragmentManager, "uploadFinalizeDialog");
                         uploadDialog.this.dismiss();
                     }

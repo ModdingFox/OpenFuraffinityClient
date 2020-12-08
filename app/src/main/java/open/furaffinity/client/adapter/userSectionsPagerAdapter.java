@@ -21,15 +21,13 @@ import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 
 public class userSectionsPagerAdapter extends FragmentPagerAdapter {
-    private static final String TAG = userSectionsPagerAdapter.class.getName();
-
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.userTab0, R.string.userTab1, R.string.userTab2, R.string.userTab3, R.string.userTab4, R.string.userTab5, R.string.userTab6, R.string.userTab7, R.string.userTab8};
     private final Context mContext;
 
-    private user user;
-    private String currentPage;
-    private String currentPagePath;
+    private final user user;
+    private final String currentPage;
+    private final String currentPagePath;
 
     public userSectionsPagerAdapter(Context context, FragmentManager fm, user user, String currentPage, String currentPagePath) {
         super(fm);

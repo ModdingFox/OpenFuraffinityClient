@@ -26,7 +26,7 @@ public class viewSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final int[] TAB_TITLES = new int[]{R.string.viewTab0, R.string.viewTab1, R.string.viewTab2, R.string.viewTab3, R.string.viewTab4};
     private final Context mContext;
 
-    private view view;
+    private final view view;
 
     public viewSectionsPagerAdapter(Context context, FragmentManager fm, view view) {
         super(fm);

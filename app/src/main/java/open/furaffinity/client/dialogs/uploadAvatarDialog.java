@@ -2,7 +2,6 @@ package open.furaffinity.client.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,11 +25,6 @@ public class uploadAvatarDialog extends DialogFragment {
 
     private Button selectSourceFile;
     private TextView sourceFilePath;
-
-    public interface uploadAvatarDialogListener {
-        void onDialogPositiveClick(String filePath);
-    }
-
     private uploadAvatarDialogListener listener;
 
     public void setListener(uploadAvatarDialogListener uploadAvatarDialogListener) {
@@ -42,9 +36,10 @@ public class uploadAvatarDialog extends DialogFragment {
         sourceFilePath = rootView.findViewById(R.id.sourceFilePath);
     }
 
-    private void initClientAndPage() { }
+    private void initClientAndPage() {
+    }
 
-    private void updateUIElementListeners(View rootView) {
+    private void updateUIElementListeners() {
         Fragment uploadFrag = this;
         selectSourceFile.setOnClickListener(v -> new MaterialFilePicker()
                 .withSupportFragment(uploadFrag)
@@ -63,7 +58,7 @@ public class uploadAvatarDialog extends DialogFragment {
         View rootView = inflater.inflate(R.layout.dialog_fragment_avataruploaddialog, null);
         getElements(rootView);
         initClientAndPage();
-        updateUIElementListeners(rootView);
+        updateUIElementListeners();
 
         builder.setView(rootView);
         builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> {
@@ -88,5 +83,9 @@ public class uploadAvatarDialog extends DialogFragment {
                 }
                 break;
         }
+    }
+
+    public interface uploadAvatarDialogListener {
+        void onDialogPositiveClick(String filePath);
     }
 }

@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
@@ -34,6 +33,25 @@ import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
 public class settings extends appFragment {
+    public static boolean notificationsEnabledDefault = false;
+    public static int notificationsIntervalDefault = 15;
+    public static boolean standardNotificationsDefault = true;
+    public static boolean searchNotificationsEnabledDefault = false;
+    public static int searchNotificationsIntervalDefault = 15;
+    public static int imageResolutionDefault = imageResultsTool.imageResolutions.Original.getValue();
+    public static int recyclerVisibleThresholdDefault = 16;
+    public static int imageListColumnsDefault = 1;
+    public static boolean imageListInfoDefault = true;
+    public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;//Likely not gunna expose this as some views break with it as HORIZONTAL though the option would be nice
+    public static boolean trackHistoryDefault = false;
+    public static boolean saveBrowseStateDefault = true;
+    public static boolean cachedBrowseDefault = true; //Tied to saveBrowseStateDefault
+    public static int InvalidateCachedBrowseTimeDefault = 5;
+    public static int InvalidateCachedBrowseAfterDefault = 12;
+    public static boolean saveSearchStateDefault = true;
+    public static boolean cachedSearchDefault = true; //Tied to saveSearchStateDefault
+    public static int InvalidateCachedSearchTimeDefault = 5;
+    public static int InvalidateCachedSearchAfterDefault = 12;
     private Switch notificationsSwitch;
     private EditText notificationsInterval;
     private Switch watchNotificationsSwitch;
@@ -61,26 +79,6 @@ public class settings extends appFragment {
     private EditText InvalidateCachedSearchAfterEditText;
     private Switch trackHistory;
     private Button clearHistory;
-
-    public static boolean notificationsEnabledDefault = false;
-    public static int notificationsIntervalDefault = 15;
-    public static boolean standardNotificationsDefault = true;
-    public static boolean searchNotificationsEnabledDefault = false;
-    public static int searchNotificationsIntervalDefault = 15;
-    public static int imageResolutionDefault = imageResultsTool.imageResolutions.Original.getValue();
-    public static int recyclerVisibleThresholdDefault = 16;
-    public static int imageListColumnsDefault = 1;
-    public static boolean imageListInfoDefault = true;
-    public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;//Likely not gunna expose this as some views break with it as HORIZONTAL though the option would be nice
-    public static boolean trackHistoryDefault = false;
-    public static boolean saveBrowseStateDefault = true;
-    public static boolean cachedBrowseDefault = true; //Tied to saveBrowseStateDefault
-    public static int InvalidateCachedBrowseTimeDefault = 5;
-    public static int InvalidateCachedBrowseAfterDefault = 12;
-    public static boolean saveSearchStateDefault = true;
-    public static boolean cachedSearchDefault = true; //Tied to saveSearchStateDefault
-    public static int InvalidateCachedSearchTimeDefault = 5;
-    public static int InvalidateCachedSearchAfterDefault = 12;
 
     @Override
     protected int getLayout() {
@@ -145,7 +143,7 @@ public class settings extends appFragment {
         searchNotificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault)));
 
         HashMap<String, String> imageResolutionOptions = new HashMap<String, String>();
-        for(imageResultsTool.imageResolutions currentImageResolution : imageResultsTool.imageResolutions.values()) {
+        for (imageResultsTool.imageResolutions currentImageResolution : imageResultsTool.imageResolutions.values()) {
             imageResolutionOptions.put(currentImageResolution.toString(), currentImageResolution.getPrintableName());
         }
 
@@ -215,7 +213,7 @@ public class settings extends appFragment {
                             WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
                         }
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
 
                 }
             }
@@ -330,7 +328,7 @@ public class settings extends appFragment {
                             WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
                         }
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
 
                 }
             }
@@ -339,7 +337,7 @@ public class settings extends appFragment {
         imageResolution.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int selectedValue = Integer.parseInt(((kvPair)imageResolution.getSelectedItem()).getKey());
+                int selectedValue = Integer.parseInt(((kvPair) imageResolution.getSelectedItem()).getKey());
                 Context context = requireActivity();
                 SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -376,7 +374,7 @@ public class settings extends appFragment {
                         editor.putInt(context.getString(R.string.recyclerVisibleThreshold), value);
                         editor.apply();
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
 
                 }
             }
@@ -405,7 +403,7 @@ public class settings extends appFragment {
                         editor.putInt(context.getString(R.string.imageListColumns), value);
                         editor.apply();
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
 
                 }
             }
@@ -428,7 +426,7 @@ public class settings extends appFragment {
         });
 
         saveBrowseStateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(!isChecked) {
+            if (!isChecked) {
                 cachedBrowseStateSwitch.setChecked(false);
             }
 
@@ -440,7 +438,7 @@ public class settings extends appFragment {
         });
 
         cachedBrowseStateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked) {
+            if (isChecked) {
                 saveBrowseStateSwitch.setChecked(true);
             }
 
@@ -467,14 +465,14 @@ public class settings extends appFragment {
                 try {
                     int value = Integer.parseInt(InvalidateCachedBrowseTimeEditText.getText().toString());
 
-                    if (value > 0 && value <= Integer.MAX_VALUE) {
+                    if (value > 0 && value < Integer.MAX_VALUE) {
                         Context context = requireActivity();
                         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putInt(context.getString(R.string.InvalidateCachedBrowseTimeSetting), value);
                         editor.apply();
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
 
                 }
             }
@@ -503,14 +501,14 @@ public class settings extends appFragment {
                         editor.putInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting), value);
                         editor.apply();
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
 
                 }
             }
         });
 
         saveSearchStateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(!isChecked) {
+            if (!isChecked) {
                 cachedSearchStateSwitch.setChecked(false);
             }
 
@@ -522,7 +520,7 @@ public class settings extends appFragment {
         });
 
         cachedSearchStateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked) {
+            if (isChecked) {
                 saveSearchStateSwitch.setChecked(true);
             }
 
@@ -549,14 +547,14 @@ public class settings extends appFragment {
                 try {
                     int value = Integer.parseInt(InvalidateCachedSearchTimeEditText.getText().toString());
 
-                    if (value > 0 && value <= Integer.MAX_VALUE) {
+                    if (value > 0 && value < Integer.MAX_VALUE) {
                         Context context = requireActivity();
                         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putInt(context.getString(R.string.InvalidateCachedSearchTimeSetting), value);
                         editor.apply();
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
 
                 }
             }
@@ -585,7 +583,7 @@ public class settings extends appFragment {
                         editor.putInt(context.getString(R.string.InvalidateCachedSearchAfterSetting), value);
                         editor.apply();
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
 
                 }
             }
@@ -598,7 +596,7 @@ public class settings extends appFragment {
             editor.putBoolean(context.getString(R.string.trackHistorySetting), isChecked);
             editor.apply();
 
-            ((mainActivity)context).updateUIElements();
+            ((mainActivity) context).updateUIElements();
         });
 
         clearHistory.setOnClickListener(v -> {

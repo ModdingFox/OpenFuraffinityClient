@@ -61,11 +61,11 @@ public class user extends appFragment {
 
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.user page;
-
+    private boolean isLoading = false;
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
-            if(((open.furaffinity.client.pages.user)abstractPage).getBlockUnBlock() != null && ((open.furaffinity.client.pages.user)abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.user)abstractPage).getNoteUser() != null) {
+            if (((open.furaffinity.client.pages.user) abstractPage).getBlockUnBlock() != null && ((open.furaffinity.client.pages.user) abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.user) abstractPage).getNoteUser() != null) {
                 if (page.getIsWatching()) {
                     watchUser.setImageResource(R.drawable.ic_menu_user_remove);
                 } else {
@@ -79,19 +79,19 @@ public class user extends appFragment {
                 }
             }
 
-            userName.setText(((open.furaffinity.client.pages.user)abstractPage).getUserName());
-            userAccountStatus.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatus());
-            userAccountStatusLine.setText(((open.furaffinity.client.pages.user)abstractPage).getUserAccountStatusLine());
-            Glide.with(user.this).load(((open.furaffinity.client.pages.user)abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
-            userViews.setText(((open.furaffinity.client.pages.user)abstractPage).getUserViews());
-            userSubmissions.setText(((open.furaffinity.client.pages.user)abstractPage).getUserSubmissions());
-            userFavs.setText(((open.furaffinity.client.pages.user)abstractPage).getUserFavs());
-            userCommentsEarned.setText(((open.furaffinity.client.pages.user)abstractPage).getUserCommentsEarned());
-            userCommentsMade.setText(((open.furaffinity.client.pages.user)abstractPage).getUserCommentsMade());
-            userJournals.setText(((open.furaffinity.client.pages.user)abstractPage).getUserJournals());
+            userName.setText(((open.furaffinity.client.pages.user) abstractPage).getUserName());
+            userAccountStatus.setText(((open.furaffinity.client.pages.user) abstractPage).getUserAccountStatus());
+            userAccountStatusLine.setText(((open.furaffinity.client.pages.user) abstractPage).getUserAccountStatusLine());
+            Glide.with(user.this).load(((open.furaffinity.client.pages.user) abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
+            userViews.setText(((open.furaffinity.client.pages.user) abstractPage).getUserViews());
+            userSubmissions.setText(((open.furaffinity.client.pages.user) abstractPage).getUserSubmissions());
+            userFavs.setText(((open.furaffinity.client.pages.user) abstractPage).getUserFavs());
+            userCommentsEarned.setText(((open.furaffinity.client.pages.user) abstractPage).getUserCommentsEarned());
+            userCommentsMade.setText(((open.furaffinity.client.pages.user) abstractPage).getUserCommentsMade());
+            userJournals.setText(((open.furaffinity.client.pages.user) abstractPage).getUserJournals());
 
             saveHistory();
-            setupViewPager(((open.furaffinity.client.pages.user)abstractPage));
+            setupViewPager(((open.furaffinity.client.pages.user) abstractPage));
 
             isLoading = false;
         }
@@ -102,8 +102,6 @@ public class user extends appFragment {
             Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
         }
     };
-
-    private boolean isLoading = false;
 
     private void saveHistory() {
         SharedPreferences sharedPref = requireActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
@@ -182,7 +180,7 @@ public class user extends appFragment {
     }
 
     private String getPagePath() {
-        currentPagePath = ((mainActivity)requireActivity()).getUserPath();
+        currentPagePath = ((mainActivity) requireActivity()).getUserPath();
         String result = currentPagePath;
 
         Matcher userMatcher = Pattern.compile("/(user|gallery|scraps|favorites|journals|commissions|watchlist/to|watchlist/by)/([^/]+)").matcher(result);
@@ -195,7 +193,7 @@ public class user extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(!isLoading) {
+        if (!isLoading) {
             isLoading = true;
 
             loginCheck = new loginCheck(loginCheck);
@@ -249,7 +247,7 @@ public class user extends appFragment {
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                if (((loginCheck)abstractPage).getIsLoggedIn()) {
+                if (((loginCheck) abstractPage).getIsLoggedIn()) {
                     fab.setVisibility(View.VISIBLE);
                 } else {
                     fab.setVisibility(View.GONE);
@@ -263,7 +261,7 @@ public class user extends appFragment {
             }
         });
 
-        if(page == null) {
+        if (page == null) {
             page = new open.furaffinity.client.pages.user(getActivity(), pageListener, getPagePath());
         }
     }
@@ -308,7 +306,7 @@ public class user extends appFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null && savedInstanceState.containsKey("userPath") && savedInstanceState.containsKey("currentPage")) {
+        if (savedInstanceState != null && savedInstanceState.containsKey("userPath") && savedInstanceState.containsKey("currentPage")) {
             page = new open.furaffinity.client.pages.user(getActivity(), pageListener, savedInstanceState.getString("userPath"));
             currentPage = savedInstanceState.getString("currentPage");
         }

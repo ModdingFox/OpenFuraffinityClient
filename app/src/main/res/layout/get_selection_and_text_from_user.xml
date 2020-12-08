@@ -13,15 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Select group to rename:"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerDialogText"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerDialogText" />
 
     <TextView
         android:id="@+id/editDialogText"
@@ -29,8 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Enter new name:"
-        app:layout_constraintTop_toBottomOf="@+id/spinner"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <EditText
         android:id="@+id/editText"
@@ -38,6 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        app:layout_constraintTop_toBottomOf="@+id/editDialogText"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editDialogText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

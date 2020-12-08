@@ -19,39 +19,18 @@ import java.util.List;
 import open.furaffinity.client.R;
 
 public class manageAvatarListAdapter extends RecyclerView.Adapter<manageAvatarListAdapter.ViewHolder> {
-    private List<HashMap<String, String>> mDataSet;
+    private final List<HashMap<String, String>> mDataSet;
 
-    private Context context;
-
-    public interface manageAvatarListAdapterListener {
-        public void onSet(String url);
-
-        public void onDelete(String url);
-    }
-
+    private final Context context;
     manageAvatarListAdapterListener listener;
-
-    public void setListener(manageAvatarListAdapterListener manageAvatarListAdapterListener) {
-        listener = manageAvatarListAdapterListener;
-    }
 
     public manageAvatarListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
         this.context = context;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView imageView;
-        private final Button setButton;
-        private final Button deleteButton;
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            imageView = itemView.findViewById(R.id.imageView);
-            setButton = itemView.findViewById(R.id.setButton);
-            deleteButton = itemView.findViewById(R.id.deleteButton);
-        }
+    public void setListener(manageAvatarListAdapterListener manageAvatarListAdapterListener) {
+        listener = manageAvatarListAdapterListener;
     }
 
     @NonNull
@@ -66,24 +45,34 @@ public class manageAvatarListAdapter extends RecyclerView.Adapter<manageAvatarLi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Glide.with(context).load(mDataSet.get(position).get("imgUrl")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.imageView);
 
-        holder.setButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onSet(mDataSet.get(position).get("setUrl"));
-            }
-        });
+        holder.setButton.setOnClickListener(v -> listener.onSet(mDataSet.get(position).get("setUrl")));
 
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onDelete(mDataSet.get(position).get("deleteUrl"));
-            }
-        });
+        holder.deleteButton.setOnClickListener(v -> listener.onDelete(mDataSet.get(position).get("deleteUrl")));
 
     }
 
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    public interface manageAvatarListAdapterListener {
+        void onSet(String url);
+
+        void onDelete(String url);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView imageView;
+        private final Button setButton;
+        private final Button deleteButton;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            imageView = itemView.findViewById(R.id.imageView);
+            setButton = itemView.findViewById(R.id.setButton);
+            deleteButton = itemView.findViewById(R.id.deleteButton);
+        }
     }
 }

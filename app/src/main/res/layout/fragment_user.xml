@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@+id/coordinatorLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragmentDrawers.user">
@@ -40,8 +40,8 @@
                     android:gravity="center"
                     android:minHeight="?actionBarSize"
                     android:padding="@dimen/appbar_padding"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:text="@string/notLoaded" />
+                    android:text="@string/notLoaded"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
                 <TextView
                     android:id="@+id/userAccountStatus"
@@ -49,8 +49,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingLeft="16dp"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
-                    android:text="@string/notLoaded" />
+                    android:text="@string/notLoaded"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle" />
 
                 <TextView
                     android:id="@+id/userAccountStatusLine"
@@ -58,8 +58,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingLeft="16dp"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
-                    android:text="@string/notLoaded" />
+                    android:text="@string/notLoaded"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle" />
 
             </LinearLayout>
 
@@ -68,16 +68,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             app:layout_scrollFlags="scroll|enterAlways">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp"
-                android:gravity="center">
+                android:paddingHorizontal="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -96,9 +96,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp"
-                android:gravity="center">
+                android:paddingHorizontal="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -117,9 +117,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp"
-                android:gravity="center">
+                android:paddingHorizontal="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -139,16 +139,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             app:layout_scrollFlags="scroll|enterAlways">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp"
-                android:gravity="center">
+                android:paddingHorizontal="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -167,9 +167,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp"
-                android:gravity="center">
+                android:paddingHorizontal="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -188,9 +188,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp"
-                android:gravity="center">
+                android:paddingHorizontal="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -221,16 +221,16 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_below="@+id/appBarLayout"></androidx.viewpager.widget.ViewPager>
+        android:layout_below="@+id/appBarLayout"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.viewpager.widget.ViewPager>
 
     <open.furaffinity.client.utilities.fabCircular
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/cardview_dark_background"
-        app:srcCompat="@drawable/ic_menu_add"
-        android:layout_gravity="bottom|right" />
+        app:srcCompat="@drawable/ic_menu_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

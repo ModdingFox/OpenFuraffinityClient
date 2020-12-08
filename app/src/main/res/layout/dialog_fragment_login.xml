@@ -10,8 +10,8 @@
         android:id="@+id/userNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/userNameText" />
+        android:text="@string/userNameText"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/userName"
@@ -23,8 +23,8 @@
         android:id="@+id/passwordTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/userName"
-        android:text="@string/passwordText" />
+        android:text="@string/passwordText"
+        app:layout_constraintTop_toBottomOf="@+id/userName" />
 
     <EditText
         android:id="@+id/password"

@@ -23,25 +23,20 @@ import open.furaffinity.client.submitPages.submitControlsJournal;
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageJournals extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<controlsJournalListAdapter.ViewHolder> mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
     private fabCircular fab;
-
     private controlsJournal page;
-
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
-
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((controlsJournal)abstractPage).getPageResults();
+            List<HashMap<String, String>> pageResults = ((controlsJournal) abstractPage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -138,8 +133,8 @@ public class manageJournals extends appFragment {
                 @Override
                 public void requestSucceeded(abstractPage abstractPage) {
                     journalDialog journalDialog = new journalDialog();
-                    journalDialog.setSubject(((controlsJournal)abstractPage).getSubject());
-                    journalDialog.setBody(((controlsJournal)abstractPage).getBody());
+                    journalDialog.setSubject(((controlsJournal) abstractPage).getSubject());
+                    journalDialog.setBody(((controlsJournal) abstractPage).getBody());
                     journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new submitControlsJournal(getActivity(), new abstractPage.pageListener() {
                         @Override
                         public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
@@ -151,7 +146,7 @@ public class manageJournals extends appFragment {
                         public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
                             Toast.makeText(getActivity(), "Failed to update journal item", Toast.LENGTH_SHORT).show();
                         }
-                    }, ((controlsJournal)abstractPage).getPagePath(), ((controlsJournal)abstractPage).getKey(), ((controlsJournal)abstractPage).getId(), subject, body, lockComments, makeFeatured).execute());
+                    }, ((controlsJournal) abstractPage).getPagePath(), ((controlsJournal) abstractPage).getKey(), ((controlsJournal) abstractPage).getId(), subject, body, lockComments, makeFeatured).execute());
                     journalDialog.show(getChildFragmentManager(), "updateJournalDialog");
                 }
 

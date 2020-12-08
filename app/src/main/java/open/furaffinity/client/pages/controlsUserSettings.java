@@ -12,7 +12,7 @@ import java.util.HashMap;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsUserSettings extends abstractPage {
-    private static String pagePath = "/controls/user-settings/";
+    private static final String pagePath = "/controls/user-settings/";
 
     private boolean accept_trades;
     private boolean accept_commissions;
@@ -29,6 +29,10 @@ public class controlsUserSettings extends abstractPage {
         super(controlsUserSettings);
     }
 
+    public static String getPagePath() {
+        return pagePath;
+    }
+
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -40,10 +44,10 @@ public class controlsUserSettings extends abstractPage {
             for (Element input : inputs) {
                 switch (input.attr("name")) {
                     case "accept_trades":
-                        accept_trades = ((input.attr("value").equals("1")) ? (true) : (false));
+                        accept_trades = (input.attr("value").equals("1"));
                         break;
                     case "accept_commissions":
-                        accept_commissions = ((input.attr("value").equals("1")) ? (true) : (false));
+                        accept_commissions = (input.attr("value").equals("1"));
                         break;
                 }
             }
@@ -61,13 +65,10 @@ public class controlsUserSettings extends abstractPage {
                     }
                 }
 
-                switch (select.attr("name")) {
-                    case "featured_journal_id":
-                        featured_journal_id = newOptionList;
-                        featured_journal_id_current = ((selected != null) ? (selected.attr("value")) : ("0"));
-                        break;
+                if ("featured_journal_id".equals(select.attr("name"))) {
+                    featured_journal_id = newOptionList;
+                    featured_journal_id_current = ((selected != null) ? (selected.attr("value")) : ("0"));
                 }
-
             }
         }
 
@@ -90,10 +91,6 @@ public class controlsUserSettings extends abstractPage {
             return processPageData(html);
         }
         return false;
-    }
-
-    public static String getPagePath() {
-        return pagePath;
     }
 
     public boolean getAcceptTrades() {

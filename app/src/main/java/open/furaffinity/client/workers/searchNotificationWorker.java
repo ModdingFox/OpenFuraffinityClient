@@ -30,14 +30,15 @@ import open.furaffinity.client.sqlite.searchDBHelper;
 
 public class searchNotificationWorker extends Worker {
     private static final String TAG = searchNotificationWorker.class.getName();
-
-    private Context context;
-
+    private static final int maxPagesToCheck = 3;
+    private final Context context;
+    private final List<HashMap<String, String>> mDataset = new ArrayList<>();
     private search page;
 
-    private List<HashMap<String, String>> mDataset = new ArrayList<>();
-
-    private static final int maxPagesToCheck = 3;
+    public searchNotificationWorker(@NonNull Context context, @NonNull WorkerParameters params) {
+        super(context, params);
+        this.context = context;
+    }
 
     private void initClientAndPage() {
         page = new search(context, new abstractPage.pageListener() {
@@ -104,15 +105,15 @@ public class searchNotificationWorker extends Worker {
                 String COLUMN_ORDERBY = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_ORDERBY));
                 String COLUMN_ORDERDIRECTION = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_ORDERDIRECTION));
                 String COLUMN_RANGE = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RANGE));
-                boolean COLUMN_RATINGGENERAL = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0) ? (true) : (false));
-                boolean COLUMN_RATINGMATURE = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0) ? (true) : (false));
-                boolean COLUMN_RATINGADULT = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEART = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEART)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEMUSIC = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEFLASH = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPESTORY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEPHOTO = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0) ? (true) : (false));
-                boolean COLUMN_TYPEPOETRY = ((cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0) ? (true) : (false));
+                boolean COLUMN_RATINGGENERAL = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0);
+                boolean COLUMN_RATINGMATURE = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0);
+                boolean COLUMN_RATINGADULT = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0);
+                boolean COLUMN_TYPEART = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEART)) > 0);
+                boolean COLUMN_TYPEMUSIC = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0);
+                boolean COLUMN_TYPEFLASH = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0);
+                boolean COLUMN_TYPESTORY = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0);
+                boolean COLUMN_TYPEPHOTO = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0);
+                boolean COLUMN_TYPEPOETRY = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0);
                 String COLUMN_MODE = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_MODE));
 
                 page.setQuery(COLUMN_Q);
@@ -174,16 +175,12 @@ public class searchNotificationWorker extends Worker {
                 }
             }
 
+            cursor.close();
             db.close();
 
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Could not load page: ", e);
         }
-    }
-
-    public searchNotificationWorker(@NonNull Context context, @NonNull WorkerParameters params) {
-        super(context, params);
-        this.context = context;
     }
 
     @Override

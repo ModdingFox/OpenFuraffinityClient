@@ -26,6 +26,7 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
 public class uploadFinalizeDialog extends DialogFragment {
+    private final submitSubmissionPart3 page;
     private Spinner cat;
     private Spinner aType;
     private Spinner species;
@@ -36,8 +37,6 @@ public class uploadFinalizeDialog extends DialogFragment {
     private EditText keywords;
     private Switch disableComments;
     private Switch putInScraps;
-
-    private final submitSubmissionPart3 page;
 
     public uploadFinalizeDialog(submitSubmissionPart3 page) {
         super();
@@ -62,11 +61,11 @@ public class uploadFinalizeDialog extends DialogFragment {
     }
 
     private void updateUIElements() {
-        uiControls.spinnerSetAdapter(requireContext(), cat, page.getCat(), page.getCatCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), aType, page.getaType(), page.getaTypeCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), species, page.getSpecies(), page.getSpeciesCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), gender, page.getGender(), page.getGenderCurrent(), true, false);
-        uiControls.spinnerSetAdapter(requireContext(), rating, page.getRating(), page.getRatingCurrent(), true, false);
+        uiControls.spinnerSetAdapter(requireContext(), cat, page.getCat(), "", true, false);
+        uiControls.spinnerSetAdapter(requireContext(), aType, page.getaType(), "", true, false);
+        uiControls.spinnerSetAdapter(requireContext(), species, page.getSpecies(), "", true, false);
+        uiControls.spinnerSetAdapter(requireContext(), gender, page.getGender(), "", true, false);
+        uiControls.spinnerSetAdapter(requireContext(), rating, page.getRating(), "", true, false);
     }
 
     @NonNull

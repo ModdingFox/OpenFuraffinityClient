@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 public class OnSwipeTouchListener implements OnTouchListener {
-    private View view;
     private final GestureDetector gestureDetector;
 
     public OnSwipeTouchListener(Context ctx) {
@@ -18,6 +17,27 @@ public class OnSwipeTouchListener implements OnTouchListener {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
+    }
+
+    public void onSwipeRight() {
+    }
+
+    public void onSwipeLeft() {
+    }
+
+    public void onSwipeTop() {
+    }
+
+    public void onSwipeBottom() {
+    }
+
+    public void onClick() {
+    }
+
+    public void onDoubleClick() {
+    }
+
+    public void onLongClick() {
     }
 
     private final class GestureListener extends SimpleOnGestureListener {
@@ -75,26 +95,5 @@ public class OnSwipeTouchListener implements OnTouchListener {
             }
             return result;
         }
-    }
-
-    public void onSwipeRight() {
-    }
-
-    public void onSwipeLeft() {
-    }
-
-    public void onSwipeTop() {
-    }
-
-    public void onSwipeBottom() {
-    }
-
-    public void onClick() {
-    }
-
-    public void onDoubleClick() {
-    }
-
-    public void onLongClick() {
     }
 }

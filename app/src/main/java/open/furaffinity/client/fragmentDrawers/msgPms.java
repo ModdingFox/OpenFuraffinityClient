@@ -28,26 +28,21 @@ import open.furaffinity.client.utilities.fabCircular;
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class msgPms extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
-
     private LinearLayoutManager layoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<msgPmsListAdapter.ViewHolder> mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
     private fabCircular fab;
     private FloatingActionButton newMessage;
     private FloatingActionButton deleteSelectedMessages;
     private FloatingActionButton setSelectedMessagesPriority;
     private FloatingActionButton messageListOptions;
-
     private open.furaffinity.client.pages.msgPms page;
-
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {

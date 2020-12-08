@@ -23,9 +23,9 @@ import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragmentDrawers.settings;
 
 public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.ViewHolder> {
-    private List<HashMap<String, String>> mDataSet;
-    private Context context;
-    private boolean showPostInfo = true;
+    private final List<HashMap<String, String>> mDataSet;
+    private final Context context;
+    private final boolean showPostInfo;
 
     public imageListAdapter(List<HashMap<String, String>> mDataSetIn, Context context) {
         mDataSet = mDataSetIn;
@@ -33,24 +33,6 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
 
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
         showPostInfo = sharedPref.getBoolean(context.getString(R.string.imageListInfo), settings.imageListInfoDefault);
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView postImage;
-        private final ConstraintLayout imageListPostInfo;
-        private final TextView postName;
-        private final TextView postUser;
-        private final TextView postRating;
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            postImage = itemView.findViewById(R.id.imageListCardViewPostImage);
-            imageListPostInfo = itemView.findViewById(R.id.imageListPostInfo);
-            postName = itemView.findViewById(R.id.imageListCardPostName);
-            postUser = itemView.findViewById(R.id.imageListCardPostUser);
-            postRating = itemView.findViewById(R.id.imageListCardPostRating);
-        }
     }
 
     @NonNull
@@ -72,16 +54,29 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
             holder.imageListPostInfo.setVisibility(View.GONE);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((mainActivity) context).setViewPath(mDataSet.get(position).get("postPath"));
-            }
-        });
+        holder.itemView.setOnClickListener(v -> ((mainActivity) context).setViewPath(mDataSet.get(position).get("postPath")));
     }
 
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView postImage;
+        private final ConstraintLayout imageListPostInfo;
+        private final TextView postName;
+        private final TextView postUser;
+        private final TextView postRating;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            postImage = itemView.findViewById(R.id.imageListCardViewPostImage);
+            imageListPostInfo = itemView.findViewById(R.id.imageListPostInfo);
+            postName = itemView.findViewById(R.id.imageListCardPostName);
+            postUser = itemView.findViewById(R.id.imageListCardPostUser);
+            postRating = itemView.findViewById(R.id.imageListCardPostRating);
+        }
     }
 }

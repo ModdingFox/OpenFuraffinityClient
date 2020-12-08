@@ -16,14 +16,11 @@ import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageUserPageAndProfileInformation extends appFragment {
-    private LinearLayout linearLayout;
-
-    private fabCircular fab;
-
-    private controlsProfile page;
-
-    private boolean isLoading = false;
     List<dynamicEditItem> uiElementList;
+    private LinearLayout linearLayout;
+    private fabCircular fab;
+    private controlsProfile page;
+    private boolean isLoading = false;
 
     @Override
     protected int getLayout() {
@@ -63,8 +60,8 @@ public class manageUserPageAndProfileInformation extends appFragment {
 
                 uiElementList = new ArrayList<>();
 
-                if (((controlsProfile)abstractPage).getPageResults() != null) {
-                    for (controlsProfile.inputItem currentInputItem : ((controlsProfile)abstractPage).getPageResults()) {
+                if (((controlsProfile) abstractPage).getPageResults() != null) {
+                    for (controlsProfile.inputItem currentInputItem : ((controlsProfile) abstractPage).getPageResults()) {
                         if (currentInputItem.isSelect()) {
                             uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, currentInputItem.getName(), currentInputItem.getHeader(), currentInputItem.getValue(), currentInputItem.getOptions()));
                         } else {

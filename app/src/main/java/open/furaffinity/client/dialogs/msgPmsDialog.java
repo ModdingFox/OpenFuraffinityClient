@@ -15,11 +15,6 @@ import open.furaffinity.client.R;
 
 public class msgPmsDialog extends DialogFragment {
     private String user;
-
-    public interface msgPmsDialogListener {
-        void userMessageData(String user, String subject, String body);
-    }
-
     private msgPmsDialogListener listener;
 
     public void setListener(msgPmsDialogListener msgPmsDialogListener) {
@@ -53,5 +48,9 @@ public class msgPmsDialog extends DialogFragment {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public interface msgPmsDialogListener {
+        void userMessageData(String user, String subject, String body);
     }
 }

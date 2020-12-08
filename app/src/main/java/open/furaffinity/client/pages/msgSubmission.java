@@ -18,19 +18,14 @@ import open.furaffinity.client.utilities.imageResultsTool;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class msgSubmission extends abstractPage {
-    private String pagePath = "/msg/submissions";
-
-    private boolean isNewestFirst;
-
+    private final boolean isNewestFirst;
+    private final imageResultsTool.imageResolutions currentResolution;
+    private String pagePath;
     private int page = 1;
     private String perPage = "24";
-
     private String prevPage = null;
     private String nextPage = null;
-
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
-
-    private imageResultsTool.imageResolutions currentResolution = imageResultsTool.imageResolutions.Original;
 
     public msgSubmission(Context context, pageListener pageListener, boolean isNewestFirst) {
         super(context, pageListener);
@@ -94,32 +89,19 @@ public class msgSubmission extends abstractPage {
         return result;
     }
 
-    public String getCurrentPerpage() {
-        return perPage;
-    }
-
     public void setPerpage(String value) {
         if (getPerpage().containsKey(value)) {
-            pagePath.replace("@" + perPage, "@" + value);
+            pagePath = pagePath.replace("@" + perPage, "@" + value);
             perPage = value;
         }
     }
 
-    public int getCurrentPage() {
-        return page;
+    public String getCurrentPerpage() {
+        return perPage;
     }
 
     public boolean getIsNewestFirst() {
         return isNewestFirst;
-    }
-
-    public boolean setPrevPage() {
-        if (prevPage == null) {
-            return false;
-        }
-        pagePath = prevPage;
-        page--;
-        return true;
     }
 
     public boolean setNextPage() {

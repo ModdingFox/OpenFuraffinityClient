@@ -24,12 +24,6 @@ public class spinnerDialog extends DialogFragment {
 
     private String text = null;
     private HashMap<String, String> data;
-
-    public interface dialogListener {
-        void onDialogPositiveClick(DialogFragment dialog);
-        void onDialogNegativeClick(DialogFragment dialog);
-    }
-
     private dialogListener listener;
 
     public void setListener(dialogListener dialogListener) {
@@ -67,5 +61,11 @@ public class spinnerDialog extends DialogFragment {
 
     public String getSpinnerSelection() {
         return ((kvPair) spinner.getSelectedItem()).getKey();
+    }
+
+    public interface dialogListener {
+        void onDialogPositiveClick(DialogFragment dialog);
+
+        void onDialogNegativeClick(DialogFragment dialog);
     }
 }

@@ -21,7 +21,7 @@ public class journalSectionsPagerAdapter extends FragmentPagerAdapter {
     private static final int[] TAB_TITLES = new int[]{R.string.journalTab0, R.string.journalTab1};
     private final Context mContext;
 
-    private journal journal;
+    private final journal journal;
 
     public journalSectionsPagerAdapter(Context context, FragmentManager fm, journal journal) {
         super(fm);

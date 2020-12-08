@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class journal extends abstractPage {
-    private String pagePath;
+    private final String pagePath;
     private String journalUserIcon;
     private String journalUserLink;
     private String journalUserName;
@@ -81,11 +81,7 @@ public class journal extends abstractPage {
             }
         }
 
-        if(journalTitleH2 != null && journalContentContainer != null) {
-            return true;
-        }
-
-        return false;
+        return journalTitleH2 != null && journalContentContainer != null;
     }
 
     @Override

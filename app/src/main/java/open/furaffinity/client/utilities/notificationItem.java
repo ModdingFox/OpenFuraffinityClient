@@ -1,9 +1,9 @@
 package open.furaffinity.client.utilities;
 
 public class notificationItem {
-    private String name;
+    private final String name;
+    private final int rowId;
     private boolean state;
-    private int rowId;
 
     public notificationItem(String name, boolean state, int rowId) {
         this.name = name;

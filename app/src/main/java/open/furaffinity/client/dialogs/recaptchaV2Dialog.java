@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.JavascriptInterface;
-import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -26,11 +25,6 @@ public class recaptchaV2Dialog extends DialogFragment {
     private WebSettings webSettings;
 
     private String pagePath;
-
-    public interface recaptchaV2DialogListener {
-        void gRecaptchaResponseFound(String gRecaptchaResponse);
-    }
-
     private recaptchaV2DialogListener listener;
 
     public void setListener(recaptchaV2DialogListener recaptchaV2DialogListener) {
@@ -99,5 +93,9 @@ public class recaptchaV2Dialog extends DialogFragment {
         builder.setView(rootView);
 
         return builder.create();
+    }
+
+    public interface recaptchaV2DialogListener {
+        void gRecaptchaResponseFound(String gRecaptchaResponse);
     }
 }

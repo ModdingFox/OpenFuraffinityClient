@@ -21,20 +21,16 @@ import open.furaffinity.client.pages.watchList;
 import open.furaffinity.client.utilities.messageIds;
 
 public class watch extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private LinearLayoutManager layoutManager;
-
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<stringListAdapter.ViewHolder> mAdapter;
     @SuppressWarnings("FieldCanBeLocal")
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
     private Button button;
-
     private watchList page;
-
     private int loadingStopCounter = 3;
     private boolean isFirstLoad = true;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {
@@ -51,7 +47,7 @@ public class watch extends appFragment {
 
     protected void fetchPageData() {
         if (isFirstLoad) {
-            if(getArguments() != null) {
+            if (getArguments() != null) {
                 mDataSet.addAll(watchList.processWatchList(getArguments().getString(messageIds.userWatchRecent_MESSAGE), true));
                 mAdapter.notifyDataSetChanged();
                 isFirstLoad = false;
@@ -72,7 +68,7 @@ public class watch extends appFragment {
         mAdapter = new stringListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             page = new watchList(getContext(), new abstractPage.pageListener() {
                 @Override
                 public void requestSucceeded(abstractPage abstractPage) {

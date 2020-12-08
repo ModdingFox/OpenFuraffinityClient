@@ -18,18 +18,15 @@ public class login extends abstractPage {
         super(context, pageListener);
     }
 
+    public static String getPagePath() {
+        return pagePath;
+    }
+
     @Override
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
-
         Element gRecaptcha = doc.selectFirst("[id=g-recaptcha]");
-
-        if (gRecaptcha == null) {
-            recaptchaRequired = false;
-        } else {
-            recaptchaRequired = true;
-        }
-
+        recaptchaRequired = gRecaptcha != null;
         return true;
     }
 
@@ -46,6 +43,4 @@ public class login extends abstractPage {
     public boolean isRecaptchaRequired() {
         return recaptchaRequired;
     }
-
-    public static String getPagePath() { return pagePath; }
 }

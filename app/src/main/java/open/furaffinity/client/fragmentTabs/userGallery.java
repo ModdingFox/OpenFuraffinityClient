@@ -30,29 +30,25 @@ import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.uiControls;
 
 public class userGallery extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<imageListAdapter.ViewHolder> mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
     private LinearLayout controls;
     private Spinner folderSpinner;
-
     private gallery page;
-
     private int loadingStopCounter = 3;
     private boolean isInitialized = false;
     private boolean isLoading = false;
     private String pagePath = null;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private HashMap<String, String> folderList = new HashMap<>();
 
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
+            List<HashMap<String, String>> pageResults = ((gallery) abstractPage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -68,7 +64,7 @@ public class userGallery extends appFragment {
             mDataSet.addAll(pageResults);
             mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
-            if(!isInitialized) {
+            if (!isInitialized) {
                 folderList = ((gallery) abstractPage).getFolderResults();
 
                 if (folderList.size() > 0) {
@@ -137,7 +133,7 @@ public class userGallery extends appFragment {
     }
 
     protected void initPages() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 
             recyclerView.setLayoutManager(staggeredGridLayoutManager);

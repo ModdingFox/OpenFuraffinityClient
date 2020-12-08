@@ -22,13 +22,6 @@ public class textDialog extends DialogFragment {
 
     private String text = null;
     private boolean isPassword = false;
-
-    public interface dialogListener {
-        void onDialogPositiveClick(DialogFragment dialog);
-
-        void onDialogNegativeClick(DialogFragment dialog);
-    }
-
     private dialogListener listener;
 
     public void setListener(dialogListener dialogListener) {
@@ -69,5 +62,11 @@ public class textDialog extends DialogFragment {
 
     public String getText() {
         return editText.getText().toString();
+    }
+
+    public interface dialogListener {
+        void onDialogPositiveClick(DialogFragment dialog);
+
+        void onDialogNegativeClick(DialogFragment dialog);
     }
 }

@@ -31,7 +31,7 @@ public class userProfile extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             userPageProfileData = getArguments().getString(messageIds.userPageProfile_MESSAGE);
             userProfileData = getArguments().getString(messageIds.userProfile_Message);
         }

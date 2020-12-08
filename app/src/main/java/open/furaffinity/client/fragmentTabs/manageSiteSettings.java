@@ -60,7 +60,7 @@ public class manageSiteSettings extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(!isLoading) {
+        if (!isLoading) {
             isLoading = true;
             page = new controlsSiteSettings(page);
             page.execute();
@@ -134,7 +134,7 @@ public class manageSiteSettings extends appFragment {
                 Toast.makeText(getActivity(), "Failed to updated site settings", Toast.LENGTH_SHORT).show();
             }
         }, disable_avatars_yes.isChecked(), disable_avatars_no.isChecked(), switch_date_format_full.isChecked(), switch_date_format_fuzzy.isChecked(),
-                ((kvPair)select_preferred_perpage.getSelectedItem()).getKey(), ((kvPair) select_newsubmissions_direction.getSelectedItem()).getKey(), ((kvPair) select_thumbnail_size.getSelectedItem()).getKey(),
+                ((kvPair) select_preferred_perpage.getSelectedItem()).getKey(), ((kvPair) select_newsubmissions_direction.getSelectedItem()).getKey(), ((kvPair) select_thumbnail_size.getSelectedItem()).getKey(),
                 gallery_navigation_minigallery.isChecked(), gallery_navigation_links.isChecked(), ((kvPair) hide_favorites.getSelectedItem()).getKey(), ((kvPair) no_guests.getSelectedItem()).getKey(),
                 ((kvPair) no_search_engines.getSelectedItem()).getKey(), ((kvPair) no_notes.getSelectedItem()).getKey()).execute());
     }

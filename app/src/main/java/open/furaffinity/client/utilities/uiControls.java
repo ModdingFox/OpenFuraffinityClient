@@ -5,7 +5,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class uiControls {
@@ -18,8 +17,8 @@ public class uiControls {
             return 1;
         }
 
-        byte string1Lower[] = string1.toLowerCase().getBytes();
-        byte string2Lower[] = string2.toLowerCase().getBytes();
+        byte[] string1Lower = string1.toLowerCase().getBytes();
+        byte[] string2Lower = string2.toLowerCase().getBytes();
 
         for (int i = 0; i < string1Lower.length && i < string2Lower.length; i++) {
             if (string1Lower[i] < string2Lower[i]) {
@@ -53,9 +52,9 @@ public class uiControls {
 
             if (sortKeys) {
                 if (isNumeric) {
-                    Collections.sort(spinnerData, (o1, o2) -> Integer.compare(Integer.parseInt(o1.getKey()), Integer.parseInt(o2.getKey())));
+                    spinnerData.sort((o1, o2) -> Integer.compare(Integer.parseInt(o1.getKey()), Integer.parseInt(o2.getKey())));
                 } else {
-                    Collections.sort(spinnerData, (o1, o2) -> compareStrings(o1.getKey(), o2.getKey()));
+                    spinnerData.sort((o1, o2) -> compareStrings(o1.getKey(), o2.getKey()));
                 }
             }
 

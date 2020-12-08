@@ -27,14 +27,11 @@ import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.messageIds;
 
 public class historyList extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private LinearLayoutManager layoutManager;
-
     private RecyclerView recyclerView;
     @SuppressWarnings("FieldCanBeLocal")
     private RecyclerView.Adapter<historyListAdapter.ViewHolder> mAdapter;
-
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
-
     private int currentView = 0;
 
     @Override
@@ -49,7 +46,7 @@ public class historyList extends appFragment {
     }
 
     protected void initPages() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             currentView = getArguments().getInt(messageIds.historyListPage_MESSAGE);
         } else {
             Toast.makeText(getActivity(), "Missing current view type", Toast.LENGTH_SHORT).show();

@@ -24,26 +24,22 @@ import open.furaffinity.client.adapter.manageFolderListAdapter;
 import open.furaffinity.client.dialogs.controlsFoldersSubmissionsFolderDialog;
 import open.furaffinity.client.dialogs.spinnerTextDialog;
 import open.furaffinity.client.dialogs.textDialog;
-import open.furaffinity.client.pages.controlsFoldersSubmissionsFolder;
 import open.furaffinity.client.pages.controlsFoldersSubmissions;
+import open.furaffinity.client.pages.controlsFoldersSubmissionsFolder;
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageFolders extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<manageFolderListAdapter.ViewHolder> mAdapter;
-
     private fabCircular fab;
     private FloatingActionButton createFolder;
     private FloatingActionButton createGroup;
     private FloatingActionButton renameGroup;
-
     private controlsFoldersSubmissions page;
-
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {
@@ -109,13 +105,13 @@ public class manageFolders extends appFragment {
 
     protected void initPages() {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new manageFolderListAdapter(mDataSet, getActivity());
+        mAdapter = new manageFolderListAdapter(mDataSet);
         recyclerView.setAdapter(mAdapter);
 
         page = new controlsFoldersSubmissions(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> pageResults = ((controlsFoldersSubmissions)abstractPage).getPageResults();
+                List<HashMap<String, String>> pageResults = ((controlsFoldersSubmissions) abstractPage).getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 
@@ -162,10 +158,10 @@ public class manageFolders extends appFragment {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
                 controlsFoldersSubmissionsFolderDialog controlsFoldersSubmissionsFolderDialog = new controlsFoldersSubmissionsFolderDialog();
-                controlsFoldersSubmissionsFolderDialog.setData(((controlsFoldersSubmissionsFolder)abstractPage).getExistingGroups());
-                controlsFoldersSubmissionsFolderDialog.setSpinnerSelected(((controlsFoldersSubmissionsFolder)abstractPage).getSelectedGroup());
-                controlsFoldersSubmissionsFolderDialog.setFolderName(((controlsFoldersSubmissionsFolder)abstractPage).getFolderName());
-                controlsFoldersSubmissionsFolderDialog.setDescription(((controlsFoldersSubmissionsFolder)abstractPage).getDescription());
+                controlsFoldersSubmissionsFolderDialog.setData(((controlsFoldersSubmissionsFolder) abstractPage).getExistingGroups());
+                controlsFoldersSubmissionsFolderDialog.setSpinnerSelected(((controlsFoldersSubmissionsFolder) abstractPage).getSelectedGroup());
+                controlsFoldersSubmissionsFolderDialog.setFolderName(((controlsFoldersSubmissionsFolder) abstractPage).getFolderName());
+                controlsFoldersSubmissionsFolderDialog.setDescription(((controlsFoldersSubmissionsFolder) abstractPage).getDescription());
 
                 controlsFoldersSubmissionsFolderDialog.setListener((spinnerSelected, groupName, folderName, description) -> new open.furaffinity.client.submitPages.submitControlsFoldersSubmissionsAddEditFolder(getActivity(), new abstractPage.pageListener() {
                     @Override
@@ -178,7 +174,7 @@ public class manageFolders extends appFragment {
                     public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
                         Toast.makeText(getActivity(), "Failed to add/edit item", Toast.LENGTH_SHORT).show();
                     }
-                }, ((controlsFoldersSubmissionsFolder)abstractPage).getPagePath(), ((controlsFoldersSubmissionsFolder)abstractPage).getKey(), ((id == null)?(""):(id)), spinnerSelected, groupName, folderName, description).execute());
+                }, ((controlsFoldersSubmissionsFolder) abstractPage).getPagePath(), ((controlsFoldersSubmissionsFolder) abstractPage).getKey(), ((id == null) ? ("") : (id)), spinnerSelected, groupName, folderName, description).execute());
 
                 controlsFoldersSubmissionsFolderDialog.show(getChildFragmentManager(), "editFolder");
             }

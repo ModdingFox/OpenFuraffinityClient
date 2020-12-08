@@ -50,7 +50,7 @@ public class viewInfo extends appFragment {
     }
 
     protected void fetchPageData() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             submissionCommentsString = getArguments().getString(messageIds.submissionComments_MESSAGE);
             submissionFavoritesString = getArguments().getString(messageIds.submissionFavorites_MESSAGE);
             submissionViewsString = getArguments().getString(messageIds.submissionViews_MESSAGE);

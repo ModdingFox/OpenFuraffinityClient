@@ -24,24 +24,19 @@ import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 
 public class shouts extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private RecyclerView.LayoutManager layoutManager;
-
     @SuppressWarnings("FieldCanBeLocal")
     private LinearLayout controls;
     private EditText comment;
-
     private SwipeRefreshLayout swipeRefreshLayout;
-
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<commentListAdapter.ViewHolder> mAdapter;
-
     @SuppressWarnings("FieldCanBeLocal")
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.user user;
-
     private boolean isLoading = false;
     private String pagePath;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {
@@ -86,7 +81,7 @@ public class shouts extends appFragment {
     }
 
     protected void initPages() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 
             loginCheck = new open.furaffinity.client.pages.loginCheck(getActivity(), new abstractPage.pageListener() {

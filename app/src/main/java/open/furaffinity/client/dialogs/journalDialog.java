@@ -17,11 +17,6 @@ import open.furaffinity.client.R;
 public class journalDialog extends DialogFragment {
     private String subject;
     private String body;
-
-    public interface journalDialogListener {
-        void onDialogPositiveClick(String subject, String body, boolean lockComments, boolean makeFeatured);
-    }
-
     private journalDialogListener listener;
 
     public void setListener(journalDialogListener journalDialogListener) {
@@ -67,5 +62,9 @@ public class journalDialog extends DialogFragment {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public interface journalDialogListener {
+        void onDialogPositiveClick(String subject, String body, boolean lockComments, boolean makeFeatured);
     }
 }

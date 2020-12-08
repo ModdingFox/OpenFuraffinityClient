@@ -19,19 +19,17 @@ import open.furaffinity.client.utilities.imageResultsTool;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class gallery extends abstractPage {
+    private final HashMap<String, String> folderResults = new HashMap<>();
+    private final imageResultsTool.imageResolutions currentResolution;
     private String pagePath;
     private String nextPage;
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
-    private HashMap<String, String> folderResults = new HashMap<>();
-
     private HashMap<String, String> assignFolderId;
     private String assignFolderSubmit;
     private String createFolderSubmit;
     private String removeFromFoldersSubmit;
     private String moveFromScrapsSubmit;
     private String moveToScrapsSubmit;
-
-    private imageResultsTool.imageResolutions currentResolution = imageResultsTool.imageResolutions.Original;
 
     public gallery(Context context, pageListener pageListener, String pagePath) {
         super(context, pageListener);

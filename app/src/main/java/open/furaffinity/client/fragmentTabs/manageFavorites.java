@@ -25,30 +25,24 @@ import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.fabCircular;
 
 public class manageFavorites extends appFragment {
+    private static final String pagePath = "/controls/favorites/";
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
-
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<manageImageListAdapter.ViewHolder> mAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-
     private fabCircular fab;
     private FloatingActionButton removeSelected;
-
     private gallery page;
-
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private static final String pagePath = "/controls/favorites/";
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
-
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((gallery)abstractPage).getPageResults();
+            List<HashMap<String, String>> pageResults = ((gallery) abstractPage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 

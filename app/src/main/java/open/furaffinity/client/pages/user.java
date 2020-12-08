@@ -16,11 +16,9 @@ import java.util.regex.Pattern;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class user extends abstractPage {
-    private static String pagePrefix = "/user/";
+    private static final String pagePrefix = "/user/";
 
-    private boolean isLoaded = false;
-
-    private String pagePath;
+    private final String pagePath;
 
     private String userName;
     private String userIcon;
@@ -70,6 +68,40 @@ public class user extends abstractPage {
     public user(user user) {
         super(user);
         this.pagePath = user.pagePath;
+    }
+
+    public static List<HashMap<String, String>> processShouts(String html) {
+        List<HashMap<String, String>> result = new ArrayList<>();
+
+        if (html != null && html.length() > 0) {
+            Document doc = Jsoup.parse(html);
+            Elements commentContainersDiv = doc.select("div.comment_container");
+
+            for (Element currentElement : commentContainersDiv) {
+                HashMap<String, String> currentShoutData = new HashMap<>();
+
+                Element shoutAvatarDiv = currentElement.selectFirst("div.shout-avatar");
+                Element checkboxInput = currentElement.selectFirst("input[type=checkbox]");
+
+                currentShoutData.put("userName", currentElement.selectFirst(".comment_username").text());
+                currentShoutData.put("userIcon", "https:" + shoutAvatarDiv.selectFirst("img").attr("src"));
+                currentShoutData.put("userLink", shoutAvatarDiv.selectFirst("a").attr("href"));
+                currentShoutData.put("commentDate", currentElement.selectFirst(".popup_date").text());
+                currentShoutData.put("comment", currentElement.selectFirst(".comment_text").html());
+
+                if (checkboxInput != null) {
+                    currentShoutData.put("checkId", checkboxInput.attr("value"));
+                }
+
+                result.add(currentShoutData);
+            }
+        }
+
+        return result;
+    }
+
+    public static String getPagePrefix() {
+        return pagePrefix;
     }
 
     protected Boolean processPageData(String html) {
@@ -198,11 +230,7 @@ public class user extends abstractPage {
             }
         }
 
-        if(userPageFlexItemUsernameH != null && userPageFlexItemUserNavAvatarDesktopImg != null && userPageFlexItemsH2 != null && userPageProfileDiv != null) {
-            return true;
-        }
-
-        return false;
+        return userPageFlexItemUsernameH != null && userPageFlexItemUserNavAvatarDesktopImg != null && userPageFlexItemsH2 != null && userPageProfileDiv != null;
     }
 
     @Override
@@ -216,10 +244,6 @@ public class user extends abstractPage {
 
     public String getPagePath() {
         return pagePath;
-    }
-
-    public boolean getIsLoaded() {
-        return isLoaded;
     }
 
     public String getUserName() {
@@ -322,36 +346,6 @@ public class user extends abstractPage {
         return userShouts;
     }
 
-    public static List<HashMap<String, String>> processShouts(String html) {
-        List<HashMap<String, String>> result = new ArrayList<>();
-
-        if (html != null && html.length() > 0) {
-            Document doc = Jsoup.parse(html);
-            Elements commentContainersDiv = doc.select("div.comment_container");
-
-            for (Element currentElement : commentContainersDiv) {
-                HashMap<String, String> currentShoutData = new HashMap<>();
-
-                Element shoutAvatarDiv = currentElement.selectFirst("div.shout-avatar");
-                Element checkboxInput = currentElement.selectFirst("input[type=checkbox]");
-
-                currentShoutData.put("userName", currentElement.selectFirst(".comment_username").text());
-                currentShoutData.put("userIcon", "https:" + shoutAvatarDiv.selectFirst("img").attr("src"));
-                currentShoutData.put("userLink", shoutAvatarDiv.selectFirst("a").attr("href"));
-                currentShoutData.put("commentDate", currentElement.selectFirst(".popup_date").text());
-                currentShoutData.put("comment", currentElement.selectFirst(".comment_text").html());
-
-                if (checkboxInput != null) {
-                    currentShoutData.put("checkId", checkboxInput.attr("value"));
-                }
-
-                result.add(currentShoutData);
-            }
-        }
-
-        return result;
-    }
-
     public String getShoutKey() {
         return shoutKey;
     }
@@ -378,9 +372,5 @@ public class user extends abstractPage {
 
     public String getNoteUser() {
         return noteUser;
-    }
-
-    public static String getPagePrefix() {
-        return pagePrefix;
     }
 }

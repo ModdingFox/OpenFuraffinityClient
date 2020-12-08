@@ -16,7 +16,7 @@ import open.furaffinity.client.fragmentDrawers.journal;
 import open.furaffinity.client.fragmentDrawers.view;
 
 public class msgOthers extends abstractPage {
-    private String pagePath = "/msg/others";
+    private final String pagePath = "/msg/others";
 
     private String watches = "";
     private String submissionComments = "";
@@ -31,74 +31,6 @@ public class msgOthers extends abstractPage {
 
     public msgOthers(msgOthers msgOthers) {
         super(msgOthers);
-    }
-
-    protected Boolean processPageData(String html) {
-        Document doc = Jsoup.parse(html);
-
-        Element msgOthersMessagesWatchesMessageStream = doc.selectFirst("section[id=messages-watches]");
-        if (msgOthersMessagesWatchesMessageStream != null) {
-            watches = msgOthersMessagesWatchesMessageStream.selectFirst("ul.message-stream").html();
-        }
-
-        Element msgOthersMessagesCommentsSubmissionMessageStream = doc.selectFirst("section[id=messages-comments-submission]");
-        if (msgOthersMessagesCommentsSubmissionMessageStream != null) {
-            submissionComments = msgOthersMessagesCommentsSubmissionMessageStream.selectFirst("ul.message-stream").html();
-        }
-
-        Element msgOthersMessagesCommentsJournalMessageStream = doc.selectFirst("section[id=messages-comments-journal]");
-        if (msgOthersMessagesCommentsJournalMessageStream != null) {
-            journalComments = msgOthersMessagesCommentsJournalMessageStream.selectFirst("ul.message-stream").html();
-        }
-
-        Element msgOthersMessagesShoutsMessageStream = doc.selectFirst("section[id=messages-shouts]");
-        if (msgOthersMessagesShoutsMessageStream != null) {
-            shouts = msgOthersMessagesShoutsMessageStream.selectFirst("ul.message-stream").html();
-        }
-
-        Element msgOthersMessagesFavoritesMessageStream = doc.selectFirst("section[id=messages-favorites]");
-        if (msgOthersMessagesFavoritesMessageStream != null) {
-            favorites = msgOthersMessagesFavoritesMessageStream.selectFirst("ul.message-stream").html();
-        }
-
-        Element msgOthersMessagesJournalsMessageStream = doc.selectFirst("section[id=messages-journals]");
-        if (msgOthersMessagesJournalsMessageStream != null) {
-            journals = msgOthersMessagesJournalsMessageStream.selectFirst("ul.message-stream").html();
-        }
-
-        //this is not great. would really like a way to actually check that the page loaded
-        return true;
-    }
-
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
-        if (webClient.getLastPageLoaded() && html != null) {
-            return processPageData(html);
-        }
-        return false;
-    }
-
-    public String getWatches() {
-        return watches;
-    }
-
-    public String getSubmissionComments() {
-        return submissionComments;
-    }
-
-    public String getJournalComments() { return journalComments; }
-
-    public String getShouts() {
-        return shouts;
-    }
-
-    public String getFavorites() {
-        return favorites;
-    }
-
-    public String getJournals() {
-        return journals;
     }
 
     public static List<HashMap<String, String>> processWatchNotifications(String html, String actionText) {
@@ -261,6 +193,76 @@ public class msgOthers extends abstractPage {
         }
 
         return result;
+    }
+
+    protected Boolean processPageData(String html) {
+        Document doc = Jsoup.parse(html);
+
+        Element msgOthersMessagesWatchesMessageStream = doc.selectFirst("section[id=messages-watches]");
+        if (msgOthersMessagesWatchesMessageStream != null) {
+            watches = msgOthersMessagesWatchesMessageStream.selectFirst("ul.message-stream").html();
+        }
+
+        Element msgOthersMessagesCommentsSubmissionMessageStream = doc.selectFirst("section[id=messages-comments-submission]");
+        if (msgOthersMessagesCommentsSubmissionMessageStream != null) {
+            submissionComments = msgOthersMessagesCommentsSubmissionMessageStream.selectFirst("ul.message-stream").html();
+        }
+
+        Element msgOthersMessagesCommentsJournalMessageStream = doc.selectFirst("section[id=messages-comments-journal]");
+        if (msgOthersMessagesCommentsJournalMessageStream != null) {
+            journalComments = msgOthersMessagesCommentsJournalMessageStream.selectFirst("ul.message-stream").html();
+        }
+
+        Element msgOthersMessagesShoutsMessageStream = doc.selectFirst("section[id=messages-shouts]");
+        if (msgOthersMessagesShoutsMessageStream != null) {
+            shouts = msgOthersMessagesShoutsMessageStream.selectFirst("ul.message-stream").html();
+        }
+
+        Element msgOthersMessagesFavoritesMessageStream = doc.selectFirst("section[id=messages-favorites]");
+        if (msgOthersMessagesFavoritesMessageStream != null) {
+            favorites = msgOthersMessagesFavoritesMessageStream.selectFirst("ul.message-stream").html();
+        }
+
+        Element msgOthersMessagesJournalsMessageStream = doc.selectFirst("section[id=messages-journals]");
+        if (msgOthersMessagesJournalsMessageStream != null) {
+            journals = msgOthersMessagesJournalsMessageStream.selectFirst("ul.message-stream").html();
+        }
+
+        //this is not great. would really like a way to actually check that the page loaded
+        return true;
+    }
+
+    @Override
+    protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        if (webClient.getLastPageLoaded() && html != null) {
+            return processPageData(html);
+        }
+        return false;
+    }
+
+    public String getWatches() {
+        return watches;
+    }
+
+    public String getSubmissionComments() {
+        return submissionComments;
+    }
+
+    public String getJournalComments() {
+        return journalComments;
+    }
+
+    public String getShouts() {
+        return shouts;
+    }
+
+    public String getFavorites() {
+        return favorites;
+    }
+
+    public String getJournals() {
+        return journals;
     }
 
     public String getPagePath() {

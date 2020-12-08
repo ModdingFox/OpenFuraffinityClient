@@ -27,11 +27,6 @@ public class controlsFoldersSubmissionsFolderDialog extends DialogFragment {
     private String spinnerSelected = "";
     private String folderName = "";
     private String description = "";
-
-    public interface controlsFoldersSubmissionsFolderDialogListener {
-        void onDialogPositiveClick(String spinnerSelected, String groupName, String folderName, String description);
-    }
-
     private controlsFoldersSubmissionsFolderDialogListener listener;
 
     public void setListener(controlsFoldersSubmissionsFolderDialogListener controlsFoldersSubmissionsFolderDialogListener) {
@@ -81,5 +76,9 @@ public class controlsFoldersSubmissionsFolderDialog extends DialogFragment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public interface controlsFoldersSubmissionsFolderDialogListener {
+        void onDialogPositiveClick(String spinnerSelected, String groupName, String folderName, String description);
     }
 }

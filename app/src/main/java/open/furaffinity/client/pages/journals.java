@@ -17,10 +17,9 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class journals extends abstractPage {
     private static final String TAG = journals.class.getName();
-
+    private final List<HashMap<String, String>> pageResults = new ArrayList<>();
     String pagePath;
     private String page;
-    private List<HashMap<String, String>> pageResults = new ArrayList<>();
 
     public journals(Context context, pageListener pageListener, String pagePath) {
         super(context, pageListener);
@@ -70,10 +69,6 @@ public class journals extends abstractPage {
         return 1;
     }
 
-    public String getCurrentPage() {
-        return page;
-    }
-
     public void setPage(String value) {
         try {
             if (Integer.parseInt(value) > 0) {
@@ -82,6 +77,10 @@ public class journals extends abstractPage {
         } catch (NumberFormatException e) {
             Log.e(TAG, "setPage: ", e);
         }
+    }
+
+    public String getCurrentPage() {
+        return page;
     }
 
     public List<HashMap<String, String>> getPageResults() {

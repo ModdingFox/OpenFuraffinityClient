@@ -12,10 +12,15 @@ public abstract class appFragment extends Fragment {
     protected static final String TAG = appFragment.class.getName();
 
     protected abstract int getLayout();
+
     protected abstract void getElements(View rootView);
+
     protected abstract void initPages();
+
     protected abstract void fetchPageData();
+
     protected abstract void updateUIElements();
+
     protected abstract void updateUIElementListeners(View rootView);
 
     @Override

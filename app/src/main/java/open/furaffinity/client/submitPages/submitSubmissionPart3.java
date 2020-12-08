@@ -15,31 +15,26 @@ import java.util.List;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class submitSubmissionPart3 extends open.furaffinity.client.abstractClasses.abstractPage {
-    private static String pagePath = "/submit/";
-
+    private static final String pagePath = "/submit/";
+    private final HashMap<String, String> rating = new HashMap<>();
+    private final String sourceFilePath;
+    private final String thumbnailFilePath;
+    private final open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2;
     private HashMap<String, String> cat = new HashMap<>();
     private HashMap<String, String> aType = new HashMap<>();
     private HashMap<String, String> species = new HashMap<>();
     private HashMap<String, String> gender = new HashMap<>();
-    private HashMap<String, String> rating = new HashMap<>();
-
-    private String catCurrent = "";
-    private String aTypeCurrent = "";
-    private String speciesCurrent = "";
-    private String genderCurrent = "";
-    private String ratingCurrent = "";
-
-    private String sourceFilePath;
-    private String thumbnailFilePath;
-
     private HashMap<String, String> params = new HashMap<>();
-    private open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2;
 
     public submitSubmissionPart3(Context context, abstractPage.pageListener pageListener, open.furaffinity.client.submitPages.submitSubmissionPart2 submitSubmissionPart2, String sourceFilePath, String thumbnailFilePath) {
         super(context, pageListener);
         this.submitSubmissionPart2 = submitSubmissionPart2;
         this.sourceFilePath = sourceFilePath;
         this.thumbnailFilePath = thumbnailFilePath;
+    }
+
+    public static String getPagePath() {
+        return pagePath;
     }
 
     @Override
@@ -125,10 +120,6 @@ public class submitSubmissionPart3 extends open.furaffinity.client.abstractClass
         return false;
     }
 
-    public static String getPagePath() {
-        return pagePath;
-    }
-
     public HashMap<String, String> getParams() {
         return params;
     }
@@ -152,26 +143,4 @@ public class submitSubmissionPart3 extends open.furaffinity.client.abstractClass
     public HashMap<String, String> getRating() {
         return rating;
     }
-
-    public String getCatCurrent() {
-        return catCurrent;
-    }
-
-    public String getaTypeCurrent() {
-        return aTypeCurrent;
-    }
-
-    public String getSpeciesCurrent() {
-        return speciesCurrent;
-    }
-
-    public String getGenderCurrent() {
-        return genderCurrent;
-    }
-
-    public String getRatingCurrent() {
-        return ratingCurrent;
-    }
-
-
 }

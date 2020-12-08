@@ -32,17 +32,6 @@ public class controlsFoldersSubmissionsFolder extends abstractPage {
         this.description = "";
     }
 
-    public controlsFoldersSubmissionsFolder(controlsFoldersSubmissionsFolder controlsFoldersSubmissionsFolder) {
-        super(controlsFoldersSubmissionsFolder);
-        this.pagePath = controlsFoldersSubmissionsFolder.pagePath;
-        this.folderId = controlsFoldersSubmissionsFolder.folderId;
-        this.existingGroups = controlsFoldersSubmissionsFolder.existingGroups;
-        this.selectedGroup = controlsFoldersSubmissionsFolder.selectedGroup;
-        this.folderName = controlsFoldersSubmissionsFolder.folderName;
-        this.description = controlsFoldersSubmissionsFolder.description;
-        this.key = controlsFoldersSubmissionsFolder.key;
-    }
-
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -78,11 +67,7 @@ public class controlsFoldersSubmissionsFolder extends abstractPage {
             this.key = keyButton.attr("value");
         }
 
-        if(groupId != null && folderName != null && folderDescription != null && keyButton != null) {
-            return true;
-        }
-
-        return false;
+        return groupId != null && folderName != null && folderDescription != null && keyButton != null;
     }
 
     @Override

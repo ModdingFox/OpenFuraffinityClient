@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/coordinatorLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragmentTabs.msgPmsMessage">
@@ -38,8 +38,8 @@
                     android:gravity="center"
                     android:minHeight="?actionBarSize"
                     android:padding="@dimen/appbar_padding"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:text="@string/notLoaded" />
+                    android:text="@string/notLoaded"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
                 <TextView
                     android:id="@+id/sentBy"
@@ -47,8 +47,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingLeft="16dp"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
-                    android:text="@string/notLoaded" />
+                    android:text="@string/notLoaded"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle" />
 
                 <TextView
                     android:id="@+id/sentDate"
@@ -56,8 +56,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingLeft="16dp"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
-                    android:text="@string/notLoaded" />
+                    android:text="@string/notLoaded"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle" />
 
             </LinearLayout>
 
@@ -80,9 +80,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/cardview_dark_background"
-        app:srcCompat="@drawable/ic_menu_add"
-        android:layout_gravity="bottom|right" />
+        app:srcCompat="@drawable/ic_menu_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

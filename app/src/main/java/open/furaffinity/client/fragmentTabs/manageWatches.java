@@ -13,23 +13,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.watchListAdapter;
-import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsBuddyList;
 
 public class manageWatches extends appFragment {
+    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<watchListAdapter.ViewHolder> mAdapter;
-
     private controlsBuddyList page;
-
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
 
     @Override
     protected int getLayout() {
@@ -72,7 +69,7 @@ public class manageWatches extends appFragment {
         page = new controlsBuddyList(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> pageResults = ((controlsBuddyList)abstractPage).getPageResults();
+                List<HashMap<String, String>> pageResults = ((controlsBuddyList) abstractPage).getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 

@@ -14,13 +14,6 @@ public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
     protected SharedPreferences sharedPref;
 
     protected webClient webClient;
-
-    public interface pageListener {
-        public void requestSucceeded(abstractPage abstractPage);
-
-        public void requestFailed(abstractPage abstractPage);
-    }
-
     protected pageListener pageListener;
 
     public abstractPage(Context context, pageListener pageListener) {
@@ -48,5 +41,11 @@ public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
         } else {
             this.pageListener.requestFailed(abstractPage.this);
         }
+    }
+
+    public interface pageListener {
+        void requestSucceeded(abstractPage abstractPage);
+
+        void requestFailed(abstractPage abstractPage);
     }
 }
