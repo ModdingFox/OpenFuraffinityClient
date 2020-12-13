@@ -87,7 +87,7 @@ public class imageResultsTool {
                 Element post = posts.get(0);
 
                 currentPostData.put("postPath", post.attr("href"));
-                currentPostData.put("postTitle", post.html());
+                currentPostData.put("postTitle", post.text());
             }
 
 
@@ -95,7 +95,7 @@ public class imageResultsTool {
                 Element user = figcaption.select("a").get(1);
 
                 currentPostData.put("postUserPath", user.attr("href"));
-                currentPostData.put("postUserName", user.html());
+                currentPostData.put("postUserName", user.text());
             }
 
             if (checkbox != null) {
