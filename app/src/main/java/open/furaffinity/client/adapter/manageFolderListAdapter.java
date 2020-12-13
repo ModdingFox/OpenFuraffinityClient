@@ -45,17 +45,17 @@ public class manageFolderListAdapter extends RecyclerView.Adapter<manageFolderLi
 
         holder.upButton.setOnClickListener(v -> {
             if (mDataSet.get(position).containsKey("upgroup_id")) {
-                listener.upButton(mDataSet.get(position).get("upaction"), mDataSet.get(position).get("upkey"), mDataSet.get(position).get("upposition"), mDataSet.get(position).get("upgroup_id"), "group_id");
+                listener.upButton(mDataSet.get(position).get("upaction"), mDataSet.get(position).get("upkey"), mDataSet.get(position).get("updirection"), mDataSet.get(position).get("upgroup_id"), "group_id");
             } else if (mDataSet.get(position).containsKey("upfolder_id")) {
-                listener.upButton(mDataSet.get(position).get("upaction"), mDataSet.get(position).get("upkey"), mDataSet.get(position).get("upposition"), mDataSet.get(position).get("upfolder_id"), "folder_id");
+                listener.upButton(mDataSet.get(position).get("upaction"), mDataSet.get(position).get("upkey"), mDataSet.get(position).get("updirection"), mDataSet.get(position).get("upfolder_id"), "folder_id");
             }
         });
 
         holder.downButton.setOnClickListener(v -> {
             if (mDataSet.get(position).containsKey("downgroup_id")) {
-                listener.downButton(mDataSet.get(position).get("downaction"), mDataSet.get(position).get("downkey"), mDataSet.get(position).get("downposition"), mDataSet.get(position).get("downgroup_id"), "group_id");
+                listener.downButton(mDataSet.get(position).get("downaction"), mDataSet.get(position).get("downkey"), mDataSet.get(position).get("downdirection"), mDataSet.get(position).get("downgroup_id"), "group_id");
             } else if (mDataSet.get(position).containsKey("downfolder_id")) {
-                listener.downButton(mDataSet.get(position).get("downaction"), mDataSet.get(position).get("downkey"), mDataSet.get(position).get("downposition"), mDataSet.get(position).get("downfolder_id"), "folder_id");
+                listener.downButton(mDataSet.get(position).get("downaction"), mDataSet.get(position).get("downkey"), mDataSet.get(position).get("downdirection"), mDataSet.get(position).get("downfolder_id"), "folder_id");
             }
         });
 

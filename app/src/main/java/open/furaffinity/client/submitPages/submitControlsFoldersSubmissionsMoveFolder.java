@@ -10,15 +10,15 @@ public class submitControlsFoldersSubmissionsMoveFolder extends abstractPage {
 
     private final String pagePath;
     private final String key;
-    private final String position;
+    private final String direction;
     private final String idName;
     private final String id;
 
-    public submitControlsFoldersSubmissionsMoveFolder(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String position, String idName, String id) {
+    public submitControlsFoldersSubmissionsMoveFolder(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String direction, String idName, String id) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;
-        this.position = position;
+        this.direction = direction;
         this.idName = idName;
         this.id = id;
     }
@@ -32,7 +32,7 @@ public class submitControlsFoldersSubmissionsMoveFolder extends abstractPage {
     protected Boolean doInBackground(Void... voids) {
         HashMap<String, String> params = new HashMap<>();
         params.put("key", key);
-        params.put("position", position);
+        params.put("direction", direction);
         params.put(idName, id);
 
         String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);

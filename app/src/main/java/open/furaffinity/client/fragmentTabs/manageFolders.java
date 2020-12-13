@@ -138,7 +138,7 @@ public class manageFolders extends appFragment {
         });
     }
 
-    private void moveFolder(String postURL, String key, String position, String id, String idName) {
+    private void moveFolder(String postURL, String key, String direction, String id, String idName) {
         new open.furaffinity.client.submitPages.submitControlsFoldersSubmissionsMoveFolder(getActivity(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
@@ -150,7 +150,7 @@ public class manageFolders extends appFragment {
             public void requestFailed(abstractPage abstractPage) {
                 Toast.makeText(getActivity(), "Failed to move item", Toast.LENGTH_SHORT).show();
             }
-        }, postURL, key, position, idName, id).execute();
+        }, postURL, key, direction, idName, id).execute();
     }
 
     private void addEditFolder(String postURL, String id) {
@@ -191,13 +191,13 @@ public class manageFolders extends appFragment {
 
         ((manageFolderListAdapter) mAdapter).setListener(new manageFolderListAdapter.manageFolderListAdapterListener() {
             @Override
-            public void upButton(String postURL, String key, String position, String id, String idName) {
-                moveFolder(postURL, key, position, id, idName);
+            public void upButton(String postURL, String key, String direction, String id, String idName) {
+                moveFolder(postURL, key, direction, id, idName);
             }
 
             @Override
-            public void downButton(String postURL, String key, String position, String id, String idName) {
-                moveFolder(postURL, key, position, id, idName);
+            public void downButton(String postURL, String key, String direction, String id, String idName) {
+                moveFolder(postURL, key, direction, id, idName);
             }
 
             @Override
