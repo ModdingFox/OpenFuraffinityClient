@@ -1,18 +1,12 @@
 package open.furaffinity.client.fragmentDrawers;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -30,8 +23,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
@@ -105,7 +96,7 @@ public class view extends appFragment {
             //Delete previous versions from history
             String selection = historyItemEntry.COLUMN_NAME_URL + " LIKE ?";
             String[] selectionArgs = {page.getPagePath()};
-            db.delete(historyItemEntry.TABLE_NAME_VIEW, selection, selectionArgs);
+            db.delete(historyItemEntry.TABLE_NAME_VIEW, selection , selectionArgs);
 
             //Insert into history
             ContentValues values = new ContentValues();
@@ -243,38 +234,7 @@ public class view extends appFragment {
         });
 
         submissionDownload.setOnClickListener(v -> {
-            if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                DownloadManager downloadManager = (DownloadManager) requireActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-                Uri uri = Uri.parse(page.getDownload());
-
-                //noinspection ResultOfMethodCallIgnored
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
-
-                Matcher fileNameMatcher = Pattern.compile("/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)$").matcher(page.getDownload());
-
-                if (fileNameMatcher.find()) {
-                    String fileName = fileNameMatcher.group(5);
-
-                    DownloadManager.Request request = new DownloadManager.Request(uri);
-                    request.setTitle(page.getSubmissionTitle() + " by " + page.getSubmissionUser());
-                    request.setDescription("Downloading");
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    request.setVisibleInDownloadsUi(true);
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
-                    downloadManager.enqueue(request);
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage("File naming error. Aborting download.")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", (dialog, id) -> {
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }
-            } else {
-                String [] permissions = { Manifest.permission.WRITE_EXTERNAL_STORAGE };
-                requestPermissions(permissions, 0);
-            }
+            open.furaffinity.client.utilities.downloadContent.downloadSubmission(requireActivity(), requireContext(), page);
         });
 
         submissionFavorite.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {

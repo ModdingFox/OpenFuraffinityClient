@@ -142,7 +142,7 @@ public class browse extends appFragment {
         }
 
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new imageListAdapter(mDataSet, requireActivity());
+        mAdapter = new imageListAdapter(mDataSet, requireActivity(), requireActivity());
         recyclerView.setAdapter(mAdapter);
 
         if (recyclerViewPosition > -1) {

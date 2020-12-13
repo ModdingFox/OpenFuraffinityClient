@@ -137,7 +137,7 @@ public class userGallery extends appFragment {
             pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 
             recyclerView.setLayoutManager(staggeredGridLayoutManager);
-            mAdapter = new imageListAdapter(mDataSet, requireActivity());
+            mAdapter = new imageListAdapter(mDataSet, requireActivity(), requireActivity());
             recyclerView.setAdapter(mAdapter);
 
             page = new gallery(getActivity(), pageListener, pagePath);
