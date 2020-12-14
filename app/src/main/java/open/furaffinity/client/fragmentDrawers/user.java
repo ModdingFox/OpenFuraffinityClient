@@ -2,6 +2,7 @@ package open.furaffinity.client.fragmentDrawers;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
@@ -55,6 +56,7 @@ public class user extends appFragment {
     private FloatingActionButton watchUser;
     private FloatingActionButton blockUser;
     private FloatingActionButton sendNote;
+    private FloatingActionButton shareLink;
 
     private String currentPage;
     private String currentPagePath = null;
@@ -158,10 +160,12 @@ public class user extends appFragment {
         watchUser = new FloatingActionButton(requireContext());
         blockUser = new FloatingActionButton(requireContext());
         sendNote = new FloatingActionButton(requireContext());
+        shareLink = new FloatingActionButton(requireContext());
 
         watchUser.setImageResource(R.drawable.ic_menu_user_add);
         blockUser.setImageResource(R.drawable.ic_menu_user_block);
         sendNote.setImageResource(R.drawable.ic_menu_newmessage);
+        shareLink.setImageResource(R.drawable.ic_menu_send);
 
         //noinspection deprecation
         watchUser.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
@@ -169,12 +173,16 @@ public class user extends appFragment {
         blockUser.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
         sendNote.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        //noinspection deprecation
+        shareLink.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         coordinatorLayout.addView(watchUser);
         coordinatorLayout.addView(blockUser);
         coordinatorLayout.addView(sendNote);
+        coordinatorLayout.addView(shareLink);
 
         fab.addButton(watchUser, 1.5f, 270);
+        fab.addButton(shareLink, 2.6f, 270);
         fab.addButton(sendNote, 1.5f, 225);
         fab.addButton(blockUser, 1.5f, 180);
     }
@@ -294,6 +302,13 @@ public class user extends appFragment {
         }, page.getBlockUnBlock()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNoteUser()));
+
+        shareLink.setOnClickListener(v -> {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath());
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
+        });
     }
 
     @Override

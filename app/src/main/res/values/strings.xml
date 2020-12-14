@@ -269,4 +269,9 @@
     <string name="searchSessionPage">searchSessionPage</string>
     <string name="searchSessionRecyclerView">searchSessionRecyclerView</string>
     <string name="searchSessionQuery">searchSessionQuery</string>
+
+    <string name="menu_shareSubmission">Share Submission</string>
+    <string name="menu_shareUser">Share User</string>
+    <string name="menu_favUnfav">Fav/UnFav</string>
+    <string name="menu_watchUnWatch">Watch/UnWatch</string>
 </resources>
