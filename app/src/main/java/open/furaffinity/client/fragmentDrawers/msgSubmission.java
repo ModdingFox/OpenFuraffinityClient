@@ -155,7 +155,7 @@ public class msgSubmission extends appFragment {
 
     protected void initPages() {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new manageImageListAdapter(mDataSet, requireActivity());
+        mAdapter = new manageImageListAdapter(mDataSet, requireActivity(), requireActivity());
         recyclerView.setAdapter(mAdapter);
 
         page = new open.furaffinity.client.pages.msgSubmission(requireActivity(), pageListener, true);

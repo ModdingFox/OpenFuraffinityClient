@@ -6,16 +6,18 @@
         android:visible="false" />
     <item
         android:id="@+id/menu_shareSubmission"
-        android:title="@string/menu_shareSubmission" />
+        android:title="@string/menu_shareSubmission"
+        android:visible="false" />
     <item
         android:id="@+id/menu_shareUser"
-        android:title="@string/menu_shareUser" />
+        android:title="@string/menu_shareUser"
+        android:visible="false" />
     <item
         android:id="@+id/menu_favUnfav"
         android:title="@string/menu_favUnfav"
-        android:visible="false"/>
+        android:visible="false" />
     <item
         android:id="@+id/menu_watchUnWatch"
         android:title="@string/menu_watchUnWatch"
-        android:visible="false"/>
+        android:visible="false" />
 </menu>

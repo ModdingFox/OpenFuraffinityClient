@@ -128,7 +128,7 @@ public class manageFavorites extends appFragment {
 
     protected void initPages() {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        mAdapter = new manageImageListAdapter(mDataSet, requireActivity());
+        mAdapter = new manageImageListAdapter(mDataSet, requireActivity(), requireActivity());
         recyclerView.setAdapter(mAdapter);
 
         page = new gallery(getActivity(), pageListener, pagePath);

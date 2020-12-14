@@ -135,6 +135,14 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
                 userPage.execute();
             }
 
+            if(mDataSet.get(position).containsKey("postPath")) {
+                popupMenu.getMenu().findItem(R.id.menu_shareSubmission).setVisible(true);
+            }
+
+            if(mDataSet.get(position).containsKey("postUserPath")) {
+                popupMenu.getMenu().findItem(R.id.menu_shareUser).setVisible(true);
+            }
+
             popupMenu.show();
 
             popupMenu.setOnMenuItemClickListener(item -> {
