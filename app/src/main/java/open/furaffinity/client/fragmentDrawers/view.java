@@ -3,6 +3,7 @@ package open.furaffinity.client.fragmentDrawers;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
@@ -53,6 +54,7 @@ public class view extends appFragment {
     private FloatingActionButton submissionFavorite;
     private FloatingActionButton submissionDownload;
     private FloatingActionButton sendNote;
+    private FloatingActionButton shareLink;
 
     private loginCheck loginCheck;
     private open.furaffinity.client.pages.view page;
@@ -133,10 +135,12 @@ public class view extends appFragment {
         submissionFavorite = new FloatingActionButton(requireContext());
         submissionDownload = new FloatingActionButton(requireContext());
         sendNote = new FloatingActionButton(requireContext());
+        shareLink = new FloatingActionButton(requireContext());
 
         submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
         submissionDownload.setImageResource(R.drawable.ic_menu_download);
         sendNote.setImageResource(R.drawable.ic_menu_newmessage);
+        shareLink.setImageResource(R.drawable.ic_menu_send);
 
         //noinspection deprecation
         submissionFavorite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
@@ -144,15 +148,19 @@ public class view extends appFragment {
         submissionDownload.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
         sendNote.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        //noinspection deprecation
+        shareLink.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         coordinatorLayout.addView(submissionFavorite);
         coordinatorLayout.addView(submissionDownload);
         coordinatorLayout.addView(sendNote);
+        coordinatorLayout.addView(shareLink);
 
         submissionFavorite.setVisibility(View.GONE);
         sendNote.setVisibility(View.GONE);
 
         fab.addButton(submissionDownload, 1.5f, 270);
+        fab.addButton(shareLink, 2.6f, 270);
         fab.setVisibility(View.GONE);
     }
 
@@ -251,6 +259,13 @@ public class view extends appFragment {
         }, page.getFavUnFav()).execute());
 
         sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNote()));
+
+        shareLink.setOnClickListener(v -> {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath());
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
+        });
     }
 
     @Override
