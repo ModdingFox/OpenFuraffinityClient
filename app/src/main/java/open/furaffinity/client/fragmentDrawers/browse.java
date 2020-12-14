@@ -380,7 +380,7 @@ public class browse extends appFragment {
 
         if (sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
             long sessionTimestamp = sharedPref.getLong(getString(R.string.browseSessionTimestamp), 0);
-            long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedBrowseTimeSetting), 0);
+            long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedBrowseTimeSetting), settings.InvalidateCachedBrowseTimeDefault);
             sessionInvalidateCachedTime = sessionInvalidateCachedTime * 60;//convert min to seconds
 
             long currentTimestamp = Instant.now().getEpochSecond();

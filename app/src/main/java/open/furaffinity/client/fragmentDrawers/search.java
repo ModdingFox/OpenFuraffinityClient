@@ -865,7 +865,7 @@ public class search extends appFragment {
 
             if (sharedPref.getBoolean(getString(R.string.cachedSearchStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedSearchDefault)) {
                 long sessionTimestamp = sharedPref.getLong(getString(R.string.searchSessionTimestamp), 0);
-                long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedSearchTimeSetting), 0);
+                long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedSearchTimeSetting), settings.InvalidateCachedSearchTimeDefault);
                 sessionInvalidateCachedTime = sessionInvalidateCachedTime * 60;//convert min to seconds
 
                 long currentTimestamp = Instant.now().getEpochSecond();
