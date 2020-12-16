@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +48,19 @@ public class mainActivity extends AppCompatActivity {
     private View headerView;
     private ImageView imageView;
     private TextView userName;
-    private TextView notifications;
+
+    private LinearLayout notificationS;
+    private TextView notificationSTextView;
+    private LinearLayout notificationW;
+    private TextView notificationWTextView;
+    private LinearLayout notificationC;
+    private TextView notificationCTextView;
+    private LinearLayout notificationF;
+    private TextView notificationFTextView;
+    private LinearLayout notificationJ;
+    private TextView notificationJTextView;
+    private LinearLayout notificationN;
+    private TextView notificationNTextView;
 
     private loginCheck loginCheck;
 
@@ -57,6 +70,29 @@ public class mainActivity extends AppCompatActivity {
     private String msgPmsPath = null;
     private String userPath = null;
     private String viewPath = null;
+
+    private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener(){
+        @Override
+        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+        }
+
+        @Override
+        public void onDrawerOpened(@NonNull View drawerView) {
+            loginCheck = new loginCheck(loginCheck);
+            loginCheck.execute();
+        }
+
+        @Override
+        public void onDrawerClosed(@NonNull View drawerView) {
+
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+
+        }
+    };
 
     private void getPagePath() {
         Intent intent = getIntent();
@@ -110,7 +146,19 @@ public class mainActivity extends AppCompatActivity {
         headerView = navigationView.getHeaderView(0);
         imageView = headerView.findViewById(R.id.imageView);
         userName = headerView.findViewById(R.id.userName);
-        notifications = headerView.findViewById(R.id.notifications);
+
+        notificationS = headerView.findViewById(R.id.notificationS);
+        notificationSTextView = headerView.findViewById(R.id.notificationSTextView);
+        notificationW = headerView.findViewById(R.id.notificationW);
+        notificationWTextView = headerView.findViewById(R.id.notificationWTextView);
+        notificationC = headerView.findViewById(R.id.notificationC);
+        notificationCTextView = headerView.findViewById(R.id.notificationCTextView);
+        notificationF = headerView.findViewById(R.id.notificationF);
+        notificationFTextView = headerView.findViewById(R.id.notificationFTextView);
+        notificationJ = headerView.findViewById(R.id.notificationJ);
+        notificationJTextView = headerView.findViewById(R.id.notificationJTextView);
+        notificationN = headerView.findViewById(R.id.notificationN);
+        notificationNTextView = headerView.findViewById(R.id.notificationNTextView);
     }
 
     private void initClientAndPage() {
@@ -130,10 +178,60 @@ public class mainActivity extends AppCompatActivity {
                     navMenu.findItem(R.id.nav_msg_others).setVisible(true);
                     navMenu.findItem(R.id.nav_msg_pms).setVisible(true);
                     navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_logout);
+
+                    drawer.addDrawerListener(drawerListener);
+
+                    int notificationSCount = ((loginCheck) abstractPage).getNotificationS();
+                    int notificationWCount = ((loginCheck) abstractPage).getNotificationW();
+                    int notificationCCount = ((loginCheck) abstractPage).getNotificationC();
+                    int notificationFCount = ((loginCheck) abstractPage).getNotificationF();
+                    int notificationJCount = ((loginCheck) abstractPage).getNotificationJ();
+                    int notificationNCount = ((loginCheck) abstractPage).getNotificationN();
+
+                    if(notificationSCount > 0) {
+                        notificationS.setVisibility(View.VISIBLE);
+                        notificationSTextView.setText(Integer.toString(notificationSCount));
+                    } else {
+                        notificationS.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(notificationWCount > 0) {
+                        notificationW.setVisibility(View.VISIBLE);
+                        notificationWTextView.setText(Integer.toString(notificationWCount));
+                    } else {
+                        notificationW.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(notificationCCount > 0) {
+                        notificationC.setVisibility(View.VISIBLE);
+                        notificationCTextView.setText(Integer.toString(notificationCCount));
+                    } else {
+                        notificationC.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(notificationFCount > 0) {
+                        notificationF.setVisibility(View.VISIBLE);
+                        notificationFTextView.setText(Integer.toString(notificationFCount));
+                    } else {
+                        notificationF.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(notificationJCount > 0) {
+                        notificationJ.setVisibility(View.VISIBLE);
+                        notificationJTextView.setText(Integer.toString(notificationJCount));
+                    } else {
+                        notificationJ.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(notificationNCount > 0) {
+                        notificationN.setVisibility(View.VISIBLE);
+                        notificationNTextView.setText(Integer.toString(notificationNCount));
+                    } else {
+                        notificationN.setVisibility(View.INVISIBLE);
+                    }
                 } else {
                     imageView.setImageResource(R.mipmap.ic_launcher);
                     userName.setText(getString(R.string.app_name));
-                    notifications.setText("");
 
                     navMenu.findItem(R.id.nav_upload).setVisible(false);
                     navMenu.findItem(R.id.nav_profile).setVisible(false);
@@ -141,6 +239,15 @@ public class mainActivity extends AppCompatActivity {
                     navMenu.findItem(R.id.nav_msg_others).setVisible(false);
                     navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
                     navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
+
+                    drawer.removeDrawerListener(drawerListener);
+
+                    notificationS.setVisibility(View.GONE);
+                    notificationW.setVisibility(View.GONE);
+                    notificationC.setVisibility(View.GONE);
+                    notificationF.setVisibility(View.GONE);
+                    notificationJ.setVisibility(View.GONE);
+                    notificationN.setVisibility(View.GONE);
                 }
             }
 
@@ -148,7 +255,6 @@ public class mainActivity extends AppCompatActivity {
             public void requestFailed(abstractPage abstractPage) {
                 imageView.setImageResource(R.mipmap.ic_launcher);
                 userName.setText(getString(R.string.app_name));
-                notifications.setText("");
 
                 navMenu.findItem(R.id.nav_upload).setVisible(false);
                 navMenu.findItem(R.id.nav_profile).setVisible(false);
@@ -156,6 +262,16 @@ public class mainActivity extends AppCompatActivity {
                 navMenu.findItem(R.id.nav_msg_others).setVisible(false);
                 navMenu.findItem(R.id.nav_msg_pms).setVisible(false);
                 navMenu.findItem(R.id.nav_login).setTitle(R.string.menu_login);
+
+                drawer.removeDrawerListener(drawerListener);
+
+                notificationS.setVisibility(View.GONE);
+                notificationW.setVisibility(View.GONE);
+                notificationC.setVisibility(View.GONE);
+                notificationF.setVisibility(View.GONE);
+                notificationJ.setVisibility(View.GONE);
+                notificationN.setVisibility(View.GONE);
+
                 Toast.makeText(mainActivity.this, "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
             }
         });
@@ -173,6 +289,38 @@ public class mainActivity extends AppCompatActivity {
         navMenu.findItem(R.id.nav_msg_pms_message).setVisible(msgPmsPath != null);
         navMenu.findItem(R.id.nav_user).setVisible(userPath != null);
         navMenu.findItem(R.id.nav_view).setVisible(viewPath != null);
+    }
+
+    public void updateUIElementListeners() {
+        notificationS.setOnClickListener(v -> {
+            navigationView.setCheckedItem(R.id.nav_msg_submission);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_submission, 0);
+        });
+
+        notificationW.setOnClickListener(v -> {
+            navigationView.setCheckedItem(R.id.nav_msg_others);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_others, 0);
+        });
+
+        notificationC.setOnClickListener(v -> {
+            navigationView.setCheckedItem(R.id.nav_msg_others);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_others, 0);
+        });
+
+        notificationF.setOnClickListener(v -> {
+            navigationView.setCheckedItem(R.id.nav_msg_others);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_others, 0);
+        });
+
+        notificationJ.setOnClickListener(v -> {
+            navigationView.setCheckedItem(R.id.nav_msg_others);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_others, 0);
+        });
+
+        notificationN.setOnClickListener(v -> {
+            navigationView.setCheckedItem(R.id.nav_msg_pms);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_pms, 0);
+        });
     }
 
     private void setupNavigationUI() {
@@ -272,6 +420,7 @@ public class mainActivity extends AppCompatActivity {
         initClientAndPage();
         fetchPageData();
         updateUIElements();
+        updateUIElementListeners();
         setupNavigationUI();
         getPagePath();
     }
