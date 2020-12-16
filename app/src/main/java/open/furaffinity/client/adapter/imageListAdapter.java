@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +71,7 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(context).load("https:" + mDataSet.get(position).get("imgUrl")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.postImage);
+        Glide.with(context).load("https:" + mDataSet.get(position).get("imgUrl")).transition(DrawableTransitionOptions.withCrossFade()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.postImage);
         holder.postName.setText(String.format("%s", mDataSet.get(position).get("postTitle")));
         holder.postUser.setText(String.format("By: %s", mDataSet.get(position).get("postUserName")));
         holder.postRating.setText(mDataSet.get(position).get("postRatingCode"));
