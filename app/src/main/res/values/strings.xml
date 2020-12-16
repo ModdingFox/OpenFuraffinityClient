@@ -274,4 +274,11 @@
     <string name="menu_shareUser">Share User</string>
     <string name="menu_favUnfav">Fav/UnFav</string>
     <string name="menu_watchUnWatch">Watch/UnWatch</string>
+
+    <string name="notificationSTextView">S:</string>
+    <string name="notificationWTextView">W:</string>
+    <string name="notificationCTextView">C:</string>
+    <string name="notificationFTextView">F:</string>
+    <string name="notificationJTextView">J:</string>
+    <string name="notificationNTextView">N:</string>
 </resources>
