@@ -131,6 +131,7 @@ public class notificationWorker extends Worker {
 
     @Override
     public Result doWork() {
+        System.setProperty("http.agent", "OpenFurAffinityClient");
         initClientAndPage();
         fetchPageData();
 
