@@ -13,6 +13,7 @@ public class loginCheck extends abstractPage {
     private boolean isNSFWAllowed = false;
     private String userIcon = "";
     private String userName = "";
+    private String userPage = "";
 
     public loginCheck(Context context, pageListener pageListener) {
         super(context, pageListener);
@@ -24,6 +25,7 @@ public class loginCheck extends abstractPage {
         this.isNSFWAllowed = loginCheck.isNSFWAllowed;
         this.userIcon = loginCheck.userIcon;
         this.userName = loginCheck.userName;
+        this.userPage = loginCheck.userPage;
     }
 
     @Override
@@ -47,6 +49,7 @@ public class loginCheck extends abstractPage {
 
                     userIcon = userIconImg.attr("src");
                     userName = userIconImg.attr("alt");
+                    userPage = userIconImg.parent().attr("href");
                 }
             }
 
@@ -82,4 +85,6 @@ public class loginCheck extends abstractPage {
     public String getUserName() {
         return userName;
     }
+
+    public String getUserPage() { return userPage; }
 }

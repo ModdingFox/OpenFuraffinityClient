@@ -119,6 +119,14 @@ public class mainActivity extends AppCompatActivity {
             public void requestSucceeded(abstractPage abstractPage) {
                 if (((loginCheck) abstractPage).getIsLoggedIn()) {
                     Glide.with(mainActivity.this).load(((loginCheck) abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mainActivity.this.setUserPath(((loginCheck) abstractPage).getUserPage());
+                        }
+                    });
+
+
                     userName.setText(((loginCheck) abstractPage).getUserName());
 
                     navMenu.findItem(R.id.nav_upload).setVisible(true);
