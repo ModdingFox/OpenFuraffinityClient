@@ -191,7 +191,7 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
 
             viewPage.execute();
 
-            if(loginCheck.getIsLoggedIn() && mDataSet.get(position).containsKey("postUserPath")) {
+            if(loginCheck.getIsLoggedIn() && mDataSet.get(position).containsKey("postUserPath") && !loginCheck.getUserName().equals(mDataSet.get(position).get("postUserName"))) {
                 userPage.execute();
             }
 

@@ -56,6 +56,12 @@ public class journal extends appFragment {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
             if (((open.furaffinity.client.pages.journal) abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.journal) abstractPage).getNoteUser() != null) {
+                coordinatorLayout.addView(watchUser);
+                coordinatorLayout.addView(sendNote);
+
+                fab.addButton(watchUser, 1.5f, 270);
+                fab.addButton(sendNote, 1.5f, 225);
+
                 if (((open.furaffinity.client.pages.journal) abstractPage).getIsWatching()) {
                     watchUser.setImageResource(R.drawable.ic_menu_user_remove);
                 } else {
@@ -143,13 +149,9 @@ public class journal extends appFragment {
         //noinspection deprecation
         shareLink.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
-        coordinatorLayout.addView(watchUser);
-        coordinatorLayout.addView(sendNote);
         coordinatorLayout.addView(shareLink);
 
-        fab.addButton(watchUser, 1.5f, 270);
         fab.addButton(shareLink, 2.6f, 270);
-        fab.addButton(sendNote, 1.5f, 225);
     }
 
     protected void fetchPageData() {
