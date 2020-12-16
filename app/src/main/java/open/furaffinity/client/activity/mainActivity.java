@@ -119,15 +119,10 @@ public class mainActivity extends AppCompatActivity {
             public void requestSucceeded(abstractPage abstractPage) {
                 if (((loginCheck) abstractPage).getIsLoggedIn()) {
                     Glide.with(mainActivity.this).load(((loginCheck) abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(imageView);
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mainActivity.this.setUserPath(((loginCheck) abstractPage).getUserPage());
-                        }
-                    });
-
+                    imageView.setOnClickListener(v -> mainActivity.this.setUserPath(((loginCheck) abstractPage).getUserPage()));
 
                     userName.setText(((loginCheck) abstractPage).getUserName());
+                    userName.setOnClickListener(v -> mainActivity.this.setUserPath(((loginCheck) abstractPage).getUserPage()));
 
                     navMenu.findItem(R.id.nav_upload).setVisible(true);
                     navMenu.findItem(R.id.nav_profile).setVisible(true);
