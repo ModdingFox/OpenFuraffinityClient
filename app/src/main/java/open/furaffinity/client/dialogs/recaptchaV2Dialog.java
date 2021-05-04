@@ -39,7 +39,7 @@ public class recaptchaV2Dialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_DeviceDefault_DialogWhenLarge);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         View rootView = inflater.inflate(R.layout.fragment_web_view, null);
