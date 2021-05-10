@@ -16,7 +16,7 @@ Releases will be sporadic unless a critical fix is needed.<br />
 Note all pullrequests from developers new to the project must inclued the submitting developers furaffinity user page link.<br />
 All contributors to this application will be listed in the about page.<br />
 <br />
-These sections are responsible for grabbing data from the various web pages and any prep needed for the ui to use. Likely if reworked enough there could be useful as standalone java libs for accessing FA.<br />
+These sections are responsible for grabbing data from the various web pages and any prep needed for the ui to use. Likely if reworked enough they could be useful as standalone java libs for accessing FA.<br />
 &nbsp;&nbsp;&nbsp;&nbsp;open.furaffinity.client.pages: Contains any read only type functionallity.<br />
 &nbsp;&nbsp;&nbsp;&nbsp;open.furaffinity.client.submitPages; Contains any write functionallity.<br />
 &nbsp;&nbsp;&nbsp;&nbsp;open.furaffinity.client.pages and open.furaffinity.client.submitPages depend on open.furaffinity.client.abstractClasses.abstractPage and a few classes from open.furaffinity.client.utilities.<br />
