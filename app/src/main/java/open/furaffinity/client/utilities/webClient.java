@@ -104,15 +104,17 @@ public class webClient {
 
         if (responseCode == HttpURLConnection.HTTP_OK || (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP)) {
             List<String> cookies = httpURLConnection.getHeaderFields().get("set-cookie");
-            for (String currentCookie : cookies) {
-                try {
-                    Cookie cookie = Cookie.parse(HttpUrl.get(httpURLConnection.getURL().toURI()), currentCookie);
+            if (cookies != null) {
+                for (String currentCookie : cookies) {
+                    try {
+                        Cookie cookie = Cookie.parse(HttpUrl.get(httpURLConnection.getURL().toURI()), currentCookie);
 
-                    if (cookie != null) {
-                        lastPageResponceCookies.add(cookie);
+                        if (cookie != null) {
+                            lastPageResponceCookies.add(cookie);
+                        }
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
                     }
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
                 }
             }
 
