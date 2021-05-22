@@ -386,6 +386,8 @@ public class search extends appFragment {
     }
 
     protected void initPages() {
+        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+
         if (mDataSet == null) {
             mDataSet = new ArrayList<>();
         }

@@ -139,6 +139,8 @@ public class user extends appFragment {
 
             db.close();
         }
+
+        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), page.getPagePath());
     }
 
     @Override

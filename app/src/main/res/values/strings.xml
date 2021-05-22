@@ -225,6 +225,9 @@
     <string name="trackHistory">Keep History</string>
     <string name="clearHistory">Clear History</string>
 
+    <string name="trackBackHistory">Keep Back History</string>
+    <string name="clearBackHistory">Clear Back History</string>
+
     <string name="OFACNotification">OFACNotification</string>
     <string name="OFACSearchNotification">OFACSearchNotification</string>
 
@@ -242,6 +245,7 @@
     <string name="searchNotificationsIntervalSetting">searchNotificationsIntervalSetting</string>
     <string name="imageResolutionSetting">imageResolutionSetting</string>
     <string name="trackHistorySetting">trackHistorySetting</string>
+    <string name="trackBackHistorySetting">trackHistorySetting</string>
 
     <string name="acceptButton">Accept</string>
     <string name="cancelButton">Cancel</string>

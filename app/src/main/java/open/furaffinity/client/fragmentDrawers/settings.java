@@ -3,6 +3,7 @@ package open.furaffinity.client.fragmentDrawers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -26,6 +27,8 @@ import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
+import open.furaffinity.client.sqlite.backContract;
+import open.furaffinity.client.sqlite.backDBHelper;
 import open.furaffinity.client.utilities.imageResultsTool;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
@@ -44,6 +47,7 @@ public class settings extends appFragment {
     public static boolean imageListInfoDefault = true;
     public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;//Likely not gunna expose this as some views break with it as HORIZONTAL though the option would be nice
     public static boolean trackHistoryDefault = false;
+    public static boolean trackBackHistoryDefault = true;
     public static boolean saveBrowseStateDefault = true;
     public static boolean cachedBrowseDefault = true; //Tied to saveBrowseStateDefault
     public static int InvalidateCachedBrowseTimeDefault = 5;
@@ -79,6 +83,8 @@ public class settings extends appFragment {
     private EditText InvalidateCachedSearchAfterEditText;
     private Switch trackHistory;
     private Button clearHistory;
+    private Switch trackBackHistory;
+    private Button clearBackHistory;
 
     @Override
     protected int getLayout() {
@@ -113,11 +119,13 @@ public class settings extends appFragment {
         InvalidateCachedSearchAfterEditText = rootView.findViewById(R.id.InvalidateCachedSearchAfterEditText);
         trackHistory = rootView.findViewById(R.id.trackHistory);
         clearHistory = rootView.findViewById(R.id.clearHistory);
+        trackBackHistory = rootView.findViewById(R.id.trackBackHistory);
+        clearBackHistory = rootView.findViewById(R.id.clearBackHistory);
     }
 
     @Override
     protected void initPages() {
-
+        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
     }
 
     @Override
@@ -162,6 +170,7 @@ public class settings extends appFragment {
         InvalidateCachedSearchTimeEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchTimeSetting), InvalidateCachedSearchTimeDefault)));
         InvalidateCachedSearchAfterEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchAfterSetting), InvalidateCachedSearchAfterDefault)));
         trackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackHistorySetting), trackHistoryDefault));
+        trackBackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackBackHistorySetting), trackBackHistoryDefault));
     }
 
     protected void updateUIElementListeners(View rootView) {
@@ -611,5 +620,23 @@ public class settings extends appFragment {
             db.close();
         });
 
+        trackBackHistory.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context context = requireActivity();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(context.getString(R.string.trackBackHistorySetting), isChecked);
+            editor.apply();
+
+            ((mainActivity) context).updateUIElements();
+        });
+
+        clearBackHistory.setOnClickListener(v -> {
+            backDBHelper dbHelper = new backDBHelper(getActivity());
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            //Delete previous versions from history
+            db.delete(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, null, null);
+            db.close();
+        });
     }
 }

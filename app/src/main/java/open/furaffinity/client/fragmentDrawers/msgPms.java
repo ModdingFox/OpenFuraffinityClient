@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsListAdapter;
 import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
@@ -115,6 +116,8 @@ public class msgPms extends appFragment {
     }
 
     protected void initPages() {
+        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new msgPmsListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);

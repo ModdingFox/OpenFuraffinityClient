@@ -267,6 +267,22 @@
                 android:layout_height="wrap_content"
                 android:text="@string/clearHistory" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
+            <Switch
+                android:id="@+id/trackBackHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trackBackHistory" />
+
+            <Button
+                android:id="@+id/clearBackHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/clearBackHistory" />
+
         </LinearLayout>
 
     </ScrollView>

@@ -1,8 +1,11 @@
 package open.furaffinity.client.activity;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,12 +29,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.pages.loginCheck;
+import open.furaffinity.client.sqlite.backDBHelper;
+import open.furaffinity.client.sqlite.backContract;
 
 import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
 
@@ -70,6 +77,8 @@ public class mainActivity extends AppCompatActivity {
     private String msgPmsPath = null;
     private String userPath = null;
     private String viewPath = null;
+
+    private backDBHelper dbHelper;
 
     private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener(){
         @Override
@@ -412,9 +421,117 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_view, 0);
     }
 
+    public void drawerFragmentPush(String fragmentClass, String fragmentData) {
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+        if (sharedPref.getBoolean(this.getString(R.string.trackBackHistorySetting), settings.trackBackHistoryDefault)) {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            //Delete previous versions from history
+            String selection = backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME + " LIKE ? AND " + backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA + " LIKE ?";
+            String[] selectionArgs = { fragmentClass, fragmentData};
+            db.delete(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, selection , selectionArgs);
+
+            //Insert into history
+            ContentValues values = new ContentValues();
+            values.put(backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME, fragmentClass);
+            values.put(backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA, fragmentData);
+            values.put(backContract.backItemEntry.COLUMN_NAME_DATETIME, (new Date()).getTime());
+            db.insert(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, null, values);
+
+            //Limit history to 512 entries
+            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + " ORDER BY rowid DESC LIMIT 512))");
+
+            db.close();
+        }
+    }
+
+    public void drawerFragmentPop() {
+        String fragmentClass = "";
+        String fragmentData = "";
+
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+
+        if (sharedPref.getBoolean(this.getString(R.string.trackBackHistorySetting), settings.trackBackHistoryDefault)) {
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+            String[] projection = {
+                    backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME,
+                    backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA,
+                    backContract.backItemEntry.COLUMN_NAME_DATETIME
+            };
+
+            String sortOrder = "rowid DESC";
+
+            Cursor cursor = db.query(
+                    backContract.backItemEntry.TABLE_NAME_BACK_HISTORY,
+                    projection,
+                    null,
+                    null,
+                    null,
+                    null,
+                    sortOrder
+            );
+
+            //Remove the current page from the back history as we want to leave it
+            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + " WHERE rowid = (SELECT max(rowid) FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + ")");
+
+            if (cursor.moveToNext()) {
+                fragmentClass = cursor.getString(cursor.getColumnIndexOrThrow(backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME));
+                fragmentData = cursor.getString(cursor.getColumnIndexOrThrow(backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA));
+            }
+
+            //Remove the previous page from the back history as we will be going back to it and dont wanna get stuck in an infinite loop of returning to the same page we are going back to
+            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + " WHERE rowid = (SELECT max(rowid) FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + ")");
+        }
+
+        if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.about.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_about);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_about, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.browse.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_browse);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_browse, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.history.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_history);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_history, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.journal.class.getName())) {
+            setJournalPath(fragmentData);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.msgOthers.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_msg_others);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_others, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.msgPms.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_msg_pms);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_pms, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.msgSubmission.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_msg_submission);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_msg_submission, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentTabs.msgPmsMessage.class.getName())) {
+            setMsgPmsPath(fragmentData);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.profile.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_profile);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_profile, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.profile.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_settings);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_settings, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.search.class.getName())) {
+            navigationView.setCheckedItem(R.id.nav_search);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_search, 0);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.user.class.getName())) {
+            setUserPath(fragmentData);
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.view.class.getName())) {
+            setViewPath(fragmentData);
+        } else {
+            this.finish();
+            System.exit(0);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dbHelper = new backDBHelper(this);
+
         setContentView(R.layout.activity_main);
         System.setProperty("http.agent", "OpenFurAffinityClient");
 

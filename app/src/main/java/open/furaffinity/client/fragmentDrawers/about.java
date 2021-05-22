@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.pages.user;
 
@@ -38,6 +39,7 @@ public class about extends appFragment {
     }
 
     protected void initPages() {
+        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new commentListAdapter(mDataSet, getActivity(), false);
         recyclerView.setAdapter(mAdapter);

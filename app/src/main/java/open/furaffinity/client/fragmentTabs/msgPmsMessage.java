@@ -52,6 +52,8 @@ public class msgPmsMessage extends appFragment {
 
             setupViewPager((open.furaffinity.client.pages.msgPmsMessage) abstractPage);
 
+            saveHistory();
+
             isLoading = false;
         }
 
@@ -61,6 +63,10 @@ public class msgPmsMessage extends appFragment {
             Toast.makeText(getActivity(), "Failed to load data for message", Toast.LENGTH_SHORT).show();
         }
     };
+
+    private void saveHistory() {
+        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), page.getPagePath());
+    }
 
     @Override
     protected int getLayout() {

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
@@ -154,6 +155,8 @@ public class msgSubmission extends appFragment {
     }
 
     protected void initPages() {
+        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageImageListAdapter(mDataSet, requireActivity(), requireActivity());
         recyclerView.setAdapter(mAdapter);

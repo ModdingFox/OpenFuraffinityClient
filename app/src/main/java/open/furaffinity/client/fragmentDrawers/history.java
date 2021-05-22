@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.historySectionsPagerAdapter;
 
 public class history extends appFragment {
@@ -29,7 +30,7 @@ public class history extends appFragment {
 
     @Override
     protected void initPages() {
-
+        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
     }
 
     @Override
