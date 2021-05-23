@@ -11,10 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.checkboxListAdapter;
+import open.furaffinity.client.sqlite.searchContract;
 import open.furaffinity.client.utilities.messageIds;
 
 public class viewKeywords extends appFragment {
@@ -66,6 +70,16 @@ public class viewKeywords extends appFragment {
     }
 
     protected void updateUIElementListeners(View rootView) {
-        searchButton.setOnClickListener(v -> ((mainActivity) requireActivity()).setSearchQuery("@keywords " + String.join(" ", ((checkboxListAdapter) mAdapter).getCheckedItems())));
+        searchButton.setOnClickListener(v -> {
+            JSONObject searchQuery = new JSONObject();
+
+            try {
+                searchQuery.put(searchContract.searchItemEntry.COLUMN_NAME_Q, ("@keywords " + String.join(" ", ((checkboxListAdapter) mAdapter).getCheckedItems())));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            ((mainActivity) requireActivity()).setSearchParamaters(searchQuery.toString());
+        });
     }
 }

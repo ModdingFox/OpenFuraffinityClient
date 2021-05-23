@@ -8,8 +8,8 @@ android {
         applicationId "open.furaffinity.client"
         minSdkVersion 26
         targetSdkVersion 29
-        versionCode 28
-        versionName "0.2.8"
+        versionCode 29
+        versionName "0.2.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -55,6 +55,8 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation 'org.jsoup:jsoup:1.13.1'
+
+    implementation group: 'org.json', name: 'json', version: '20210307'
 
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha06'
     implementation 'androidx.cardview:cardview:1.0.0'

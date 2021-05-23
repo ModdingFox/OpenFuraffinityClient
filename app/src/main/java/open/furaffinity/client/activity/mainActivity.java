@@ -71,8 +71,11 @@ public class mainActivity extends AppCompatActivity {
 
     private loginCheck loginCheck;
 
+    private String browseParamaters = null;
+
     private String searchSelected = null;
-    private String searchQuery = null;
+    private String searchParamaters = null;
+
     private String journalPath = null;
     private String msgPmsPath = null;
     private String userPath = null;
@@ -353,6 +356,19 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_browse, 0);
     }
 
+    public String getBrowseParamaters() {
+        String result = browseParamaters;
+        browseParamaters = null;
+        return result;
+    }
+
+    public void setBrowseParamaters(String browseParamatersIn) {
+        browseParamaters = browseParamatersIn;
+        updateUIElements();
+        navigationView.setCheckedItem(R.id.nav_browse);
+        navigationView.getMenu().performIdentifierAction(R.id.nav_browse, 0);
+    }
+
     public String getSearchSelected() {
         String result = searchSelected;
         searchSelected = null;
@@ -366,12 +382,14 @@ public class mainActivity extends AppCompatActivity {
         navigationView.getMenu().performIdentifierAction(R.id.nav_search, 0);
     }
 
-    public String getSearchQuery() {
-        return searchQuery;
+    public String getSearchParamaters() {
+        String result = searchParamaters;
+        searchParamaters = null;
+        return result;
     }
 
-    public void setSearchQuery(String searchQueryIn) {
-        searchQuery = searchQueryIn;
+    public void setSearchParamaters(String searchParamatersIn) {
+        searchParamaters = searchParamatersIn;
         updateUIElements();
         navigationView.setCheckedItem(R.id.nav_search);
         navigationView.getMenu().performIdentifierAction(R.id.nav_search, 0);
@@ -489,8 +507,7 @@ public class mainActivity extends AppCompatActivity {
             navigationView.setCheckedItem(R.id.nav_about);
             navigationView.getMenu().performIdentifierAction(R.id.nav_about, 0);
         } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.browse.class.getName())) {
-            navigationView.setCheckedItem(R.id.nav_browse);
-            navigationView.getMenu().performIdentifierAction(R.id.nav_browse, 0);
+            setBrowseParamaters(fragmentData);
         } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.history.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_history);
             navigationView.getMenu().performIdentifierAction(R.id.nav_history, 0);
@@ -510,12 +527,11 @@ public class mainActivity extends AppCompatActivity {
         } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.profile.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_profile);
             navigationView.getMenu().performIdentifierAction(R.id.nav_profile, 0);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.profile.class.getName())) {
+        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.settings.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_settings);
             navigationView.getMenu().performIdentifierAction(R.id.nav_settings, 0);
         } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.search.class.getName())) {
-            navigationView.setCheckedItem(R.id.nav_search);
-            navigationView.getMenu().performIdentifierAction(R.id.nav_search, 0);
+            setSearchParamaters(fragmentData);
         } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.user.class.getName())) {
             setUserPath(fragmentData);
         } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.view.class.getName())) {
@@ -549,7 +565,7 @@ public class mainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         outState.putString("searchSelected", searchSelected);
-        outState.putString("searchQuery", searchQuery);
+        outState.putString("searchParamaters", searchParamaters);
         outState.putString("journalPath", journalPath);
         outState.putString("msgPmsPath", msgPmsPath);
         outState.putString("userPath", userPath);
@@ -561,7 +577,7 @@ public class mainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         searchSelected = savedInstanceState.getString("searchSelected");
-        searchQuery = savedInstanceState.getString("searchQuery");
+        searchParamaters = savedInstanceState.getString("searchParamaters");
         journalPath = savedInstanceState.getString("journalPath");
         msgPmsPath = savedInstanceState.getString("msgPmsPath");
         userPath = savedInstanceState.getString("userPath");
