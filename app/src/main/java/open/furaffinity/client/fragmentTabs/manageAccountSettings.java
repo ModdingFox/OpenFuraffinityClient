@@ -19,7 +19,6 @@ import open.furaffinity.client.utilities.uiControls;
 
 public class manageAccountSettings extends appFragment {
     private EditText fa_useremail;
-    private Spinner ssl_enable;
     private Spinner bdaymonth;
     private Spinner bdayday;
     private Spinner bdayyear;
@@ -53,7 +52,6 @@ public class manageAccountSettings extends appFragment {
 
     protected void getElements(View rootView) {
         fa_useremail = rootView.findViewById(R.id.fa_useremail);
-        ssl_enable = rootView.findViewById(R.id.ssl_enable);
         bdaymonth = rootView.findViewById(R.id.bdaymonth);
         bdayday = rootView.findViewById(R.id.bdayday);
         bdayyear = rootView.findViewById(R.id.bdayyear);
@@ -97,7 +95,6 @@ public class manageAccountSettings extends appFragment {
             public void requestSucceeded(abstractPage abstractPage) {
                 fa_useremail.setText(((controlsSettings) abstractPage).getFaUserEmail());
 
-                uiControls.spinnerSetAdapter(requireContext(), ssl_enable, ((controlsSettings) abstractPage).getSslEnable(), ((controlsSettings) abstractPage).getSslEnableCurrent(), true, false);
                 uiControls.spinnerSetAdapter(requireContext(), bdaymonth, ((controlsSettings) abstractPage).getBDayMonth(), ((controlsSettings) abstractPage).getBDayMonthCurrent(), true, false);
                 uiControls.spinnerSetAdapter(requireContext(), bdayday, ((controlsSettings) abstractPage).getBDayDay(), ((controlsSettings) abstractPage).getBDayDayCurrent(), true, false);
                 uiControls.spinnerSetAdapter(requireContext(), bdayyear, ((controlsSettings) abstractPage).getBDayYear(), ((controlsSettings) abstractPage).getBDayYearCurrent(), true, false);
@@ -155,7 +152,6 @@ public class manageAccountSettings extends appFragment {
                         }
                     },
                             fa_useremail.getText().toString(),
-                            ((kvPair) ssl_enable.getSelectedItem()).getKey(),
                             ((kvPair) bdaymonth.getSelectedItem()).getKey(),
                             ((kvPair) bdayday.getSelectedItem()).getKey(),
                             ((kvPair) bdayyear.getSelectedItem()).getKey(),
