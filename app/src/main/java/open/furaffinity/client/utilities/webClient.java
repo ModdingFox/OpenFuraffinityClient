@@ -122,8 +122,10 @@ public class webClient {
             StringBuilder html = new StringBuilder();
             String line;
 
+            boolean foundDOCTYPE = false;
             while ((line = reader.readLine()) != null) {
-                html.append(line);
+                if (line.contains("!DOCTYPE")) { foundDOCTYPE = true; }
+                if(foundDOCTYPE) { html.append(line); }
             }
             result = html.toString();
 

@@ -33,16 +33,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Account Security Level" />
-
-            <Spinner
-                android:id="@+id/ssl_enable"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="Date of Birth" />
 
             <LinearLayout
