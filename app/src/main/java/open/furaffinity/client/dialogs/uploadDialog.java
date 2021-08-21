@@ -30,7 +30,6 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.submitPages.submitSubmissionPart1;
 import open.furaffinity.client.submitPages.submitSubmissionPart2;
-import open.furaffinity.client.submitPages.submitSubmissionPart3;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
@@ -142,20 +141,9 @@ public class uploadDialog extends DialogFragment {
         builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> new submitSubmissionPart2(context, new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                new submitSubmissionPart3(context, new abstractPage.pageListener() {
-                    @Override
-                    public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
-                        uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(((submitSubmissionPart3) abstractPage));
-                        uploadFinalizeDialog.show(fragmentManager, "uploadFinalizeDialog");
-                        uploadDialog.this.dismiss();
-                    }
-
-                    @Override
-                    public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
-                        Toast.makeText(context, "Failed to upload submission step 3", Toast.LENGTH_SHORT).show();
-                        uploadDialog.this.dismiss();
-                    }
-                }, ((submitSubmissionPart2) abstractPage), sourceFilePath.getText().toString(), thumbnailFilePath.getText().toString()).execute();
+                uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(((submitSubmissionPart2) abstractPage));
+                uploadFinalizeDialog.show(fragmentManager, "uploadFinalizeDialog");
+                uploadDialog.this.dismiss();
             }
 
             @Override
@@ -163,7 +151,7 @@ public class uploadDialog extends DialogFragment {
                 Toast.makeText(context, "Failed to upload submission step 2", Toast.LENGTH_SHORT).show();
                 uploadDialog.this.dismiss();
             }
-        }, page).execute());
+        }, page, sourceFilePath.getText().toString(), thumbnailFilePath.getText().toString()).execute());
         builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> {
 
         });

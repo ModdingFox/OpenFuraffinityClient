@@ -21,12 +21,13 @@ import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.submitPages.submitSubmissionPart2;
 import open.furaffinity.client.submitPages.submitSubmissionPart3;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
 public class uploadFinalizeDialog extends DialogFragment {
-    private final submitSubmissionPart3 page;
+    private final submitSubmissionPart2 page;
     private Spinner cat;
     private Spinner aType;
     private Spinner species;
@@ -38,7 +39,7 @@ public class uploadFinalizeDialog extends DialogFragment {
     private Switch disableComments;
     private Switch putInScraps;
 
-    public uploadFinalizeDialog(submitSubmissionPart3 page) {
+    public uploadFinalizeDialog(submitSubmissionPart2 page) {
         super();
         this.page = page;
     }
@@ -83,16 +84,7 @@ public class uploadFinalizeDialog extends DialogFragment {
 
         builder.setView(rootView);
         builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> {
-            List<HashMap<String, String>> params = new ArrayList<>();
-
-            for (String key : page.getParams().keySet()) {
-                HashMap<String, String> newParam = new HashMap<>();
-                newParam.put("name", key);
-                newParam.put("value", page.getParams().get(key));
-                params.add(newParam);
-            }
-
-            new open.furaffinity.client.submitPages.submitSubmissionPart4(context, new abstractPage.pageListener() {
+            new submitSubmissionPart3(context, new abstractPage.pageListener() {
                 @Override
                 public void requestSucceeded(abstractPage abstractPage) {
                     Toast.makeText(context, "Successfully uploaded submission", Toast.LENGTH_SHORT).show();
@@ -101,10 +93,10 @@ public class uploadFinalizeDialog extends DialogFragment {
 
                 @Override
                 public void requestFailed(abstractPage abstractPage) {
-                    Toast.makeText(context, "Failed to upload submission step 4", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Failed to upload submission step 3", Toast.LENGTH_SHORT).show();
                     uploadFinalizeDialog.this.dismiss();
                 }
-            }, params, kvPair.getSelectedValue(cat), kvPair.getSelectedValue(aType), kvPair.getSelectedValue(species), kvPair.getSelectedValue(gender), kvPair.getSelectedValue(rating), title.getText().toString(), description.getText().toString(), keywords.getText().toString(), disableComments.isChecked(), putInScraps.isChecked()).execute();
+            }, page.getSubmissionKey(), kvPair.getSelectedValue(cat), kvPair.getSelectedValue(aType), kvPair.getSelectedValue(species), kvPair.getSelectedValue(gender), kvPair.getSelectedValue(rating), title.getText().toString(), description.getText().toString(), keywords.getText().toString(), disableComments.isChecked(), putInScraps.isChecked()).execute();
         });
         builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> {
 
