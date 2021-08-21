@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,11 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.chrisbanes.photoview.OnSingleFlingListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -35,15 +38,16 @@ import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class view extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
-    private CoordinatorLayout coordinatorLayout;
+    private ConstraintLayout constraintLayout;
 
     private TextView submissionTitle;
-    private ImageView submissionImage;
+    private PhotoView submissionImage;
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
     private TextView submissionUser;
@@ -123,7 +127,7 @@ public class view extends appFragment {
     }
 
     protected void getElements(View rootView) {
-        coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
+        constraintLayout = rootView.findViewById(R.id.coordinatorLayout);
 
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
@@ -153,10 +157,10 @@ public class view extends appFragment {
         //noinspection deprecation
         shareLink.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
-        coordinatorLayout.addView(submissionFavorite);
-        coordinatorLayout.addView(submissionDownload);
-        coordinatorLayout.addView(sendNote);
-        coordinatorLayout.addView(shareLink);
+        constraintLayout.addView(submissionFavorite);
+        constraintLayout.addView(submissionDownload);
+        constraintLayout.addView(sendNote);
+        constraintLayout.addView(shareLink);
 
         submissionFavorite.setVisibility(View.GONE);
         sendNote.setVisibility(View.GONE);
@@ -229,7 +233,31 @@ public class view extends appFragment {
     protected void updateUIElementListeners(View rootView) {
         submissionUserLinearLayout.setOnClickListener(v -> ((mainActivity) requireActivity()).setUserPath(page.getSubmissionUserPage()));
 
-        submissionImage.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+        submissionImage.setOnSingleFlingListener(new OnSingleFlingListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                int SWIPE_THRESHOLD = 100;
+                int SWIPE_VELOCITY_THRESHOLD = 100;
+                boolean result = false;
+                try {
+                    float diffY = e2.getY() - e1.getY();
+                    float diffX = e2.getX() - e1.getX();
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                            if (diffX > 0) {
+                                onSwipeRight();
+                            } else {
+                                onSwipeLeft();
+                            }
+                            result = true;
+                        }
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                return result;
+            }
+
             public void onSwipeRight() {
                 if (page.getNext() != null) {
                     ((mainActivity) requireActivity()).setViewPath(page.getNext());
