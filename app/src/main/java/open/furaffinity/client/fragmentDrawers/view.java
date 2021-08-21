@@ -127,7 +127,7 @@ public class view extends appFragment {
     }
 
     protected void getElements(View rootView) {
-        constraintLayout = rootView.findViewById(R.id.coordinatorLayout);
+        constraintLayout = rootView.findViewById(R.id.constraintLayout);
 
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
