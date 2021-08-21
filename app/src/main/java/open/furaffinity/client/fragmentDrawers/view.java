@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,11 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.chrisbanes.photoview.OnSingleFlingListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -35,15 +38,17 @@ import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class view extends appFragment {
     @SuppressWarnings("FieldCanBeLocal")
-    private CoordinatorLayout coordinatorLayout;
+    private ConstraintLayout constraintLayout;
 
     private TextView submissionTitle;
-    private ImageView submissionImage;
+    private PhotoView submissionImage;
+    private ConstraintLayout submissionInfo;
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
     private TextView submissionUser;
@@ -55,6 +60,7 @@ public class view extends appFragment {
     private FloatingActionButton submissionDownload;
     private FloatingActionButton sendNote;
     private FloatingActionButton shareLink;
+    private FloatingActionButton imageInfoSwitch;
 
     private loginCheck loginCheck;
     private open.furaffinity.client.pages.view page;
@@ -123,10 +129,11 @@ public class view extends appFragment {
     }
 
     protected void getElements(View rootView) {
-        coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
+        constraintLayout = rootView.findViewById(R.id.constraintLayout);
 
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
+        submissionInfo = rootView.findViewById(R.id.submissionInfo);
         submissionUserLinearLayout = rootView.findViewById(R.id.submissionUserLinearLayout);
         submissionUserIcon = rootView.findViewById(R.id.submissionUserIcon);
         submissionUser = rootView.findViewById(R.id.submissionUser);
@@ -138,11 +145,13 @@ public class view extends appFragment {
         submissionDownload = new FloatingActionButton(requireContext());
         sendNote = new FloatingActionButton(requireContext());
         shareLink = new FloatingActionButton(requireContext());
+        imageInfoSwitch = new FloatingActionButton(requireContext());
 
         submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
         submissionDownload.setImageResource(R.drawable.ic_menu_download);
         sendNote.setImageResource(R.drawable.ic_menu_newmessage);
         shareLink.setImageResource(R.drawable.ic_menu_send);
+        imageInfoSwitch.setImageResource(R.drawable.ic_button_info);
 
         //noinspection deprecation
         submissionFavorite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
@@ -152,17 +161,21 @@ public class view extends appFragment {
         sendNote.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
         shareLink.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        //noinspection deprecation
+        imageInfoSwitch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
-        coordinatorLayout.addView(submissionFavorite);
-        coordinatorLayout.addView(submissionDownload);
-        coordinatorLayout.addView(sendNote);
-        coordinatorLayout.addView(shareLink);
+        constraintLayout.addView(submissionFavorite);
+        constraintLayout.addView(submissionDownload);
+        constraintLayout.addView(sendNote);
+        constraintLayout.addView(shareLink);
+        constraintLayout.addView(imageInfoSwitch);
 
         submissionFavorite.setVisibility(View.GONE);
         sendNote.setVisibility(View.GONE);
 
         fab.addButton(submissionDownload, 1.5f, 270);
         fab.addButton(shareLink, 2.6f, 270);
+        fab.addButton(imageInfoSwitch, 3.7f, 270);
         fab.setVisibility(View.GONE);
     }
 
@@ -229,7 +242,31 @@ public class view extends appFragment {
     protected void updateUIElementListeners(View rootView) {
         submissionUserLinearLayout.setOnClickListener(v -> ((mainActivity) requireActivity()).setUserPath(page.getSubmissionUserPage()));
 
-        submissionImage.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+        submissionImage.setOnSingleFlingListener(new OnSingleFlingListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                int SWIPE_THRESHOLD = 100;
+                int SWIPE_VELOCITY_THRESHOLD = 100;
+                boolean result = false;
+                try {
+                    float diffY = e2.getY() - e1.getY();
+                    float diffX = e2.getX() - e1.getX();
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                            if (diffX > 0) {
+                                onSwipeRight();
+                            } else {
+                                onSwipeLeft();
+                            }
+                            result = true;
+                        }
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                return result;
+            }
+
             public void onSwipeRight() {
                 if (page.getNext() != null) {
                     ((mainActivity) requireActivity()).setViewPath(page.getNext());
@@ -267,6 +304,16 @@ public class view extends appFragment {
             sharingIntent.setType("text/plain");
             sharingIntent.putExtra(Intent.EXTRA_TEXT, open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath());
             startActivity(Intent.createChooser(sharingIntent, "Share via"));
+        });
+
+        imageInfoSwitch.setOnClickListener(v -> {
+            if(submissionImage.getVisibility() != View.GONE) {
+                submissionImage.setVisibility(View.GONE);
+                submissionInfo.setVisibility(View.VISIBLE);
+            } else {
+                submissionImage.setVisibility(View.VISIBLE);
+                submissionInfo.setVisibility(View.GONE);
+            }
         });
     }
 
