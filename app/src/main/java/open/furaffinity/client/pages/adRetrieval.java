@@ -19,7 +19,7 @@ public class adRetrieval extends abstractPage {
     private static final String pageBaseUrl = "https://rv.furaffinity.net";
     private static final String pagePath = "/live/www/delivery/spc.php";
 
-    private static List<HashMap<String, String>> adData = new ArrayList<>();
+    private List<HashMap<String, String>> adData = new ArrayList<>();
 
     public adRetrieval(Context context, pageListener pageListener) {
         super(context, pageListener);

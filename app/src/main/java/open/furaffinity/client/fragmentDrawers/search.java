@@ -47,6 +47,7 @@ import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.adapter.savedSearchListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.pages.adRetrieval;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
 import open.furaffinity.client.sqlite.searchDBHelper;
@@ -513,65 +514,93 @@ public class search extends appFragment {
                         resetRecycler();
                     }
                 } else {
-                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.search) abstractPage).getPageResults();
+                    final open.furaffinity.client.pages.search searchPage = ((open.furaffinity.client.pages.search) abstractPage);
 
-                    int curSize = mAdapter.getItemCount();
+                    new open.furaffinity.client.pages.adRetrieval(getActivity(), new abstractPage.pageListener() {
+                        @Override
+                        public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+                            List<HashMap<String, String>> pageResults = searchPage.getPageResults();
+                            List<HashMap<String, String>> adResults = ((open.furaffinity.client.pages.adRetrieval) abstractPage).getAdData();
 
-                    //Deduplicate results
-                    List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-                    List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-                    newPostPaths.removeAll(oldPostPaths);
-                    pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-                    mDataSet.addAll(pageResults);
-                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+                            int curSize = mAdapter.getItemCount();
 
-                    if (((open.furaffinity.client.pages.search) abstractPage).getPageResults() != null && ((open.furaffinity.client.pages.search) abstractPage).getPageResults().size() > 0 && ((open.furaffinity.client.pages.search) abstractPage).getCurrentPage().equals("1")) {
-                        //Find any saved searches that meet the current search criteria and apply the most recent link to them
-                        searchDBHelper dbHelper = new searchDBHelper(getActivity());
-                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                            //Deduplicate results
+                            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                            newPostPaths.removeAll(oldPostPaths);
+                            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
 
-                        ContentValues values = new ContentValues();
-                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, ((open.furaffinity.client.pages.search) abstractPage).getPageResults().get(0).get("postPath"));
+                            if(!adResults.isEmpty()){
+                                int totalAddItems = pageResults.size() + adResults.size();
+                                int spacing = totalAddItems/adResults.size();
 
-                        String selection = "";
-                        selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_ORDERBY + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_ORDERDIRECTION + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_RANGE + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_RATINGGENERAL + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_RATINGMATURE + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_RATINGADULT + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_TYPEART + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_TYPEMUSIC + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_TYPEFLASH + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_TYPESTORY + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_TYPEPHOTO + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_TYPEPOETRY + " = ? AND ";
-                        selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
+                                for(int i = 0; i < adResults.size(); i++) {
+                                    int addPosition = (spacing * i) + i;
+                                    if(addPosition <= pageResults.size()) {
+                                        pageResults.add(addPosition, adResults.get(i));
+                                    }
+                                }
+                            }
 
-                        String[] selectionArgs = {
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentQuery(),
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentOrderBy(),
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentOrderDirection(),
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentRange(),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingMature().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeArt().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeStory().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentMode()
-                        };
+                            mDataSet.addAll(pageResults);
+                            mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
-                        db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
-                        db.close();
-                    }
+                            if (searchPage.getPageResults() != null && searchPage.getPageResults().size() > 0 && searchPage.getCurrentPage().equals("1")) {
+                                //Find any saved searches that meet the current search criteria and apply the most recent link to them
+                                searchDBHelper dbHelper = new searchDBHelper(getActivity());
+                                SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                    isLoading = false;
-                    swipeRefreshLayout.setRefreshing(false);
+                                ContentValues values = new ContentValues();
+                                values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, searchPage.getPageResults().get(0).get("postPath"));
+
+                                String selection = "";
+                                selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_ORDERBY + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_ORDERDIRECTION + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_RANGE + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_RATINGGENERAL + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_RATINGMATURE + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_RATINGADULT + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_TYPEART + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_TYPEMUSIC + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_TYPEFLASH + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_TYPESTORY + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_TYPEPHOTO + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_TYPEPOETRY + " = ? AND ";
+                                selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
+
+                                String[] selectionArgs = {
+                                        searchPage.getCurrentQuery(),
+                                        searchPage.getCurrentOrderBy(),
+                                        searchPage.getCurrentOrderDirection(),
+                                        searchPage.getCurrentRange(),
+                                        ((searchPage.getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
+                                        ((searchPage.getCurrentRatingMature().equals("")) ? ("0") : ("1")),
+                                        ((searchPage.getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
+                                        ((searchPage.getCurrentTypeArt().equals("")) ? ("0") : ("1")),
+                                        ((searchPage.getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
+                                        ((searchPage.getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
+                                        ((searchPage.getCurrentTypeStory().equals("")) ? ("0") : ("1")),
+                                        ((searchPage.getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
+                                        ((searchPage.getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
+                                        searchPage.getCurrentMode()
+                                };
+
+                                db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
+                                db.close();
+                            }
+
+                            isLoading = false;
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+                            isLoading = false;
+                            swipeRefreshLayout.setRefreshing(false);
+                            Toast.makeText(getActivity(), "Failed to load ad data", Toast.LENGTH_SHORT).show();
+                        }
+                    }).execute();
                 }
             }
 
