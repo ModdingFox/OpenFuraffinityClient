@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,7 +71,7 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
             switch (mDataSet.get(position).get("type")) {
                 case "imagelist_item":
                     return 0;
-                case "imagelist_imageonly_item":
+                case "imagelist_advertisement_item":
                     return 1;
                 default:
                     return -1;
@@ -91,7 +89,7 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
             case 0:
                 return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.imagelist_item, parent, false), viewType);
             case 1:
-                return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.imagelist_imageonly_item, parent, false), viewType);
+                return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.imagelist_advertisement_item, parent, false), viewType);
             default:
                 return null;
         }
@@ -234,6 +232,7 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
                 open.furaffinity.client.utilities.webClient webClient = new open.furaffinity.client.utilities.webClient(context);
                 //webClient.sendGetRequest(mDataSet.get(position).get("beacon")); probably need this to opearate like the other as a post with params or need to correct the webclient as it dont like GET with query string
                 Glide.with(context).load(mDataSet.get(position).get("image")).transition(DrawableTransitionOptions.withCrossFade()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.postImage);
+                holder.postRating.setText("AD");
                 holder.itemView.setOnClickListener(v -> {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mDataSet.get(position).get("link")));
                     if (intent.resolveActivity(context.getPackageManager()) != null) {
@@ -276,7 +275,7 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
                     imageListPostInfo = null;
                     postName = null;
                     postUser = null;
-                    postRating = null;
+                    postRating = itemView.findViewById(R.id.imageListCardPostRating);;
                     menuButton = null;
                     break;
                 default:

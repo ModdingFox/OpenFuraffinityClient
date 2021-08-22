@@ -53,7 +53,7 @@ public class adRetrieval extends abstractPage {
                         newAd.put("link", link);
                         newAd.put("image", image);
                         newAd.put("beacon", beacon);
-                        newAd.put("type", "imagelist_imageonly_item");
+                        newAd.put("type", "imagelist_advertisement_item");
                         adData.add(newAd);
                     } else {
                         return false;
