@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -20,6 +21,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.commentListAdapter;
+import open.furaffinity.client.dialogs.confirmDialog;
 import open.furaffinity.client.pages.controlsShouts;
 import open.furaffinity.client.utilities.fabCircular;
 
@@ -130,26 +132,39 @@ public class manageShouts extends appFragment {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         removeSelected.setOnClickListener(v -> {
-            List<String> elements = ((commentListAdapter) mAdapter).getCheckedItems();
-
-            HashMap<String, String> params = new HashMap<>();
-
-            for (int i = 0; i < elements.size(); i++) {
-                params.put("shouts[" + i + "]", elements.get(i));
-            }
-
-            new open.furaffinity.client.submitPages.submitShouts(getActivity(), new abstractPage.pageListener() {
+            confirmDialog confirmDialog = new confirmDialog();
+            confirmDialog.setTitleText("Delete Selected Shouts?");
+            confirmDialog.setListener(new confirmDialog.dialogListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    resetRecycler();
-                    Toast.makeText(getActivity(), "Successfully removed shout", Toast.LENGTH_SHORT).show();
+                public void onDialogPositiveClick(DialogFragment dialog) {
+                    List<String> elements = ((commentListAdapter) mAdapter).getCheckedItems();
+
+                    HashMap<String, String> params = new HashMap<>();
+
+                    for (int i = 0; i < elements.size(); i++) {
+                        params.put("shouts[" + i + "]", elements.get(i));
+                    }
+
+                    new open.furaffinity.client.submitPages.submitShouts(getActivity(), new abstractPage.pageListener() {
+                        @Override
+                        public void requestSucceeded(abstractPage abstractPage) {
+                            resetRecycler();
+                            Toast.makeText(getActivity(), "Successfully removed shout", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void requestFailed(abstractPage abstractPage) {
+                            Toast.makeText(getActivity(), "Failed to remove shout", Toast.LENGTH_SHORT).show();
+                        }
+                    }, params).execute();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
-                    Toast.makeText(getActivity(), "Failed to remove shout", Toast.LENGTH_SHORT).show();
+                public void onDialogNegativeClick(DialogFragment dialog) {
+
                 }
-            }, params).execute();
+            });
+            confirmDialog.show(getChildFragmentManager(), "getDeleteConfirm");
         });
     }
 }
