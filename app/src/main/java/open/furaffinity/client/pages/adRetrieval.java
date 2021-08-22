@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import app.cash.quickjs.QuickJs;
+import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class adRetrieval extends abstractPage {
@@ -22,6 +23,10 @@ public class adRetrieval extends abstractPage {
 
     public adRetrieval(Context context, pageListener pageListener) {
         super(context, pageListener);
+    }
+
+    public adRetrieval(adRetrieval adRetrieval) {
+        super(adRetrieval.context, adRetrieval.pageListener);
     }
 
     @Override
@@ -48,6 +53,7 @@ public class adRetrieval extends abstractPage {
                         newAd.put("link", link);
                         newAd.put("image", image);
                         newAd.put("beacon", beacon);
+                        newAd.put("type", "imagelist_imageonly_item");
                         adData.add(newAd);
                     } else {
                         return false;
