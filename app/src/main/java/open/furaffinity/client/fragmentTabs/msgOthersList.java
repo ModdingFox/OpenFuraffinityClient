@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -19,6 +20,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.msgOthersListAdapter;
+import open.furaffinity.client.dialogs.confirmDialog;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.messageIds;
 
@@ -185,54 +187,79 @@ public class msgOthersList extends appFragment {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
         removeSelected.setOnClickListener(v -> {
-            switch (msgOthersType) {
-                case 0:
-                    deleteSelected("watches", ((msgOthersListAdapter) mAdapter).getCheckedItems());
-                    break;
-                case 1:
-                    deleteSelected("comments-submissions", ((msgOthersListAdapter) mAdapter).getCheckedItems());
-                    break;
-                case 2:
-                    deleteSelected("comments-journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
-                    break;
-                case 3:
-                    deleteSelected("shouts", ((msgOthersListAdapter) mAdapter).getCheckedItems());
-                    break;
-                case 4:
-                    deleteSelected("favorites", ((msgOthersListAdapter) mAdapter).getCheckedItems());
-                    break;
-                case 5:
-                    deleteSelected("journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
-                    break;
-                default:
-                    break;
-            }
+            confirmDialog confirmDialog = new confirmDialog();
+            confirmDialog.setTitleText("Delete Selected Notifications?");
+            confirmDialog.setListener(new confirmDialog.dialogListener() {
+                @Override
+                public void onDialogPositiveClick(DialogFragment dialog) {
+                    switch (msgOthersType) {
+                        case 0:
+                            deleteSelected("watches", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            break;
+                        case 1:
+                            deleteSelected("comments-submissions", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            break;
+                        case 2:
+                            deleteSelected("comments-journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            break;
+                        case 3:
+                            deleteSelected("shouts", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            break;
+                        case 4:
+                            deleteSelected("favorites", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            break;
+                        case 5:
+                            deleteSelected("journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onDialogNegativeClick(DialogFragment dialog) {
+
+                }
+            });
+            confirmDialog.show(getChildFragmentManager(), "getDeleteConfirm");
         });
 
         removeAll.setOnClickListener(v -> {
-            switch (msgOthersType) {
-                case 0:
-                    deleteAllOfType("nuke-watches", "Nuke Watches");
-                    break;
-                case 1:
-                    deleteAllOfType("nuke-submission-comments", "Nuke Submission Comments");
-                    break;
-                case 2:
-                    deleteAllOfType("nuke-journal-comments", "Nuke Journal Comments");
-                    break;
-                case 3:
-                    deleteAllOfType("nuke-shouts", "Nuke Shouts");
-                    break;
-                case 4:
-                    deleteAllOfType("nuke-favorites", "Nuke Favorites");
-                    break;
-                case 5:
-                    deleteAllOfType("nuke-journals", "Nuke Journals");
-                    break;
-                default:
-                    break;
-            }
-        });
+            confirmDialog confirmDialog = new confirmDialog();
+            confirmDialog.setTitleText("Delete All Notifications?");
+            confirmDialog.setListener(new confirmDialog.dialogListener() {
+                @Override
+                public void onDialogPositiveClick(DialogFragment dialog) {
+                    switch (msgOthersType) {
+                        case 0:
+                            deleteAllOfType("nuke-watches", "Nuke Watches");
+                            break;
+                        case 1:
+                            deleteAllOfType("nuke-submission-comments", "Nuke Submission Comments");
+                            break;
+                        case 2:
+                            deleteAllOfType("nuke-journal-comments", "Nuke Journal Comments");
+                            break;
+                        case 3:
+                            deleteAllOfType("nuke-shouts", "Nuke Shouts");
+                            break;
+                        case 4:
+                            deleteAllOfType("nuke-favorites", "Nuke Favorites");
+                            break;
+                        case 5:
+                            deleteAllOfType("nuke-journals", "Nuke Journals");
+                            break;
+                        default:
+                            break;
+                    }
+                }
 
+                @Override
+                public void onDialogNegativeClick(DialogFragment dialog) {
+
+                }
+            });
+            confirmDialog.show(getChildFragmentManager(), "getDeleteConfirm");
+        });
     }
 }

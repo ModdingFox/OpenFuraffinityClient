@@ -151,7 +151,7 @@ public class view extends appFragment {
         submissionDownload.setImageResource(R.drawable.ic_menu_download);
         sendNote.setImageResource(R.drawable.ic_menu_newmessage);
         shareLink.setImageResource(R.drawable.ic_menu_send);
-        imageInfoSwitch.setImageResource(R.drawable.ic_button_info);
+        imageInfoSwitch.setImageResource(R.drawable.ic_menu_about);
 
         //noinspection deprecation
         submissionFavorite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));

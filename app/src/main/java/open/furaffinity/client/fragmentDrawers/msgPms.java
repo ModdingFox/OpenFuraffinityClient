@@ -22,6 +22,7 @@ import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsListAdapter;
+import open.furaffinity.client.dialogs.confirmDialog;
 import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
@@ -168,33 +169,45 @@ public class msgPms extends appFragment {
 
         newMessage.setOnClickListener(view -> sendPM(getActivity(), getChildFragmentManager(), null));
 
-        deleteSelectedMessages.setOnClickListener(view ->
-        {
-            String action = "trash";
-
-            if(page.getSelectedFolder().equals(open.furaffinity.client.pages.msgPms.mailFolders.trash)) {
-                action = "delete";
-            }
-
-            List<String> itemIds = ((msgPmsListAdapter) mAdapter).getCheckedItems();
-
-            HashMap<String, String> params = new HashMap<>();
-            for (int i = 0; i < itemIds.size(); i++) {
-                params.put("items[" + i + "]", itemIds.get(i));
-            }
-
-            new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new abstractPage.pageListener() {
+        deleteSelectedMessages.setOnClickListener(view -> {
+            confirmDialog confirmDialog = new confirmDialog();
+            confirmDialog.setTitleText("Delete Selected Messages?");
+            confirmDialog.setListener(new confirmDialog.dialogListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    resetRecycler();
-                    Toast.makeText(getActivity(), "Successfully deleted selected notes", Toast.LENGTH_SHORT).show();
+                public void onDialogPositiveClick(DialogFragment dialog) {
+                    String action = "trash";
+
+                    if(page.getSelectedFolder().equals(open.furaffinity.client.pages.msgPms.mailFolders.trash)) {
+                        action = "delete";
+                    }
+
+                    List<String> itemIds = ((msgPmsListAdapter) mAdapter).getCheckedItems();
+
+                    HashMap<String, String> params = new HashMap<>();
+                    for (int i = 0; i < itemIds.size(); i++) {
+                        params.put("items[" + i + "]", itemIds.get(i));
+                    }
+
+                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new abstractPage.pageListener() {
+                        @Override
+                        public void requestSucceeded(abstractPage abstractPage) {
+                            resetRecycler();
+                            Toast.makeText(getActivity(), "Successfully deleted selected notes", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void requestFailed(abstractPage abstractPage) {
+                            Toast.makeText(getActivity(), "Failed to delete selected notes", Toast.LENGTH_SHORT).show();
+                        }
+                    }, page.getPagePath(), "move_to", action, params).execute();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
-                    Toast.makeText(getActivity(), "Failed to delete selected notes", Toast.LENGTH_SHORT).show();
+                public void onDialogNegativeClick(DialogFragment dialog) {
+
                 }
-            }, page.getPagePath(), "move_to", action, params).execute();
+            });
+            confirmDialog.show(getChildFragmentManager(), "getDeleteConfirm");
         });
 
         setSelectedMessagesPriority.setOnClickListener(view ->
