@@ -2,6 +2,9 @@ package open.furaffinity.client.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -10,9 +13,9 @@ import org.jsoup.nodes.Element;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -40,7 +43,11 @@ public class webClient {
     private boolean hasLoginCookie = false;
     private boolean followRedirects = true;
 
+    public Context context;
+
     public webClient(Context context) {
+        this.context = context;
+
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
         cookieA = sharedPref.getString(context.getString(R.string.webClientCookieA), null);
         cookieB = sharedPref.getString(context.getString(R.string.webClientCookieB), null);
@@ -260,6 +267,7 @@ public class webClient {
             do {
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setChunkedStreamingMode(1024);
                 httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundry);
                 httpURLConnection.setRequestProperty("charset", "utf-8");
                 httpURLConnection.setRequestProperty("Cookie", cookieSetup(cookies));
@@ -268,31 +276,44 @@ public class webClient {
 
                 DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
 
+                //Testing data stuff
+                //ByteArrayOutputStream testByteArrayOutputStream = new ByteArrayOutputStream();
+                //DataOutputStream outputStream = new DataOutputStream(testByteArrayOutputStream);
+
                 for (HashMap<String, String> currentParams : paramsIn) {
                     if (currentParams.containsKey("name") && (currentParams.containsKey("value") || currentParams.containsKey("filePath"))) {
                         outputStream.writeBytes("--" + boundry + LINE_FEED);
                         outputStream.writeBytes("Content-Disposition: form-data; " + "name=\"" + currentParams.get("name") + "\"");
 
                         if (currentParams.containsKey("filePath")) {
-                            File currentFile = new File(currentParams.get("filePath"));
-                            String contentType = URLConnection.guessContentTypeFromName(currentFile.getName());
+                            Uri uri = Uri.parse(currentParams.get("filePath"));
 
-                            if (currentFile.exists()) {
-                                outputStream.writeBytes("; filename=\"" + currentFile.getName() + "\"" + LINE_FEED);
-                                outputStream.writeBytes("Content-Type: " + ((contentType != null) ? (contentType) : ("application/octet-stream")) + LINE_FEED + LINE_FEED);
+                            try {
+                                Cursor sourceFileCursor = context.getContentResolver().query(uri, null, null, null);
 
-                                FileInputStream inputStream = new FileInputStream(currentFile);
+                                if(sourceFileCursor.moveToFirst()) {
+                                    int displayNameColumnIndex = sourceFileCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                                    String fileName = sourceFileCursor.getString(displayNameColumnIndex);
 
-                                byte[] buffer = new byte[4096];
-                                int bytesRead;
-                                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                                    outputStream.write(buffer, 0, bytesRead);
+                                    String contentType = URLConnection.guessContentTypeFromName(fileName);
+                                    outputStream.writeBytes("; filename=\"" + fileName + "\"" + LINE_FEED);
+                                    outputStream.writeBytes("Content-Type: " + ((contentType != null) ? (contentType) : ("application/octet-stream")) + LINE_FEED + LINE_FEED);
+
+                                    InputStream inputStream = context.getContentResolver().openInputStream(uri);
+                                    byte[] buffer = new byte[1024];
+                                    int bytesRead;
+                                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                                        outputStream.write(buffer, 0, bytesRead);
+                                    }
+                                    outputStream.flush();
+                                    inputStream.close();
+                                } else {
+                                    throw new FileNotFoundException("Could not find filename");
                                 }
-                                outputStream.flush();
-                                inputStream.close();
-                            } else {
+                            } catch (FileNotFoundException | NullPointerException e) {
+                                //Just dump and empty file for now. I dont like this but in theory it should work for this apps purposes
                                 outputStream.writeBytes("; filename=\"\"" + LINE_FEED);
-                                outputStream.writeBytes("Content-Type: " + ((contentType != null) ? (contentType) : ("application/octet-stream")) + LINE_FEED + LINE_FEED);
+                                outputStream.writeBytes("Content-Type: application/octet-stream" + LINE_FEED + LINE_FEED);
                             }
                         } else {
                             outputStream.writeBytes(LINE_FEED + LINE_FEED);
@@ -309,6 +330,9 @@ public class webClient {
 
                 outputStream.flush();
                 outputStream.close();
+
+                //Testing data stuff dump to console
+                //Log.i(TAG, testByteArrayOutputStream.toString());
 
                 responseCode = httpURLConnection.getResponseCode();
 
