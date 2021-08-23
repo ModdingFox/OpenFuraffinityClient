@@ -12,26 +12,33 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import open.furaffinity.client.R;
 
 public class webClient {
@@ -102,6 +109,51 @@ public class webClient {
         }
 
         return additionalCookies;
+    }
+
+    private String getPageResponse(Response response) throws IOException {
+        String result = null;
+
+        int responseCode = response.code();
+
+        Log.i(TAG, "Http Request: Response Code :: " + responseCode);
+
+        if (responseCode == HttpURLConnection.HTTP_OK || (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP)) {
+            List<String> cookies = response.headers("set-cookie");
+            if (cookies != null) {
+                for (String currentCookie : cookies) {
+                    Cookie cookie = Cookie.parse(response.networkResponse().request().url(), currentCookie);
+
+                    if (cookie != null) {
+                        lastPageResponceCookies.add(cookie);
+                    }
+                }
+            }
+
+            Reader inputString = new StringReader(response.body().string());
+            BufferedReader reader = new BufferedReader(inputString);
+            StringBuilder html = new StringBuilder();
+            String line;
+
+            boolean foundDOCTYPE = false;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("!DOCTYPE")) { foundDOCTYPE = true; }
+                if(foundDOCTYPE) { html.append(line); }
+            }
+            result = html.toString();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                checkPageForErrors(result);
+            } else if (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
+                lastPageLoaded = true;
+            }
+
+            Log.i(TAG, "Http Request: " + result);
+        } else {
+            Log.e(TAG, "Http Request failed");
+        }
+
+        return result;
     }
 
     private String getPageResponse(int responseCode, HttpURLConnection httpURLConnection) throws IOException {
@@ -255,102 +307,57 @@ public class webClient {
         lastPageLoaded = false;
         String result = null;
 
-        String boundry = "---------------------------" + UUID.randomUUID().toString().replace("-", "");
-        String LINE_FEED = "\r\n";
+        MultipartBody.Builder requestBody = new MultipartBody.Builder();
+        requestBody.setType(MultipartBody.FORM);
+
+        for (HashMap<String, String> currentParams : paramsIn) {
+            if (currentParams.containsKey("name") && (currentParams.containsKey("value") || currentParams.containsKey("filePath"))) {
+                if (currentParams.containsKey("filePath")) {
+                    Uri uri = Uri.parse(currentParams.get("filePath"));
+
+                    try {
+                        Cursor sourceFileCursor = context.getContentResolver().query(uri, null, null, null);
+
+                        if(sourceFileCursor.moveToFirst()) {
+                            int displayNameColumnIndex = sourceFileCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                            String fileName = sourceFileCursor.getString(displayNameColumnIndex);
+                            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+                            byte[] buffer = new byte[4096];
+                            int bytesRead;
+                            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                                byteArrayOutputStream.write(buffer, 0, bytesRead);
+                            }
+
+                            byteArrayOutputStream.flush();
+                            inputStream.close();
+                            requestBody.addFormDataPart(currentParams.get("name"), fileName, RequestBody.create(byteArrayOutputStream.toByteArray()));
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    requestBody.addFormDataPart(currentParams.get("name"), currentParams.get("value"));
+                }
+            }
+        }
+
+        Request.Builder request = new Request.Builder();
+        request.url(urlIn);
+        request.post(requestBody.build());
+        request.addHeader("charset", "utf-8");
+        request.addHeader("Cookie", cookieSetup(null));
+
+        OkHttpClient client = new OkHttpClient();
+        Call call = client.newCall(request.build());
 
         try {
-            URL url = new URL(urlIn);
-            HttpURLConnection httpURLConnection;
-            int responseCode;
-
-            int retry = 3;
-            do {
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setChunkedStreamingMode(1024);
-                httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundry);
-                httpURLConnection.setRequestProperty("charset", "utf-8");
-                httpURLConnection.setRequestProperty("Cookie", cookieSetup(cookies));
-
-                httpURLConnection.setInstanceFollowRedirects(followRedirects);
-
-                DataOutputStream outputStream = new DataOutputStream(httpURLConnection.getOutputStream());
-
-                //Testing data stuff
-                //ByteArrayOutputStream testByteArrayOutputStream = new ByteArrayOutputStream();
-                //DataOutputStream outputStream = new DataOutputStream(testByteArrayOutputStream);
-
-                for (HashMap<String, String> currentParams : paramsIn) {
-                    if (currentParams.containsKey("name") && (currentParams.containsKey("value") || currentParams.containsKey("filePath"))) {
-                        outputStream.writeBytes("--" + boundry + LINE_FEED);
-                        outputStream.writeBytes("Content-Disposition: form-data; " + "name=\"" + currentParams.get("name") + "\"");
-
-                        if (currentParams.containsKey("filePath")) {
-                            Uri uri = Uri.parse(currentParams.get("filePath"));
-
-                            try {
-                                Cursor sourceFileCursor = context.getContentResolver().query(uri, null, null, null);
-
-                                if(sourceFileCursor.moveToFirst()) {
-                                    int displayNameColumnIndex = sourceFileCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                                    String fileName = sourceFileCursor.getString(displayNameColumnIndex);
-
-                                    String contentType = URLConnection.guessContentTypeFromName(fileName);
-                                    outputStream.writeBytes("; filename=\"" + fileName + "\"" + LINE_FEED);
-                                    outputStream.writeBytes("Content-Type: " + ((contentType != null) ? (contentType) : ("application/octet-stream")) + LINE_FEED + LINE_FEED);
-
-                                    InputStream inputStream = context.getContentResolver().openInputStream(uri);
-                                    byte[] buffer = new byte[1024];
-                                    int bytesRead;
-                                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                                        outputStream.write(buffer, 0, bytesRead);
-                                    }
-                                    outputStream.flush();
-                                    inputStream.close();
-                                } else {
-                                    throw new FileNotFoundException("Could not find filename");
-                                }
-                            } catch (FileNotFoundException | NullPointerException e) {
-                                //Just dump and empty file for now. I dont like this but in theory it should work for this apps purposes
-                                outputStream.writeBytes("; filename=\"\"" + LINE_FEED);
-                                outputStream.writeBytes("Content-Type: application/octet-stream" + LINE_FEED + LINE_FEED);
-                            }
-                        } else {
-                            outputStream.writeBytes(LINE_FEED + LINE_FEED);
-                            outputStream.writeBytes(currentParams.get("value"));
-                        }
-
-                        outputStream.writeBytes(LINE_FEED);
-                    }
-                }
-
-                if (includeBountryAtFoot) {
-                    outputStream.writeBytes(boundry + "--" + LINE_FEED);
-                }
-
-                outputStream.flush();
-                outputStream.close();
-
-                //Testing data stuff dump to console
-                //Log.i(TAG, testByteArrayOutputStream.toString());
-
-                responseCode = httpURLConnection.getResponseCode();
-
-                if (responseCode == HttpURLConnection.HTTP_OK || (!followRedirects && responseCode == HttpURLConnection.HTTP_MOVED_TEMP)) {
-                    break;
-                } else {
-                    retry--;
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Log.e(TAG, "sendPostRequest could not sleep: ", e);
-                    }
-                }
-            } while (retry > 0);
-
-            result = getPageResponse(responseCode, httpURLConnection);
+            result = getPageResponse(call.execute());
         } catch (IOException e) {
-            Log.e(TAG, "sendPostRequest: ", e);
+            e.printStackTrace();
         }
 
         return result;
