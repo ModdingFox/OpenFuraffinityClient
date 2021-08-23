@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -229,8 +230,21 @@ public class imageListAdapter extends RecyclerView.Adapter<imageListAdapter.View
                 holder.itemView.setOnClickListener(v -> ((mainActivity) context).setViewPath(mDataSet.get(position).get("postPath")));
                 break;
             case 1:
-                open.furaffinity.client.utilities.webClient webClient = new open.furaffinity.client.utilities.webClient(context);
-                //webClient.sendGetRequest(mDataSet.get(position).get("beacon")); probably need this to opearate like the other as a post with params or need to correct the webclient as it dont like GET with query string
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        open.furaffinity.client.utilities.webClient webClient = new open.furaffinity.client.utilities.webClient(context);
+                        Uri uri = Uri.parse(mDataSet.get(position).get("beacon"));
+                        HashMap<String,String> params = new HashMap<>();
+                        for (String paramater : uri.getQueryParameterNames()) {
+                            params.put(paramater, uri.getQueryParameter(paramater));
+                        }
+                        String baseURL = uri.getScheme() + "://" + uri.getAuthority() + uri.getPath();
+                        webClient.sendPostRequest(baseURL, params);
+                        return null;
+                    }
+                }.execute();
+
                 Glide.with(context).load(mDataSet.get(position).get("image")).transition(DrawableTransitionOptions.withCrossFade()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.postImage);
                 holder.postRating.setText("AD");
                 holder.itemView.setOnClickListener(v -> {
