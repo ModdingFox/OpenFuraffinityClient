@@ -198,6 +198,7 @@
     <string name="imageListColumns">imageListColumns</string>
     <string name="imageListOrientation">imageListOrientation</string>
     <string name="imageListInfo">imageListInfo</string>
+    <string name="advertisementsSwitch">Advertisements From FurAffinity</string>
     <string name="notificationsSwitch">Standard Notifications</string>
     <string name="notificationsInterval">Standard Notification Interval(Min):</string>
     <string name="watchNotificationsSwitch">Watch Notifications</string>
@@ -231,6 +232,7 @@
     <string name="OFACNotification">OFACNotification</string>
     <string name="OFACSearchNotification">OFACSearchNotification</string>
 
+    <string name="advertisementsEnabledSetting">advertisementsEnabledSetting</string>
     <string name="notificationsEnabledSetting">notificationsEnabledSetting</string>
     <string name="notificationsIntervalSetting">notificationsIntervalSetting</string>
     <string name="watchNotificationsEnabledSetting">watchNotificationsEnabledSetting</string>

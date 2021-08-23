@@ -1,6 +1,7 @@
 package open.furaffinity.client.pages;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,6 +15,7 @@ import java.util.List;
 import app.cash.quickjs.QuickJs;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.fragmentDrawers.settings;
 
 public class adRetrieval extends abstractPage {
     private static final String pageBaseUrl = "https://rv.furaffinity.net";
@@ -70,14 +72,20 @@ public class adRetrieval extends abstractPage {
 
     @Override
     protected Boolean doInBackground(Void... voids) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("zones", "11|13|10|5|6|2|4");
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        String javascriptReturn = webClient.sendPostRequest(pageBaseUrl + pagePath, params);
-        if (javascriptReturn != null) {
-            return processPageData(javascriptReturn);
+        if (sharedPref.getBoolean(context.getString(R.string.advertisementsEnabledSetting), settings.advertisementsEnabledDefault)) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("zones", "11|13|10|5|6|2|4");
+
+            String javascriptReturn = webClient.sendPostRequest(pageBaseUrl + pagePath, params);
+            if (javascriptReturn != null) {
+                return processPageData(javascriptReturn);
+            }
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
     public List<HashMap<String,String>> getAdData() {
