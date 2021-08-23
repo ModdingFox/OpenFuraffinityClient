@@ -13,9 +13,11 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
+import open.furaffinity.client.utilities.parseAdZones;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
+import static open.furaffinity.client.utilities.parseAdZones.getAdZones;
 
 public class browse extends abstractPage {
     private static final String pagePath = "/browse";
@@ -27,6 +29,8 @@ public class browse extends abstractPage {
     private HashMap<String, String> gender = new HashMap<>();
     private HashMap<String, String> perpage = new HashMap<>();
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
+
+    private List<Integer> adZones = new ArrayList<>();
 
     public browse(Context context, pageListener pageListener) {
         super(context, pageListener);
@@ -55,6 +59,7 @@ public class browse extends abstractPage {
         gender = getDropDownOptions("gender", html);
         perpage = getDropDownOptions("perpage", html);
         pageResults = getResultsData(html, currentResolution);
+        adZones = parseAdZones.getAdZones(html);
 
         return cat != null && atype != null && species != null && gender != null && perpage != null;
     }
@@ -196,4 +201,6 @@ public class browse extends abstractPage {
     public List<HashMap<String, String>> getPageResults() {
         return pageResults;
     }
+
+    public List<Integer> getAdZones() { return adZones; }
 }

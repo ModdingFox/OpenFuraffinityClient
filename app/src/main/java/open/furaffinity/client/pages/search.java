@@ -14,6 +14,7 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
+import open.furaffinity.client.utilities.parseAdZones;
 
 import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
 import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
@@ -28,6 +29,8 @@ public class search extends abstractPage {
     private HashMap<String, String> orderBy = new HashMap<>();
     private HashMap<String, String> orderDirection = new HashMap<>();
     private List<HashMap<String, String>> pageResults = new ArrayList<>();
+
+    private List<Integer> adZones = new ArrayList<>();
 
     public search(Context context, pageListener pageListener) {
         super(context, pageListener);
@@ -53,6 +56,7 @@ public class search extends abstractPage {
         orderBy = getDropDownOptions("order-by", html);
         orderDirection = getDropDownOptions("order-direction", html);
         pageResults = getResultsData(html, currentResolution);
+        adZones = parseAdZones.getAdZones(html);
 
         return orderBy != null && orderDirection != null;
     }
@@ -230,4 +234,6 @@ public class search extends abstractPage {
     public List<HashMap<String, String>> getPageResults() {
         return pageResults;
     }
+
+    public List<Integer> getAdZones() { return adZones; }
 }

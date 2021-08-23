@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import app.cash.quickjs.QuickJs;
 import open.furaffinity.client.R;
@@ -21,14 +22,12 @@ public class adRetrieval extends abstractPage {
     private static final String pageBaseUrl = "https://rv.furaffinity.net";
     private static final String pagePath = "/live/www/delivery/spc.php";
 
+    private final List<Integer> zones;
     private List<HashMap<String, String>> adData = new ArrayList<>();
 
-    public adRetrieval(Context context, pageListener pageListener) {
+    public adRetrieval(Context context, pageListener pageListener, List<Integer> zones) {
         super(context, pageListener);
-    }
-
-    public adRetrieval(adRetrieval adRetrieval) {
-        super(adRetrieval.context, adRetrieval.pageListener);
+        this.zones = zones;
     }
 
     @Override
@@ -74,9 +73,9 @@ public class adRetrieval extends abstractPage {
     protected Boolean doInBackground(Void... voids) {
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(context.getString(R.string.advertisementsEnabledSetting), settings.advertisementsEnabledDefault)) {
+        if (sharedPref.getBoolean(context.getString(R.string.advertisementsEnabledSetting), settings.advertisementsEnabledDefault) && zones.size() > 0) {
             HashMap<String, String> params = new HashMap<>();
-            params.put("zones", "11|13|10|5|6|2|4");
+            params.put("zones", zones.stream().map(v -> Integer.toString(v)).collect(Collectors.joining("|")));
 
             String javascriptReturn = webClient.sendPostRequest(pageBaseUrl + pagePath, params);
             if (javascriptReturn != null) {

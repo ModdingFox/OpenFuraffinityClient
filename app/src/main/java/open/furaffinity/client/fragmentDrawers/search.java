@@ -600,7 +600,7 @@ public class search extends appFragment {
                             swipeRefreshLayout.setRefreshing(false);
                             Toast.makeText(getActivity(), "Failed to load ad data", Toast.LENGTH_SHORT).show();
                         }
-                    }).execute();
+                    }, searchPage.getAdZones()).execute();
                 }
             }
 

@@ -251,7 +251,7 @@ public class browse extends appFragment {
                         public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
 
                         }
-                    }).execute();
+                    }, browsePage.getAdZones()).execute();
                 }
             }
 
