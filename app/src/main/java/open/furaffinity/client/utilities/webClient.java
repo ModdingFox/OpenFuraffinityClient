@@ -82,9 +82,10 @@ public class webClient {
 
         Element body = doc.selectFirst("body");
         Element sectionHeader = body.selectFirst("div.section-header");
+        Element redirectMessage = body.selectFirst("div.redirect-message");
 
         //Some pages doesnt have a section header but luckily they also dont
-        if (!title.text().equals("System Error") && (sectionHeader == null || !sectionHeader.text().equals("System Error"))) {
+        if (!title.text().equals("System Error") && (sectionHeader == null || !sectionHeader.text().equals("System Error")) && (redirectMessage == null || !redirectMessage.text().startsWith("Error encountered"))) {
             lastPageLoaded = true;
         }
     }

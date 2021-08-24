@@ -19,7 +19,6 @@ public class submitNewAvatar extends open.furaffinity.client.abstractClasses.abs
 
     @Override
     protected Boolean processPageData(String html) {
-        //may need to come back to this to do validation. If i recall correctly this page will go back to the home page if it fails...
         return true;
     }
 
