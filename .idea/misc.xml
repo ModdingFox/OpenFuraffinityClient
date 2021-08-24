@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/layout/checkbox_imagelist_item.xml" value="0.23097826086956522" />
         <entry key="app/src/main/res/layout/dialog_confirm.xml" value="0.2786458333333333" />
         <entry key="app/src/main/res/layout/dialog_fragment_avataruploaddialog.xml" value="0.2786458333333333" />
         <entry key="app/src/main/res/layout/dialog_fragment_uploaddialog.xml" value="0.190625" />
