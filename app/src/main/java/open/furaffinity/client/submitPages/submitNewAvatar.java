@@ -19,7 +19,6 @@ public class submitNewAvatar extends open.furaffinity.client.abstractClasses.abs
 
     @Override
     protected Boolean processPageData(String html) {
-        //may need to come back to this to do validation. If i recall correctly this page will go back to the home page if it fails...
         return true;
     }
 
@@ -37,7 +36,7 @@ public class submitNewAvatar extends open.furaffinity.client.abstractClasses.abs
         newParam.put("filePath", filePath);
         params.add(newParam);
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsAvatar.getPagePath(), params);
+        String html = webClient.sendFormPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsAvatar.getPagePath(), params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
