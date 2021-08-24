@@ -75,7 +75,7 @@ public class manageAvatar extends appFragment {
                 mDataSet.clear();
                 mDataSet.addAll(((controlsAvatar) abstractPage).getPageResults());
                 mAdapter.notifyDataSetChanged();
-                //fab.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.VISIBLE);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
             }

@@ -49,7 +49,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/sourceFilePath"
+            android:id="@+id/sourceFileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/notSelected" />
@@ -83,7 +83,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/thumbnailFilePath"
+            android:id="@+id/thumbnailFileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/notSelected" />

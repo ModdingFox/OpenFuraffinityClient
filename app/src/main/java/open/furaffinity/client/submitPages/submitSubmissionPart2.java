@@ -96,19 +96,17 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
             postParams.add(newParam);
         }
 
-        File sourceFile = new File(sourceFilePath);
-        if (sourceFile.exists()) {
+        if (sourceFilePath != null && !sourceFilePath.isEmpty()) {
             HashMap<String, String> newParam = new HashMap<>();
             newParam.put("name", "submission");
-            newParam.put("filePath", sourceFile.getPath());
+            newParam.put("filePath", sourceFilePath);
             postParams.add(newParam);
         }
 
-        File thumbnailFile = new File(thumbnailFilePath);
-        if (thumbnailFile.exists()) {
+        if (thumbnailFilePath != null && !thumbnailFilePath.isEmpty()) {
             HashMap<String, String> newParam = new HashMap<>();
             newParam.put("name", "thumbnail");
-            newParam.put("filePath", thumbnailFile.getPath());
+            newParam.put("filePath", thumbnailFilePath);
             postParams.add(newParam);
         } else {
             HashMap<String, String> newParam = new HashMap<>();
@@ -117,7 +115,7 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
             postParams.add(newParam);
         }
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, postParams);
+        String html = webClient.sendFormPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, postParams);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
