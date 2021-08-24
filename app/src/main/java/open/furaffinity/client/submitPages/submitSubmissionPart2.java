@@ -115,7 +115,7 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
             postParams.add(newParam);
         }
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, postParams, true);
+        String html = webClient.sendFormPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, postParams);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

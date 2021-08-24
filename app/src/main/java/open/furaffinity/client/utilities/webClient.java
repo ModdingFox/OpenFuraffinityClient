@@ -245,7 +245,7 @@ public class webClient {
         return sendGetRequest(urlIn, null);
     }
 
-    public String sendPostRequest(String urlIn, HashMap<String, String> paramsIn, HashMap<String, String> cookies) {
+    private String sendPostRequest(String urlIn, HashMap<String, String> paramsIn, HashMap<String, String> cookies) {
         lastPageLoaded = false;
         String result = null;
         byte[] params = paramsIn.entrySet().stream().map(pair ->
@@ -303,7 +303,8 @@ public class webClient {
         return sendPostRequest(urlIn, paramsIn, null);
     }
 
-    public String sendPostRequest(String urlIn, List<HashMap<String, String>> paramsIn, HashMap<String, String> cookies, boolean includeBountryAtFoot) {
+    //At the moment this is only used for uploading things
+    public String sendFormPostRequest(String urlIn, List<HashMap<String, String>> paramsIn) {
         lastPageLoaded = false;
         String result = null;
 
@@ -361,14 +362,6 @@ public class webClient {
         }
 
         return result;
-    }
-
-    public String sendPostRequest(String urlIn, List<HashMap<String, String>> paramsIn) {
-        return sendPostRequest(urlIn, paramsIn, null, false);
-    }
-
-    public String sendPostRequest(String urlIn, List<HashMap<String, String>> paramsIn, boolean includeBountryAtFoot) {
-        return sendPostRequest(urlIn, paramsIn, null, includeBountryAtFoot);
     }
 
     public boolean getLastPageLoaded() {

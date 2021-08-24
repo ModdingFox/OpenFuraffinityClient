@@ -37,7 +37,7 @@ public class submitNewAvatar extends open.furaffinity.client.abstractClasses.abs
         newParam.put("filePath", filePath);
         params.add(newParam);
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsAvatar.getPagePath(), params);
+        String html = webClient.sendFormPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsAvatar.getPagePath(), params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
