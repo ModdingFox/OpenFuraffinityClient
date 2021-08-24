@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#Required for com.github.barteksc:android-pdf-viewer:3.2.0-beta.1
+-keep class com.shockwave.**

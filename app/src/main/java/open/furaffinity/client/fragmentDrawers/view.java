@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,28 +18,33 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.chrisbanes.photoview.OnSingleFlingListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
-import open.furaffinity.client.listener.OnSwipeTouchListener;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
-import com.github.chrisbanes.photoview.PhotoView;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
@@ -48,6 +54,8 @@ public class view extends appFragment {
 
     private TextView submissionTitle;
     private PhotoView submissionImage;
+    private PDFView submissionPDF;
+    private TextView submissionText;
     private ConstraintLayout submissionInfo;
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
@@ -69,7 +77,75 @@ public class view extends appFragment {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
             submissionTitle.setText(((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle());
-            Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+            switch(((open.furaffinity.client.pages.view) abstractPage).getSubmissionMimeType()){
+                case "text/plain":
+                case "application/rtf":
+                    new AsyncTask<Void, Void, String>() {
+                        @Override
+                        protected String doInBackground(Void... voids) {
+                            try {
+                                InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                                String data = bufferedReader.lines().collect(Collectors.joining("\n"));
+                                return data;
+                            } catch (IOException e) {
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(String data) {
+                            if(data != null){
+                                submissionText.setText(data);
+                                submissionImage.setVisibility(View.GONE);
+                                submissionText.setVisibility(View.VISIBLE);
+                            } else {
+                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }.execute();
+                    break;
+                case "application/msword":
+                case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                case "application/vnd.oasis.opendocument.text":
+                    break;
+                case "application/pdf":
+                    new AsyncTask<Void, Void, InputStream>() {
+                        @Override
+                        protected InputStream doInBackground(Void... voids) {
+                            try {
+                                InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                                return inputStream;
+                            } catch (IOException e) {
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(InputStream inputStream) {
+                            if(inputStream != null){
+                                submissionPDF.fromStream(inputStream).fitEachPage(true).load();
+                                submissionImage.setVisibility(View.GONE);
+                                submissionPDF.setVisibility(View.VISIBLE);
+                            } else {
+                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }.execute();
+                    break;
+                case "audio/mpeg":
+                case "audio/x-wav":
+                case "audio/midi":
+                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                    break;
+                default:
+                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                    break;
+            }
+
             Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionUserIcon);
             submissionUser.setText(((open.furaffinity.client.pages.view) abstractPage).getSubmissionUser());
 
@@ -133,6 +209,7 @@ public class view extends appFragment {
 
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
+        submissionPDF = rootView.findViewById(R.id.submissionPDF);
         submissionInfo = rootView.findViewById(R.id.submissionInfo);
         submissionUserLinearLayout = rootView.findViewById(R.id.submissionUserLinearLayout);
         submissionUserIcon = rootView.findViewById(R.id.submissionUserIcon);
