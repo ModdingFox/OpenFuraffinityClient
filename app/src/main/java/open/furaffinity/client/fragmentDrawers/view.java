@@ -27,14 +27,26 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.chrisbanes.photoview.OnSingleFlingListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.rtfparserkit.converter.text.StringTextConverter;
+import com.rtfparserkit.parser.RtfStreamSource;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
@@ -55,7 +67,6 @@ public class view extends appFragment {
     private TextView submissionTitle;
     private PhotoView submissionImage;
     private PDFView submissionPDF;
-    private TextView submissionText;
     private ConstraintLayout submissionInfo;
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
@@ -77,29 +88,98 @@ public class view extends appFragment {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
             submissionTitle.setText(((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle());
+
             switch(((open.furaffinity.client.pages.view) abstractPage).getSubmissionMimeType()){
                 case "text/plain":
-                case "application/rtf":
-                    new AsyncTask<Void, Void, String>() {
+                    new AsyncTask<Void, Void, InputStream>() {
                         @Override
-                        protected String doInBackground(Void... voids) {
+                        protected InputStream doInBackground(Void... voids) {
                             try {
                                 InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
                                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                                String data = bufferedReader.lines().collect(Collectors.joining("\n"));
-                                return data;
-                            } catch (IOException e) {
+
+                                Document document = new Document();
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                PdfWriter.getInstance(document, byteArrayOutputStream);
+                                document.open();
+
+                                Font font = new Font();
+                                font.setStyle(Font.NORMAL);
+                                font.setSize(11);
+
+                                String line;
+                                while ((line = bufferedReader.readLine()) != null) {
+                                    Paragraph paragraph = new Paragraph(line + "\n", font);
+                                    paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
+                                    document.add(paragraph);
+                                }
+
+                                document.close();
+
+                                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                            } catch (IOException | DocumentException e) {
                                 return null;
                             }
                         }
 
                         @Override
-                        protected void onPostExecute(String data) {
-                            if(data != null){
-                                submissionText.setText(data);
+                        protected void onPostExecute(InputStream inputStream) {
+                            if(inputStream != null){
+                                submissionPDF.fromStream(inputStream).fitEachPage(true).load();
                                 submissionImage.setVisibility(View.GONE);
-                                submissionText.setVisibility(View.VISIBLE);
+                                submissionPDF.setVisibility(View.VISIBLE);
+                            } else {
+                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }.execute();
+                    break;
+                case "text/rtf":
+                    new AsyncTask<Void, Void, InputStream>() {
+                        @Override
+                        protected InputStream doInBackground(Void... voids) {
+                            try {
+                                InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                                StringTextConverter stringTextConverter = new StringTextConverter();
+                                stringTextConverter.convert(new RtfStreamSource(inputStream));
+                                String extractedText = stringTextConverter.getText();
+
+                                InputStream extractedTextInputStream = new ByteArrayInputStream(extractedText.getBytes(StandardCharsets.UTF_8));
+                                InputStreamReader inputStreamReader = new InputStreamReader(extractedTextInputStream);
+                                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                                Document document = new Document();
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                PdfWriter.getInstance(document, byteArrayOutputStream);
+                                document.open();
+
+                                Font font = new Font();
+                                font.setStyle(Font.NORMAL);
+                                font.setSize(11);
+
+                                String line;
+                                while ((line = bufferedReader.readLine()) != null) {
+                                    Paragraph paragraph = new Paragraph(line + "\n", font);
+                                    paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
+                                    document.add(paragraph);
+                                }
+
+                                document.close();
+
+                                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                            } catch (IOException | DocumentException e) {
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(InputStream inputStream) {
+                            if(inputStream != null){
+                                submissionPDF.fromStream(inputStream).fitEachPage(true).load();
+                                submissionImage.setVisibility(View.GONE);
+                                submissionPDF.setVisibility(View.VISIBLE);
                             } else {
                                 Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
                                 Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
@@ -110,14 +190,14 @@ public class view extends appFragment {
                 case "application/msword":
                 case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 case "application/vnd.oasis.opendocument.text":
+                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
                     break;
                 case "application/pdf":
                     new AsyncTask<Void, Void, InputStream>() {
                         @Override
                         protected InputStream doInBackground(Void... voids) {
                             try {
-                                InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
-                                return inputStream;
+                                return new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
                             } catch (IOException e) {
                                 return null;
                             }

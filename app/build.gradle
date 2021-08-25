@@ -69,4 +69,7 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
     implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
+    implementation 'com.github.joniles:rtfparserkit:1.16.0'
+    implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.2'
+
 }
