@@ -12,11 +12,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.DragEvent;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +39,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.rtfparserkit.converter.text.StringTextConverter;
@@ -193,7 +197,7 @@ public class view extends appFragment {
                                 Font font = new Font();
                                 font.setStyle(Font.NORMAL);
                                 font.setSize(11);
-
+                                
                                 String line;
                                 while ((line = bufferedReader.readLine()) != null) {
                                     Paragraph paragraph = new Paragraph(line + "\n", font);
@@ -212,7 +216,7 @@ public class view extends appFragment {
                         @Override
                         protected void onPostExecute(InputStream inputStream) {
                             if(inputStream != null){
-                                submissionPDF.fromStream(inputStream).fitEachPage(true).load();
+                                submissionPDF.fromStream(inputStream).load();
                                 submissionImage.setVisibility(View.GONE);
                                 submissionPDF.setVisibility(View.VISIBLE);
                             } else {
@@ -489,6 +493,52 @@ public class view extends appFragment {
                 if (page.getPrev() != null) {
                     ((mainActivity) requireActivity()).setViewPath(page.getPrev());
                 }
+            }
+        });
+
+        submissionMediaPlayerSubmissionImage.setOnTouchListener(new View.OnTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                    int SWIPE_THRESHOLD = 100;
+                    int SWIPE_VELOCITY_THRESHOLD = 100;
+                    boolean result = false;
+                    try {
+                        float diffY = e2.getY() - e1.getY();
+                        float diffX = e2.getX() - e1.getX();
+                        if (Math.abs(diffX) > Math.abs(diffY)) {
+                            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                                if (diffX > 0) {
+                                    onSwipeRight();
+                                } else {
+                                    onSwipeLeft();
+                                }
+                                result = true;
+                            }
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                    return result;
+                }
+
+                public void onSwipeRight() {
+                    if (page.getNext() != null) {
+                        ((mainActivity) requireActivity()).setViewPath(page.getNext());
+                    }
+                }
+
+                public void onSwipeLeft() {
+                    if (page.getPrev() != null) {
+                        ((mainActivity) requireActivity()).setViewPath(page.getPrev());
+                    }
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
             }
         });
 
