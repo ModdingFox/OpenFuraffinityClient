@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -82,6 +83,8 @@ public class mainActivity extends AppCompatActivity {
     private String viewPath = null;
 
     private backDBHelper dbHelper;
+
+    private MediaPlayer globalMediaPlayer = new MediaPlayer();
 
     private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener(){
         @Override
@@ -437,6 +440,15 @@ public class mainActivity extends AppCompatActivity {
         updateUIElements();
         navigationView.setCheckedItem(R.id.nav_view);
         navigationView.getMenu().performIdentifierAction(R.id.nav_view, 0);
+    }
+
+    public void setGlobalMediaPlayer(MediaPlayer mediaPlayerIn){
+        globalMediaPlayer.stop();
+        globalMediaPlayer = mediaPlayerIn;
+    }
+
+    public MediaPlayer getGlobalMediaPlayer(){
+        return globalMediaPlayer;
     }
 
     public void drawerFragmentPush(String fragmentClass, String fragmentData) {

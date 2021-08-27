@@ -7,12 +7,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +52,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
@@ -73,6 +79,35 @@ public class view extends appFragment {
     private TextView submissionUser;
     private ViewPager viewPager;
     private TabLayout tabs;
+
+    private MediaPlayer submissionMediaPlayer;
+    private Handler submissionMediaPlayerHandler = new Handler();
+
+    private ConstraintLayout submissionMediaPlayerConstraintLayout;
+    private ImageView submissionMediaPlayerSubmissionImage;
+    private TextView submissionMediaPlayerCurrentTime;
+    private TextView submissionMediaPlayerRemainingTime;
+    private SeekBar submissionMediaPlayerSeekBar;
+    private Button submissionMediaPlayerRewind;
+    private Button submissionMediaPlayerPlayPause;
+    private Button submissionMediaPlayerRepeat;
+    private Button submissionMediaPlayerFastForward;
+
+    private Runnable UpdateSongTime = new Runnable() {
+        public void run() {
+            int currentTime = submissionMediaPlayer.getCurrentPosition();
+            int remainingTime = submissionMediaPlayer.getDuration() - currentTime;
+
+            if(!submissionMediaPlayer.isPlaying() && !submissionMediaPlayerPlayPause.getText().equals("Play")){
+                submissionMediaPlayerPlayPause.setText("Play");
+            }
+
+            submissionMediaPlayerCurrentTime.setText(String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long)currentTime), TimeUnit.MILLISECONDS.toSeconds((long)currentTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)currentTime))));
+            submissionMediaPlayerRemainingTime.setText(String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long)remainingTime), TimeUnit.MILLISECONDS.toSeconds((long)remainingTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)remainingTime))));
+            submissionMediaPlayerSeekBar.setProgress(currentTime);
+            submissionMediaPlayerHandler.postDelayed(this, 100);
+        }
+    };
 
     private fabCircular fab;
     private FloatingActionButton submissionFavorite;
@@ -219,7 +254,16 @@ public class view extends appFragment {
                 case "audio/mpeg":
                 case "audio/x-wav":
                 case "audio/midi":
-                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionMediaPlayerSubmissionImage);
+
+                    submissionMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(((open.furaffinity.client.pages.view) abstractPage).getDownload()));
+                    ((mainActivity)getActivity()).setGlobalMediaPlayer(submissionMediaPlayer);
+
+                    submissionMediaPlayerSeekBar.setMax(submissionMediaPlayer.getDuration());
+                    submissionMediaPlayerHandler.postDelayed(UpdateSongTime, 100);
+
+                    submissionImage.setVisibility(View.GONE);
+                    submissionMediaPlayerConstraintLayout.setVisibility(View.VISIBLE);
                     break;
                 default:
                     Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
@@ -297,6 +341,17 @@ public class view extends appFragment {
         viewPager = rootView.findViewById(R.id.view_pager);
         tabs = rootView.findViewById(R.id.tabs);
         fab = rootView.findViewById(R.id.fab);
+
+        submissionMediaPlayer = ((mainActivity)getActivity()).getGlobalMediaPlayer();
+        submissionMediaPlayerConstraintLayout = rootView.findViewById(R.id.submissionMediaPlayerConstraintLayout);
+        submissionMediaPlayerSubmissionImage = rootView.findViewById(R.id.submissionMediaPlayerSubmissionImage);
+        submissionMediaPlayerCurrentTime = rootView.findViewById(R.id.submissionMediaPlayerCurrentTime);
+        submissionMediaPlayerRemainingTime = rootView.findViewById(R.id.submissionMediaPlayerRemainingTime);
+        submissionMediaPlayerSeekBar = rootView.findViewById(R.id.submissionMediaPlayerSeekBar);
+        submissionMediaPlayerRewind = rootView.findViewById(R.id.submissionMediaPlayerRewind);
+        submissionMediaPlayerPlayPause = rootView.findViewById(R.id.submissionMediaPlayerPlayPause);
+        submissionMediaPlayerRepeat = rootView.findViewById(R.id.submissionMediaPlayerRepeat);
+        submissionMediaPlayerFastForward = rootView.findViewById(R.id.submissionMediaPlayerFastForward);
 
         submissionFavorite = new FloatingActionButton(requireContext());
         submissionDownload = new FloatingActionButton(requireContext());
@@ -472,6 +527,65 @@ public class view extends appFragment {
                 submissionInfo.setVisibility(View.GONE);
             }
         });
+
+        submissionMediaPlayerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                submissionMediaPlayer.seekTo(seekBar.getProgress());
+            }
+        });
+
+        submissionMediaPlayerRewind.setOnClickListener(v -> {
+            int reverseTime = 5000;
+            int toTime = submissionMediaPlayer.getCurrentPosition() - reverseTime;
+
+            if(toTime >= 0) {
+                submissionMediaPlayer.seekTo(toTime);
+            } else {
+                submissionMediaPlayer.seekTo(0);
+            }
+        });
+
+        submissionMediaPlayerPlayPause.setOnClickListener(v -> {
+            if(submissionMediaPlayer.isPlaying()) {
+                submissionMediaPlayerPlayPause.setText("Play");
+                submissionMediaPlayer.pause();
+            } else{
+                submissionMediaPlayerPlayPause.setText("Pause");
+                submissionMediaPlayer.start();
+            }
+        });
+
+        submissionMediaPlayerRepeat.setOnClickListener(v -> {
+            if(submissionMediaPlayer.isLooping()) {
+                submissionMediaPlayerRepeat.setText("Once");
+                submissionMediaPlayer.setLooping(false);
+            } else {
+                submissionMediaPlayerRepeat.setText("Repeat");
+                submissionMediaPlayer.setLooping(true);
+            }
+        });
+
+        submissionMediaPlayerFastForward.setOnClickListener(v -> {
+            int forwardTime = 5000;
+            int maxTime = submissionMediaPlayer.getDuration();
+            int toTime = forwardTime + submissionMediaPlayer.getCurrentPosition();
+
+            if(toTime <= maxTime) {
+                submissionMediaPlayer.seekTo(toTime);
+            } else {
+                submissionMediaPlayer.seekTo(maxTime);
+            }
+        });
     }
 
     @Override
@@ -486,5 +600,10 @@ public class view extends appFragment {
         if (savedInstanceState != null && savedInstanceState.containsKey("viewPath")) {
             page = new open.furaffinity.client.pages.view(getActivity(), pageListener, savedInstanceState.getString("viewPath"));
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }
