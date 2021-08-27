@@ -519,12 +519,28 @@ public class view extends appFragment {
         });
 
         imageInfoSwitch.setOnClickListener(v -> {
-            if(submissionImage.getVisibility() != View.GONE) {
+            if(submissionInfo.getVisibility() == View.GONE){
                 submissionImage.setVisibility(View.GONE);
+                submissionPDF.setVisibility(View.GONE);
+                submissionMediaPlayerConstraintLayout.setVisibility(View.GONE);
                 submissionInfo.setVisibility(View.VISIBLE);
             } else {
-                submissionImage.setVisibility(View.VISIBLE);
                 submissionInfo.setVisibility(View.GONE);
+                switch(page.getSubmissionMimeType()){
+                    case "text/plain":
+                    case "text/rtf":
+                    case "application/pdf":
+                        submissionPDF.setVisibility(View.VISIBLE);
+                        break;
+                    case "audio/mpeg":
+                    case "audio/x-wav":
+                    case "audio/midi":
+                        submissionMediaPlayerConstraintLayout.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        submissionImage.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
         });
 
