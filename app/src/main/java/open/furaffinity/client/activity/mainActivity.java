@@ -1,5 +1,7 @@
 package open.furaffinity.client.activity;
 
+import android.app.Notification;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -7,8 +9,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -84,7 +89,7 @@ public class mainActivity extends AppCompatActivity {
 
     private backDBHelper dbHelper;
 
-    private MediaPlayer globalMediaPlayer = new MediaPlayer();
+    private MediaPlayer globalMediaPlayer;
 
     private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener(){
         @Override
