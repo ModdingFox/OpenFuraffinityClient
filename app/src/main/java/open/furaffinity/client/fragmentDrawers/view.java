@@ -7,38 +7,62 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.chrisbanes.photoview.OnSingleFlingListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.rtfparserkit.converter.text.StringTextConverter;
+import com.rtfparserkit.parser.RtfStreamSource;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.ServiceConnections.mediaPlayerServiceConnection;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.viewSectionsPagerAdapter;
-import open.furaffinity.client.listener.OnSwipeTouchListener;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
-import com.github.chrisbanes.photoview.PhotoView;
 
 import static open.furaffinity.client.utilities.sendPm.sendPM;
 
@@ -48,12 +72,38 @@ public class view extends appFragment {
 
     private TextView submissionTitle;
     private PhotoView submissionImage;
+    private PDFView submissionPDF;
     private ConstraintLayout submissionInfo;
     private LinearLayout submissionUserLinearLayout;
     private ImageView submissionUserIcon;
     private TextView submissionUser;
     private ViewPager viewPager;
     private TabLayout tabs;
+
+    private mediaPlayerServiceConnection mediaPlayerServiceConnection = new mediaPlayerServiceConnection();
+    private Handler submissionMediaPlayerHandler = new Handler();
+
+    private ConstraintLayout submissionMediaPlayerConstraintLayout;
+    private ImageView submissionMediaPlayerSubmissionImage;
+    private TextView submissionMediaPlayerCurrentTime;
+    private TextView submissionMediaPlayerRemainingTime;
+    private SeekBar submissionMediaPlayerSeekBar;
+    private Button submissionMediaPlayerRewind;
+    private Button submissionMediaPlayerPlayPause;
+    private Button submissionMediaPlayerRepeat;
+    private Button submissionMediaPlayerFastForward;
+
+    private Runnable UpdateSongTime = new Runnable() {
+        public void run() {
+            int currentTime = mediaPlayerServiceConnection.getBinder().getCurrentPosition();
+            int remainingTime = mediaPlayerServiceConnection.getBinder().getDuration() - currentTime;
+
+            submissionMediaPlayerCurrentTime.setText(String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long)currentTime), TimeUnit.MILLISECONDS.toSeconds((long)currentTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)currentTime))));
+            submissionMediaPlayerRemainingTime.setText(String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long)remainingTime), TimeUnit.MILLISECONDS.toSeconds((long)remainingTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)remainingTime))));
+            submissionMediaPlayerSeekBar.setProgress(currentTime);
+            submissionMediaPlayerHandler.postDelayed(this, 100);
+        }
+    };
 
     private fabCircular fab;
     private FloatingActionButton submissionFavorite;
@@ -69,7 +119,156 @@ public class view extends appFragment {
         @Override
         public void requestSucceeded(abstractPage abstractPage) {
             submissionTitle.setText(((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle());
-            Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+
+            switch(((open.furaffinity.client.pages.view) abstractPage).getSubmissionMimeType()){
+                case "text/plain":
+                    new AsyncTask<Void, Void, InputStream>() {
+                        @Override
+                        protected InputStream doInBackground(Void... voids) {
+                            try {
+                                InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                                Document document = new Document();
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                PdfWriter.getInstance(document, byteArrayOutputStream);
+                                document.open();
+
+                                Font font = new Font();
+                                font.setStyle(Font.NORMAL);
+                                font.setSize(11);
+
+                                String line;
+                                while ((line = bufferedReader.readLine()) != null) {
+                                    Paragraph paragraph = new Paragraph(line + "\n", font);
+                                    paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
+                                    document.add(paragraph);
+                                }
+
+                                document.close();
+
+                                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                            } catch (IOException | DocumentException e) {
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(InputStream inputStream) {
+                            if(inputStream != null){
+                                submissionPDF.fromStream(inputStream).fitEachPage(true).load();
+                                submissionImage.setVisibility(View.GONE);
+                                submissionPDF.setVisibility(View.VISIBLE);
+                            } else {
+                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }.execute();
+                    break;
+                case "text/rtf":
+                    new AsyncTask<Void, Void, InputStream>() {
+                        @Override
+                        protected InputStream doInBackground(Void... voids) {
+                            try {
+                                InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                                StringTextConverter stringTextConverter = new StringTextConverter();
+                                stringTextConverter.convert(new RtfStreamSource(inputStream));
+                                String extractedText = stringTextConverter.getText();
+
+                                InputStream extractedTextInputStream = new ByteArrayInputStream(extractedText.getBytes(StandardCharsets.UTF_8));
+                                InputStreamReader inputStreamReader = new InputStreamReader(extractedTextInputStream);
+                                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                                Document document = new Document();
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                PdfWriter.getInstance(document, byteArrayOutputStream);
+                                document.open();
+
+                                Font font = new Font();
+                                font.setStyle(Font.NORMAL);
+                                font.setSize(11);
+                                
+                                String line;
+                                while ((line = bufferedReader.readLine()) != null) {
+                                    Paragraph paragraph = new Paragraph(line + "\n", font);
+                                    paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
+                                    document.add(paragraph);
+                                }
+
+                                document.close();
+
+                                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                            } catch (IOException | DocumentException e) {
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(InputStream inputStream) {
+                            if(inputStream != null){
+                                submissionPDF.fromStream(inputStream).load();
+                                submissionImage.setVisibility(View.GONE);
+                                submissionPDF.setVisibility(View.VISIBLE);
+                            } else {
+                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }.execute();
+                    break;
+                case "application/msword":
+                case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                case "application/vnd.oasis.opendocument.text":
+                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                    break;
+                case "application/pdf":
+                    new AsyncTask<Void, Void, InputStream>() {
+                        @Override
+                        protected InputStream doInBackground(Void... voids) {
+                            try {
+                                return new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                            } catch (IOException e) {
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        protected void onPostExecute(InputStream inputStream) {
+                            if(inputStream != null){
+                                submissionPDF.fromStream(inputStream).fitEachPage(true).load();
+                                submissionImage.setVisibility(View.GONE);
+                                submissionPDF.setVisibility(View.VISIBLE);
+                            } else {
+                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }.execute();
+                    break;
+                case "audio/mpeg":
+                case "audio/x-wav":
+                case "audio/midi":
+                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionMediaPlayerSubmissionImage);
+
+                    mediaPlayerServiceConnection.getBinder().playURL(
+                        ((open.furaffinity.client.pages.view) abstractPage).getDownload(),
+                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionUser(),
+                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle()
+                    );
+
+                    submissionMediaPlayerSeekBar.setMax(mediaPlayerServiceConnection.getBinder().getDuration());
+                    submissionMediaPlayerHandler.postDelayed(UpdateSongTime, 100);
+
+                    submissionImage.setVisibility(View.GONE);
+                    submissionMediaPlayerConstraintLayout.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                    break;
+            }
+
             Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionUserIcon);
             submissionUser.setText(((open.furaffinity.client.pages.view) abstractPage).getSubmissionUser());
 
@@ -133,6 +332,7 @@ public class view extends appFragment {
 
         submissionTitle = rootView.findViewById(R.id.submissionTitle);
         submissionImage = rootView.findViewById(R.id.submissionImage);
+        submissionPDF = rootView.findViewById(R.id.submissionPDF);
         submissionInfo = rootView.findViewById(R.id.submissionInfo);
         submissionUserLinearLayout = rootView.findViewById(R.id.submissionUserLinearLayout);
         submissionUserIcon = rootView.findViewById(R.id.submissionUserIcon);
@@ -140,6 +340,16 @@ public class view extends appFragment {
         viewPager = rootView.findViewById(R.id.view_pager);
         tabs = rootView.findViewById(R.id.tabs);
         fab = rootView.findViewById(R.id.fab);
+
+        submissionMediaPlayerConstraintLayout = rootView.findViewById(R.id.submissionMediaPlayerConstraintLayout);
+        submissionMediaPlayerSubmissionImage = rootView.findViewById(R.id.submissionMediaPlayerSubmissionImage);
+        submissionMediaPlayerCurrentTime = rootView.findViewById(R.id.submissionMediaPlayerCurrentTime);
+        submissionMediaPlayerRemainingTime = rootView.findViewById(R.id.submissionMediaPlayerRemainingTime);
+        submissionMediaPlayerSeekBar = rootView.findViewById(R.id.submissionMediaPlayerSeekBar);
+        submissionMediaPlayerRewind = rootView.findViewById(R.id.submissionMediaPlayerRewind);
+        submissionMediaPlayerPlayPause = rootView.findViewById(R.id.submissionMediaPlayerPlayPause);
+        submissionMediaPlayerRepeat = rootView.findViewById(R.id.submissionMediaPlayerRepeat);
+        submissionMediaPlayerFastForward = rootView.findViewById(R.id.submissionMediaPlayerFastForward);
 
         submissionFavorite = new FloatingActionButton(requireContext());
         submissionDownload = new FloatingActionButton(requireContext());
@@ -280,6 +490,52 @@ public class view extends appFragment {
             }
         });
 
+        submissionMediaPlayerSubmissionImage.setOnTouchListener(new View.OnTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                    int SWIPE_THRESHOLD = 100;
+                    int SWIPE_VELOCITY_THRESHOLD = 100;
+                    boolean result = false;
+                    try {
+                        float diffY = e2.getY() - e1.getY();
+                        float diffX = e2.getX() - e1.getX();
+                        if (Math.abs(diffX) > Math.abs(diffY)) {
+                            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                                if (diffX > 0) {
+                                    onSwipeRight();
+                                } else {
+                                    onSwipeLeft();
+                                }
+                                result = true;
+                            }
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                    return result;
+                }
+
+                public void onSwipeRight() {
+                    if (page.getNext() != null) {
+                        ((mainActivity) requireActivity()).setViewPath(page.getNext());
+                    }
+                }
+
+                public void onSwipeLeft() {
+                    if (page.getPrev() != null) {
+                        ((mainActivity) requireActivity()).setViewPath(page.getPrev());
+                    }
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
+
         submissionDownload.setOnClickListener(v -> {
             open.furaffinity.client.utilities.downloadContent.downloadSubmission(requireActivity(), requireContext(), page);
         });
@@ -307,13 +563,73 @@ public class view extends appFragment {
         });
 
         imageInfoSwitch.setOnClickListener(v -> {
-            if(submissionImage.getVisibility() != View.GONE) {
+            if(submissionInfo.getVisibility() == View.GONE){
                 submissionImage.setVisibility(View.GONE);
+                submissionPDF.setVisibility(View.GONE);
+                submissionMediaPlayerConstraintLayout.setVisibility(View.GONE);
                 submissionInfo.setVisibility(View.VISIBLE);
             } else {
-                submissionImage.setVisibility(View.VISIBLE);
                 submissionInfo.setVisibility(View.GONE);
+                switch(page.getSubmissionMimeType()){
+                    case "text/plain":
+                    case "text/rtf":
+                    case "application/pdf":
+                        submissionPDF.setVisibility(View.VISIBLE);
+                        break;
+                    case "audio/mpeg":
+                    case "audio/x-wav":
+                    case "audio/midi":
+                        submissionMediaPlayerConstraintLayout.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        submissionImage.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
+        });
+
+        submissionMediaPlayerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayerServiceConnection.getBinder().seekTo(seekBar.getProgress());
+            }
+        });
+
+        submissionMediaPlayerRewind.setOnClickListener(v -> {
+            mediaPlayerServiceConnection.getBinder().rewind();
+        });
+
+        submissionMediaPlayerPlayPause.setOnClickListener(v -> {
+            mediaPlayerServiceConnection.getBinder().playPause();
+
+            if(mediaPlayerServiceConnection.getBinder().isPlaying()) {
+                submissionMediaPlayerPlayPause.setText("Pause");
+            } else{
+                submissionMediaPlayerPlayPause.setText("Play");
+            }
+        });
+
+        submissionMediaPlayerRepeat.setOnClickListener(v -> {
+            mediaPlayerServiceConnection.getBinder().repeat();
+
+            if(mediaPlayerServiceConnection.getBinder().isLooping()) {
+                submissionMediaPlayerRepeat.setText("Repeat");
+            } else {
+                submissionMediaPlayerRepeat.setText("Once");
+            }
+        });
+
+        submissionMediaPlayerFastForward.setOnClickListener(v -> {
+            mediaPlayerServiceConnection.getBinder().fastForward();
         });
     }
 
@@ -326,8 +642,17 @@ public class view extends appFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(getContext(), open.furaffinity.client.services.mediaPlayer.class);
+        getActivity().bindService(intent, mediaPlayerServiceConnection, Context.BIND_AUTO_CREATE);
+
         if (savedInstanceState != null && savedInstanceState.containsKey("viewPath")) {
             page = new open.furaffinity.client.pages.view(getActivity(), pageListener, savedInstanceState.getString("viewPath"));
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }

@@ -39,7 +39,7 @@ import open.furaffinity.client.utilities.uiControls;
 
 public class uploadDialog extends DialogFragment {
     private static final List<String> imageMimeTypes = Arrays.asList(new String [] { "image/jpeg", "image/png", "image/gif" });
-    private static final List<String> textMimeTypes = Arrays.asList(new String [] { "text/plain", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.oasis.opendocument.text", "application/rtf", "application/pdf" });
+    private static final List<String> textMimeTypes = Arrays.asList(new String [] { "text/plain", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.oasis.opendocument.text", "text/rtf", "application/pdf" });
     private static final List<String> audioMimeTypes = Arrays.asList(new String [] { "audio/mpeg", "audio/x-wav", "audio/midi" });
     private static final List<String> allMimeTypes = Stream.concat(Stream.concat(imageMimeTypes.stream(), textMimeTypes.stream()), audioMimeTypes.stream()).collect(Collectors.toList());
 
