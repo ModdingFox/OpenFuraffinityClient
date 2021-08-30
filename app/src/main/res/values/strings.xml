@@ -285,4 +285,6 @@
     <string name="notificationFTextView">F:</string>
     <string name="notificationJTextView">J:</string>
     <string name="notificationNTextView">N:</string>
+
+    <string name="musicPlayerService">musicPlayerService</string>
 </resources>

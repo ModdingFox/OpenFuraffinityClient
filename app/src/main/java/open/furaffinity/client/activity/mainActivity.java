@@ -89,8 +89,6 @@ public class mainActivity extends AppCompatActivity {
 
     private backDBHelper dbHelper;
 
-    private MediaPlayer globalMediaPlayer;
-
     private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener(){
         @Override
         public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -445,15 +443,6 @@ public class mainActivity extends AppCompatActivity {
         updateUIElements();
         navigationView.setCheckedItem(R.id.nav_view);
         navigationView.getMenu().performIdentifierAction(R.id.nav_view, 0);
-    }
-
-    public void setGlobalMediaPlayer(MediaPlayer mediaPlayerIn){
-        globalMediaPlayer.stop();
-        globalMediaPlayer = mediaPlayerIn;
-    }
-
-    public MediaPlayer getGlobalMediaPlayer(){
-        return globalMediaPlayer;
     }
 
     public void drawerFragmentPush(String fragmentClass, String fragmentData) {

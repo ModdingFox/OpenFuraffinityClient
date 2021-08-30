@@ -261,8 +261,11 @@ public class view extends appFragment {
                 case "audio/midi":
                     Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionMediaPlayerSubmissionImage);
 
+                    if(submissionMediaPlayer != null){
+                        submissionMediaPlayer.stop();
+                    }
+                    submissionMediaPlayer = new MediaPlayer();
                     submissionMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(((open.furaffinity.client.pages.view) abstractPage).getDownload()));
-                    ((mainActivity)getActivity()).setGlobalMediaPlayer(submissionMediaPlayer);
 
                     submissionMediaPlayerSeekBar.setMax(submissionMediaPlayer.getDuration());
                     submissionMediaPlayerHandler.postDelayed(UpdateSongTime, 100);
@@ -347,7 +350,6 @@ public class view extends appFragment {
         tabs = rootView.findViewById(R.id.tabs);
         fab = rootView.findViewById(R.id.fab);
 
-        submissionMediaPlayer = ((mainActivity)getActivity()).getGlobalMediaPlayer();
         submissionMediaPlayerConstraintLayout = rootView.findViewById(R.id.submissionMediaPlayerConstraintLayout);
         submissionMediaPlayerSubmissionImage = rootView.findViewById(R.id.submissionMediaPlayerSubmissionImage);
         submissionMediaPlayerCurrentTime = rootView.findViewById(R.id.submissionMediaPlayerCurrentTime);
