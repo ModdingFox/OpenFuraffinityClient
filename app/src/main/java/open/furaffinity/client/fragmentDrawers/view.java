@@ -12,15 +12,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.media.session.PlaybackStateCompat;
-import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +37,6 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.rtfparserkit.converter.text.StringTextConverter;
@@ -52,14 +48,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
+import open.furaffinity.client.ServiceConnections.mediaPlayerServiceConnection;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
@@ -85,7 +80,7 @@ public class view extends appFragment {
     private ViewPager viewPager;
     private TabLayout tabs;
 
-    private MediaPlayer submissionMediaPlayer;
+    private mediaPlayerServiceConnection mediaPlayerServiceConnection = new mediaPlayerServiceConnection();
     private Handler submissionMediaPlayerHandler = new Handler();
 
     private ConstraintLayout submissionMediaPlayerConstraintLayout;
@@ -100,12 +95,8 @@ public class view extends appFragment {
 
     private Runnable UpdateSongTime = new Runnable() {
         public void run() {
-            int currentTime = submissionMediaPlayer.getCurrentPosition();
-            int remainingTime = submissionMediaPlayer.getDuration() - currentTime;
-
-            if(!submissionMediaPlayer.isPlaying() && !submissionMediaPlayerPlayPause.getText().equals("Play")){
-                submissionMediaPlayerPlayPause.setText("Play");
-            }
+            int currentTime = mediaPlayerServiceConnection.getBinder().getCurrentPosition();
+            int remainingTime = mediaPlayerServiceConnection.getBinder().getDuration() - currentTime;
 
             submissionMediaPlayerCurrentTime.setText(String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long)currentTime), TimeUnit.MILLISECONDS.toSeconds((long)currentTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)currentTime))));
             submissionMediaPlayerRemainingTime.setText(String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long)remainingTime), TimeUnit.MILLISECONDS.toSeconds((long)remainingTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)remainingTime))));
@@ -261,13 +252,13 @@ public class view extends appFragment {
                 case "audio/midi":
                     Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionMediaPlayerSubmissionImage);
 
-                    if(submissionMediaPlayer != null){
-                        submissionMediaPlayer.stop();
-                    }
-                    submissionMediaPlayer = new MediaPlayer();
-                    submissionMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(((open.furaffinity.client.pages.view) abstractPage).getDownload()));
+                    mediaPlayerServiceConnection.getBinder().playURL(
+                        ((open.furaffinity.client.pages.view) abstractPage).getDownload(),
+                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionUser(),
+                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle()
+                    );
 
-                    submissionMediaPlayerSeekBar.setMax(submissionMediaPlayer.getDuration());
+                    submissionMediaPlayerSeekBar.setMax(mediaPlayerServiceConnection.getBinder().getDuration());
                     submissionMediaPlayerHandler.postDelayed(UpdateSongTime, 100);
 
                     submissionImage.setVisibility(View.GONE);
@@ -609,51 +600,36 @@ public class view extends appFragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                submissionMediaPlayer.seekTo(seekBar.getProgress());
+                mediaPlayerServiceConnection.getBinder().seekTo(seekBar.getProgress());
             }
         });
 
         submissionMediaPlayerRewind.setOnClickListener(v -> {
-            int reverseTime = 5000;
-            int toTime = submissionMediaPlayer.getCurrentPosition() - reverseTime;
-
-            if(toTime >= 0) {
-                submissionMediaPlayer.seekTo(toTime);
-            } else {
-                submissionMediaPlayer.seekTo(0);
-            }
+            mediaPlayerServiceConnection.getBinder().rewind();
         });
 
         submissionMediaPlayerPlayPause.setOnClickListener(v -> {
-            if(submissionMediaPlayer.isPlaying()) {
-                submissionMediaPlayerPlayPause.setText("Play");
-                submissionMediaPlayer.pause();
-            } else{
+            mediaPlayerServiceConnection.getBinder().playPause();
+
+            if(mediaPlayerServiceConnection.getBinder().isPlaying()) {
                 submissionMediaPlayerPlayPause.setText("Pause");
-                submissionMediaPlayer.start();
+            } else{
+                submissionMediaPlayerPlayPause.setText("Play");
             }
         });
 
         submissionMediaPlayerRepeat.setOnClickListener(v -> {
-            if(submissionMediaPlayer.isLooping()) {
-                submissionMediaPlayerRepeat.setText("Once");
-                submissionMediaPlayer.setLooping(false);
-            } else {
+            mediaPlayerServiceConnection.getBinder().repeat();
+
+            if(mediaPlayerServiceConnection.getBinder().isLooping()) {
                 submissionMediaPlayerRepeat.setText("Repeat");
-                submissionMediaPlayer.setLooping(true);
+            } else {
+                submissionMediaPlayerRepeat.setText("Once");
             }
         });
 
         submissionMediaPlayerFastForward.setOnClickListener(v -> {
-            int forwardTime = 5000;
-            int maxTime = submissionMediaPlayer.getDuration();
-            int toTime = forwardTime + submissionMediaPlayer.getCurrentPosition();
-
-            if(toTime <= maxTime) {
-                submissionMediaPlayer.seekTo(toTime);
-            } else {
-                submissionMediaPlayer.seekTo(maxTime);
-            }
+            mediaPlayerServiceConnection.getBinder().fastForward();
         });
     }
 
@@ -666,6 +642,10 @@ public class view extends appFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(getContext(), open.furaffinity.client.services.mediaPlayer.class);
+        getActivity().bindService(intent, mediaPlayerServiceConnection, Context.BIND_AUTO_CREATE);
+
         if (savedInstanceState != null && savedInstanceState.containsKey("viewPath")) {
             page = new open.furaffinity.client.pages.view(getActivity(), pageListener, savedInstanceState.getString("viewPath"));
         }

@@ -552,6 +552,7 @@ public class mainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        startService(new Intent( this, open.furaffinity.client.services.mediaPlayer.class ));
         dbHelper = new backDBHelper(this);
 
         setContentView(R.layout.activity_main);
