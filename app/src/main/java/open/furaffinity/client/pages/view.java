@@ -7,7 +7,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
@@ -39,6 +42,7 @@ public class view extends abstractPage {
     private String submissionGender;
     private String submissionSize;
     private String submissionComments;
+    private String submissionMimeType;
 
     public view(Context context, pageListener pageListener, String pagePath) {
         super(context, pageListener);
@@ -76,6 +80,7 @@ public class view extends abstractPage {
                         break;
                     case "Download":
                         download = "https:" + currentElement.attr("href");
+                        submissionMimeType = URLConnection.guessContentTypeFromName(download);
                         break;
                     case "Note":
                         note = currentElement.attr("href").replace(msgPms.getNotePathPrefix(), "");
@@ -348,5 +353,9 @@ public class view extends abstractPage {
 
     public List<String> getFolderList() {
         return folderList;
+    }
+
+    public String getSubmissionMimeType(){
+        return submissionMimeType;
     }
 }
