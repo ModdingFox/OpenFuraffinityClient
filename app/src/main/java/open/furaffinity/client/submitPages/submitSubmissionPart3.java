@@ -26,7 +26,10 @@ public class submitSubmissionPart3 extends abstractPage {
     private final Boolean disableComments;
     private final Boolean putInScraps;
 
-    public submitSubmissionPart3(Context context, abstractPage.pageListener pageListener, String key, String cat, String aType, String species, String gender, String rating, String title, String message, String keywords, Boolean disableComments, Boolean putInScraps) {
+    private final List<String> folderIds;
+    private final String newFolderName;
+
+    public submitSubmissionPart3(Context context, abstractPage.pageListener pageListener, String key, String cat, String aType, String species, String gender, String rating, String title, String message, String keywords, Boolean disableComments, Boolean putInScraps, List<String> folderIds, String newFolderName) {
         super(context, pageListener);
         this.key = key;
         this.cat = cat;
@@ -39,6 +42,8 @@ public class submitSubmissionPart3 extends abstractPage {
         this.keywords = keywords;
         this.disableComments = disableComments;
         this.putInScraps = putInScraps;
+        this.folderIds = folderIds;
+        this.newFolderName = newFolderName;
     }
 
     @Override
@@ -62,6 +67,14 @@ public class submitSubmissionPart3 extends abstractPage {
         params.put("title", title);
         params.put("message", message);
         params.put("keywords", keywords);
+
+        for(int i = 0; i < folderIds.size(); i++){
+            params.put("folder_ids[" + Integer.toString(i) + "]", folderIds.get(i));
+        }
+
+        if(newFolderName != null && !newFolderName.isEmpty()) {
+            params.put("create_folder_name", newFolderName);
+        }
 
         if (disableComments) {
             params.put("lock_comments", "1");
