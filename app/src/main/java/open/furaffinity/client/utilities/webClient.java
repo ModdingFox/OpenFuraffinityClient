@@ -320,7 +320,7 @@ public class webClient {
                     try {
                         Cursor sourceFileCursor = context.getContentResolver().query(uri, null, null, null);
 
-                        if(sourceFileCursor.moveToFirst()) {
+                        if(sourceFileCursor != null && sourceFileCursor.moveToFirst()) {
                             int displayNameColumnIndex = sourceFileCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                             String fileName = sourceFileCursor.getString(displayNameColumnIndex);
                             InputStream inputStream = context.getContentResolver().openInputStream(uri);

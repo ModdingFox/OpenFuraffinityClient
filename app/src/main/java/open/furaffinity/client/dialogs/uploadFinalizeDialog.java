@@ -18,9 +18,11 @@ import androidx.fragment.app.DialogFragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.pages.controlsFoldersSubmissions;
 import open.furaffinity.client.submitPages.submitSubmissionPart2;
 import open.furaffinity.client.submitPages.submitSubmissionPart3;
 import open.furaffinity.client.utilities.kvPair;
@@ -38,6 +40,8 @@ public class uploadFinalizeDialog extends DialogFragment {
     private EditText keywords;
     private Switch disableComments;
     private Switch putInScraps;
+    private Spinner assignToFolders;
+    private EditText assignToANewFolder;
 
     public uploadFinalizeDialog(submitSubmissionPart2 page) {
         super();
@@ -55,10 +59,30 @@ public class uploadFinalizeDialog extends DialogFragment {
         keywords = rootView.findViewById(R.id.keywords);
         disableComments = rootView.findViewById(R.id.disableComments);
         putInScraps = rootView.findViewById(R.id.putInScraps);
-
+        assignToFolders = rootView.findViewById(R.id.assignToFolders);
+        assignToANewFolder = rootView.findViewById(R.id.assignToANewFolder);
     }
 
     private void initClientAndPage() {
+        new controlsFoldersSubmissions(requireContext(), new abstractPage.pageListener() {
+            @Override
+            public void requestSucceeded(abstractPage abstractPage) {
+                HashMap<String, String> folderList = new HashMap<>();
+
+                folderList.put("-1", "No Folder Selected");
+
+                for(HashMap<String, String> currentFolder : ((controlsFoldersSubmissions)abstractPage).getFolders()){
+                    folderList.put(currentFolder.get("upfolder_id"), currentFolder.get("name"));
+                }
+
+                open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(requireContext(), assignToFolders, folderList, "No Folder Selected", true, false);
+            }
+
+            @Override
+            public void requestFailed(abstractPage abstractPage) {
+                Toast.makeText(requireContext(), "Failed to get existing folder list", Toast.LENGTH_SHORT).show();
+            }
+        }).execute();
     }
 
     private void updateUIElements() {
