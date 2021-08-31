@@ -28,6 +28,10 @@ public class checkboxListAdapter extends RecyclerView.Adapter<checkboxListAdapte
         }
     }
 
+    public checkboxListAdapter(List<HashMap<String, String>> mDataSetIn) {
+        mDataSet = mDataSetIn;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

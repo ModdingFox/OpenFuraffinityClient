@@ -6,6 +6,7 @@ import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class uiControls {
     private static int compareStrings(String string1, String string2) {
@@ -64,5 +65,13 @@ public class uiControls {
                 inputSpinner.setSelection(spinnerAdapter.getPosition(selectedItem));
             }
         }
+    }
+
+    public static void setSpinnerText(Context context, Spinner inputSpinner, String inputData){
+        List<String> spinnerData = new ArrayList<>();
+        spinnerData.add(inputData);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, spinnerData);
+        inputSpinner.setAdapter(spinnerAdapter);
+        inputSpinner.setSelection(0);
     }
 }

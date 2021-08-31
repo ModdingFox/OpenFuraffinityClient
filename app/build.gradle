@@ -8,8 +8,8 @@ android {
         applicationId "open.furaffinity.client"
         minSdkVersion 26
         targetSdkVersion 29
-        versionCode 34
-        versionName "2021.08.29"
+        versionCode 35
+        versionName "2021.08.31"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
