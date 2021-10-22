@@ -40,6 +40,13 @@ These sections are responsible for grabbing data from the various web pages and 
 
 ## ToDo
 ### Design
-
 - This app is pretty rough at the moment. Most things work the way they should though there are a few bugs here and there.Much of the UI design is also pretty basic and will hopefully be made to look much prettier in later releases.
+### Refactor
+- enable Retrofit for network
+- enable Room for databases
+- enable ViewBinding for control view
+- rename **ALL** classes like "browse" to "BrowsePage"
+  or "login" to "LoginFragment"
 
+    - first char to upper
+    - add suffix type
