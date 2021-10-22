@@ -1,0 +1,9 @@
+# Refactor project
+- enable Retrofit for network
+- enable Room for databases
+- enable ViewBinding for control view
+- rename **ALL** classes like "browse" to "BrowsePage"
+    or "login" to "LoginFragment"
+
+    - first char to upper
+    - add suffix type
