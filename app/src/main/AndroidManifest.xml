@@ -22,7 +22,8 @@
         <activity
             android:name=".activity.mainActivity"
             android:label="@string/title_activity_navigation_drawer"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -127,7 +128,8 @@
         </activity>
         <receiver
             android:name=".broadcastReceivers.onBoot"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
                 <action android:name="android.intent.action.ACTION_BOOT_COMPLETED"></action>
