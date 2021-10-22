@@ -13,11 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentDrawers.user;
 import open.furaffinity.client.utilities.messageIds;
 
-public class watchList extends abstractPage {
+public class watchList extends BasePage {
     private static final String TAG = watchList.class.getName();
 
     String pagePath;

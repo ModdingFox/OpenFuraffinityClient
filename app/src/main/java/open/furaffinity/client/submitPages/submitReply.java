@@ -4,13 +4,13 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitReply extends open.furaffinity.client.abstractClasses.abstractPage {
+public class submitReply extends BasePage {
     private final String pagePath;
     private final String message;
 
-    public submitReply(Context context, abstractPage.pageListener pageListener, String pagePath, String message) {
+    public submitReply(Context context, BasePage.pageListener pageListener, String pagePath, String message) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.message = message;

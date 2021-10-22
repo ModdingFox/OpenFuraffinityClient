@@ -18,7 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.activity.mainActivity;
 
 public class loginDialog extends DialogFragment {
@@ -30,15 +30,15 @@ public class loginDialog extends DialogFragment {
     private SharedPreferences sharedPref;
     private CookieManager cookieManager;
 
-    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final BasePage.pageListener pageListener = new BasePage.pageListener() {
         @Override
-        public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
-            cookieManager.setCookie(((open.furaffinity.client.submitPages.submitLogin) abstractPage).getA().domain(), ((open.furaffinity.client.submitPages.submitLogin) abstractPage).getA().toString());
-            cookieManager.setCookie(((open.furaffinity.client.submitPages.submitLogin) abstractPage).getB().domain(), ((open.furaffinity.client.submitPages.submitLogin) abstractPage).getB().toString());
+        public void requestSucceeded(BasePage BasePage) {
+            cookieManager.setCookie(((open.furaffinity.client.submitPages.submitLogin) BasePage).getA().domain(), ((open.furaffinity.client.submitPages.submitLogin) BasePage).getA().toString());
+            cookieManager.setCookie(((open.furaffinity.client.submitPages.submitLogin) BasePage).getB().domain(), ((open.furaffinity.client.submitPages.submitLogin) BasePage).getB().toString());
 
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(activity.getString(R.string.webClientCookieA), ((open.furaffinity.client.submitPages.submitLogin) abstractPage).getA().value());
-            editor.putString(activity.getString(R.string.webClientCookieB), ((open.furaffinity.client.submitPages.submitLogin) abstractPage).getB().value());
+            editor.putString(activity.getString(R.string.webClientCookieA), ((open.furaffinity.client.submitPages.submitLogin) BasePage).getA().value());
+            editor.putString(activity.getString(R.string.webClientCookieB), ((open.furaffinity.client.submitPages.submitLogin) BasePage).getB().value());
             editor.apply();
             editor.commit();
 
@@ -47,7 +47,7 @@ public class loginDialog extends DialogFragment {
         }
 
         @Override
-        public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+        public void requestFailed(BasePage BasePage) {
             Toast.makeText(activity, "Failed to login user", Toast.LENGTH_SHORT).show();
             ((mainActivity) activity).updateUILoginState();
         }
@@ -91,10 +91,10 @@ public class loginDialog extends DialogFragment {
         }
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> new open.furaffinity.client.pages.login(activity, new abstractPage.pageListener() {
+        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> new open.furaffinity.client.pages.login(activity, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                if (((open.furaffinity.client.pages.login) abstractPage).isRecaptchaRequired()) {
+            public void requestSucceeded(BasePage BasePage) {
+                if (((open.furaffinity.client.pages.login) BasePage).isRecaptchaRequired()) {
                     recaptchaV2Dialog recaptchaV2Dialog = new recaptchaV2Dialog();
                     recaptchaV2Dialog.setPagePath(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pages.login.getPagePath());
 
@@ -106,7 +106,7 @@ public class loginDialog extends DialogFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(activity, "Failed to determine if reCaptcha is needed", Toast.LENGTH_SHORT).show();
             }
         }).execute());

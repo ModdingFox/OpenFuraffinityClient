@@ -4,9 +4,9 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitControlsFoldersSubmissionsAddEditFolder extends abstractPage {
+public class submitControlsFoldersSubmissionsAddEditFolder extends BasePage {
 
     private final String pagePath;
     private final String key;
@@ -16,7 +16,7 @@ public class submitControlsFoldersSubmissionsAddEditFolder extends abstractPage 
     private final String folder_name;
     private final String folder_description;
 
-    public submitControlsFoldersSubmissionsAddEditFolder(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String folder_id, String group_id, String create_group_name, String folder_name, String folder_description) {
+    public submitControlsFoldersSubmissionsAddEditFolder(Context context, BasePage.pageListener pageListener, String pagePath, String key, String folder_id, String group_id, String create_group_name, String folder_name, String folder_description) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;

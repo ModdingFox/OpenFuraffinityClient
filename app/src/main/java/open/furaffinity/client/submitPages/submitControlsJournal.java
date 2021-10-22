@@ -4,9 +4,9 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitControlsJournal extends abstractPage {
+public class submitControlsJournal extends BasePage {
 
     private final String pagePath;
     private final String key;
@@ -16,7 +16,7 @@ public class submitControlsJournal extends abstractPage {
     private final boolean lockComments;
     private final boolean makeFeatured;
 
-    public submitControlsJournal(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String id, String subject, String body, boolean lockComments, boolean makeFeatured) {
+    public submitControlsJournal(Context context, BasePage.pageListener pageListener, String pagePath, String key, String id, String subject, String body, boolean lockComments, boolean makeFeatured) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;

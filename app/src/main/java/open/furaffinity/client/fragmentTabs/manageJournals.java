@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.controlsJournalListAdapter;
 import open.furaffinity.client.dialogs.journalDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
@@ -22,7 +22,7 @@ import open.furaffinity.client.pages.controlsJournal;
 import open.furaffinity.client.submitPages.submitControlsJournal;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageJournals extends appFragment {
+public class manageJournals extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -33,10 +33,10 @@ public class manageJournals extends appFragment {
     private controlsJournal page;
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final BasePage.pageListener pageListener = new BasePage.pageListener() {
         @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((controlsJournal) abstractPage).getPageResults();
+        public void requestSucceeded(BasePage BasePage) {
+            List<HashMap<String, String>> pageResults = ((controlsJournal) BasePage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -58,7 +58,7 @@ public class manageJournals extends appFragment {
         }
 
         @Override
-        public void requestFailed(abstractPage abstractPage) {
+        public void requestFailed(BasePage BasePage) {
             loadingStopCounter--;
             fab.setVisibility(View.GONE);
             isLoading = false;
@@ -129,21 +129,21 @@ public class manageJournals extends appFragment {
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
         ((controlsJournalListAdapter) mAdapter).setListener(editPath -> {
-            controlsJournal existingJournal = new controlsJournal(getActivity(), new abstractPage.pageListener() {
+            controlsJournal existingJournal = new controlsJournal(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage abstractPage) {
                     journalDialog journalDialog = new journalDialog();
                     journalDialog.setSubject(((controlsJournal) abstractPage).getSubject());
                     journalDialog.setBody(((controlsJournal) abstractPage).getBody());
-                    journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new submitControlsJournal(getActivity(), new abstractPage.pageListener() {
+                    journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new submitControlsJournal(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage abstractPage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully updated journal item", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+                        public void requestFailed(BasePage abstractPage) {
                             Toast.makeText(getActivity(), "Failed to update journal item", Toast.LENGTH_SHORT).show();
                         }
                     }, ((controlsJournal) abstractPage).getPagePath(), ((controlsJournal) abstractPage).getKey(), ((controlsJournal) abstractPage).getId(), subject, body, lockComments, makeFeatured).execute());
@@ -151,7 +151,7 @@ public class manageJournals extends appFragment {
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage abstractPage) {
                     Toast.makeText(getActivity(), "Failed to load data for existing journal", Toast.LENGTH_SHORT).show();
                 }
             }, editPath);
@@ -161,15 +161,15 @@ public class manageJournals extends appFragment {
 
         fab.setOnClickListener(v -> {
             journalDialog journalDialog = new journalDialog();
-            journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new submitControlsJournal(getActivity(), new abstractPage.pageListener() {
+            journalDialog.setListener((subject, body, lockComments, makeFeatured) -> new submitControlsJournal(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     resetRecycler();
                     Toast.makeText(getActivity(), "Successfully created journal item", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed to created journal item", Toast.LENGTH_SHORT).show();
                 }
             }, page.getPagePath(), page.getKey(), "", subject, body, lockComments, makeFeatured).execute());

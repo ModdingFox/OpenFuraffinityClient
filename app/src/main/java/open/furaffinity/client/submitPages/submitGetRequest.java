@@ -2,12 +2,12 @@ package open.furaffinity.client.submitPages;
 
 import android.content.Context;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitGetRequest extends open.furaffinity.client.abstractClasses.abstractPage {
+public class submitGetRequest extends BasePage {
     private final String url;
 
-    public submitGetRequest(Context context, abstractPage.pageListener pageListener, String url) {
+    public submitGetRequest(Context context, BasePage.pageListener pageListener, String url) {
         super(context, pageListener);
         this.url = url;
     }

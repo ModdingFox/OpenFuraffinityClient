@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
@@ -29,7 +29,7 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.messageIds;
 import open.furaffinity.client.utilities.uiControls;
 
-public class userGallery extends appFragment {
+public class userGallery extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -45,10 +45,10 @@ public class userGallery extends appFragment {
     private String pagePath = null;
     private HashMap<String, String> folderList = new HashMap<>();
 
-    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final BasePage.pageListener pageListener = new BasePage.pageListener() {
         @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((gallery) abstractPage).getPageResults();
+        public void requestSucceeded(BasePage BasePage) {
+            List<HashMap<String, String>> pageResults = ((gallery) BasePage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -65,11 +65,11 @@ public class userGallery extends appFragment {
             mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
             if (!isInitialized) {
-                folderList = ((gallery) abstractPage).getFolderResults();
+                folderList = ((gallery) BasePage).getFolderResults();
 
                 if (folderList.size() > 0) {
                     folderSpinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, ((gallery) abstractPage).getPagePath(), true, false);
+                    uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, ((gallery) BasePage).getPagePath(), true, false);
 
                     controls.removeView(folderSpinner);
                     controls.addView(folderSpinner);
@@ -83,7 +83,7 @@ public class userGallery extends appFragment {
         }
 
         @Override
-        public void requestFailed(abstractPage abstractPage) {
+        public void requestFailed(BasePage BasePage) {
             loadingStopCounter--;
             isLoading = false;
             swipeRefreshLayout.setRefreshing(false);

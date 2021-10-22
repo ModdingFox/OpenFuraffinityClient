@@ -11,9 +11,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class view extends abstractPage {
+public class view extends BasePage {
     private final String pagePath;
     private final List<String> submissionTags = new ArrayList<>();
     private final List<String> folderList = new ArrayList<>();

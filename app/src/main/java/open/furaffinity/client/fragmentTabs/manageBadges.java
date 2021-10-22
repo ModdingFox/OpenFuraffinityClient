@@ -3,9 +3,9 @@ package open.furaffinity.client.fragmentTabs;
 import android.view.View;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 
-public class manageBadges extends appFragment {
+public class manageBadges extends BaseFragment {
 
     @Override
     protected int getLayout() {

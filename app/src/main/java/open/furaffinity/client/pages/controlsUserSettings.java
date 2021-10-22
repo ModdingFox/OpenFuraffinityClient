@@ -9,9 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class controlsUserSettings extends abstractPage {
+public class controlsUserSettings extends BasePage {
     private static final String pagePath = "/controls/user-settings/";
 
     private boolean accept_trades;

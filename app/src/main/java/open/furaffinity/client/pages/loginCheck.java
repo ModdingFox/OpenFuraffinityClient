@@ -7,9 +7,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class loginCheck extends abstractPage {
+public class loginCheck extends BasePage {
     private boolean isLoggedIn = false;
     private boolean isNSFWAllowed = false;
     private String userIcon = "";

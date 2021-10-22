@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.listener.OnSwipeTouchListener;
@@ -49,14 +49,14 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
         this.activity = activity;
         this.context = context;
 
-        this.loginCheck = new open.furaffinity.client.pages.loginCheck(context, new abstractPage.pageListener() {
+        this.loginCheck = new open.furaffinity.client.pages.loginCheck(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
 
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(activity, "Failed to detect login", Toast.LENGTH_SHORT).show();
             }
         });
@@ -146,9 +146,9 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
 
             popupMenu.setOnDismissListener(menu -> holder.menuButton.setEnabled(true));
 
-            open.furaffinity.client.pages.view viewPage = new open.furaffinity.client.pages.view(context, new abstractPage.pageListener() {
+            open.furaffinity.client.pages.view viewPage = new open.furaffinity.client.pages.view(context, new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage abstractPage) {
                     popupMenu.getMenu().findItem(R.id.menu_download).setVisible(true);
 
                     if (loginCheck.getIsLoggedIn()) {
@@ -165,14 +165,14 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage abstractPage) {
                     Toast.makeText(context, "Failed to get submission page for menu", Toast.LENGTH_SHORT).show();
                 }
             }, mDataSet.get(position).get("postPath"));
 
-            open.furaffinity.client.pages.user userPage = new user(context, new abstractPage.pageListener() {
+            open.furaffinity.client.pages.user userPage = new user(context, new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage abstractPage) {
                     MenuItem watchMenuItem = popupMenu.getMenu().findItem(R.id.menu_watchUnWatch);
                     if (((open.furaffinity.client.pages.user) abstractPage).getIsWatching()) {
                         watchMenuItem.setTitle("UnWatch");
@@ -185,7 +185,7 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage abstractPage) {
                     Toast.makeText(context, "Failed to get user page for menu", Toast.LENGTH_SHORT).show();
                 }
             }, mDataSet.get(position).get("postUserPath"));
@@ -223,27 +223,27 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
                         context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
                         return true;
                     case R.id.menu_favUnfav:
-                        new open.furaffinity.client.submitPages.submitGetRequest(context, new abstractPage.pageListener() {
+                        new open.furaffinity.client.submitPages.submitGetRequest(context, new BasePage.pageListener() {
                             @Override
-                            public void requestSucceeded(abstractPage abstractPage) {
+                            public void requestSucceeded(BasePage BasePage) {
                                 Toast.makeText(activity, "Successfully updated favorites", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
-                            public void requestFailed(abstractPage abstractPage) {
+                            public void requestFailed(BasePage BasePage) {
                                 Toast.makeText(activity, "Failed to update favorites", Toast.LENGTH_SHORT).show();
                             }
                         }, viewPage.getFavUnFav()).execute();
                         return true;
                     case R.id.menu_watchUnWatch:
-                        new open.furaffinity.client.submitPages.submitGetRequest(context, new abstractPage.pageListener() {
+                        new open.furaffinity.client.submitPages.submitGetRequest(context, new BasePage.pageListener() {
                             @Override
-                            public void requestSucceeded(abstractPage abstractPage) {
+                            public void requestSucceeded(BasePage BasePage) {
                                 Toast.makeText(activity, "Successfully updated watches", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
-                            public void requestFailed(abstractPage abstractPage) {
+                            public void requestFailed(BasePage BasePage) {
                                 Toast.makeText(activity, "Failed to update watches", Toast.LENGTH_SHORT).show();
                             }
                         }, userPage.getWatchUnWatch()).execute();

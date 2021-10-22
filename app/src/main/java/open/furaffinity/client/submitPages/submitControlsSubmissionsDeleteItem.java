@@ -8,15 +8,15 @@ import org.jsoup.nodes.Element;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentTabs.manageSubmissions;
 
-public class submitControlsSubmissionsDeleteItem extends abstractPage {
+public class submitControlsSubmissionsDeleteItem extends BasePage {
 
     private final HashMap<String, String> params;
     private final String password;
 
-    public submitControlsSubmissionsDeleteItem(Context context, abstractPage.pageListener pageListener, HashMap<String, String> params, String password) {
+    public submitControlsSubmissionsDeleteItem(Context context, BasePage.pageListener pageListener, HashMap<String, String> params, String password) {
         super(context, pageListener);
         this.params = params;
         this.password = password;

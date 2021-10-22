@@ -28,17 +28,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
+import open.furaffinity.client.pages.BrowsePage;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.browseContract;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class browse extends appFragment {
+public class browse extends BaseFragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private TableLayout settingsTableLayout;
@@ -61,7 +62,7 @@ public class browse extends appFragment {
     private FloatingActionButton fab;
 
     private open.furaffinity.client.pages.loginCheck loginCheck;
-    private open.furaffinity.client.pages.browse page;
+    private BrowsePage page;
 
     private boolean isInitialized = false;
     private boolean isCacheInitialized = false;
@@ -107,7 +108,7 @@ public class browse extends appFragment {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
-            page = new open.furaffinity.client.pages.browse(page);
+            page = new BrowsePage(page);
             page.execute();
         }
     }
@@ -157,7 +158,7 @@ public class browse extends appFragment {
             staggeredGridLayoutManager.scrollToPosition(recyclerViewPosition);
         }
 
-        loginCheck = new loginCheck(requireActivity(), new abstractPage.pageListener() {
+        loginCheck = new loginCheck(requireActivity(), new BasePage.pageListener() {
             private void updateUIElements() {
                 if (loginCheck.getIsLoggedIn() && loginCheck.getIsNSFWAllowed()) {
                     browseRatingMatureSwitch.setVisibility(View.VISIBLE);
@@ -169,12 +170,12 @@ public class browse extends appFragment {
             }
 
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 updateUIElements();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 updateUIElements();
                 Toast.makeText(getActivity(), "Failed to detect login", Toast.LENGTH_SHORT).show();
             }
@@ -182,9 +183,9 @@ public class browse extends appFragment {
 
         loginCheck.execute();
 
-        page = new open.furaffinity.client.pages.browse(this.getActivity(), new abstractPage.pageListener() {
+        page = new BrowsePage(this.getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 if (!isInitialized) {
                     isLoading = false;
                     initCurrentSettings();
@@ -212,7 +213,7 @@ public class browse extends appFragment {
                         resetRecycler();
                     }
                 } else {
-                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.browse) abstractPage).getPageResults();
+                    List<HashMap<String, String>> pageResults = ((BrowsePage) BasePage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 
@@ -230,7 +231,7 @@ public class browse extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), "Failed to load data from browse page", Toast.LENGTH_SHORT).show();

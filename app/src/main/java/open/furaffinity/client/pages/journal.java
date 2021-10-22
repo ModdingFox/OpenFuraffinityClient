@@ -7,9 +7,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class journal extends abstractPage {
+public class journal extends BasePage {
     private final String pagePath;
     private String journalUserIcon;
     private String journalUserLink;

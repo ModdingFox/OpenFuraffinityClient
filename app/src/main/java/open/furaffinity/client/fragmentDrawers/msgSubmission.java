@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.dialogs.confirmDialog;
@@ -33,7 +33,7 @@ import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class msgSubmission extends appFragment {
+public class msgSubmission extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     TableLayout settingsTableLayout;
     @SuppressWarnings("FieldCanBeLocal")
@@ -52,10 +52,10 @@ public class msgSubmission extends appFragment {
     private open.furaffinity.client.pages.msgSubmission page;
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final BasePage.pageListener pageListener = new BasePage.pageListener() {
         @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.msgSubmission) abstractPage).getPageResults();
+        public void requestSucceeded(BasePage BasePage) {
+            List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.msgSubmission) BasePage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -77,7 +77,7 @@ public class msgSubmission extends appFragment {
         }
 
         @Override
-        public void requestFailed(abstractPage abstractPage) {
+        public void requestFailed(BasePage BasePage) {
             loadingStopCounter--;
             fab.setVisibility(View.GONE);
             isLoading = false;
@@ -218,15 +218,15 @@ public class msgSubmission extends appFragment {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("submissions[]", postId);
 
-                new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(getActivity(), new abstractPage.pageListener() {
+                new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(getActivity(), new BasePage.pageListener() {
                     @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
+                    public void requestSucceeded(BasePage BasePage) {
                         resetRecycler();
                         Toast.makeText(getActivity(), "Successfully deleted submission notification", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void requestFailed(abstractPage abstractPage) {
+                    public void requestFailed(BasePage BasePage) {
                         Toast.makeText(getActivity(), "Failed to delete submission notification", Toast.LENGTH_SHORT).show();
                     }
                 }, page.getPagePath(), params).execute();
@@ -260,15 +260,15 @@ public class msgSubmission extends appFragment {
                         params.put("submissions[" + i + "]", elements.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully deleted selected submission notifications", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to delete selected submission notifications", Toast.LENGTH_SHORT).show();
                         }
                     }, page.getPagePath(), params).execute();
@@ -288,15 +288,15 @@ public class msgSubmission extends appFragment {
             confirmDialog.setListener(new confirmDialog.dialogListener() {
                 @Override
                 public void onDialogPositiveClick(DialogFragment dialog) {
-                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteAll(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteAll(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully deleted submission notifications", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to delete submission notifications", Toast.LENGTH_SHORT).show();
                         }
                     }, page.getPagePath()).execute();

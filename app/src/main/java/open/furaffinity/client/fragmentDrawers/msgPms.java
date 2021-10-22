@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsListAdapter;
 import open.furaffinity.client.dialogs.confirmDialog;
@@ -29,7 +29,7 @@ import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class msgPms extends appFragment {
+public class msgPms extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
@@ -123,9 +123,9 @@ public class msgPms extends appFragment {
         mAdapter = new msgPmsListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        page = new open.furaffinity.client.pages.msgPms(getActivity(), new abstractPage.pageListener() {
+        page = new open.furaffinity.client.pages.msgPms(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 List<HashMap<String, String>> messages = page.getMessages();
 
                 int curSize = mAdapter.getItemCount();
@@ -144,7 +144,7 @@ public class msgPms extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
@@ -188,15 +188,15 @@ public class msgPms extends appFragment {
                         params.put("items[" + i + "]", itemIds.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully deleted selected notes", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to delete selected notes", Toast.LENGTH_SHORT).show();
                         }
                     }, page.getPagePath(), "move_to", action, params).execute();
@@ -239,15 +239,15 @@ public class msgPms extends appFragment {
                         params.put("items[" + i + "]", itemIds.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully moved selected notes", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to move selected notes", Toast.LENGTH_SHORT).show();
                         }
                     }, page.getPagePath(), moveKey, moveValue, params).execute();

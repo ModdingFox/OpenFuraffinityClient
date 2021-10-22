@@ -13,18 +13,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.watchListAdapter;
-import open.furaffinity.client.pages.controlsBuddyList;
+import open.furaffinity.client.pages.ControlsBuddyListPage;
 
-public class manageWatches extends appFragment {
+public class manageWatches extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<watchListAdapter.ViewHolder> mAdapter;
-    private controlsBuddyList page;
+    private ControlsBuddyListPage page;
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
 
@@ -44,7 +44,7 @@ public class manageWatches extends appFragment {
         if (!isLoading && loadingStopCounter > 0) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
-            page = new controlsBuddyList(page);
+            page = new ControlsBuddyListPage(page);
             page.execute();
         }
     }
@@ -66,10 +66,10 @@ public class manageWatches extends appFragment {
         mAdapter = new watchListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        page = new controlsBuddyList(getActivity(), new abstractPage.pageListener() {
+        page = new ControlsBuddyListPage(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> pageResults = ((controlsBuddyList) abstractPage).getPageResults();
+            public void requestSucceeded(BasePage BasePage) {
+                List<HashMap<String, String>> pageResults = ((ControlsBuddyListPage) BasePage).getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 
@@ -90,7 +90,7 @@ public class manageWatches extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 loadingStopCounter--;
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);

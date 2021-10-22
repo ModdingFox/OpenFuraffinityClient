@@ -4,13 +4,13 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitMsgOthersDeleteSelected extends abstractPage {
+public class submitMsgOthersDeleteSelected extends BasePage {
     private final String pagePath;
     private final HashMap<String, String> params;
 
-    public submitMsgOthersDeleteSelected(Context context, abstractPage.pageListener pageListener, String pagePath, HashMap<String, String> params) {
+    public submitMsgOthersDeleteSelected(Context context, BasePage.pageListener pageListener, String pagePath, HashMap<String, String> params) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.params = params;

@@ -11,18 +11,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class controlsBuddyList extends abstractPage {
+public class ControlsBuddyListPage extends BasePage {
     private static final String pagePath = "/controls/buddylist/";
     private final List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public controlsBuddyList(Context context, pageListener pageListener) {
+    public ControlsBuddyListPage(Context context, pageListener pageListener) {
         super(context, pageListener);
     }
 
-    public controlsBuddyList(controlsBuddyList controlsBuddyList) {
-        super(controlsBuddyList);
+    public ControlsBuddyListPage(ControlsBuddyListPage ControlsBuddyListPage) {
+        super(ControlsBuddyListPage);
     }
 
     public static String getPagePath() {

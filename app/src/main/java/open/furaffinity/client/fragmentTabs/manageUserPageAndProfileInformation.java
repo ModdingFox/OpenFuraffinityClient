@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.pages.controlsProfile;
 import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageUserPageAndProfileInformation extends appFragment {
+public class manageUserPageAndProfileInformation extends BaseFragment {
     List<dynamicEditItem> uiElementList;
     private LinearLayout linearLayout;
     private fabCircular fab;
@@ -49,9 +49,9 @@ public class manageUserPageAndProfileInformation extends appFragment {
     }
 
     protected void initPages() {
-        page = new controlsProfile(getActivity(), new abstractPage.pageListener() {
+        page = new controlsProfile(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 if (uiElementList != null) {
                     for (dynamicEditItem currentItem : uiElementList) {
                         currentItem.removeFromView();
@@ -60,8 +60,8 @@ public class manageUserPageAndProfileInformation extends appFragment {
 
                 uiElementList = new ArrayList<>();
 
-                if (((controlsProfile) abstractPage).getPageResults() != null) {
-                    for (controlsProfile.inputItem currentInputItem : ((controlsProfile) abstractPage).getPageResults()) {
+                if (((controlsProfile) BasePage).getPageResults() != null) {
+                    for (controlsProfile.inputItem currentInputItem : ((controlsProfile) BasePage).getPageResults()) {
                         if (currentInputItem.isSelect()) {
                             uiElementList.add(new dynamicEditItem(requireContext(), linearLayout, currentInputItem.getName(), currentInputItem.getHeader(), currentInputItem.getValue(), currentInputItem.getOptions()));
                         } else {
@@ -75,7 +75,7 @@ public class manageUserPageAndProfileInformation extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data for user page/profile", Toast.LENGTH_SHORT).show();
@@ -91,14 +91,14 @@ public class manageUserPageAndProfileInformation extends appFragment {
                 params.put(currentItem.getName(), currentItem.getValue());
             }
 
-            new open.furaffinity.client.submitPages.submitControlsProfile(getActivity(), new abstractPage.pageListener() {
+            new open.furaffinity.client.submitPages.submitControlsProfile(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Successfully updated user page and profile info", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed to update user page and profile info", Toast.LENGTH_SHORT).show();
                 }
             }, page.getKey(), params).execute();

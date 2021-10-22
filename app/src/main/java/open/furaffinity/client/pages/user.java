@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class user extends abstractPage {
+public class user extends BasePage {
     private static final String pagePrefix = "/user/";
 
     private final String pagePath;

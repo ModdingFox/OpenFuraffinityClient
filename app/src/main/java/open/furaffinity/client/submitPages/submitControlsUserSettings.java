@@ -4,16 +4,16 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.pages.controlsUserSettings;
 
-public class submitControlsUserSettings extends abstractPage {
+public class submitControlsUserSettings extends BasePage {
     private final String key;
     private final String accept_trades;
     private final String accept_commissions;
     private final String featured_journal_id;
 
-    public submitControlsUserSettings(Context context, abstractPage.pageListener pageListener, String key, String accept_trades, String accept_commissions, String featured_journal_id) {
+    public submitControlsUserSettings(Context context, BasePage.pageListener pageListener, String key, String accept_trades, String accept_commissions, String featured_journal_id) {
         super(context, pageListener);
         this.key = key;
         this.accept_trades = accept_trades;

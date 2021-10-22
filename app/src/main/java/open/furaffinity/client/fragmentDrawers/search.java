@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.imageListAdapter;
 import open.furaffinity.client.adapter.savedSearchListAdapter;
@@ -55,7 +55,7 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.notificationItem;
 import open.furaffinity.client.utilities.uiControls;
 
-public class search extends appFragment {
+public class search extends BaseFragment {
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
 
@@ -451,7 +451,7 @@ public class search extends appFragment {
             staggeredGridLayoutManager.scrollToPosition(recyclerViewPosition);
         }
 
-        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
+        loginCheck = new loginCheck(getActivity(), new BasePage.pageListener() {
             private void updateUIElements() {
                 if (loginCheck.getIsLoggedIn() && loginCheck.getIsNSFWAllowed()) {
                     searchRatingMatureSwitch.setVisibility(View.VISIBLE);
@@ -463,12 +463,12 @@ public class search extends appFragment {
             }
 
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 updateUIElements();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 updateUIElements();
                 Toast.makeText(getActivity(), "Failed to detect login", Toast.LENGTH_SHORT).show();
             }
@@ -476,9 +476,9 @@ public class search extends appFragment {
 
         loginCheck.execute();
 
-        page = new open.furaffinity.client.pages.search(getActivity(), new abstractPage.pageListener() {
+        page = new open.furaffinity.client.pages.search(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 if (!isInitialized) {
                     isLoading = false;
                     initCurrentSettings();
@@ -513,7 +513,7 @@ public class search extends appFragment {
                         resetRecycler();
                     }
                 } else {
-                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.search) abstractPage).getPageResults();
+                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.search) BasePage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 
@@ -525,13 +525,13 @@ public class search extends appFragment {
                     mDataSet.addAll(pageResults);
                     mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
-                    if (((open.furaffinity.client.pages.search) abstractPage).getPageResults() != null && ((open.furaffinity.client.pages.search) abstractPage).getPageResults().size() > 0 && ((open.furaffinity.client.pages.search) abstractPage).getCurrentPage().equals("1")) {
+                    if (((open.furaffinity.client.pages.search) BasePage).getPageResults() != null && ((open.furaffinity.client.pages.search) BasePage).getPageResults().size() > 0 && ((open.furaffinity.client.pages.search) BasePage).getCurrentPage().equals("1")) {
                         //Find any saved searches that meet the current search criteria and apply the most recent link to them
                         searchDBHelper dbHelper = new searchDBHelper(getActivity());
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                         ContentValues values = new ContentValues();
-                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, ((open.furaffinity.client.pages.search) abstractPage).getPageResults().get(0).get("postPath"));
+                        values.put(searchItemEntry.COLUMN_NAME_MOSTRECENTITEM, ((open.furaffinity.client.pages.search) BasePage).getPageResults().get(0).get("postPath"));
 
                         String selection = "";
                         selection += searchItemEntry.COLUMN_NAME_Q + " = ? AND ";
@@ -550,20 +550,20 @@ public class search extends appFragment {
                         selection += searchItemEntry.COLUMN_NAME_MODE + " = ? ";
 
                         String[] selectionArgs = {
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentQuery(),
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentOrderBy(),
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentOrderDirection(),
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentRange(),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingMature().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeArt().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypeStory().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
-                                ((((open.furaffinity.client.pages.search) abstractPage).getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
-                                ((open.furaffinity.client.pages.search) abstractPage).getCurrentMode()
+                                ((open.furaffinity.client.pages.search) BasePage).getCurrentQuery(),
+                                ((open.furaffinity.client.pages.search) BasePage).getCurrentOrderBy(),
+                                ((open.furaffinity.client.pages.search) BasePage).getCurrentOrderDirection(),
+                                ((open.furaffinity.client.pages.search) BasePage).getCurrentRange(),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentRatingGeneral().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentRatingMature().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentRatingAdult().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentTypeArt().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentTypeMusic().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentTypeFlash().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentTypeStory().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentTypePhoto().equals("")) ? ("0") : ("1")),
+                                ((((open.furaffinity.client.pages.search) BasePage).getCurrentTypePoetry().equals("")) ? ("0") : ("1")),
+                                ((open.furaffinity.client.pages.search) BasePage).getCurrentMode()
                         };
 
                         db.update(searchItemEntry.TABLE_NAME, values, selection, selectionArgs);
@@ -576,7 +576,7 @@ public class search extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getActivity(), "Failed to load data from search page", Toast.LENGTH_SHORT).show();

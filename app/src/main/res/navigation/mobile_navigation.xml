@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_browse"
-        android:name="open.furaffinity.client.fragmentDrawers.browse"
+        android:name="open.furaffinity.client.fragmentDrawers.BrowsePage"
         android:label="@string/menu_browse"
         tools:layout="@layout/fragment_browse" />
 

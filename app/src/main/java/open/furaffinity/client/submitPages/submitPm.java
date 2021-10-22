@@ -4,17 +4,17 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.pages.msgPms;
 
-public class submitPm extends abstractPage {
+public class submitPm extends BasePage {
     private final String key;
     private final String to;
     private final String subject;
     private final String message;
     private final String gRecaptchaResponse;
 
-    public submitPm(Context context, abstractPage.pageListener pageListener, String key, String to, String subject, String message, String gRecaptchaResponse) {
+    public submitPm(Context context, BasePage.pageListener pageListener, String key, String to, String subject, String message, String gRecaptchaResponse) {
         super(context, pageListener);
         this.key = key;
         this.to = to;

@@ -4,16 +4,16 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitControlsFoldersSubmissionsDeleteItem extends abstractPage {
+public class submitControlsFoldersSubmissionsDeleteItem extends BasePage {
 
     private final String pagePath;
     private final String key;
     private final String idName;
     private final String id;
 
-    public submitControlsFoldersSubmissionsDeleteItem(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String idName, String id) {
+    public submitControlsFoldersSubmissionsDeleteItem(Context context, BasePage.pageListener pageListener, String pagePath, String key, String idName, String id) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;

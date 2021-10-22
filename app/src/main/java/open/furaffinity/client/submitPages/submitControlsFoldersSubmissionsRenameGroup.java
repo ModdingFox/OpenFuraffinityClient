@@ -4,16 +4,16 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitControlsFoldersSubmissionsRenameGroup extends open.furaffinity.client.abstractClasses.abstractPage {
+public class submitControlsFoldersSubmissionsRenameGroup extends BasePage {
 
     private static final String pagePath = "/controls/folders/submissions/group/edit";
     private final String key;
     private final String group_id;
     private final String group_name;
 
-    public submitControlsFoldersSubmissionsRenameGroup(Context context, abstractPage.pageListener pageListener, String key, String group_id, String group_name) {
+    public submitControlsFoldersSubmissionsRenameGroup(Context context, BasePage.pageListener pageListener, String key, String group_id, String group_name) {
         super(context, pageListener);
         this.key = key;
         this.group_id = group_id;

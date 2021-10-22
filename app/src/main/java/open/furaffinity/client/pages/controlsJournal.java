@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class controlsJournal extends abstractPage {
+public class controlsJournal extends BasePage {
     private String pagePath = "/controls/journal/";
 
     private List<HashMap<String, String>> pageResults = new ArrayList<>();

@@ -4,15 +4,15 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitControlsFoldersSubmissionsCreateGroup extends abstractPage {
+public class submitControlsFoldersSubmissionsCreateGroup extends BasePage {
 
     private static final String pagePath = "/controls/folders/submissions/group/add";
     private final String key;
     private final String group_name;
 
-    public submitControlsFoldersSubmissionsCreateGroup(Context context, abstractPage.pageListener pageListener, String key, String group_name) {
+    public submitControlsFoldersSubmissionsCreateGroup(Context context, BasePage.pageListener pageListener, String key, String group_name) {
         super(context, pageListener);
         this.key = key;
         this.group_name = group_name;

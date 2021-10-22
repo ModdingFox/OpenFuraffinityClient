@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.dialogs.confirmDialog;
 import open.furaffinity.client.pages.controlsShouts;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageShouts extends appFragment {
+public class manageShouts extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
@@ -94,10 +94,10 @@ public class manageShouts extends appFragment {
         mAdapter = new commentListAdapter(mDataSet, getActivity(), true);
         recyclerView.setAdapter(mAdapter);
 
-        page = new controlsShouts(getActivity(), new abstractPage.pageListener() {
+        page = new controlsShouts(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> pageResults = ((controlsShouts) abstractPage).getPageResults();
+            public void requestSucceeded(BasePage BasePage) {
+                List<HashMap<String, String>> pageResults = ((controlsShouts) BasePage).getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 
@@ -119,7 +119,7 @@ public class manageShouts extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
@@ -145,15 +145,15 @@ public class manageShouts extends appFragment {
                         params.put("shouts[" + i + "]", elements.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitShouts(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitShouts(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully removed shout", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to remove shout", Toast.LENGTH_SHORT).show();
                         }
                     }, params).execute();

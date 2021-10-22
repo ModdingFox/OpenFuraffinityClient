@@ -11,19 +11,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class controlsAvatar extends abstractPage {
+public class ControlsAvatarPage extends BasePage {
     private static final String pagePath = "/controls/avatar/";
 
     private final List<HashMap<String, String>> pageResults = new ArrayList<>();
 
-    public controlsAvatar(Context context, pageListener pageListener) {
+    public ControlsAvatarPage(Context context, pageListener pageListener) {
         super(context, pageListener);
     }
 
-    public controlsAvatar(controlsAvatar controlsAvatar) {
-        super(controlsAvatar);
+    public ControlsAvatarPage(ControlsAvatarPage ControlsAvatarPage) {
+        super(ControlsAvatarPage);
     }
 
     public static String getPagePath() {

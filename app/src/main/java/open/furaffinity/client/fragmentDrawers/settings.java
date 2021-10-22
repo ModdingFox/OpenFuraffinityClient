@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.sqlite.backContract;
 import open.furaffinity.client.sqlite.backDBHelper;
@@ -34,7 +34,7 @@ import open.furaffinity.client.utilities.uiControls;
 import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
-public class settings extends appFragment {
+public class settings extends BaseFragment {
     public static boolean notificationsEnabledDefault = false;
     public static int notificationsIntervalDefault = 15;
     public static boolean standardNotificationsDefault = true;

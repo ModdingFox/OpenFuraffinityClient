@@ -7,9 +7,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class msgPmsMessage extends abstractPage {
+public class msgPmsMessage extends BasePage {
     private final String pagePath;
     private String messageSubject;
     private String messageUserIcon;

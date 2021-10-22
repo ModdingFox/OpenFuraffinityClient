@@ -18,15 +18,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.dialogs.confirmDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageFavorites extends appFragment {
+public class manageFavorites extends BaseFragment {
     private static final String pagePath = "/controls/favorites/";
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
@@ -41,10 +41,10 @@ public class manageFavorites extends appFragment {
     private gallery page;
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final BasePage.pageListener pageListener = new BasePage.pageListener() {
         @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((gallery) abstractPage).getPageResults();
+        public void requestSucceeded(BasePage BasePage) {
+            List<HashMap<String, String>> pageResults = ((gallery) BasePage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -66,7 +66,7 @@ public class manageFavorites extends appFragment {
         }
 
         @Override
-        public void requestFailed(abstractPage abstractPage) {
+        public void requestFailed(BasePage BasePage) {
             loadingStopCounter--;
             fab.setVisibility(View.GONE);
             isLoading = false;
@@ -164,15 +164,15 @@ public class manageFavorites extends appFragment {
                         params.put("favorites[" + i + "]", elements.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitControlsFavorites(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitControlsFavorites(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully updated favorites", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to update favorites", Toast.LENGTH_SHORT).show();
                         }
                     }, pagePath, params).execute();

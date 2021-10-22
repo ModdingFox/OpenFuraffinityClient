@@ -18,13 +18,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsMessageSectionsPagerAdapter;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class msgPmsMessage extends appFragment {
+public class msgPmsMessage extends BaseFragment {
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
 
     private TextView subject;
@@ -41,16 +41,16 @@ public class msgPmsMessage extends appFragment {
 
     private open.furaffinity.client.pages.msgPmsMessage page;
     private boolean isLoading = false;
-    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final BasePage.pageListener pageListener = new BasePage.pageListener() {
         @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            subject.setText(((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageSubject());
-            Glide.with(msgPmsMessage.this).load(((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
-            sentBy.setText(((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageSentBy());
+        public void requestSucceeded(BasePage BasePage) {
+            subject.setText(((open.furaffinity.client.pages.msgPmsMessage) BasePage).getMessageSubject());
+            Glide.with(msgPmsMessage.this).load(((open.furaffinity.client.pages.msgPmsMessage) BasePage).getMessageUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
+            sentBy.setText(((open.furaffinity.client.pages.msgPmsMessage) BasePage).getMessageSentBy());
             //sentTo.setText(((open.furaffinity.client.pages.msgPmsMessage)abstractPage).getMessageSentTo());
-            sentDate.setText(((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageSentDate());
+            sentDate.setText(((open.furaffinity.client.pages.msgPmsMessage) BasePage).getMessageSentDate());
 
-            setupViewPager((open.furaffinity.client.pages.msgPmsMessage) abstractPage);
+            setupViewPager((open.furaffinity.client.pages.msgPmsMessage) BasePage);
 
             saveHistory();
 
@@ -58,7 +58,7 @@ public class msgPmsMessage extends appFragment {
         }
 
         @Override
-        public void requestFailed(abstractPage abstractPage) {
+        public void requestFailed(BasePage BasePage) {
             isLoading = false;
             Toast.makeText(getActivity(), "Failed to load data for message", Toast.LENGTH_SHORT).show();
         }

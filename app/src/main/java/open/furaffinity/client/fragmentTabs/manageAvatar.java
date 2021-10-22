@@ -12,21 +12,21 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.manageAvatarListAdapter;
 import open.furaffinity.client.dialogs.uploadAvatarDialog;
-import open.furaffinity.client.pages.controlsAvatar;
+import open.furaffinity.client.pages.ControlsAvatarPage;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageAvatar extends appFragment {
+public class manageAvatar extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<manageAvatarListAdapter.ViewHolder> mAdapter;
     private fabCircular fab;
-    private controlsAvatar page;
+    private ControlsAvatarPage page;
     private boolean isLoading = false;
 
     @Override
@@ -49,7 +49,7 @@ public class manageAvatar extends appFragment {
         if (!isLoading) {
             isLoading = true;
             swipeRefreshLayout.setRefreshing(true);
-            page = new controlsAvatar(page);
+            page = new ControlsAvatarPage(page);
             page.execute();
         }
     }
@@ -69,11 +69,11 @@ public class manageAvatar extends appFragment {
         mAdapter = new manageAvatarListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        page = new controlsAvatar(getActivity(), new abstractPage.pageListener() {
+        page = new ControlsAvatarPage(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 mDataSet.clear();
-                mDataSet.addAll(((controlsAvatar) abstractPage).getPageResults());
+                mDataSet.addAll(((ControlsAvatarPage) BasePage).getPageResults());
                 mAdapter.notifyDataSetChanged();
                 fab.setVisibility(View.VISIBLE);
                 isLoading = false;
@@ -81,7 +81,7 @@ public class manageAvatar extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
@@ -96,15 +96,15 @@ public class manageAvatar extends appFragment {
         ((manageAvatarListAdapter) mAdapter).setListener(new manageAvatarListAdapter.manageAvatarListAdapterListener() {
             @Override
             public void onSet(String url) {
-                new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+                new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new BasePage.pageListener() {
                     @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
+                    public void requestSucceeded(BasePage BasePage) {
                         resetRecycler();
                         Toast.makeText(getActivity(), "Successfully set avatar", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void requestFailed(abstractPage abstractPage) {
+                    public void requestFailed(BasePage BasePage) {
                         Toast.makeText(getActivity(), "Failed to set avatar", Toast.LENGTH_SHORT).show();
                     }
                 }, url).execute();
@@ -112,15 +112,15 @@ public class manageAvatar extends appFragment {
 
             @Override
             public void onDelete(String url) {
-                new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+                new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new BasePage.pageListener() {
                     @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
+                    public void requestSucceeded(BasePage BasePage) {
                         resetRecycler();
                         Toast.makeText(getActivity(), "Successfully deleted avatar", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void requestFailed(abstractPage abstractPage) {
+                    public void requestFailed(BasePage BasePage) {
                         Toast.makeText(getActivity(), "Failed to delete avatar", Toast.LENGTH_SHORT).show();
                     }
                 }, url).execute();
@@ -129,15 +129,15 @@ public class manageAvatar extends appFragment {
 
         fab.setOnClickListener(v -> {
             uploadAvatarDialog uploadAvatarDialog = new uploadAvatarDialog();
-            uploadAvatarDialog.setListener(filePath -> new open.furaffinity.client.submitPages.submitNewAvatar(getActivity(), new abstractPage.pageListener() {
+            uploadAvatarDialog.setListener(filePath -> new open.furaffinity.client.submitPages.submitNewAvatar(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     resetRecycler();
                     Toast.makeText(getActivity(), "Successfully uploaded avatar", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed to upload avatar", Toast.LENGTH_SHORT).show();
                 }
             }, filePath).execute());

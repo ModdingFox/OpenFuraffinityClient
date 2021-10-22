@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.pages.journal;
@@ -27,7 +27,7 @@ import open.furaffinity.client.utilities.html;
 import open.furaffinity.client.utilities.messageIds;
 
 
-public class comments extends appFragment {
+public class comments extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     RecyclerView.LayoutManager layoutManager;
     RecyclerView.Adapter<commentListAdapter.ViewHolder> mAdapter;
@@ -77,12 +77,12 @@ public class comments extends appFragment {
             pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
             pageType = getArguments().getString(messageIds.SubmissionCommentsType_MESSAGE);
 
-            loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
+            loginCheck = new loginCheck(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    ((commentListAdapter) mAdapter).setLoggedIn(((loginCheck) abstractPage).getIsLoggedIn());
+                public void requestSucceeded(BasePage BasePage) {
+                    ((commentListAdapter) mAdapter).setLoggedIn(((loginCheck) BasePage).getIsLoggedIn());
 
-                    if (((loginCheck) abstractPage).getIsLoggedIn()) {
+                    if (((loginCheck) BasePage).getIsLoggedIn()) {
                         comment.setVisibility(View.VISIBLE);
                     } else {
                         comment.setVisibility(View.GONE);
@@ -90,7 +90,7 @@ public class comments extends appFragment {
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     comment.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
                 }
@@ -100,10 +100,10 @@ public class comments extends appFragment {
             mAdapter = new commentListAdapter(mDataSet, getActivity(), false);
             recyclerView.setAdapter(mAdapter);
 
-            journal = new journal(getActivity(), new abstractPage.pageListener() {
+            journal = new journal(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    mDataSet.addAll(html.commentsToListHash(((journal) abstractPage).getJournalComments()));
+                public void requestSucceeded(BasePage BasePage) {
+                    mDataSet.addAll(html.commentsToListHash(((journal) BasePage).getJournalComments()));
                     mAdapter.notifyDataSetChanged();
 
                     isLoading = false;
@@ -111,17 +111,17 @@ public class comments extends appFragment {
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     isLoading = false;
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getActivity(), "Failed to load data for journal comments", Toast.LENGTH_SHORT).show();
                 }
             }, pagePath);
 
-            view = new view(getActivity(), new abstractPage.pageListener() {
+            view = new view(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    mDataSet.addAll(html.commentsToListHash(((view) abstractPage).getSubmissionComments()));
+                public void requestSucceeded(BasePage BasePage) {
+                    mDataSet.addAll(html.commentsToListHash(((view) BasePage).getSubmissionComments()));
                     mAdapter.notifyDataSetChanged();
 
                     isLoading = false;
@@ -129,7 +129,7 @@ public class comments extends appFragment {
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     isLoading = false;
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getActivity(), "Failed to load data for view comments", Toast.LENGTH_SHORT).show();
@@ -182,15 +182,15 @@ public class comments extends appFragment {
 
                     @Override
                     public void onDialogPositiveClick(DialogFragment dialog) {
-                        new open.furaffinity.client.submitPages.submitComment(getActivity(), new abstractPage.pageListener() {
+                        new open.furaffinity.client.submitPages.submitComment(getActivity(), new BasePage.pageListener() {
                             @Override
-                            public void requestSucceeded(abstractPage abstractPage) {
+                            public void requestSucceeded(BasePage BasePage) {
                                 resetRecycler();
                                 Toast.makeText(getActivity(), "Comment posted", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
-                            public void requestFailed(abstractPage abstractPage) {
+                            public void requestFailed(BasePage BasePage) {
                                 Toast.makeText(getActivity(), "Failed to post comment", Toast.LENGTH_SHORT).show();
                             }
                         }, pagePath, textDialog.getText()).execute();
@@ -214,15 +214,15 @@ public class comments extends appFragment {
 
                 @Override
                 public void onDialogPositiveClick(DialogFragment dialog) {
-                    new open.furaffinity.client.submitPages.submitReply(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitReply(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Reply posted", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to post reply", Toast.LENGTH_SHORT).show();
                         }
                     }, replyToLink, textDialog.getText()).execute();

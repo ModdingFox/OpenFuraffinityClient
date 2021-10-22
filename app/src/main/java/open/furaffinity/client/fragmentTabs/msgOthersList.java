@@ -17,14 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.msgOthersListAdapter;
 import open.furaffinity.client.dialogs.confirmDialog;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.messageIds;
 
-public class msgOthersList extends appFragment {
+public class msgOthersList extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
     private ConstraintLayout constraintLayout;
@@ -103,9 +103,9 @@ public class msgOthersList extends appFragment {
             mAdapter = new msgOthersListAdapter(mDataSet, getActivity());
             recyclerView.setAdapter(mAdapter);
 
-            page = new open.furaffinity.client.pages.msgOthers(getActivity(), new abstractPage.pageListener() {
+            page = new open.furaffinity.client.pages.msgOthers(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     switch (msgOthersType) {
                         case 0:
                             mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processWatchNotifications(page.getWatches(), "started watching you"));
@@ -137,7 +137,7 @@ public class msgOthersList extends appFragment {
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     fab.setVisibility(View.GONE);
                     isLoading = false;
                     swipeRefreshLayout.setRefreshing(false);
@@ -154,30 +154,30 @@ public class msgOthersList extends appFragment {
             params.put(itemType + "[" + i + "]", itemIds.get(i));
         }
 
-        new open.furaffinity.client.submitPages.submitMsgOthersDeleteSelected(getContext(), new abstractPage.pageListener() {
+        new open.furaffinity.client.submitPages.submitMsgOthersDeleteSelected(getContext(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 resetRecycler();
                 Toast.makeText(getActivity(), "Successfully deleted selected notifications", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(getActivity(), "Failed to delete selected notifications", Toast.LENGTH_SHORT).show();
             }
         }, page.getPagePath(), params).execute();
     }
 
     private void deleteAllOfType(String paramKey, String paramValue) {
-        new open.furaffinity.client.submitPages.submitMsgOthersDeleteAllOfType(getActivity(), new abstractPage.pageListener() {
+        new open.furaffinity.client.submitPages.submitMsgOthersDeleteAllOfType(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 resetRecycler();
                 Toast.makeText(getActivity(), "Successfully nuked notifications", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(getActivity(), "Failed to nuke notifications", Toast.LENGTH_SHORT).show();
             }
         }, page.getPagePath(), paramKey, paramValue).execute();

@@ -212,7 +212,7 @@
     <string name="searchNotificationsInterval">Search Notification Interval(Min):</string>
     <string name="imageResolutionTextView">Select Results Image Resolution:</string>
 
-    <string name="saveBrowseStateSwitch">Persist browse options</string>
+    <string name="saveBrowseStateSwitch">Persist BrowsePage options</string>
     <string name="cachedBrowse">Cached Browse:</string>
     <string name="InvalidateCachedBrowseTime">Invalidate After(Mins):</string>
     <string name="InvalidateCachedBrowseAfter">Invalidate On X New Results:</string>

@@ -4,10 +4,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.utilities.messageIds;
 
-public class viewInfo extends appFragment {
+public class viewInfo extends BaseFragment {
     private TextView submissionComments;
     private TextView submissionFavorites;
     private TextView submissionViews;

@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitSubmissionPart2 extends open.furaffinity.client.abstractClasses.abstractPage {
+public class submitSubmissionPart2 extends BasePage {
     private static final String pagePath = "/submit/upload/";
 
     private final String sourceFilePath;
@@ -26,7 +26,7 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
     private HashMap<String, String> species = new HashMap<>();
     private HashMap<String, String> gender = new HashMap<>();
 
-    public submitSubmissionPart2(Context context, abstractPage.pageListener pageListener, open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1, String sourceFilePath, String thumbnailFilePath) {
+    public submitSubmissionPart2(Context context, BasePage.pageListener pageListener, open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1, String sourceFilePath, String thumbnailFilePath) {
         super(context, pageListener);
         this.submitSubmissionPart1 = submitSubmissionPart1;
         this.sourceFilePath = sourceFilePath;

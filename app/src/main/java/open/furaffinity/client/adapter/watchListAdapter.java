@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.activity.mainActivity;
 
 public class watchListAdapter extends RecyclerView.Adapter<watchListAdapter.ViewHolder> {
@@ -49,16 +49,16 @@ public class watchListAdapter extends RecyclerView.Adapter<watchListAdapter.View
             holder.userName.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink")));
         }
 
-        holder.deleteButton.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(context, new abstractPage.pageListener() {
+        holder.deleteButton.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 mDataSet.remove(position);
                 notifyDataSetChanged();
                 Toast.makeText(context, "Successfully removed watch", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(context, "Failed to remove watch", Toast.LENGTH_SHORT).show();
             }
         }, mDataSet.get(position).get("userRemoveLink")).execute());

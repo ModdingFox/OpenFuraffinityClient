@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.dialogs.textDialog;
@@ -28,7 +28,7 @@ import open.furaffinity.client.pages.gallery;
 import open.furaffinity.client.submitPages.submitControlsSubmissionsAssignItemToNewFolder;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageSubmissions extends appFragment {
+public class manageSubmissions extends BaseFragment {
     private static final String pagePath = "/controls/submissions/";
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
@@ -48,10 +48,10 @@ public class manageSubmissions extends appFragment {
     private gallery page;
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
-    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final BasePage.pageListener pageListener = new BasePage.pageListener() {
         @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((gallery) abstractPage).getPageResults();
+        public void requestSucceeded(BasePage BasePage) {
+            List<HashMap<String, String>> pageResults = ((gallery) BasePage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -73,7 +73,7 @@ public class manageSubmissions extends appFragment {
         }
 
         @Override
-        public void requestFailed(abstractPage abstractPage) {
+        public void requestFailed(BasePage BasePage) {
             loadingStopCounter--;
             fab.setVisibility(View.GONE);
             isLoading = false;
@@ -208,15 +208,15 @@ public class manageSubmissions extends appFragment {
                         params.put("submission_ids[" + i + "]", elements.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitControlsSubmissionsAssignItemToFolder(getContext(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitControlsSubmissionsAssignItemToFolder(getContext(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully assigned submission to folder", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to assign submission to folder", Toast.LENGTH_SHORT).show();
                         }
                     }, spinnerDialog.getSpinnerSelection(), page.getAssignFolderSubmit(), params).execute();
@@ -245,15 +245,15 @@ public class manageSubmissions extends appFragment {
                         params.put("submission_ids[" + i + "]", elements.get(i));
                     }
 
-                    new submitControlsSubmissionsAssignItemToNewFolder(getActivity(), new abstractPage.pageListener() {
+                    new submitControlsSubmissionsAssignItemToNewFolder(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully assigned submission to new folder", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to assign submission to new folder", Toast.LENGTH_SHORT).show();
                         }
                     }, ((textDialog) dialog).getText(), page.getCreateFolderSubmit(), params).execute();
@@ -278,15 +278,15 @@ public class manageSubmissions extends appFragment {
                 params.put("submission_ids[" + i + "]", elements.get(i));
             }
 
-            new open.furaffinity.client.submitPages.submitControlsSubmissionsMoveItem(getActivity(), new abstractPage.pageListener() {
+            new open.furaffinity.client.submitPages.submitControlsSubmissionsMoveItem(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     resetRecycler();
                     Toast.makeText(getActivity(), "Successfully removed submission from folders", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed remove submission from folders", Toast.LENGTH_SHORT).show();
                 }
             }, "remove_from_folders_submit", page.getRemoveFromFoldersSubmit(), params).execute();
@@ -301,15 +301,15 @@ public class manageSubmissions extends appFragment {
                 params.put("submission_ids[" + i + "]", elements.get(i));
             }
 
-            new open.furaffinity.client.submitPages.submitControlsSubmissionsMoveItem(getActivity(), new abstractPage.pageListener() {
+            new open.furaffinity.client.submitPages.submitControlsSubmissionsMoveItem(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     resetRecycler();
                     Toast.makeText(getActivity(), "Successfully moved submission to scraps", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed to move submission to scraps", Toast.LENGTH_SHORT).show();
                 }
             }, "move_to_scraps_submit", page.getMoveToScrapsSubmit(), params).execute();
@@ -324,15 +324,15 @@ public class manageSubmissions extends appFragment {
                 params.put("submission_ids[" + i + "]", elements.get(i));
             }
 
-            new open.furaffinity.client.submitPages.submitControlsSubmissionsMoveItem(getActivity(), new abstractPage.pageListener() {
+            new open.furaffinity.client.submitPages.submitControlsSubmissionsMoveItem(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     resetRecycler();
                     Toast.makeText(getActivity(), "Successfully moved submission to gallery", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed to move submission to gallery", Toast.LENGTH_SHORT).show();
                 }
             }, "move_from_scraps_submit", page.getMoveFromScrapsSubmit(), params).execute();
@@ -352,15 +352,15 @@ public class manageSubmissions extends appFragment {
                         params.put("submission_ids[" + i + "]", elements.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitControlsSubmissionsDeleteItem(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitControlsSubmissionsDeleteItem(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             resetRecycler();
                             Toast.makeText(getActivity(), "Successfully deleted submission", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
+                        public void requestFailed(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Failed to deleted submission", Toast.LENGTH_SHORT).show();
                         }
                     }, params, ((textDialog) dialog).getText()).execute();

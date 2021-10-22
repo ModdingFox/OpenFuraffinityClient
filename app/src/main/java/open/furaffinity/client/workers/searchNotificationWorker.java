@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.pages.search;
 import open.furaffinity.client.sqlite.searchContract;
@@ -41,14 +41,14 @@ public class searchNotificationWorker extends Worker {
     }
 
     private void initClientAndPage() {
-        page = new search(context, new abstractPage.pageListener() {
+        page = new search(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
 
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
 
             }
         });

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.submitPages.submitSubmissionPart1;
 import open.furaffinity.client.submitPages.submitSubmissionPart2;
 import open.furaffinity.client.utilities.kvPair;
@@ -69,14 +69,14 @@ public class uploadDialog extends DialogFragment {
     }
 
     private void initClientAndPage() {
-        page = new submitSubmissionPart1(requireContext(), new abstractPage.pageListener() {
+        page = new submitSubmissionPart1(requireContext(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 updateUIElements();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(requireContext(), "Failed to upload submission step 1", Toast.LENGTH_SHORT).show();
                 uploadDialog.this.dismiss();
             }
@@ -164,16 +164,16 @@ public class uploadDialog extends DialogFragment {
         FragmentManager fragmentManager = getParentFragmentManager();
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> new submitSubmissionPart2(context, new abstractPage.pageListener() {
+        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> new submitSubmissionPart2(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(((submitSubmissionPart2) abstractPage));
+            public void requestSucceeded(BasePage BasePage) {
+                uploadFinalizeDialog uploadFinalizeDialog = new uploadFinalizeDialog(((submitSubmissionPart2) BasePage));
                 uploadFinalizeDialog.show(fragmentManager, "uploadFinalizeDialog");
                 uploadDialog.this.dismiss();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(context, "Failed to upload submission step 2", Toast.LENGTH_SHORT).show();
                 uploadDialog.this.dismiss();
             }

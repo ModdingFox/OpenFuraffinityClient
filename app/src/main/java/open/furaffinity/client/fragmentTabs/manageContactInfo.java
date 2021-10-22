@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.pages.controlsContacts;
 import open.furaffinity.client.utilities.dynamicEditItem;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class manageContactInfo extends appFragment {
+public class manageContactInfo extends BaseFragment {
     List<dynamicEditItem> uiElementList;
     private LinearLayout linearLayout;
     private fabCircular fab;
@@ -48,9 +48,9 @@ public class manageContactInfo extends appFragment {
     }
 
     protected void initPages() {
-        page = new controlsContacts(getActivity(), new abstractPage.pageListener() {
+        page = new controlsContacts(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 if (uiElementList != null) {
                     for (dynamicEditItem currentItem : uiElementList) {
                         currentItem.removeFromView();
@@ -59,8 +59,8 @@ public class manageContactInfo extends appFragment {
 
                 uiElementList = new ArrayList<>();
 
-                if (((controlsContacts) abstractPage).getPageResults() != null) {
-                    for (HashMap<String, String> currentItem : ((controlsContacts) abstractPage).getPageResults()) {
+                if (((controlsContacts) BasePage).getPageResults() != null) {
+                    for (HashMap<String, String> currentItem : ((controlsContacts) BasePage).getPageResults()) {
                         String label = ((currentItem.containsKey("label")) ? (currentItem.get("label")) : (""));
                         String value = ((currentItem.containsKey("value")) ? (currentItem.get("value")) : (""));
                         String name = ((currentItem.containsKey("name")) ? (currentItem.get("name")) : (""));
@@ -75,7 +75,7 @@ public class manageContactInfo extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data for contact info", Toast.LENGTH_SHORT).show();
@@ -91,14 +91,14 @@ public class manageContactInfo extends appFragment {
                 params.put(currentItem.getName(), currentItem.getValue());
             }
 
-            new open.furaffinity.client.submitPages.submitControlsContacts(getActivity(), new abstractPage.pageListener() {
+            new open.furaffinity.client.submitPages.submitControlsContacts(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Successfully updated contact info", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed to update contact info", Toast.LENGTH_SHORT).show();
                 }
             }, page.getKey(), params).execute();

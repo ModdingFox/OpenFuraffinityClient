@@ -4,13 +4,13 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.pages.controlsShouts;
 
-public class submitShouts extends abstractPage {
+public class submitShouts extends BasePage {
     private final HashMap<String, String> params;
 
-    public submitShouts(Context context, abstractPage.pageListener pageListener, HashMap<String, String> params) {
+    public submitShouts(Context context, BasePage.pageListener pageListener, HashMap<String, String> params) {
         super(context, pageListener);
         this.params = params;
     }

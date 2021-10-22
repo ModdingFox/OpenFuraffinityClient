@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.activity.mainActivity;
 
 public class controlsJournalListAdapter extends RecyclerView.Adapter<controlsJournalListAdapter.ViewHolder> {
@@ -50,16 +50,16 @@ public class controlsJournalListAdapter extends RecyclerView.Adapter<controlsJou
 
         holder.updateButton.setOnClickListener(v -> listener.updateJournal(mDataSet.get(position).get("editPath")));
 
-        holder.deleteButton.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(context, new abstractPage.pageListener() {
+        holder.deleteButton.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 mDataSet.remove(position);
                 notifyDataSetChanged();
                 Toast.makeText(context, "Successfully deleted journal", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(context, "Failed to delete journal", Toast.LENGTH_SHORT).show();
             }
         }, mDataSet.get(position).get("deletePath")).execute());

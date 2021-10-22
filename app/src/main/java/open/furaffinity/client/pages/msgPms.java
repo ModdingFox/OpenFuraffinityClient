@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class msgPms extends abstractPage {
+public class msgPms extends BasePage {
     private static final String sendPath = "/msg/send";
     private static final String notePathPrefix = "/newpm/";
     private final String pagePath = "/msg/pms";

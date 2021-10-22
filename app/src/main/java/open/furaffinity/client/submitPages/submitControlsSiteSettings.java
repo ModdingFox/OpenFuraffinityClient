@@ -4,10 +4,10 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.pages.controlsSiteSettings;
 
-public class submitControlsSiteSettings extends abstractPage {
+public class submitControlsSiteSettings extends BasePage {
     private final boolean disable_avatars_yes;
     private final boolean disable_avatars_no;
     private final boolean switch_date_format_full;
@@ -22,7 +22,7 @@ public class submitControlsSiteSettings extends abstractPage {
     private final String no_search_engines;
     private final String no_notes;
 
-    public submitControlsSiteSettings(Context context, abstractPage.pageListener pageListener, boolean disable_avatars_yes, boolean disable_avatars_no, boolean switch_date_format_full, boolean switch_date_format_fuzzy, String perpage, String newsubmissions_direction, String thumbnail_size, boolean gallery_navigation_minigallery, boolean gallery_navigation_links, String hide_favorites, String no_guests, String no_search_engines, String no_notes) {
+    public submitControlsSiteSettings(Context context, BasePage.pageListener pageListener, boolean disable_avatars_yes, boolean disable_avatars_no, boolean switch_date_format_full, boolean switch_date_format_fuzzy, String perpage, String newsubmissions_direction, String thumbnail_size, boolean gallery_navigation_minigallery, boolean gallery_navigation_links, String hide_favorites, String no_guests, String no_search_engines, String no_notes) {
         super(context, pageListener);
         this.disable_avatars_yes = disable_avatars_yes;
         this.disable_avatars_no = disable_avatars_no;

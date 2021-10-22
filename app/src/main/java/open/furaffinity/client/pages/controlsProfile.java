@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class controlsProfile extends abstractPage {
+public class controlsProfile extends BasePage {
     private static final String TAG = controlsProfile.class.getName();
 
     private static final String pagePath = "/controls/profile/";

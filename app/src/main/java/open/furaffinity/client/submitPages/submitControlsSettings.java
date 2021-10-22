@@ -8,10 +8,10 @@ import org.jsoup.nodes.Element;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.pages.controlsSettings;
 
-public class submitControlsSettings extends open.furaffinity.client.abstractClasses.abstractPage {
+public class submitControlsSettings extends BasePage {
     private final String fa_useremail;
     private final String bdaymonth;
     private final String bdayday;
@@ -36,7 +36,7 @@ public class submitControlsSettings extends open.furaffinity.client.abstractClas
 
     private String errorMessage;
 
-    public submitControlsSettings(Context context, abstractPage.pageListener pageListener, String fa_useremail, String bdaymonth, String bdayday, String bdayyear, String viewmature, String timezone, String timezone_dst, String fullview, String style, String stylesheet, String scales_enabled, String paypal_email, String display_mode, String scales_message_enabled, String scales_name, String scales_plural_name, String scales_cost, String account_disabled, String newpassword, String newpassword2, String oldpassword) {
+    public submitControlsSettings(Context context, BasePage.pageListener pageListener, String fa_useremail, String bdaymonth, String bdayday, String bdayyear, String viewmature, String timezone, String timezone_dst, String fullview, String style, String stylesheet, String scales_enabled, String paypal_email, String display_mode, String scales_message_enabled, String scales_name, String scales_plural_name, String scales_cost, String account_disabled, String newpassword, String newpassword2, String oldpassword) {
         super(context, pageListener);
         this.fa_useremail = fa_useremail;
         this.bdaymonth = bdaymonth;

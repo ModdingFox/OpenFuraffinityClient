@@ -9,9 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class controlsFoldersSubmissionsFolder extends abstractPage {
+public class controlsFoldersSubmissionsFolder extends BasePage {
     String pagePath;
     String folderId;
 

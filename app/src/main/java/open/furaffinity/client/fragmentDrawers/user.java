@@ -27,8 +27,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.userSectionsPagerAdapter;
 import open.furaffinity.client.pages.loginCheck;
@@ -36,7 +36,7 @@ import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
 
-public class user extends appFragment {
+public class user extends BaseFragment {
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
 
     private TextView userName;
@@ -64,10 +64,10 @@ public class user extends appFragment {
     private open.furaffinity.client.pages.loginCheck loginCheck;
     private open.furaffinity.client.pages.user page;
     private boolean isLoading = false;
-    private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
+    private final BasePage.pageListener pageListener = new BasePage.pageListener() {
         @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            if (((open.furaffinity.client.pages.user) abstractPage).getBlockUnBlock() != null && ((open.furaffinity.client.pages.user) abstractPage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.user) abstractPage).getNoteUser() != null) {
+        public void requestSucceeded(BasePage BasePage) {
+            if (((open.furaffinity.client.pages.user) BasePage).getBlockUnBlock() != null && ((open.furaffinity.client.pages.user) BasePage).getWatchUnWatch() != null && ((open.furaffinity.client.pages.user) BasePage).getNoteUser() != null) {
                 coordinatorLayout.addView(watchUser);
                 coordinatorLayout.addView(blockUser);
                 coordinatorLayout.addView(sendNote);
@@ -89,25 +89,25 @@ public class user extends appFragment {
                 }
             }
 
-            userName.setText(((open.furaffinity.client.pages.user) abstractPage).getUserName());
-            userAccountStatus.setText(((open.furaffinity.client.pages.user) abstractPage).getUserAccountStatus());
-            userAccountStatusLine.setText(((open.furaffinity.client.pages.user) abstractPage).getUserAccountStatusLine());
-            Glide.with(user.this).load(((open.furaffinity.client.pages.user) abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
-            userViews.setText(((open.furaffinity.client.pages.user) abstractPage).getUserViews());
-            userSubmissions.setText(((open.furaffinity.client.pages.user) abstractPage).getUserSubmissions());
-            userFavs.setText(((open.furaffinity.client.pages.user) abstractPage).getUserFavs());
-            userCommentsEarned.setText(((open.furaffinity.client.pages.user) abstractPage).getUserCommentsEarned());
-            userCommentsMade.setText(((open.furaffinity.client.pages.user) abstractPage).getUserCommentsMade());
-            userJournals.setText(((open.furaffinity.client.pages.user) abstractPage).getUserJournals());
+            userName.setText(((open.furaffinity.client.pages.user) BasePage).getUserName());
+            userAccountStatus.setText(((open.furaffinity.client.pages.user) BasePage).getUserAccountStatus());
+            userAccountStatusLine.setText(((open.furaffinity.client.pages.user) BasePage).getUserAccountStatusLine());
+            Glide.with(user.this).load(((open.furaffinity.client.pages.user) BasePage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(userIcon);
+            userViews.setText(((open.furaffinity.client.pages.user) BasePage).getUserViews());
+            userSubmissions.setText(((open.furaffinity.client.pages.user) BasePage).getUserSubmissions());
+            userFavs.setText(((open.furaffinity.client.pages.user) BasePage).getUserFavs());
+            userCommentsEarned.setText(((open.furaffinity.client.pages.user) BasePage).getUserCommentsEarned());
+            userCommentsMade.setText(((open.furaffinity.client.pages.user) BasePage).getUserCommentsMade());
+            userJournals.setText(((open.furaffinity.client.pages.user) BasePage).getUserJournals());
 
             saveHistory();
-            setupViewPager(((open.furaffinity.client.pages.user) abstractPage));
+            setupViewPager(((open.furaffinity.client.pages.user) BasePage));
 
             isLoading = false;
         }
 
         @Override
-        public void requestFailed(abstractPage abstractPage) {
+        public void requestFailed(BasePage BasePage) {
             isLoading = false;
             Toast.makeText(getActivity(), "Failed to load data for user", Toast.LENGTH_SHORT).show();
         }
@@ -255,10 +255,10 @@ public class user extends appFragment {
     }
 
     protected void initPages() {
-        loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
+        loginCheck = new loginCheck(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                if (((loginCheck) abstractPage).getIsLoggedIn()) {
+            public void requestSucceeded(BasePage BasePage) {
+                if (((loginCheck) BasePage).getIsLoggedIn()) {
                     fab.setVisibility(View.VISIBLE);
                 } else {
                     fab.setVisibility(View.GONE);
@@ -266,7 +266,7 @@ public class user extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 fab.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
             }
@@ -278,28 +278,28 @@ public class user extends appFragment {
     }
 
     protected void updateUIElementListeners(View rootView) {
-        watchUser.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+        watchUser.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 fetchPageData();
                 Toast.makeText(getActivity(), "Successfully updated watches", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(getActivity(), "Failed to update watches", Toast.LENGTH_SHORT).show();
             }
         }, page.getWatchUnWatch()).execute());
 
-        blockUser.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
+        blockUser.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 fetchPageData();
                 Toast.makeText(getActivity(), "Successfully updated block status", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(getActivity(), "Failed to update block status", Toast.LENGTH_SHORT).show();
             }
         }, page.getBlockUnBlock()).execute());

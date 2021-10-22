@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class journals extends abstractPage {
+public class journals extends BasePage {
     private static final String TAG = journals.class.getName();
     private final List<HashMap<String, String>> pageResults = new ArrayList<>();
     String pagePath;

@@ -4,16 +4,16 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentTabs.manageSubmissions;
 
-public class submitControlsSubmissionsAssignItemToFolder extends abstractPage {
+public class submitControlsSubmissionsAssignItemToFolder extends BasePage {
 
     private final String assign_folder_id;
     private final String assign_folder_submit;
     private final HashMap<String, String> params;
 
-    public submitControlsSubmissionsAssignItemToFolder(Context context, abstractPage.pageListener pageListener, String assign_folder_id, String assign_folder_submit, HashMap<String, String> params) {
+    public submitControlsSubmissionsAssignItemToFolder(Context context, BasePage.pageListener pageListener, String assign_folder_id, String assign_folder_submit, HashMap<String, String> params) {
         super(context, pageListener);
         this.assign_folder_id = assign_folder_id;
         this.assign_folder_submit = assign_folder_submit;

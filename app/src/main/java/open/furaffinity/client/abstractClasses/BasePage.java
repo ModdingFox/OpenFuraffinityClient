@@ -7,8 +7,8 @@ import android.os.AsyncTask;
 import open.furaffinity.client.R;
 import open.furaffinity.client.utilities.webClient;
 
-public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
-    protected static final String TAG = abstractPage.class.getName();
+public abstract class BasePage extends AsyncTask<Void, Void, Boolean> {
+    protected static final String TAG = BasePage.class.getName();
 
     protected Context context;
     protected SharedPreferences sharedPref;
@@ -16,7 +16,7 @@ public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
     protected webClient webClient;
     protected pageListener pageListener;
 
-    public abstractPage(Context context, pageListener pageListener) {
+    public BasePage(Context context, pageListener pageListener) {
         this.context = context;
         this.sharedPref = this.context.getSharedPreferences(this.context.getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
@@ -24,10 +24,10 @@ public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
         this.pageListener = pageListener;
     }
 
-    public abstractPage(abstractPage abstractPage) {
-        this.context = abstractPage.context;
-        this.webClient = abstractPage.webClient;
-        this.pageListener = abstractPage.pageListener;
+    public BasePage(BasePage BasePage) {
+        this.context = BasePage.context;
+        this.webClient = BasePage.webClient;
+        this.pageListener = BasePage.pageListener;
     }
 
     protected abstract Boolean processPageData(String html);
@@ -37,15 +37,15 @@ public abstract class abstractPage extends AsyncTask<Void, Void, Boolean> {
         super.onPostExecute(aBoolean);
 
         if (aBoolean) {
-            this.pageListener.requestSucceeded(abstractPage.this);
+            this.pageListener.requestSucceeded(BasePage.this);
         } else {
-            this.pageListener.requestFailed(abstractPage.this);
+            this.pageListener.requestFailed(BasePage.this);
         }
     }
 
     public interface pageListener {
-        void requestSucceeded(abstractPage abstractPage);
+        void requestSucceeded(BasePage BasePage);
 
-        void requestFailed(abstractPage abstractPage);
+        void requestFailed(BasePage BasePage);
     }
 }

@@ -11,11 +11,11 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgOthersSectionsPagerAdapter;
 
-public class msgOthers extends appFragment {
+public class msgOthers extends BaseFragment {
     private ViewPager viewPager;
     private TabLayout tabs;
 

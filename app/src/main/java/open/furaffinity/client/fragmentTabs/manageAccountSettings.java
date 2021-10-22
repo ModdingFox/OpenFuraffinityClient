@@ -9,15 +9,15 @@ import android.widget.Toast;
 import androidx.fragment.app.DialogFragment;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.pages.controlsSettings;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class manageAccountSettings extends appFragment {
+public class manageAccountSettings extends BaseFragment {
     private EditText fa_useremail;
     private Spinner bdaymonth;
     private Spinner bdayday;
@@ -90,41 +90,41 @@ public class manageAccountSettings extends appFragment {
     }
 
     protected void initPages() {
-        page = new controlsSettings(getActivity(), new abstractPage.pageListener() {
+        page = new controlsSettings(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                fa_useremail.setText(((controlsSettings) abstractPage).getFaUserEmail());
+            public void requestSucceeded(BasePage BasePage) {
+                fa_useremail.setText(((controlsSettings) BasePage).getFaUserEmail());
 
-                uiControls.spinnerSetAdapter(requireContext(), bdaymonth, ((controlsSettings) abstractPage).getBDayMonth(), ((controlsSettings) abstractPage).getBDayMonthCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), bdayday, ((controlsSettings) abstractPage).getBDayDay(), ((controlsSettings) abstractPage).getBDayDayCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), bdayyear, ((controlsSettings) abstractPage).getBDayYear(), ((controlsSettings) abstractPage).getBDayYearCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), viewmature, ((controlsSettings) abstractPage).getViewMature(), ((controlsSettings) abstractPage).getViewMatureCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), timezone, ((controlsSettings) abstractPage).getTimezone(), ((controlsSettings) abstractPage).getTimezoneCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdaymonth, ((controlsSettings) BasePage).getBDayMonth(), ((controlsSettings) BasePage).getBDayMonthCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdayday, ((controlsSettings) BasePage).getBDayDay(), ((controlsSettings) BasePage).getBDayDayCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdayyear, ((controlsSettings) BasePage).getBDayYear(), ((controlsSettings) BasePage).getBDayYearCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), viewmature, ((controlsSettings) BasePage).getViewMature(), ((controlsSettings) BasePage).getViewMatureCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), timezone, ((controlsSettings) BasePage).getTimezone(), ((controlsSettings) BasePage).getTimezoneCurrent(), true, false);
 
-                timezone_dst.setChecked(((controlsSettings) abstractPage).getTimezoneDST());
+                timezone_dst.setChecked(((controlsSettings) BasePage).getTimezoneDST());
 
-                uiControls.spinnerSetAdapter(requireContext(), fullview, ((controlsSettings) abstractPage).getFullView(), ((controlsSettings) abstractPage).getFullViewCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), style, ((controlsSettings) abstractPage).getStyle(), ((controlsSettings) abstractPage).getStyleCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), stylesheet, ((controlsSettings) abstractPage).getStylesheet(), ((controlsSettings) abstractPage).getStylesheetCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), scales_enabled, ((controlsSettings) abstractPage).getScalesEnabled(), ((controlsSettings) abstractPage).getScalesEnabledCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), fullview, ((controlsSettings) BasePage).getFullView(), ((controlsSettings) BasePage).getFullViewCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), style, ((controlsSettings) BasePage).getStyle(), ((controlsSettings) BasePage).getStyleCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), stylesheet, ((controlsSettings) BasePage).getStylesheet(), ((controlsSettings) BasePage).getStylesheetCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), scales_enabled, ((controlsSettings) BasePage).getScalesEnabled(), ((controlsSettings) BasePage).getScalesEnabledCurrent(), true, false);
 
-                paypal_email.setText(((controlsSettings) abstractPage).getPayPalEmail());
+                paypal_email.setText(((controlsSettings) BasePage).getPayPalEmail());
 
-                uiControls.spinnerSetAdapter(requireContext(), display_mode, ((controlsSettings) abstractPage).getDisplayMode(), ((controlsSettings) abstractPage).getDisplayModeCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), scales_message_enabled, ((controlsSettings) abstractPage).getScalesMessageEnabled(), ((controlsSettings) abstractPage).getScalesMessageEnabledCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), display_mode, ((controlsSettings) BasePage).getDisplayMode(), ((controlsSettings) BasePage).getDisplayModeCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), scales_message_enabled, ((controlsSettings) BasePage).getScalesMessageEnabled(), ((controlsSettings) BasePage).getScalesMessageEnabledCurrent(), true, false);
 
-                scales_name.setText(((controlsSettings) abstractPage).getScalesName());
-                scales_plural_name.setText(((controlsSettings) abstractPage).getScalesPluralName());
-                scales_cost.setText(((controlsSettings) abstractPage).getScalesCost());
+                scales_name.setText(((controlsSettings) BasePage).getScalesName());
+                scales_plural_name.setText(((controlsSettings) BasePage).getScalesPluralName());
+                scales_cost.setText(((controlsSettings) BasePage).getScalesCost());
 
-                uiControls.spinnerSetAdapter(requireContext(), account_disabled, ((controlsSettings) abstractPage).getAccountDisabled(), ((controlsSettings) abstractPage).getAccountDisabledCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), account_disabled, ((controlsSettings) BasePage).getAccountDisabled(), ((controlsSettings) BasePage).getAccountDisabledCurrent(), true, false);
 
                 fab.setVisibility(View.VISIBLE);
                 isLoading = false;
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data for account settings", Toast.LENGTH_SHORT).show();
@@ -140,15 +140,15 @@ public class manageAccountSettings extends appFragment {
             textDialog.setListener(new textDialog.dialogListener() {
                 @Override
                 public void onDialogPositiveClick(DialogFragment dialog) {
-                    new open.furaffinity.client.submitPages.submitControlsSettings(getActivity(), new abstractPage.pageListener() {
+                    new open.furaffinity.client.submitPages.submitControlsSettings(getActivity(), new BasePage.pageListener() {
                         @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                        public void requestSucceeded(BasePage BasePage) {
                             Toast.makeText(getActivity(), "Account settings updated", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void requestFailed(abstractPage abstractPage) {
-                            Toast.makeText(getActivity(), "Failed to update account settings:" + ((open.furaffinity.client.submitPages.submitControlsSettings) abstractPage).getErrorMessage(), Toast.LENGTH_SHORT).show();
+                        public void requestFailed(BasePage BasePage) {
+                            Toast.makeText(getActivity(), "Failed to update account settings:" + ((open.furaffinity.client.submitPages.submitControlsSettings) BasePage).getErrorMessage(), Toast.LENGTH_SHORT).show();
                         }
                     },
                             fa_useremail.getText().toString(),

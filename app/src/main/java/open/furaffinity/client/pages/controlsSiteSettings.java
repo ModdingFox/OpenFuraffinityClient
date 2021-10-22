@@ -9,9 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class controlsSiteSettings extends abstractPage {
+public class controlsSiteSettings extends BasePage {
     private static final String pagePath = "/controls/site-settings/";
 
     private boolean disable_avatars;

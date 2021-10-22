@@ -17,6 +17,7 @@ import open.furaffinity.client.fragmentTabs.userJournals;
 import open.furaffinity.client.fragmentTabs.userProfile;
 import open.furaffinity.client.fragmentTabs.watch;
 import open.furaffinity.client.fragmentTabs.webViewContent;
+import open.furaffinity.client.pages.CommissionsPage;
 import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 
@@ -79,7 +80,7 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
             case 5:
                 webViewContent newUserCommissionsFragment = new webViewContent();
                 bundle.putString(messageIds.pagePath_MESSAGE, user.getUserCommissionPath());
-                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.commissions.class.getName());
+                bundle.putString(messageIds.submissionDescription_MESSAGE, CommissionsPage.class.getName());
                 newUserCommissionsFragment.setArguments(bundle);
                 return newUserCommissionsFragment;
             case 6:

@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.stringListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.watchList;
 import open.furaffinity.client.utilities.messageIds;
 
-public class watch extends appFragment {
+public class watch extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private LinearLayoutManager layoutManager;
     private RecyclerView recyclerView;
@@ -69,10 +69,10 @@ public class watch extends appFragment {
         recyclerView.setAdapter(mAdapter);
 
         if (getArguments() != null) {
-            page = new watchList(getContext(), new abstractPage.pageListener() {
+            page = new watchList(getContext(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    List<HashMap<String, String>> pageResults = ((watchList) abstractPage).getPageResults();
+                public void requestSucceeded(BasePage BasePage) {
+                    List<HashMap<String, String>> pageResults = ((watchList) BasePage).getPageResults();
 
                     int curSize = mAdapter.getItemCount();
 
@@ -90,7 +90,7 @@ public class watch extends appFragment {
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed to load data for watch list", Toast.LENGTH_SHORT).show();
                 }
             }, getArguments().getString(messageIds.pagePath_MESSAGE));

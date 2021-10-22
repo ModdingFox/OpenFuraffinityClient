@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentDrawers.journal;
 import open.furaffinity.client.fragmentDrawers.view;
 
-public class msgOthers extends abstractPage {
+public class msgOthers extends BasePage {
     private final String pagePath = "/msg/others";
 
     private String watches = "";

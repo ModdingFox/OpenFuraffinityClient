@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.journalListAdapter;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.pages.journals;
 import open.furaffinity.client.utilities.messageIds;
 
-public class userJournals extends appFragment {
+public class userJournals extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private LinearLayoutManager layoutManager;
     private RecyclerView recyclerView;
@@ -60,9 +60,9 @@ public class userJournals extends appFragment {
         recyclerView.setAdapter(mAdapter);
 
         if (getArguments() != null) {
-            page = new journals(getActivity(), new abstractPage.pageListener() {
+            page = new journals(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     List<HashMap<String, String>> pageResults = page.getPageResults();
 
                     int curSize = mAdapter.getItemCount();
@@ -83,7 +83,7 @@ public class userJournals extends appFragment {
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     loadingStopCounter--;
                     isLoading = false;
                     Toast.makeText(getActivity(), "Failed to load data for journals", Toast.LENGTH_SHORT).show();

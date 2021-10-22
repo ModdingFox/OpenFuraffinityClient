@@ -15,13 +15,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.checkboxListAdapter;
 import open.furaffinity.client.sqlite.searchContract;
 import open.furaffinity.client.utilities.messageIds;
 
-public class viewKeywords extends appFragment {
+public class viewKeywords extends BaseFragment {
     private RecyclerView.LayoutManager layoutManager;
 
     private RecyclerView recyclerView;

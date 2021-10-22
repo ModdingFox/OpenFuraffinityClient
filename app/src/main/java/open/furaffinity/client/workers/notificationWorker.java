@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.pages.msgOthers;
@@ -46,51 +46,51 @@ public class notificationWorker extends Worker {
     }
 
     private void initClientAndPage() {
-        loginCheck = new open.furaffinity.client.pages.loginCheck(context, new abstractPage.pageListener() {
+        loginCheck = new open.furaffinity.client.pages.loginCheck(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
 
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
-
-            }
-        });
-
-        msgOthers = new msgOthers(context, new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-
-            }
-
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
 
             }
         });
 
-        msgPms = new msgPms(context, new abstractPage.pageListener() {
+        msgOthers = new msgOthers(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
 
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
+
+            }
+        });
+
+        msgPms = new msgPms(context, new BasePage.pageListener() {
+            @Override
+            public void requestSucceeded(BasePage BasePage) {
+
+            }
+
+            @Override
+            public void requestFailed(BasePage BasePage) {
 
             }
         });
 
         msgPms.setSelectedFolder(open.furaffinity.client.pages.msgPms.mailFolders.unread);
-        msgSubmission = new msgSubmission(context, new abstractPage.pageListener() {
+        msgSubmission = new msgSubmission(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
 
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
 
             }
         }, true);

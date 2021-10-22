@@ -36,7 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.backContract;
@@ -174,15 +174,15 @@ public class mainActivity extends AppCompatActivity {
     }
 
     private void initClientAndPage() {
-        loginCheck = new loginCheck(this, new abstractPage.pageListener() {
+        loginCheck = new loginCheck(this, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                if (((loginCheck) abstractPage).getIsLoggedIn()) {
-                    Glide.with(mainActivity.this).load(((loginCheck) abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(imageView);
-                    imageView.setOnClickListener(v -> mainActivity.this.setUserPath(((loginCheck) abstractPage).getUserPage()));
+            public void requestSucceeded(BasePage BasePage) {
+                if (((loginCheck) BasePage).getIsLoggedIn()) {
+                    Glide.with(mainActivity.this).load(((loginCheck) BasePage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(imageView);
+                    imageView.setOnClickListener(v -> mainActivity.this.setUserPath(((loginCheck) BasePage).getUserPage()));
 
-                    userName.setText(((loginCheck) abstractPage).getUserName());
-                    userName.setOnClickListener(v -> mainActivity.this.setUserPath(((loginCheck) abstractPage).getUserPage()));
+                    userName.setText(((loginCheck) BasePage).getUserName());
+                    userName.setOnClickListener(v -> mainActivity.this.setUserPath(((loginCheck) BasePage).getUserPage()));
 
                     navMenu.findItem(R.id.nav_upload).setVisible(true);
                     navMenu.findItem(R.id.nav_profile).setVisible(true);
@@ -193,12 +193,12 @@ public class mainActivity extends AppCompatActivity {
 
                     drawer.addDrawerListener(drawerListener);
 
-                    int notificationSCount = ((loginCheck) abstractPage).getNotificationS();
-                    int notificationWCount = ((loginCheck) abstractPage).getNotificationW();
-                    int notificationCCount = ((loginCheck) abstractPage).getNotificationC();
-                    int notificationFCount = ((loginCheck) abstractPage).getNotificationF();
-                    int notificationJCount = ((loginCheck) abstractPage).getNotificationJ();
-                    int notificationNCount = ((loginCheck) abstractPage).getNotificationN();
+                    int notificationSCount = ((loginCheck) BasePage).getNotificationS();
+                    int notificationWCount = ((loginCheck) BasePage).getNotificationW();
+                    int notificationCCount = ((loginCheck) BasePage).getNotificationC();
+                    int notificationFCount = ((loginCheck) BasePage).getNotificationF();
+                    int notificationJCount = ((loginCheck) BasePage).getNotificationJ();
+                    int notificationNCount = ((loginCheck) BasePage).getNotificationN();
 
                     if (notificationSCount > 0) {
                         notificationS.setVisibility(View.VISIBLE);
@@ -264,7 +264,7 @@ public class mainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 imageView.setImageResource(R.mipmap.ic_launcher);
                 userName.setText(getString(R.string.app_name));
 

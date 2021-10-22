@@ -9,9 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class controlsSettings extends abstractPage {
+public class controlsSettings extends BasePage {
     private static final String pagePath = "/controls/settings/";
 
     private String fa_useremail;

@@ -6,19 +6,19 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
-import open.furaffinity.client.pages.commissions;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
+import open.furaffinity.client.pages.CommissionsPage;
 import open.furaffinity.client.pages.journal;
 import open.furaffinity.client.pages.msgPmsMessage;
 import open.furaffinity.client.pages.view;
 import open.furaffinity.client.utilities.messageIds;
 
-public class webViewContent extends appFragment {
+public class webViewContent extends BaseFragment {
     private WebView webView;
     private String mData = "";
 
-    private open.furaffinity.client.abstractClasses.abstractPage abstractPage = null;
+    private BasePage BasePage = null;
 
     @Override
     protected int getLayout() {
@@ -44,62 +44,62 @@ public class webViewContent extends appFragment {
             String submissionDescription = getArguments().getString(messageIds.submissionDescription_MESSAGE);
             String pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 
-            if (submissionDescription.equals(commissions.class.getName())) {
-                abstractPage = new open.furaffinity.client.pages.commissions(getActivity(), new abstractPage.pageListener() {
+            if (submissionDescription.equals(CommissionsPage.class.getName())) {
+                BasePage = new CommissionsPage(getActivity(), new BasePage.pageListener() {
                     @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
-                        mData = "<table>" + ((open.furaffinity.client.pages.commissions) abstractPage).getCommissionBodyBody() + "</table>";
+                    public void requestSucceeded(BasePage BasePage) {
+                        mData = "<table>" + ((CommissionsPage) BasePage).getCommissionBodyBody() + "</table>";
                         updateUIElements();
                     }
 
                     @Override
-                    public void requestFailed(abstractPage abstractPage) {
+                    public void requestFailed(BasePage BasePage) {
                         Toast.makeText(getActivity(), "Failed to load data from commissions page", Toast.LENGTH_SHORT).show();
                     }
                 }, pagePath);
             } else if (submissionDescription.equals(journal.class.getName())) {
-                abstractPage = new open.furaffinity.client.pages.journal(getActivity(), new abstractPage.pageListener() {
+                BasePage = new open.furaffinity.client.pages.journal(getActivity(), new BasePage.pageListener() {
                     @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
-                        mData = "<table>" + ((open.furaffinity.client.pages.journal) abstractPage).getJournalContent() + "</table>";
+                    public void requestSucceeded(BasePage BasePage) {
+                        mData = "<table>" + ((open.furaffinity.client.pages.journal) BasePage).getJournalContent() + "</table>";
                         updateUIElements();
                     }
 
                     @Override
-                    public void requestFailed(abstractPage abstractPage) {
+                    public void requestFailed(BasePage BasePage) {
                         Toast.makeText(getActivity(), "Failed to load data from journal page", Toast.LENGTH_SHORT).show();
                     }
                 }, pagePath);
             } else if (submissionDescription.equals(view.class.getName())) {
-                abstractPage = new open.furaffinity.client.pages.view(getActivity(), new abstractPage.pageListener() {
+                BasePage = new open.furaffinity.client.pages.view(getActivity(), new BasePage.pageListener() {
                     @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
-                        mData = "<table>" + ((open.furaffinity.client.pages.view) abstractPage).getSubmissionDescription() + "</table>";
+                    public void requestSucceeded(BasePage BasePage) {
+                        mData = "<table>" + ((open.furaffinity.client.pages.view) BasePage).getSubmissionDescription() + "</table>";
                         updateUIElements();
                     }
 
                     @Override
-                    public void requestFailed(abstractPage abstractPage) {
+                    public void requestFailed(BasePage BasePage) {
                         Toast.makeText(getActivity(), "Failed to load data from view page", Toast.LENGTH_SHORT).show();
                     }
                 }, pagePath);
             } else if (submissionDescription.equals(msgPmsMessage.class.getName())) {
-                abstractPage = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), new abstractPage.pageListener() {
+                BasePage = new open.furaffinity.client.pages.msgPmsMessage(getActivity(), new BasePage.pageListener() {
                     @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
-                        mData = "<table>" + ((open.furaffinity.client.pages.msgPmsMessage) abstractPage).getMessageBody() + "</table>";
+                    public void requestSucceeded(BasePage BasePage) {
+                        mData = "<table>" + ((open.furaffinity.client.pages.msgPmsMessage) BasePage).getMessageBody() + "</table>";
                         updateUIElements();
                     }
 
                     @Override
-                    public void requestFailed(abstractPage abstractPage) {
+                    public void requestFailed(BasePage BasePage) {
                         Toast.makeText(getActivity(), "Failed to load data from message page", Toast.LENGTH_SHORT).show();
                     }
                 }, pagePath);
             }
 
-            if (pagePath != null && abstractPage != null) {//No reason to try a request that will fail for sure
-                abstractPage.execute();
+            if (pagePath != null && BasePage != null) {//No reason to try a request that will fail for sure
+                BasePage.execute();
             }
         }
     }

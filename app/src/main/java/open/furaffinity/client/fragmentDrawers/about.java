@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.pages.user;
 
-public class about extends appFragment {
+public class about extends BaseFragment {
     private static final String TAG = about.class.getName();
     private final List<contributor> contributorsList = new ArrayList<>();
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
@@ -62,12 +62,12 @@ public class about extends appFragment {
 
         for (contributor currentElement : contributorsList) {
             try {
-                new user(getActivity(), new abstractPage.pageListener() {
+                new user(getActivity(), new BasePage.pageListener() {
                     @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
+                    public void requestSucceeded(BasePage BasePage) {
                         HashMap<String, String> newUserItem = new HashMap<>();
-                        newUserItem.put("userName", ((user) abstractPage).getUserName() + ((currentElement.getUserAlias() != null) ? ("(" + currentElement.getUserAlias() + ")") : ("")));
-                        newUserItem.put("userIcon", ((user) abstractPage).getUserIcon());
+                        newUserItem.put("userName", ((user) BasePage).getUserName() + ((currentElement.getUserAlias() != null) ? ("(" + currentElement.getUserAlias() + ")") : ("")));
+                        newUserItem.put("userIcon", ((user) BasePage).getUserIcon());
                         newUserItem.put("userLink", currentElement.getUserPage());
                         newUserItem.put("commentDate", currentElement.getUserDate());
                         newUserItem.put("comment", currentElement.getUserDescription());
@@ -76,7 +76,7 @@ public class about extends appFragment {
                     }
 
                     @Override
-                    public void requestFailed(abstractPage abstractPage) {
+                    public void requestFailed(BasePage BasePage) {
                         Toast.makeText(getActivity(), "Failed to load data for contributor", Toast.LENGTH_SHORT).show();
                     }
                 }, currentElement.getUserPage()).execute().get();

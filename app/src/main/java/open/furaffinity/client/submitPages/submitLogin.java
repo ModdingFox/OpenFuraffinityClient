@@ -5,9 +5,9 @@ import android.content.Context;
 import java.util.HashMap;
 
 import okhttp3.Cookie;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitLogin extends abstractPage {
+public class submitLogin extends BasePage {
     private final String name;
     private final String pass;
     private final String gRecaptchaResponse;
@@ -15,7 +15,7 @@ public class submitLogin extends abstractPage {
     private Cookie a;
     private Cookie b;
 
-    public submitLogin(Context context, abstractPage.pageListener pageListener, String name, String pass, String gRecaptchaResponse) {
+    public submitLogin(Context context, BasePage.pageListener pageListener, String name, String pass, String gRecaptchaResponse) {
         super(context, pageListener);
         this.name = name;
         this.pass = pass;

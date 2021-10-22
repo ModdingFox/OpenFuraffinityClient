@@ -6,14 +6,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.pages.controlsSiteSettings;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
-public class manageSiteSettings extends appFragment {
+public class manageSiteSettings extends BaseFragment {
     private RadioButton disable_avatars_yes;
     private RadioButton disable_avatars_no;
     private RadioButton switch_date_format_full;
@@ -73,9 +73,9 @@ public class manageSiteSettings extends appFragment {
     }
 
     protected void initPages() {
-        page = new controlsSiteSettings(getActivity(), new abstractPage.pageListener() {
+        page = new controlsSiteSettings(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 if (page.getDisableAvatars()) {
                     disable_avatars_yes.setChecked(true);
                 } else {
@@ -114,7 +114,7 @@ public class manageSiteSettings extends appFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
                 Toast.makeText(getActivity(), "Failed to load data site settings", Toast.LENGTH_SHORT).show();
@@ -123,14 +123,14 @@ public class manageSiteSettings extends appFragment {
     }
 
     protected void updateUIElementListeners(View rootView) {
-        fab.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitControlsSiteSettings(getActivity(), new abstractPage.pageListener() {
+        fab.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitControlsSiteSettings(getActivity(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 Toast.makeText(getActivity(), "Successfully updated site settings", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(getActivity(), "Failed to updated site settings", Toast.LENGTH_SHORT).show();
             }
         }, disable_avatars_yes.isChecked(), disable_avatars_no.isChecked(), switch_date_format_full.isChecked(), switch_date_format_fuzzy.isChecked(),

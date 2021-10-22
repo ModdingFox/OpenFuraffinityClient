@@ -16,14 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BasePage;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.adapter.commentListAdapter;
 import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 
-public class shouts extends appFragment {
+public class shouts extends BaseFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private RecyclerView.LayoutManager layoutManager;
     @SuppressWarnings("FieldCanBeLocal")
@@ -84,21 +84,21 @@ public class shouts extends appFragment {
         if (getArguments() != null) {
             pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 
-            loginCheck = new open.furaffinity.client.pages.loginCheck(getActivity(), new abstractPage.pageListener() {
+            loginCheck = new open.furaffinity.client.pages.loginCheck(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    if (((open.furaffinity.client.pages.loginCheck) abstractPage).getIsLoggedIn()) {
+                public void requestSucceeded(BasePage BasePage) {
+                    if (((open.furaffinity.client.pages.loginCheck) BasePage).getIsLoggedIn()) {
                         comment.setVisibility(View.VISIBLE);
                     } else {
                         comment.setVisibility(View.GONE);
                     }
 
-                    ((commentListAdapter) mAdapter).setLoggedIn(((open.furaffinity.client.pages.loginCheck) abstractPage).getIsLoggedIn());
+                    ((commentListAdapter) mAdapter).setLoggedIn(((open.furaffinity.client.pages.loginCheck) BasePage).getIsLoggedIn());
                     resetRecycler();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -109,9 +109,9 @@ public class shouts extends appFragment {
             mAdapter = new commentListAdapter(mDataSet, getActivity(), false);
             recyclerView.setAdapter(mAdapter);
 
-            user = new user(getActivity(), new abstractPage.pageListener() {
+            user = new user(getActivity(), new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     mDataSet.addAll(open.furaffinity.client.pages.user.processShouts(user.getUserShouts()));
                     mAdapter.notifyDataSetChanged();
 
@@ -120,7 +120,7 @@ public class shouts extends appFragment {
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     isLoading = false;
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getActivity(), "Failed to load data for shouts", Toast.LENGTH_SHORT).show();
@@ -141,15 +141,15 @@ public class shouts extends appFragment {
 
                     @Override
                     public void onDialogPositiveClick(DialogFragment dialog) {
-                        new open.furaffinity.client.submitPages.submitShout(getActivity(), new abstractPage.pageListener() {
+                        new open.furaffinity.client.submitPages.submitShout(getActivity(), new BasePage.pageListener() {
                             @Override
-                            public void requestSucceeded(abstractPage abstractPage) {
+                            public void requestSucceeded(BasePage BasePage) {
                                 resetRecycler();
                                 Toast.makeText(getActivity(), "Successfully posted shout", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
-                            public void requestFailed(abstractPage abstractPage) {
+                            public void requestFailed(BasePage BasePage) {
                                 Toast.makeText(getActivity(), "Failed to post shout", Toast.LENGTH_SHORT).show();
                             }
                         }, pagePath, user.getShoutKey(), user.getShoutName(), textDialog.getText()).execute();

@@ -4,15 +4,15 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitShout extends abstractPage {
+public class submitShout extends BasePage {
     private final String pagePath;
     private final String key;
     private final String name;
     private final String shout;
 
-    public submitShout(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String name, String shout) {
+    public submitShout(Context context, BasePage.pageListener pageListener, String pagePath, String key, String name, String shout) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;

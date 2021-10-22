@@ -6,15 +6,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class login extends abstractPage {
+public class login extends BasePage {
 
     private static final String pagePath = "/login";
 
     private boolean recaptchaRequired;
 
-    public login(Context context, abstractPage.pageListener pageListener) {
+    public login(Context context, BasePage.pageListener pageListener) {
         super(context, pageListener);
     }
 

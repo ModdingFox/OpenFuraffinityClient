@@ -5,10 +5,10 @@ import android.view.View;
 import android.webkit.WebView;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.appFragment;
+import open.furaffinity.client.abstractClasses.BaseFragment;
 import open.furaffinity.client.utilities.messageIds;
 
-public class userProfile extends appFragment {
+public class userProfile extends BaseFragment {
     private WebView userPageProfile;
     private WebView userProfile;
 

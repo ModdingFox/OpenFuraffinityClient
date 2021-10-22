@@ -15,8 +15,8 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragmentDrawers.settings;
 
-public abstract class appFragment extends Fragment {
-    protected static final String TAG = appFragment.class.getName();
+public abstract class BaseFragment extends Fragment {
+    protected static final String TAG = BaseFragment.class.getName();
 
     protected abstract int getLayout();
 

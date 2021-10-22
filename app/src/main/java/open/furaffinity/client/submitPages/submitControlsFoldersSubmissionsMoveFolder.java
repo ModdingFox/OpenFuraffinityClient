@@ -4,9 +4,9 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitControlsFoldersSubmissionsMoveFolder extends abstractPage {
+public class submitControlsFoldersSubmissionsMoveFolder extends BasePage {
 
     private final String pagePath;
     private final String key;
@@ -14,7 +14,7 @@ public class submitControlsFoldersSubmissionsMoveFolder extends abstractPage {
     private final String idName;
     private final String id;
 
-    public submitControlsFoldersSubmissionsMoveFolder(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String direction, String idName, String id) {
+    public submitControlsFoldersSubmissionsMoveFolder(Context context, BasePage.pageListener pageListener, String pagePath, String key, String direction, String idName, String id) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;

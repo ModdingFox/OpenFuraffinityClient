@@ -9,9 +9,9 @@ import org.jsoup.select.Elements;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitSubmissionPart1 extends open.furaffinity.client.abstractClasses.abstractPage {
+public class submitSubmissionPart1 extends BasePage {
     private static final String pagePath = "/submit/";
 
     private HashMap<String, String> submissionType = new HashMap<>();
@@ -20,7 +20,7 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
 
     private String submissionTypeCurrent = "";
 
-    public submitSubmissionPart1(Context context, abstractPage.pageListener pageListener) {
+    public submitSubmissionPart1(Context context, BasePage.pageListener pageListener) {
         super(context, pageListener);
     }
 

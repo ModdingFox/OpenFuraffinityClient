@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.pages.controlsFoldersSubmissions;
 import open.furaffinity.client.submitPages.submitSubmissionPart2;
 import open.furaffinity.client.submitPages.submitSubmissionPart3;
@@ -73,10 +73,10 @@ public class uploadFinalizeDialog extends DialogFragment {
     }
 
     private void initClientAndPage() {
-        new controlsFoldersSubmissions(requireContext(), new abstractPage.pageListener() {
+        new controlsFoldersSubmissions(requireContext(), new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                for (HashMap<String, String> currentFolder : ((controlsFoldersSubmissions) abstractPage).getFolders()) {
+            public void requestSucceeded(BasePage BasePage) {
+                for (HashMap<String, String> currentFolder : ((controlsFoldersSubmissions) BasePage).getFolders()) {
                     if (currentFolder.containsKey("name") && currentFolder.containsKey("upfolder_id")) {
                         folderNames.add(currentFolder.get("name"));
                         folderKeys.add(currentFolder.get("upfolder_id"));
@@ -89,7 +89,7 @@ public class uploadFinalizeDialog extends DialogFragment {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(requireContext(), "Failed to get existing folder list", Toast.LENGTH_SHORT).show();
             }
         }).execute();
@@ -150,15 +150,15 @@ public class uploadFinalizeDialog extends DialogFragment {
                 }
             }
 
-            new submitSubmissionPart3(context, new abstractPage.pageListener() {
+            new submitSubmissionPart3(context, new BasePage.pageListener() {
                 @Override
-                public void requestSucceeded(abstractPage abstractPage) {
+                public void requestSucceeded(BasePage BasePage) {
                     Toast.makeText(context, "Successfully uploaded submission", Toast.LENGTH_SHORT).show();
                     uploadFinalizeDialog.this.dismiss();
                 }
 
                 @Override
-                public void requestFailed(abstractPage abstractPage) {
+                public void requestFailed(BasePage BasePage) {
                     Toast.makeText(context, "Failed to upload submission step 3", Toast.LENGTH_SHORT).show();
                     uploadFinalizeDialog.this.dismiss();
                 }

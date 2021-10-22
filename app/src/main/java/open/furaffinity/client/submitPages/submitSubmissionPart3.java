@@ -5,9 +5,9 @@ import android.content.Context;
 import java.util.HashMap;
 import java.util.List;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitSubmissionPart3 extends abstractPage {
+public class submitSubmissionPart3 extends BasePage {
     private static final String pagePath = "/submit/finalize/";
 
     private final String key;
@@ -28,7 +28,7 @@ public class submitSubmissionPart3 extends abstractPage {
     private final List<String> folderIds;
     private final String newFolderName;
 
-    public submitSubmissionPart3(Context context, abstractPage.pageListener pageListener, String key, String cat, String aType, String species, String gender, String rating, String title, String message, String keywords, Boolean disableComments, Boolean putInScraps, List<String> folderIds, String newFolderName) {
+    public submitSubmissionPart3(Context context, BasePage.pageListener pageListener, String key, String cat, String aType, String species, String gender, String rating, String title, String message, String keywords, Boolean disableComments, Boolean putInScraps, List<String> folderIds, String newFolderName) {
         super(context, pageListener);
         this.key = key;
         this.cat = cat;

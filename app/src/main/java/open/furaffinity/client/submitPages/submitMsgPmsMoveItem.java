@@ -4,16 +4,16 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitMsgPmsMoveItem extends abstractPage {
+public class submitMsgPmsMoveItem extends BasePage {
 
     private final String pagePath;
     private final HashMap<String, String> params;
     private final String moveKey;
     private final String moveValue;
 
-    public submitMsgPmsMoveItem(Context context, abstractPage.pageListener pageListener, String pagePath, String moveKey, String moveValue, HashMap<String, String> params) {
+    public submitMsgPmsMoveItem(Context context, BasePage.pageListener pageListener, String pagePath, String moveKey, String moveValue, HashMap<String, String> params) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.params = params;

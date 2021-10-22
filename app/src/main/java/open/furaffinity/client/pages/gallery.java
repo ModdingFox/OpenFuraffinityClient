@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
 
-public class gallery extends abstractPage {
+public class gallery extends BasePage {
     private final HashMap<String, String> folderResults = new HashMap<>();
     private final imageResultsTool.imageResolutions currentResolution;
     private String pagePath;

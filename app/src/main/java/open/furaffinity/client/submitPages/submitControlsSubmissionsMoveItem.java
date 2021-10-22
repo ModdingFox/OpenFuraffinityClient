@@ -4,16 +4,16 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentTabs.manageSubmissions;
 
-public class submitControlsSubmissionsMoveItem extends abstractPage {
+public class submitControlsSubmissionsMoveItem extends BasePage {
 
     private final HashMap<String, String> params;
     private final String moveKey;
     private final String moveValue;
 
-    public submitControlsSubmissionsMoveItem(Context context, abstractPage.pageListener pageListener, String moveKey, String moveValue, HashMap<String, String> params) {
+    public submitControlsSubmissionsMoveItem(Context context, BasePage.pageListener pageListener, String moveKey, String moveValue, HashMap<String, String> params) {
         super(context, pageListener);
         this.params = params;
         this.moveKey = moveKey;

@@ -4,14 +4,14 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 
-public class submitControlsFavorites extends open.furaffinity.client.abstractClasses.abstractPage {
+public class submitControlsFavorites extends BasePage {
 
     private final String pagePath;
     private final HashMap<String, String> params;
 
-    public submitControlsFavorites(Context context, abstractPage.pageListener pageListener, String pagePath, HashMap<String, String> params) {
+    public submitControlsFavorites(Context context, BasePage.pageListener pageListener, String pagePath, HashMap<String, String> params) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.params = params;

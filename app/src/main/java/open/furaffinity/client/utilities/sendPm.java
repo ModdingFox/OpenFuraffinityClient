@@ -5,30 +5,30 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
 
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.dialogs.msgPmsDialog;
 import open.furaffinity.client.dialogs.recaptchaV2Dialog;
 import open.furaffinity.client.pages.msgPms;
 
 public class sendPm {
     private static void sendMessage(Context context, String postKey, String user, String subject, String body, String gRecaptchaResponse) {
-        new open.furaffinity.client.submitPages.submitPm(context, new abstractPage.pageListener() {
+        new open.furaffinity.client.submitPages.submitPm(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage BasePage) {
                 Toast.makeText(context, "Successfully sent note", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage BasePage) {
                 Toast.makeText(context, "Failed to send note", Toast.LENGTH_SHORT).show();
             }
         }, postKey, user, subject, body, gRecaptchaResponse).execute();
     }
 
     public static void sendPM(Context context, FragmentManager fragmentManager, String userIn) {
-        msgPms msgPms = new msgPms(context, new abstractPage.pageListener() {
+        msgPms msgPms = new msgPms(context, new BasePage.pageListener() {
             @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            public void requestSucceeded(BasePage abstractPage) {
                 msgPmsDialog msgPmsDialog = new msgPmsDialog();
 
                 if (userIn != null) {
@@ -52,7 +52,7 @@ public class sendPm {
             }
 
             @Override
-            public void requestFailed(abstractPage abstractPage) {
+            public void requestFailed(BasePage abstractPage) {
                 Toast.makeText(context, "Failed to load data needed to send note", Toast.LENGTH_SHORT).show();
             }
         });

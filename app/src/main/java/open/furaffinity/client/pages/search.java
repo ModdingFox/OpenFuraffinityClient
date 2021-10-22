@@ -14,11 +14,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
 
-public class search extends abstractPage {
+public class search extends BasePage {
     private static final String pagePath = "/search";
 
     private static final List<String> rangeAllowedKeys = Arrays.asList("day", "3days", "week", "month", "all");

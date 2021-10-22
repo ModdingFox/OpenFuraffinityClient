@@ -13,11 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import open.furaffinity.client.R;
-import open.furaffinity.client.abstractClasses.abstractPage;
+import open.furaffinity.client.abstractClasses.BasePage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
 
-public class msgSubmission extends abstractPage {
+public class msgSubmission extends BasePage {
     private final boolean isNewestFirst;
     private final imageResultsTool.imageResolutions currentResolution;
     private String pagePath;
