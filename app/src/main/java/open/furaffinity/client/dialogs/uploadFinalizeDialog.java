@@ -3,15 +3,11 @@ package open.furaffinity.client.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -19,17 +15,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
-import open.furaffinity.client.adapter.checkboxListAdapter;
 import open.furaffinity.client.pages.controlsFoldersSubmissions;
 import open.furaffinity.client.submitPages.submitSubmissionPart2;
 import open.furaffinity.client.submitPages.submitSubmissionPart3;
@@ -53,8 +45,8 @@ public class uploadFinalizeDialog extends DialogFragment {
     private Spinner assignToFolders;
     private EditText assignToANewFolder;
 
-    private List<String> folderNames = new ArrayList<>();
-    private List<String> folderKeys = new ArrayList<>();
+    private final List<String> folderNames = new ArrayList<>();
+    private final List<String> folderKeys = new ArrayList<>();
 
     private CharSequence[] folderItems = new CharSequence[0];
     private boolean[] folderCheckedStates = new boolean[0];
@@ -84,8 +76,8 @@ public class uploadFinalizeDialog extends DialogFragment {
         new controlsFoldersSubmissions(requireContext(), new abstractPage.pageListener() {
             @Override
             public void requestSucceeded(abstractPage abstractPage) {
-                for(HashMap<String, String> currentFolder : ((controlsFoldersSubmissions)abstractPage).getFolders()) {
-                    if(currentFolder.keySet().contains("name") && currentFolder.keySet().contains("upfolder_id")) {
+                for (HashMap<String, String> currentFolder : ((controlsFoldersSubmissions) abstractPage).getFolders()) {
+                    if (currentFolder.containsKey("name") && currentFolder.containsKey("upfolder_id")) {
                         folderNames.add(currentFolder.get("name"));
                         folderKeys.add(currentFolder.get("upfolder_id"));
                     }
@@ -111,20 +103,21 @@ public class uploadFinalizeDialog extends DialogFragment {
         uiControls.spinnerSetAdapter(requireContext(), rating, page.getRating(), "", true, false);
     }
 
-    private void updateUIElementListeners(){
+    private void updateUIElementListeners() {
         //Just need to have it display the options, track which are selected, and maybe update the spinner so it should a selected count. Also setOnTouchListener with the oddness as it gets mad if I use onClick
         assignToFolders.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_UP) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMultiChoiceItems(folderItems, folderCheckedStates, (dialog, which, isChecked) -> { });
+                builder.setMultiChoiceItems(folderItems, folderCheckedStates, (dialog, which, isChecked) -> {
+                });
                 builder.setPositiveButton("Ok", (dialog, which) -> {
                     int selectedFolderCount = 0;
-                    for(boolean currentFolder : folderCheckedStates){
-                        if(currentFolder){
+                    for (boolean currentFolder : folderCheckedStates) {
+                        if (currentFolder) {
                             selectedFolderCount++;
                         }
                     }
-                    open.furaffinity.client.utilities.uiControls.setSpinnerText(requireContext(), assignToFolders, Integer.toString(selectedFolderCount) + " items selected");
+                    open.furaffinity.client.utilities.uiControls.setSpinnerText(requireContext(), assignToFolders, selectedFolderCount + " items selected");
                 });
                 builder.create();
                 builder.show();
@@ -151,8 +144,8 @@ public class uploadFinalizeDialog extends DialogFragment {
 
         builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> {
             List<String> folderIds = new ArrayList<>();
-            for(int i = 0; i < folderCheckedStates.length; i++){
-                if(folderCheckedStates[i]){
+            for (int i = 0; i < folderCheckedStates.length; i++) {
+                if (folderCheckedStates[i]) {
                     folderIds.add(folderKeys.get(i));
                 }
             }

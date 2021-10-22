@@ -3,7 +3,6 @@ package open.furaffinity.client.fragmentDrawers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -25,10 +24,10 @@ import java.util.concurrent.TimeUnit;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
-import open.furaffinity.client.sqlite.historyContract;
-import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.sqlite.backContract;
 import open.furaffinity.client.sqlite.backDBHelper;
+import open.furaffinity.client.sqlite.historyContract;
+import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.imageResultsTool;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
@@ -125,7 +124,7 @@ public class settings extends appFragment {
 
     @Override
     protected void initPages() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
     }
 
     @Override

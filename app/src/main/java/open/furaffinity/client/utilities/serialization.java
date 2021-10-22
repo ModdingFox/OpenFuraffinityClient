@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Base64;
 
 public class serialization {
-    private static String TAG = serialization.class.getName();
+    private static final String TAG = serialization.class.getName();
 
     public static String searilizeToString(Serializable serializable) {
         try {

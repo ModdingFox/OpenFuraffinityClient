@@ -67,7 +67,7 @@ public class uiControls {
         }
     }
 
-    public static void setSpinnerText(Context context, Spinner inputSpinner, String inputData){
+    public static void setSpinnerText(Context context, Spinner inputSpinner, String inputData) {
         List<String> spinnerData = new ArrayList<>();
         spinnerData.add(inputData);
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, spinnerData);

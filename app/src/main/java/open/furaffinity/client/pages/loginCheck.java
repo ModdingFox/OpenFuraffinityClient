@@ -62,10 +62,10 @@ public class loginCheck extends abstractPage {
 
                 Elements notifications = doc.select("a.notification-container");
 
-                for(Element notification : notifications) {
+                for (Element notification : notifications) {
                     String notificationText = notification.text();
 
-                    switch (notificationText.substring(notificationText.length() - 1, notificationText.length())) {
+                    switch (notificationText.substring(notificationText.length() - 1)) {
                         case "S":
                             notificationS = Integer.parseInt(notificationText.substring(0, notificationText.length() - 1));
                             break;
@@ -121,12 +121,31 @@ public class loginCheck extends abstractPage {
         return userName;
     }
 
-    public String getUserPage() { return userPage; }
+    public String getUserPage() {
+        return userPage;
+    }
 
-    public int getNotificationS() { return notificationS; }
-    public int getNotificationW() { return notificationW; }
-    public int getNotificationC() { return notificationC; }
-    public int getNotificationF() { return notificationF; }
-    public int getNotificationJ() { return notificationJ; }
-    public int getNotificationN() { return notificationN; }
+    public int getNotificationS() {
+        return notificationS;
+    }
+
+    public int getNotificationW() {
+        return notificationW;
+    }
+
+    public int getNotificationC() {
+        return notificationC;
+    }
+
+    public int getNotificationF() {
+        return notificationF;
+    }
+
+    public int getNotificationJ() {
+        return notificationJ;
+    }
+
+    public int getNotificationN() {
+        return notificationN;
+    }
 }

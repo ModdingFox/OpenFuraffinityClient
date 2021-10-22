@@ -20,6 +20,7 @@ public class controlsProfile extends abstractPage {
     private static final String pagePath = "/controls/profile/";
     private final List<inputItem> pageResults = new ArrayList<>();
     private String key;
+
     public controlsProfile(Context context, pageListener pageListener) {
         super(context, pageListener);
     }

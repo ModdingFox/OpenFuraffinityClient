@@ -38,9 +38,9 @@ import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
 
 public class uploadDialog extends DialogFragment {
-    private static final List<String> imageMimeTypes = Arrays.asList(new String [] { "image/jpeg", "image/png", "image/gif" });
-    private static final List<String> textMimeTypes = Arrays.asList(new String [] { "text/plain", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.oasis.opendocument.text", "text/rtf", "application/pdf" });
-    private static final List<String> audioMimeTypes = Arrays.asList(new String [] { "audio/mpeg", "audio/x-wav", "audio/midi" });
+    private static final List<String> imageMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/gif");
+    private static final List<String> textMimeTypes = Arrays.asList("text/plain", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.oasis.opendocument.text", "text/rtf", "application/pdf");
+    private static final List<String> audioMimeTypes = Arrays.asList("audio/mpeg", "audio/x-wav", "audio/midi");
     private static final List<String> allMimeTypes = Stream.concat(Stream.concat(imageMimeTypes.stream(), textMimeTypes.stream()), audioMimeTypes.stream()).collect(Collectors.toList());
 
     private static final int submissionFileRequestCode = 132;
@@ -102,11 +102,11 @@ public class uploadDialog extends DialogFragment {
         });
 
         selectSourceFile.setOnClickListener(v -> {
-            if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-                switch(((kvPair) submissionType.getSelectedItem()).getKey()) {
+                switch (((kvPair) submissionType.getSelectedItem()).getKey()) {
                     case "submission":
                         intent.setType(imageMimeTypes.stream().collect(Collectors.joining(",")));
                         intent.putExtra(Intent.EXTRA_MIME_TYPES, imageMimeTypes.toArray());
@@ -128,20 +128,20 @@ public class uploadDialog extends DialogFragment {
 
                 startActivityForResult(intent, submissionFileRequestCode);
             } else {
-                String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE };
+                String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
                 requestPermissions(permissions, 0);
             }
         });
 
         selectThumbnailFile.setOnClickListener(v -> {
-            if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType(imageMimeTypes.stream().collect(Collectors.joining(",")));
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, imageMimeTypes.toArray());
                 startActivityForResult(intent, thumbnailFileRequestCode);
             } else {
-                String [] permissions = { Manifest.permission.READ_EXTERNAL_STORAGE };
+                String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
                 requestPermissions(permissions, 0);
             }
         });
@@ -194,7 +194,7 @@ public class uploadDialog extends DialogFragment {
                 if (resultCode == Activity.RESULT_OK) {
                     Uri selectedFile = data.getData();
                     Cursor sourceFileCursor = requireContext().getContentResolver().query(selectedFile, null, null, null);
-                    if(sourceFileCursor.moveToFirst()) {
+                    if (sourceFileCursor.moveToFirst()) {
                         sourceFilePath = selectedFile.toString();
                         int displayNameColumnIndex = sourceFileCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                         String displayNameString = sourceFileCursor.getString(displayNameColumnIndex);
@@ -213,7 +213,7 @@ public class uploadDialog extends DialogFragment {
                 if (resultCode == Activity.RESULT_OK) {
                     Uri selectedFile = data.getData();
                     Cursor sourceFileCursor = requireContext().getContentResolver().query(selectedFile, null, null, null);
-                    if(sourceFileCursor.moveToFirst()) {
+                    if (sourceFileCursor.moveToFirst()) {
                         thumbnailFilePath = selectedFile.toString();
                         int displayNameColumnIndex = sourceFileCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                         String displayNameString = sourceFileCursor.getString(displayNameColumnIndex);

@@ -1,5 +1,7 @@
 package open.furaffinity.client.fragmentTabs;
 
+import static open.furaffinity.client.utilities.sendPm.sendPM;
+
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
@@ -21,8 +23,6 @@ import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.msgPmsMessageSectionsPagerAdapter;
 import open.furaffinity.client.utilities.fabCircular;
-
-import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class msgPmsMessage extends appFragment {
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
@@ -65,7 +65,7 @@ public class msgPmsMessage extends appFragment {
     };
 
     private void saveHistory() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), page.getPagePath());
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), page.getPagePath());
     }
 
     @Override

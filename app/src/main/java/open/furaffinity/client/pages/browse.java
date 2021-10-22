@@ -1,5 +1,8 @@
 package open.furaffinity.client.pages;
 
+import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
+import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -13,9 +16,6 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
-
-import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
-import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class browse extends abstractPage {
     private static final String pagePath = "/browse";

@@ -9,10 +9,10 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;

@@ -9,9 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +17,7 @@ import java.util.regex.Pattern;
 public class downloadContent {
 
     public static void downloadSubmission(Activity activity, Context context, open.furaffinity.client.pages.view page) {
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
             Uri uri = Uri.parse(page.getDownload());
 
@@ -48,7 +46,7 @@ public class downloadContent {
                 alert.show();
             }
         } else {
-            String [] permissions = { Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
             activity.requestPermissions(permissions, 0);
         }
 

@@ -17,6 +17,7 @@ public class fabCircular extends FloatingActionButton implements View.OnClickLis
 
     private final List<FloatingActionButtonContainer> floatingActionButtons = new ArrayList<>();
     private boolean isVisible = false;
+
     public fabCircular(@NonNull Context context) {
         super(context);
         setOnClickListener(this);

@@ -1,5 +1,7 @@
 package open.furaffinity.client.fragmentDrawers;
 
+import static open.furaffinity.client.utilities.sendPm.sendPM;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -32,8 +34,6 @@ import open.furaffinity.client.pages.loginCheck;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
-
-import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class journal extends appFragment {
     androidx.coordinatorlayout.widget.CoordinatorLayout coordinatorLayout;
@@ -114,7 +114,7 @@ public class journal extends appFragment {
             db.close();
         }
 
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), page.getPagePath());
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), page.getPagePath());
     }
 
     @Override

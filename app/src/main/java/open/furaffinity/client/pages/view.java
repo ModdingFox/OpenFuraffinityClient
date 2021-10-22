@@ -7,10 +7,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import open.furaffinity.client.abstractClasses.abstractPage;
@@ -355,7 +353,7 @@ public class view extends abstractPage {
         return folderList;
     }
 
-    public String getSubmissionMimeType(){
+    public String getSubmissionMimeType() {
         return submissionMimeType;
     }
 }

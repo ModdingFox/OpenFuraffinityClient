@@ -32,7 +32,7 @@ public class profile extends appFragment {
 
     @Override
     protected void initPages() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
     }
 
     @Override

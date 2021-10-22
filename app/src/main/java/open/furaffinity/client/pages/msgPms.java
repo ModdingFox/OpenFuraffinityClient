@@ -22,6 +22,7 @@ public class msgPms extends abstractPage {
     private mailFolders selectedFolder = mailFolders.inbox;
     private String postKey;
     private boolean recaptchaRequired;
+
     public msgPms(Context context, pageListener pageListener) {
         super(context, pageListener);
     }

@@ -1,18 +1,15 @@
 package open.furaffinity.client.activity;
 
-import android.app.Notification;
-import android.content.BroadcastReceiver;
+import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.MediaPlayer;
-import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +21,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -43,10 +39,8 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.pages.loginCheck;
-import open.furaffinity.client.sqlite.backDBHelper;
 import open.furaffinity.client.sqlite.backContract;
-
-import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
+import open.furaffinity.client.sqlite.backDBHelper;
 
 public class mainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
@@ -89,7 +83,7 @@ public class mainActivity extends AppCompatActivity {
 
     private backDBHelper dbHelper;
 
-    private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener(){
+    private final DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
@@ -206,42 +200,42 @@ public class mainActivity extends AppCompatActivity {
                     int notificationJCount = ((loginCheck) abstractPage).getNotificationJ();
                     int notificationNCount = ((loginCheck) abstractPage).getNotificationN();
 
-                    if(notificationSCount > 0) {
+                    if (notificationSCount > 0) {
                         notificationS.setVisibility(View.VISIBLE);
                         notificationSTextView.setText(Integer.toString(notificationSCount));
                     } else {
                         notificationS.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationWCount > 0) {
+                    if (notificationWCount > 0) {
                         notificationW.setVisibility(View.VISIBLE);
                         notificationWTextView.setText(Integer.toString(notificationWCount));
                     } else {
                         notificationW.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationCCount > 0) {
+                    if (notificationCCount > 0) {
                         notificationC.setVisibility(View.VISIBLE);
                         notificationCTextView.setText(Integer.toString(notificationCCount));
                     } else {
                         notificationC.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationFCount > 0) {
+                    if (notificationFCount > 0) {
                         notificationF.setVisibility(View.VISIBLE);
                         notificationFTextView.setText(Integer.toString(notificationFCount));
                     } else {
                         notificationF.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationJCount > 0) {
+                    if (notificationJCount > 0) {
                         notificationJ.setVisibility(View.VISIBLE);
                         notificationJTextView.setText(Integer.toString(notificationJCount));
                     } else {
                         notificationJ.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationNCount > 0) {
+                    if (notificationNCount > 0) {
                         notificationN.setVisibility(View.VISIBLE);
                         notificationNTextView.setText(Integer.toString(notificationNCount));
                     } else {
@@ -453,8 +447,8 @@ public class mainActivity extends AppCompatActivity {
 
             //Delete previous versions from history
             String selection = backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME + " LIKE ? AND " + backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA + " LIKE ?";
-            String[] selectionArgs = { fragmentClass, fragmentData};
-            db.delete(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, selection , selectionArgs);
+            String[] selectionArgs = {fragmentClass, fragmentData};
+            db.delete(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, selection, selectionArgs);
 
             //Insert into history
             ContentValues values = new ContentValues();
@@ -552,7 +546,7 @@ public class mainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startService(new Intent( this, open.furaffinity.client.services.mediaPlayer.class ));
+        startService(new Intent(this, open.furaffinity.client.services.mediaPlayer.class));
         dbHelper = new backDBHelper(this);
 
         setContentView(R.layout.activity_main);

@@ -1,5 +1,7 @@
 package open.furaffinity.client.pages;
 
+import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
+
 import android.content.Context;
 
 import org.jsoup.Jsoup;
@@ -15,8 +17,6 @@ import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
-
-import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class gallery extends abstractPage {
     private final HashMap<String, String> folderResults = new HashMap<>();

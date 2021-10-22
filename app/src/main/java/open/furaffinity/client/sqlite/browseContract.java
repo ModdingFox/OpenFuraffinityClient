@@ -2,8 +2,6 @@ package open.furaffinity.client.sqlite;
 
 import android.provider.BaseColumns;
 
-import java.util.HashMap;
-
 public final class browseContract {
     private browseContract() {
     }

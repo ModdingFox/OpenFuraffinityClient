@@ -39,7 +39,7 @@ public class about extends appFragment {
     }
 
     protected void initPages() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new commentListAdapter(mDataSet, getActivity(), false);
         recyclerView.setAdapter(mAdapter);

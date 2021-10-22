@@ -331,7 +331,7 @@ public class search extends appFragment {
                 for (Iterator<String> it = loadedSearchParamaters.keys(); it.hasNext(); ) {
                     String key = it.next();
 
-                    switch(key) {
+                    switch (key) {
                         case searchItemEntry.COLUMN_NAME_Q:
                             page.setQuery(loadedSearchParamaters.getString(searchItemEntry.COLUMN_NAME_Q));
                             break;
@@ -899,7 +899,7 @@ public class search extends appFragment {
             ((InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(rootView.getWindowToken(), 0);
             swipeRefreshLayout.setVisibility(View.VISIBLE);
 
-            ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), getSearchParamaterObject().toString());
+            ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), getSearchParamaterObject().toString());
 
             setFabSearchMode();
         });

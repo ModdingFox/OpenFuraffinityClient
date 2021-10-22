@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import okhttp3.Call;
-import okhttp3.OkHttpClient;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -46,11 +46,10 @@ public class webClient {
     private final List<Cookie> lastPageResponceCookies = new ArrayList<>();
     private final String cookieA;
     private final String cookieB;
+    public Context context;
     private boolean lastPageLoaded = false;
     private boolean hasLoginCookie = false;
     private boolean followRedirects = true;
-
-    public Context context;
 
     public webClient(Context context) {
         this.context = context;
@@ -138,8 +137,12 @@ public class webClient {
 
             boolean foundDOCTYPE = false;
             while ((line = reader.readLine()) != null) {
-                if (line.contains("!DOCTYPE")) { foundDOCTYPE = true; }
-                if(foundDOCTYPE) { html.append(line); }
+                if (line.contains("!DOCTYPE")) {
+                    foundDOCTYPE = true;
+                }
+                if (foundDOCTYPE) {
+                    html.append(line);
+                }
             }
             result = html.toString();
 
@@ -184,8 +187,12 @@ public class webClient {
 
             boolean foundDOCTYPE = false;
             while ((line = reader.readLine()) != null) {
-                if (line.contains("!DOCTYPE")) { foundDOCTYPE = true; }
-                if(foundDOCTYPE) { html.append(line); }
+                if (line.contains("!DOCTYPE")) {
+                    foundDOCTYPE = true;
+                }
+                if (foundDOCTYPE) {
+                    html.append(line);
+                }
             }
             result = html.toString();
 
@@ -320,7 +327,7 @@ public class webClient {
                     try {
                         Cursor sourceFileCursor = context.getContentResolver().query(uri, null, null, null);
 
-                        if(sourceFileCursor != null && sourceFileCursor.moveToFirst()) {
+                        if (sourceFileCursor != null && sourceFileCursor.moveToFirst()) {
                             int displayNameColumnIndex = sourceFileCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                             String fileName = sourceFileCursor.getString(displayNameColumnIndex);
                             InputStream inputStream = context.getContentResolver().openInputStream(uri);

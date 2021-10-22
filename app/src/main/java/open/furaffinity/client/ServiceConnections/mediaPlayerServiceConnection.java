@@ -9,7 +9,7 @@ public class mediaPlayerServiceConnection implements ServiceConnection {
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        binder = (open.furaffinity.client.services.mediaPlayer.mediaPlayerBinder)service;
+        binder = (open.furaffinity.client.services.mediaPlayer.mediaPlayerBinder) service;
     }
 
     @Override
@@ -17,7 +17,7 @@ public class mediaPlayerServiceConnection implements ServiceConnection {
 
     }
 
-    public open.furaffinity.client.services.mediaPlayer.mediaPlayerBinder getBinder(){
+    public open.furaffinity.client.services.mediaPlayer.mediaPlayerBinder getBinder() {
         return binder;
     }
 }

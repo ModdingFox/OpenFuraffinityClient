@@ -258,14 +258,14 @@ public class browse extends appFragment {
     }
 
     private void loadCurrentSettings() {
-        if(browseParamaters != null) {
+        if (browseParamaters != null) {
             try {
                 JSONObject loadedBrowseParamaters = new JSONObject(browseParamaters);
 
                 for (Iterator<String> it = loadedBrowseParamaters.keys(); it.hasNext(); ) {
                     String key = it.next();
 
-                    switch(key) {
+                    switch (key) {
                         case browseContract.browseItemEntry.COLUMN_NAME_CAT:
                             page.setCat(loadedBrowseParamaters.getString(browseContract.browseItemEntry.COLUMN_NAME_CAT));
                             break;
@@ -415,7 +415,7 @@ public class browse extends appFragment {
             if (settingsTableLayout.getVisibility() == View.VISIBLE) {
                 settingsTableLayout.setVisibility(View.GONE);
                 saveCurrentSettings();
-                ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), getSearchParamaterObject().toString());
+                ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), getSearchParamaterObject().toString());
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
             } else {
                 swipeRefreshLayout.setVisibility(View.GONE);

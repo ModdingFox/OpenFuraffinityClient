@@ -40,8 +40,8 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
     private final Activity activity;
     private final Context context;
     private final boolean showPostInfo;
-    manageImageListAdapterListener listener;
     private final open.furaffinity.client.pages.loginCheck loginCheck;
+    manageImageListAdapterListener listener;
     private List<String> checkedItems;
 
     public manageImageListAdapter(List<HashMap<String, String>> mDataSetIn, Activity activity, Context context) {
@@ -151,7 +151,7 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
                 public void requestSucceeded(abstractPage abstractPage) {
                     popupMenu.getMenu().findItem(R.id.menu_download).setVisible(true);
 
-                    if(loginCheck.getIsLoggedIn()) {
+                    if (loginCheck.getIsLoggedIn()) {
                         MenuItem favMenuItem = popupMenu.getMenu().findItem(R.id.menu_favUnfav);
                         if (((open.furaffinity.client.pages.view) abstractPage).getIsFav()) {
                             favMenuItem.setTitle("UnFav");
@@ -168,13 +168,13 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
                 public void requestFailed(abstractPage abstractPage) {
                     Toast.makeText(context, "Failed to get submission page for menu", Toast.LENGTH_SHORT).show();
                 }
-            },  mDataSet.get(position).get("postPath"));
+            }, mDataSet.get(position).get("postPath"));
 
             open.furaffinity.client.pages.user userPage = new user(context, new abstractPage.pageListener() {
                 @Override
                 public void requestSucceeded(abstractPage abstractPage) {
                     MenuItem watchMenuItem = popupMenu.getMenu().findItem(R.id.menu_watchUnWatch);
-                    if(((open.furaffinity.client.pages.user)abstractPage).getIsWatching()) {
+                    if (((open.furaffinity.client.pages.user) abstractPage).getIsWatching()) {
                         watchMenuItem.setTitle("UnWatch");
                         watchMenuItem.setIcon(R.drawable.ic_menu_user_remove);
                     } else {
@@ -192,15 +192,15 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
 
             viewPage.execute();
 
-            if(loginCheck.getIsLoggedIn() && mDataSet.get(position).containsKey("postUserPath") && !loginCheck.getUserName().equals(mDataSet.get(position).get("postUserName"))) {
+            if (loginCheck.getIsLoggedIn() && mDataSet.get(position).containsKey("postUserPath") && !loginCheck.getUserName().equals(mDataSet.get(position).get("postUserName"))) {
                 userPage.execute();
             }
 
-            if(mDataSet.get(position).containsKey("postPath")) {
+            if (mDataSet.get(position).containsKey("postPath")) {
                 popupMenu.getMenu().findItem(R.id.menu_shareSubmission).setVisible(true);
             }
 
-            if(mDataSet.get(position).containsKey("postUserPath")) {
+            if (mDataSet.get(position).containsKey("postUserPath")) {
                 popupMenu.getMenu().findItem(R.id.menu_shareUser).setVisible(true);
             }
 
@@ -210,7 +210,7 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
 
-                switch(item.getItemId()) {
+                switch (item.getItemId()) {
                     case R.id.menu_download:
                         open.furaffinity.client.utilities.downloadContent.downloadSubmission(activity, context, viewPage);
                         return true;
@@ -225,19 +225,27 @@ public class manageImageListAdapter extends RecyclerView.Adapter<manageImageList
                     case R.id.menu_favUnfav:
                         new open.furaffinity.client.submitPages.submitGetRequest(context, new abstractPage.pageListener() {
                             @Override
-                            public void requestSucceeded(abstractPage abstractPage) { Toast.makeText(activity, "Successfully updated favorites", Toast.LENGTH_SHORT).show(); }
+                            public void requestSucceeded(abstractPage abstractPage) {
+                                Toast.makeText(activity, "Successfully updated favorites", Toast.LENGTH_SHORT).show();
+                            }
 
                             @Override
-                            public void requestFailed(abstractPage abstractPage) { Toast.makeText(activity, "Failed to update favorites", Toast.LENGTH_SHORT).show(); }
+                            public void requestFailed(abstractPage abstractPage) {
+                                Toast.makeText(activity, "Failed to update favorites", Toast.LENGTH_SHORT).show();
+                            }
                         }, viewPage.getFavUnFav()).execute();
                         return true;
                     case R.id.menu_watchUnWatch:
                         new open.furaffinity.client.submitPages.submitGetRequest(context, new abstractPage.pageListener() {
                             @Override
-                            public void requestSucceeded(abstractPage abstractPage) { Toast.makeText(activity, "Successfully updated watches", Toast.LENGTH_SHORT).show(); }
+                            public void requestSucceeded(abstractPage abstractPage) {
+                                Toast.makeText(activity, "Successfully updated watches", Toast.LENGTH_SHORT).show();
+                            }
 
                             @Override
-                            public void requestFailed(abstractPage abstractPage) { Toast.makeText(activity, "Failed to update watches", Toast.LENGTH_SHORT).show(); }
+                            public void requestFailed(abstractPage abstractPage) {
+                                Toast.makeText(activity, "Failed to update watches", Toast.LENGTH_SHORT).show();
+                            }
                         }, userPage.getWatchUnWatch()).execute();
                         return true;
                     default:

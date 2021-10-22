@@ -2,7 +2,6 @@ package open.furaffinity.client.submitPages;
 
 import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,11 +67,11 @@ public class submitSubmissionPart3 extends abstractPage {
         params.put("message", message);
         params.put("keywords", keywords);
 
-        for(int i = 0; i < folderIds.size(); i++){
-            params.put("folder_ids[" + Integer.toString(i) + "]", folderIds.get(i));
+        for (int i = 0; i < folderIds.size(); i++) {
+            params.put("folder_ids[" + i + "]", folderIds.get(i));
         }
 
-        if(newFolderName != null && !newFolderName.isEmpty()) {
+        if (newFolderName != null && !newFolderName.isEmpty()) {
             params.put("create_folder_name", newFolderName);
         }
 

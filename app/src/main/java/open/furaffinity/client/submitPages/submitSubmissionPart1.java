@@ -55,7 +55,7 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
                 submissionType.put(key, value);
             }
 
-            if(submissionType.keySet().size() < 1) {
+            if (submissionType.keySet().size() < 1) {
                 result = false;
             }
         } else {
@@ -101,17 +101,17 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
         return submissionTypeCurrent;
     }
 
+    public void setSubmissionTypeCurrent(String submissionTypeCurrent) {
+        if (submissionType.containsKey(submissionTypeCurrent)) {
+            this.submissionTypeCurrent = submissionTypeCurrent;
+        }
+    }
+
     public String getMaxFileSize() {
         return maxFileSize;
     }
 
     public String getSubmissionKey() {
         return submissionKey;
-    }
-
-    public void setSubmissionTypeCurrent(String submissionTypeCurrent) {
-        if (submissionType.containsKey(submissionTypeCurrent)) {
-            this.submissionTypeCurrent = submissionTypeCurrent;
-        }
     }
 }

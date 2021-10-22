@@ -1,5 +1,7 @@
 package open.furaffinity.client.fragmentDrawers;
 
+import static open.furaffinity.client.utilities.sendPm.sendPM;
+
 import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.Toast;
@@ -26,8 +28,6 @@ import open.furaffinity.client.dialogs.confirmDialog;
 import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
-
-import static open.furaffinity.client.utilities.sendPm.sendPM;
 
 public class msgPms extends appFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
@@ -117,7 +117,7 @@ public class msgPms extends appFragment {
     }
 
     protected void initPages() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
 
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new msgPmsListAdapter(mDataSet, getActivity());
@@ -177,7 +177,7 @@ public class msgPms extends appFragment {
                 public void onDialogPositiveClick(DialogFragment dialog) {
                     String action = "trash";
 
-                    if(page.getSelectedFolder().equals(open.furaffinity.client.pages.msgPms.mailFolders.trash)) {
+                    if (page.getSelectedFolder().equals(open.furaffinity.client.pages.msgPms.mailFolders.trash)) {
                         action = "delete";
                     }
 

@@ -198,20 +198,20 @@ public class controlsFoldersSubmissions extends abstractPage {
         return selectedGroup;
     }
 
-    public List<HashMap<String, String>> getGroups(){
+    public List<HashMap<String, String>> getGroups() {
         List<HashMap<String, String>> result = new ArrayList<>();
-        for(HashMap<String, String> currentElement : getPageResults()){
-            if(currentElement.get("type").equals("group")) {
+        for (HashMap<String, String> currentElement : getPageResults()) {
+            if (currentElement.get("type").equals("group")) {
                 result.add(currentElement);
             }
         }
         return result;
     }
 
-    public List<HashMap<String, String>> getFolders(){
+    public List<HashMap<String, String>> getFolders() {
         List<HashMap<String, String>> result = new ArrayList<>();
-        for(HashMap<String, String> currentElement : getPageResults()){
-            if(currentElement.get("type").equals("folder")) {
+        for (HashMap<String, String> currentElement : getPageResults()) {
+            if (currentElement.get("type").equals("folder")) {
                 result.add(currentElement);
             }
         }

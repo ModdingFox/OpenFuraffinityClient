@@ -7,7 +7,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,15 +18,13 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
 
     private final String sourceFilePath;
     private final String thumbnailFilePath;
-
+    private final open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1;
     private String submissionKey = "";
-    private HashMap<String, String> rating = new HashMap<>();
+    private final HashMap<String, String> rating = new HashMap<>();
     private HashMap<String, String> cat = new HashMap<>();
     private HashMap<String, String> aType = new HashMap<>();
     private HashMap<String, String> species = new HashMap<>();
     private HashMap<String, String> gender = new HashMap<>();
-
-    private final open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1;
 
     public submitSubmissionPart2(Context context, abstractPage.pageListener pageListener, open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1, String sourceFilePath, String thumbnailFilePath) {
         super(context, pageListener);
@@ -122,7 +119,9 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
         return false;
     }
 
-    public String getSubmissionKey() { return submissionKey; }
+    public String getSubmissionKey() {
+        return submissionKey;
+    }
 
     public HashMap<String, String> getCat() {
         return cat;
