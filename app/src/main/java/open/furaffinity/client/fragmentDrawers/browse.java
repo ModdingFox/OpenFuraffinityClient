@@ -212,20 +212,46 @@ public class browse extends appFragment {
                         resetRecycler();
                     }
                 } else {
-                    List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.browse) abstractPage).getPageResults();
+                    final open.furaffinity.client.pages.browse browsePage = ((open.furaffinity.client.pages.browse) abstractPage);
 
-                    int curSize = mAdapter.getItemCount();
+                    new open.furaffinity.client.pages.adRetrieval(getActivity(), new abstractPage.pageListener() {
+                        @Override
+                        public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+                            List <HashMap<String, String>> pageResults = browsePage.getPageResults();
+                            List<HashMap<String, String>> adResults = ((open.furaffinity.client.pages.adRetrieval) abstractPage).getAdData();
 
-                    //Deduplicate results
-                    List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-                    List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-                    newPostPaths.removeAll(oldPostPaths);
-                    pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-                    mDataSet.addAll(pageResults);
-                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+                            int curSize = mAdapter.getItemCount();
 
-                    isLoading = false;
-                    swipeRefreshLayout.setRefreshing(false);
+                            //Deduplicate results
+                            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+                            newPostPaths.removeAll(oldPostPaths);
+                            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+
+                            if(!adResults.isEmpty()){
+                                int totalAddItems = pageResults.size() + adResults.size();
+                                int spacing = totalAddItems/adResults.size();
+
+                                for(int i = 0; i < adResults.size(); i++) {
+                                    int addPosition = (spacing * i) + i;
+                                    if(addPosition <= pageResults.size()) {
+                                        pageResults.add(addPosition, adResults.get(i));
+                                    }
+                                }
+                            }
+
+                            mDataSet.addAll(pageResults);
+                            mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+
+                            isLoading = false;
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+
+                        }
+                    }, browsePage.getAdZones()).execute();
                 }
             }
 

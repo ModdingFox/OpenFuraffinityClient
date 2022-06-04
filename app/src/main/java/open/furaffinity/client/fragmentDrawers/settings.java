@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
+import open.furaffinity.client.dialogs.confirmDialog;
 import open.furaffinity.client.sqlite.historyContract;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.sqlite.backContract;
@@ -36,6 +38,7 @@ import open.furaffinity.client.workers.notificationWorker;
 import open.furaffinity.client.workers.searchNotificationWorker;
 
 public class settings extends appFragment {
+    public static boolean advertisementsEnabledDefault = true;
     public static boolean notificationsEnabledDefault = false;
     public static int notificationsIntervalDefault = 15;
     public static boolean standardNotificationsDefault = true;
@@ -56,6 +59,7 @@ public class settings extends appFragment {
     public static boolean cachedSearchDefault = true; //Tied to saveSearchStateDefault
     public static int InvalidateCachedSearchTimeDefault = 5;
     public static int InvalidateCachedSearchAfterDefault = 12;
+    private Switch advertisementsSwitch;
     private Switch notificationsSwitch;
     private EditText notificationsInterval;
     private Switch watchNotificationsSwitch;
@@ -92,6 +96,7 @@ public class settings extends appFragment {
     }
 
     protected void getElements(View rootView) {
+        advertisementsSwitch = rootView.findViewById(R.id.advertisementsSwitch);
         notificationsSwitch = rootView.findViewById(R.id.notificationsSwitch);
         notificationsInterval = rootView.findViewById(R.id.notificationsInterval);
         watchNotificationsSwitch = rootView.findViewById(R.id.watchNotificationsSwitch);
@@ -137,6 +142,7 @@ public class settings extends appFragment {
         Context context = requireActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
+        advertisementsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.advertisementsEnabledSetting), advertisementsEnabledDefault));
         notificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), notificationsEnabledDefault));
         notificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault)));
         watchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.watchNotificationsEnabledSetting), standardNotificationsDefault));
@@ -174,6 +180,41 @@ public class settings extends appFragment {
     }
 
     protected void updateUIElementListeners(View rootView) {
+        advertisementsSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Context context = requireActivity();
+                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+
+                if(!isChecked) {
+                    confirmDialog confirmDialog = new confirmDialog();
+                    String confirmDialogText = "Heewwwoooo just a quick thing.\n\n" +
+                        "Although this app does not have server costs and is not distributed for-profit FurAffinity does have server costs and the advertisements they serve help pay for them to keep being awesome.\n" +
+                        "As this app is opensource its pointless for it to force advertisements on anyone as someone could just pull the code and remove them anyways.\n" +
+                        "So before you turn advertisements I ask you to reconsider the decision.\n" +
+                        "Accept to turn advertisements off. Cancel to leave them on";
+                    confirmDialog.setTitleText(confirmDialogText);
+                    confirmDialog.setListener(new confirmDialog.dialogListener() {
+                        @Override
+                        public void onDialogPositiveClick(DialogFragment dialog) {
+                            editor.putBoolean(context.getString(R.string.advertisementsEnabledSetting), false);
+                            editor.apply();
+                        }
+
+                        @Override
+                        public void onDialogNegativeClick(DialogFragment dialog) {
+                            advertisementsSwitch.setChecked(true);
+                        }
+                    });
+                    confirmDialog.show(getChildFragmentManager(), "getAdvertisementsDisableConfirm");
+                } else {
+                    editor.putBoolean(context.getString(R.string.advertisementsEnabledSetting), isChecked);
+                    editor.apply();
+                }
+            }
+        });
+
         notificationsSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

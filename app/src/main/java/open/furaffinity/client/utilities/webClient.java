@@ -85,7 +85,7 @@ public class webClient {
         Element redirectMessage = body.selectFirst("div.redirect-message");
 
         //Some pages doesnt have a section header but luckily they also dont
-        if (!title.text().equals("System Error") && (sectionHeader == null || !sectionHeader.text().equals("System Error")) && (redirectMessage == null || !redirectMessage.text().startsWith("Error encountered"))) {
+        if ((title != null && !title.text().equals("System Error")) && (sectionHeader == null || !sectionHeader.text().equals("System Error")) && (redirectMessage == null || !redirectMessage.text().startsWith("Error encountered"))) {
             lastPageLoaded = true;
         }
     }
@@ -184,7 +184,7 @@ public class webClient {
 
             boolean foundDOCTYPE = false;
             while ((line = reader.readLine()) != null) {
-                if (line.contains("!DOCTYPE")) { foundDOCTYPE = true; }
+                if (line.contains("!DOCTYPE") || line.contains("OA_output")) { foundDOCTYPE = true; }
                 if(foundDOCTYPE) { html.append(line); }
             }
             result = html.toString();

@@ -16,6 +16,16 @@
             android:orientation="vertical">
 
             <Switch
+                android:id="@+id/advertisementsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/advertisementsSwitch" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
+            <Switch
                 android:id="@+id/notificationsSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
