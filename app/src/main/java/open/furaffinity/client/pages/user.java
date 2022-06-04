@@ -107,10 +107,10 @@ public class user extends abstractPage {
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
-        Element userPageFlexItemUsernameH = doc.selectFirst("div.userpage-flex-item.username").selectFirst("h2");
-        userName = userPageFlexItemUsernameH.text();
-        userAccountStatus = userPageFlexItemUsernameH.selectFirst("span").attr("title");
-        userAccountStatusLine = userPageFlexItemUsernameH.nextElementSibling().text();
+        Element userPageFlexItemUsername = doc.selectFirst("div.userpage-flex-item.username");
+        userName = userPageFlexItemUsername.selectFirst("h2").text();
+        userAccountStatus = "";//This was removed
+        userAccountStatusLine = userPageFlexItemUsername.selectFirst("span").text();
 
         Element userPageFlexItemUserNavAvatarDesktopImg = doc.selectFirst("div.userpage-flex-item.user-nav-avatar-desktop").selectFirst("img");
         userIcon = "https:" + userPageFlexItemUserNavAvatarDesktopImg.attr("src");
@@ -230,7 +230,7 @@ public class user extends abstractPage {
             }
         }
 
-        return userPageFlexItemUsernameH != null && userPageFlexItemUserNavAvatarDesktopImg != null && userPageFlexItemsH2 != null && userPageProfileDiv != null;
+        return userPageFlexItemUsername != null && userPageFlexItemUserNavAvatarDesktopImg != null && userPageFlexItemsH2 != null && userPageProfileDiv != null;
     }
 
     @Override
