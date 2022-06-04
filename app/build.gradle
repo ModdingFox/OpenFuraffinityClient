@@ -7,9 +7,9 @@ android {
     defaultConfig {
         applicationId "open.furaffinity.client"
         minSdkVersion 26
-        targetSdkVersion 29
-        versionCode 35
-        versionName "2021.08.31"
+        targetSdkVersion 30
+        versionCode 37
+        versionName "2022.06.04"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
