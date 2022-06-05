@@ -1,5 +1,6 @@
 apply plugin: 'checkstyle'
 apply plugin: 'com.android.application'
+apply plugin: "com.github.spotbugs"
 
 android {
     compileSdkVersion 30
@@ -66,8 +67,26 @@ task checkstyle(type: Checkstyle) {
     source 'src/main/java'
 }
 
+spotbugs {
+    description 'Check code standard'
+    effort = 'max'
+    group 'verification'
+    ignoreFailures = true//Will ignore these for the moment so that we can build and fix
+    reportsDir = file("$buildDir/reports/spotbugs")
+    reportLevel = 'low'
+    showProgress = true
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
 project.afterEvaluate {
     preBuild.dependsOn 'checkstyle'
+    assembleDebug.dependsOn 'spotbugsDebug'
 }
 
 dependencies {
