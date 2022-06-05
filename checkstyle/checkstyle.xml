@@ -8,8 +8,9 @@
       If you set the basedir property below, then all reported file
       names will be relative to the specified directory. See
       https://checkstyle.org/config.html#Checker
-  -->
+
       <property name="basedir" value="${basedir}"/>
+  -->
 
   <metadata name="org.checkstyle.principle" value="Practice What You Preach"/>
   <metadata name="org.checkstyle.principle.description"

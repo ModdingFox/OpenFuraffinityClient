@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.io.InputStream;
+
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class user extends abstractPage {
