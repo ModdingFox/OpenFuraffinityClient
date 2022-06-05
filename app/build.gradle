@@ -1,3 +1,4 @@
+apply plugin: 'checkstyle'
 apply plugin: 'com.android.application'
 
 android {
@@ -36,6 +37,35 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+}
+
+checkstyle {
+    toolVersion '10.3'
+}
+
+task checkstyle(type: Checkstyle) {
+    showViolations = true
+    description 'Check code standard'
+    group 'verification'
+    configFile file("${checkstyleConfigRoot}/checkstyle.xml")
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    classpath = files()
+    ignoreFailures = false
+    configProperties = [
+            'checkstyle.cache.file': "${checkstyleConfigRoot}/cache",
+            'checkstyle.suppressions.file': "${checkstyleConfigRoot}/suppressions.xml",
+            'checkstyle.header.file': "${checkstyleConfigRoot}/java.header",
+            'checkstyle.regexp.header.file': "${checkstyleConfigRoot}/java_regexp.header",
+            'checkstyle.suppressions-xpath.file': "${checkstyleConfigRoot}/suppressions-xpath.xml",
+            'checkstyle.importcontrol.file': "${checkstyleConfigRoot}/import-control.xml",
+            'checkstyle.importcontroltest.file': "${checkstyleConfigRoot}/import-control-test.xml"
+    ]
+}
+
+project.afterEvaluate {
+    preBuild.dependsOn 'checkstyle'
 }
 
 dependencies {
