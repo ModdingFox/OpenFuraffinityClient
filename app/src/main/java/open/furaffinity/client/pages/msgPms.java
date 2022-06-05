@@ -142,7 +142,14 @@ public class msgPms extends abstractPage {
     }
 
     public enum mailFolders {
-        inbox("inbox", "Inbox"), unread("unread", "Unread"), outbox("outbox", "Outbox"), high_prio("high_prio", "High priority"), medium_prio("medium_prio", "Medium priority"), low_prio("low_prio", "Low priority"), archive("archive", "Archive"), trash("trash", "Trash");
+        inbox("inbox", "Inbox"),
+        unread("unread", "Unread"),
+        sent("sent", "Sent"),
+        high_prio("high_prio", "High priority"),
+        medium_prio("medium_prio", "Medium priority"),
+        low_prio("low_prio", "Low priority"),
+        archive("archive", "Archive"),
+        trash("trash", "Trash");
 
         private final String value;
         private final String printableName;
@@ -163,7 +170,12 @@ public class msgPms extends abstractPage {
     }
 
     public enum priorities {
-        high("high", "High"), medium("medium", "Medium"), low("low", "Low"), none("none", "None"), archive("archive", "Archive"), unread("unread", "Mark Unread");
+        high("high", "High"),
+        medium("medium", "Medium"),
+        low("low", "Low"),
+        none("none", "None"),
+        archive("archive", "Archive"),
+        unread("unread", "Mark Unread");
 
         private final String value;
         private final String printableName;
