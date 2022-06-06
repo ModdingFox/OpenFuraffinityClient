@@ -7,13 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import java.util.HashMap;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.utilities.kvPair;
 
@@ -29,13 +26,12 @@ public class controlsFoldersSubmissionsFolderDialog extends DialogFragment {
     private String description = "";
     private controlsFoldersSubmissionsFolderDialogListener listener;
 
-    public void setListener(controlsFoldersSubmissionsFolderDialogListener controlsFoldersSubmissionsFolderDialogListener) {
+    public void setListener(
+        controlsFoldersSubmissionsFolderDialogListener controlsFoldersSubmissionsFolderDialogListener) {
         listener = controlsFoldersSubmissionsFolderDialogListener;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    @NonNull @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -46,13 +42,16 @@ public class controlsFoldersSubmissionsFolderDialog extends DialogFragment {
         folderNameEditText = rootView.findViewById(R.id.folderNameEditText);
         descriptionEditText = rootView.findViewById(R.id.descriptionEditText);
 
-        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data, spinnerSelected, true, false);
+        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data,
+            spinnerSelected, true, false);
         folderNameEditText.setText(folderName);
         descriptionEditText.setText(description);
 
         builder.setView(rootView);
         builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> {
-            listener.onDialogPositiveClick(((kvPair) spinner.getSelectedItem()).getKey(), groupNameEditText.getText().toString(), folderNameEditText.getText().toString(), descriptionEditText.getText().toString());
+            listener.onDialogPositiveClick(((kvPair) spinner.getSelectedItem()).getKey(),
+                groupNameEditText.getText().toString(), folderNameEditText.getText().toString(),
+                descriptionEditText.getText().toString());
             dismiss();
         });
         builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dismiss());
@@ -79,6 +78,7 @@ public class controlsFoldersSubmissionsFolderDialog extends DialogFragment {
     }
 
     public interface controlsFoldersSubmissionsFolderDialogListener {
-        void onDialogPositiveClick(String spinnerSelected, String groupName, String folderName, String description);
+        void onDialogPositiveClick(String spinnerSelected, String groupName, String folderName,
+                                   String description);
     }
 }

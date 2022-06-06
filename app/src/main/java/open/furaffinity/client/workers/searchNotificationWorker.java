@@ -10,17 +10,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.activity.mainActivity;
@@ -42,13 +39,11 @@ public class searchNotificationWorker extends Worker {
 
     private void initClientAndPage() {
         page = new search(context, new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            @Override public void requestSucceeded(abstractPage abstractPage) {
 
             }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
+            @Override public void requestFailed(abstractPage abstractPage) {
 
             }
         });
@@ -62,59 +57,68 @@ public class searchNotificationWorker extends Worker {
             searchDBHelper dbHelper = new searchDBHelper(context);
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-            String[] projection = {
-                    searchContract.searchItemEntry.COLUMN_NAME_NAME,
-                    searchContract.searchItemEntry.COLUMN_NAME_MOSTRECENTITEM,
-                    searchContract.searchItemEntry.COLUMN_NAME_Q,
-                    searchContract.searchItemEntry.COLUMN_NAME_ORDERBY,
-                    searchContract.searchItemEntry.COLUMN_NAME_ORDERDIRECTION,
-                    searchContract.searchItemEntry.COLUMN_NAME_RANGE,
-                    searchContract.searchItemEntry.COLUMN_NAME_RATINGGENERAL,
-                    searchContract.searchItemEntry.COLUMN_NAME_RATINGMATURE,
-                    searchContract.searchItemEntry.COLUMN_NAME_RATINGADULT,
-                    searchContract.searchItemEntry.COLUMN_NAME_TYPEART,
-                    searchContract.searchItemEntry.COLUMN_NAME_TYPEMUSIC,
-                    searchContract.searchItemEntry.COLUMN_NAME_TYPEFLASH,
-                    searchContract.searchItemEntry.COLUMN_NAME_TYPESTORY,
-                    searchContract.searchItemEntry.COLUMN_NAME_TYPEPHOTO,
-                    searchContract.searchItemEntry.COLUMN_NAME_TYPEPOETRY,
-                    searchContract.searchItemEntry.COLUMN_NAME_MODE
-            };
+            String[] projection = {searchContract.searchItemEntry.COLUMN_NAME_NAME,
+                searchContract.searchItemEntry.COLUMN_NAME_MOSTRECENTITEM,
+                searchContract.searchItemEntry.COLUMN_NAME_Q,
+                searchContract.searchItemEntry.COLUMN_NAME_ORDERBY,
+                searchContract.searchItemEntry.COLUMN_NAME_ORDERDIRECTION,
+                searchContract.searchItemEntry.COLUMN_NAME_RANGE,
+                searchContract.searchItemEntry.COLUMN_NAME_RATINGGENERAL,
+                searchContract.searchItemEntry.COLUMN_NAME_RATINGMATURE,
+                searchContract.searchItemEntry.COLUMN_NAME_RATINGADULT,
+                searchContract.searchItemEntry.COLUMN_NAME_TYPEART,
+                searchContract.searchItemEntry.COLUMN_NAME_TYPEMUSIC,
+                searchContract.searchItemEntry.COLUMN_NAME_TYPEFLASH,
+                searchContract.searchItemEntry.COLUMN_NAME_TYPESTORY,
+                searchContract.searchItemEntry.COLUMN_NAME_TYPEPHOTO,
+                searchContract.searchItemEntry.COLUMN_NAME_TYPEPOETRY,
+                searchContract.searchItemEntry.COLUMN_NAME_MODE};
 
-            String selection = searchContract.searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE + " = ?";
+            String selection =
+                searchContract.searchItemEntry.COLUMN_NAME_NOTIFICATIONSTATE + " = ?";
 
             String[] selectionArgs = {"1"};
 
             String sortOrder = "rowid DESC";
 
-            Cursor cursor = db.query(
-                    searchContract.searchItemEntry.TABLE_NAME,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                    null,
-                    sortOrder
-            );
+            Cursor cursor =
+                db.query(searchContract.searchItemEntry.TABLE_NAME, projection, selection,
+                    selectionArgs, null, null, sortOrder);
 
             while (cursor.moveToNext()) {
-                String COLUMN_NAME = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_NAME));
-                String COLUMN_MOSTRECENTITEM = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_MOSTRECENTITEM));
+                String COLUMN_NAME = cursor.getString(
+                    cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_NAME));
+                String COLUMN_MOSTRECENTITEM = cursor.getString(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_MOSTRECENTITEM));
 
-                String COLUMN_Q = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_Q));
-                String COLUMN_ORDERBY = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_ORDERBY));
-                String COLUMN_ORDERDIRECTION = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_ORDERDIRECTION));
-                String COLUMN_RANGE = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RANGE));
-                boolean COLUMN_RATINGGENERAL = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0);
-                boolean COLUMN_RATINGMATURE = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0);
-                boolean COLUMN_RATINGADULT = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0);
-                boolean COLUMN_TYPEART = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEART)) > 0);
-                boolean COLUMN_TYPEMUSIC = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0);
-                boolean COLUMN_TYPEFLASH = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0);
-                boolean COLUMN_TYPESTORY = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0);
-                boolean COLUMN_TYPEPHOTO = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0);
-                boolean COLUMN_TYPEPOETRY = (cursor.getInt(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0);
-                String COLUMN_MODE = cursor.getString(cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_MODE));
+                String COLUMN_Q = cursor.getString(
+                    cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_Q));
+                String COLUMN_ORDERBY = cursor.getString(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_ORDERBY));
+                String COLUMN_ORDERDIRECTION = cursor.getString(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_ORDERDIRECTION));
+                String COLUMN_RANGE = cursor.getString(
+                    cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_RANGE));
+                boolean COLUMN_RATINGGENERAL = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_RATINGGENERAL)) > 0);
+                boolean COLUMN_RATINGMATURE = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_RATINGMATURE)) > 0);
+                boolean COLUMN_RATINGADULT = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_RATINGADULT)) > 0);
+                boolean COLUMN_TYPEART = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_TYPEART)) > 0);
+                boolean COLUMN_TYPEMUSIC = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_TYPEMUSIC)) > 0);
+                boolean COLUMN_TYPEFLASH = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_TYPEFLASH)) > 0);
+                boolean COLUMN_TYPESTORY = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_TYPESTORY)) > 0);
+                boolean COLUMN_TYPEPHOTO = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_TYPEPHOTO)) > 0);
+                boolean COLUMN_TYPEPOETRY = (cursor.getInt(cursor.getColumnIndexOrThrow(
+                    searchContract.searchItemEntry.COLUMN_NAME_TYPEPOETRY)) > 0);
+                String COLUMN_MODE = cursor.getString(
+                    cursor.getColumnIndexOrThrow(searchContract.searchItemEntry.COLUMN_NAME_MODE));
 
                 page.setQuery(COLUMN_Q);
                 page.setOrderBy(COLUMN_ORDERBY);
@@ -143,12 +147,14 @@ public class searchNotificationWorker extends Worker {
 
                     if (currentPageResults == null || currentPageResults.size() == 0) {
                         foundLastPosition = true;
-                    } else {
+                    }
+                    else {
                         for (HashMap<String, String> currentResult : currentPageResults) {
                             if (currentResult.get("postPath").equals(COLUMN_MOSTRECENTITEM)) {
                                 foundLastPosition = true;
                                 break;
-                            } else {
+                            }
+                            else {
                                 postCount++;
                             }
                         }
@@ -183,8 +189,7 @@ public class searchNotificationWorker extends Worker {
         }
     }
 
-    @Override
-    public Result doWork() {
+    @Override public Result doWork() {
         System.setProperty("http.agent", "OpenFurAffinityClient");
         initClientAndPage();
         fetchPageData();
@@ -194,25 +199,31 @@ public class searchNotificationWorker extends Worker {
             if (contentText.length() > 0) {
                 contentText += "\n";
             }
-            contentText += currentElement.get("name") + " has " + currentElement.get("newPosts") + " new results";
+            contentText += currentElement.get("name") + " has " + currentElement.get("newPosts") +
+                " new results";
         }
 
         if (contentText.length() > 0) {
             Intent intent = new Intent(context, mainActivity.class);
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
             stackBuilder.addNextIntentWithParentStack(intent);
-            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, context.getString(R.string.app_name));
+            NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context, context.getString(R.string.app_name));
             mBuilder.setSmallIcon(R.drawable.ic_menu_search);
             mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
             mBuilder.setContentIntent(pendingIntent);
             mBuilder.setAutoCancel(true);
-            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 String channelId = context.getString(R.string.app_name);
-                NotificationChannel channel = new NotificationChannel(channelId, context.getString(R.string.app_name) + "_notificationService_channel", NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationChannel channel = new NotificationChannel(channelId,
+                    context.getString(R.string.app_name) + "_notificationService_channel",
+                    NotificationManager.IMPORTANCE_DEFAULT);
                 mNotificationManager.createNotificationChannel(channel);
                 mBuilder.setChannelId(channelId);
             }

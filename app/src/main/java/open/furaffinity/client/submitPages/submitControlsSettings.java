@@ -1,13 +1,11 @@
 package open.furaffinity.client.submitPages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import android.content.Context;
 import java.util.HashMap;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsSettings;
 
@@ -36,7 +34,15 @@ public class submitControlsSettings extends open.furaffinity.client.abstractClas
 
     private String errorMessage;
 
-    public submitControlsSettings(Context context, abstractPage.pageListener pageListener, String fa_useremail, String bdaymonth, String bdayday, String bdayyear, String viewmature, String timezone, String timezone_dst, String fullview, String style, String stylesheet, String scales_enabled, String paypal_email, String display_mode, String scales_message_enabled, String scales_name, String scales_plural_name, String scales_cost, String account_disabled, String newpassword, String newpassword2, String oldpassword) {
+    public submitControlsSettings(Context context, abstractPage.pageListener pageListener,
+                                  String fa_useremail, String bdaymonth, String bdayday,
+                                  String bdayyear, String viewmature, String timezone,
+                                  String timezone_dst, String fullview, String style,
+                                  String stylesheet, String scales_enabled, String paypal_email,
+                                  String display_mode, String scales_message_enabled,
+                                  String scales_name, String scales_plural_name, String scales_cost,
+                                  String account_disabled, String newpassword, String newpassword2,
+                                  String oldpassword) {
         super(context, pageListener);
         this.fa_useremail = fa_useremail;
         this.bdaymonth = bdaymonth;
@@ -61,8 +67,7 @@ public class submitControlsSettings extends open.furaffinity.client.abstractClas
         this.oldpassword = oldpassword;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         Element sectionBody = doc.selectFirst("div.success-msg-box");
@@ -75,15 +80,15 @@ public class submitControlsSettings extends open.furaffinity.client.abstractClas
 
         if (errorMsgBox != null) {
             errorMessage = errorMsgBox.text();
-        } else {
+        }
+        else {
             errorMessage = "unknown";
         }
 
         return false;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
+    @Override protected Boolean doInBackground(Void... voids) {
         HashMap<String, String> params = new HashMap<>();
         params.put("do", "update");
         params.put("fa_useremail", fa_useremail);
@@ -108,7 +113,9 @@ public class submitControlsSettings extends open.furaffinity.client.abstractClas
         params.put("newpassword2", newpassword2);
         params.put("oldpassword", oldpassword);
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsSettings.getPagePath(), params);
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() +
+                controlsSettings.getPagePath(), params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

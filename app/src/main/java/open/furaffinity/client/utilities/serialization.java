@@ -1,7 +1,6 @@
 package open.furaffinity.client.utilities;
 
 import android.util.Log;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.io.Serializable;
 import java.util.Base64;
 
 public class serialization {
-    private static String TAG = serialization.class.getName();
+    private static final String TAG = serialization.class.getName();
 
     public static String searilizeToString(Serializable serializable) {
         try {

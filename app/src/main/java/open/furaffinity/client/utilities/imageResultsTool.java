@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 public class imageResultsTool {
     public static imageResolutions getimageResolutionFromInt(int input) {
         List<imageResolutions> imageResolutionsList = Arrays.asList(imageResolutions.values());
-        imageResolutionsList = imageResolutionsList.stream().sorted((p1, p2) -> Integer.compare(p1.getValue(), p2.getValue())).collect(Collectors.toList());
+        imageResolutionsList = imageResolutionsList.stream()
+            .sorted((p1, p2) -> Integer.compare(p1.getValue(), p2.getValue()))
+            .collect(Collectors.toList());
 
         for (imageResolutions currentImageResolution : imageResolutionsList) {
             if (input <= currentImageResolution.getValue()) {
@@ -48,7 +50,8 @@ public class imageResultsTool {
         return null;
     }
 
-    public static List<HashMap<String, String>> getResultsData(String html, imageResolutions imageResolution) {
+    public static List<HashMap<String, String>> getResultsData(String html,
+                                                               imageResolutions imageResolution) {
         List<HashMap<String, String>> result = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);
@@ -62,9 +65,11 @@ public class imageResultsTool {
 
             if (classes.contains("r-general")) {
                 ratingCode = "G";
-            } else if (classes.contains("r-mature")) {
+            }
+            else if (classes.contains("r-mature")) {
                 ratingCode = "M";
-            } else if (classes.contains("r-adult")) {
+            }
+            else if (classes.contains("r-adult")) {
                 ratingCode = "A";
             }
 
@@ -72,8 +77,10 @@ public class imageResultsTool {
             if (img != null) {
                 if (imageResolution == imageResolutions.Original) {
                     currentPostData.put("imgUrl", img.attr("src"));
-                } else {
-                    String changedUrl = img.attr("src").replaceFirst("@\\d+-", "@" + imageResolution.toString() + "-");
+                }
+                else {
+                    String changedUrl = img.attr("src")
+                        .replaceFirst("@\\d+-", "@" + imageResolution.toString() + "-");
                     currentPostData.put("imgUrl", changedUrl);
                 }
             }
@@ -111,18 +118,11 @@ public class imageResultsTool {
     }
 
     public enum imageResolutions {
-        UltraHigh(1600, "Ultra High - 1600"),
-        VeryHigh(800, "Very High - 800"),
-        High(600, "High - 600"),
-        MediumHigh(400, "Medium High - 400"),
-        Medium(300, "Medium - 300"),
-        MediumLow(250, "Medium Low - 250"),
-        Low(200, "Low - 200"),
-        VeryLow(150, "Very Low - 150"),
-        UltraLow(100, "Ultra Low - 100"),
-        ExtremeLow(75, "Extreme Low - 75"),
-        Minimal(50, "Minimal - 50"),
-        Original(0, "Site Default");
+        UltraHigh(1600, "Ultra High - 1600"), VeryHigh(800, "Very High - 800"),
+        High(600, "High - 600"), MediumHigh(400, "Medium High - 400"), Medium(300, "Medium - 300"),
+        MediumLow(250, "Medium Low - 250"), Low(200, "Low - 200"), VeryLow(150, "Very Low - 150"),
+        UltraLow(100, "Ultra Low - 100"), ExtremeLow(75, "Extreme Low - 75"),
+        Minimal(50, "Minimal - 50"), Original(0, "Site Default");
 
         private final int value;
         private final String printableName;
@@ -132,8 +132,7 @@ public class imageResultsTool {
             this.printableName = printableName;
         }
 
-        @Override
-        public String toString() {
+        @Override public String toString() {
             return Integer.toString(this.value);
         }
 

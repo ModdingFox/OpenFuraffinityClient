@@ -1,14 +1,11 @@
 package open.furaffinity.client.fragmentTabs;
 
 import android.view.View;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.stringListAdapter;
@@ -19,11 +16,10 @@ public class viewFolders extends appFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
-    @SuppressWarnings("FieldCanBeLocal")
-    private RecyclerView.Adapter<stringListAdapter.ViewHolder> mAdapter;
+    @SuppressWarnings("FieldCanBeLocal") private RecyclerView.Adapter<stringListAdapter.ViewHolder>
+        mAdapter;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_recycler_view;
     }
 
@@ -33,14 +29,14 @@ public class viewFolders extends appFragment {
         recyclerView = rootView.findViewById(R.id.recyclerView);
     }
 
-    @Override
-    protected void initPages() {
+    @Override protected void initPages() {
 
     }
 
     protected void fetchPageData() {
         if (getArguments() != null) {
-            List<String> dataIn = getArguments().getStringArrayList(messageIds.SubmissionFolders_MESSAGE);
+            List<String> dataIn =
+                getArguments().getStringArrayList(messageIds.SubmissionFolders_MESSAGE);
 
             for (String currentElement : dataIn) {
                 HashMap<String, String> newDataElement = new HashMap<>();
@@ -60,13 +56,11 @@ public class viewFolders extends appFragment {
         recyclerView.setAdapter(mAdapter);
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
-    @Override
-    protected void updateUIElementListeners(View rootView) {
+    @Override protected void updateUIElementListeners(View rootView) {
 
     }
 }

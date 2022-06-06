@@ -12,17 +12,14 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import open.furaffinity.client.R;
 
 public class recaptchaV2Dialog extends DialogFragment {
     private WebView webView;
-    @SuppressWarnings("FieldCanBeLocal")
-    private WebSettings webSettings;
+    @SuppressWarnings("FieldCanBeLocal") private WebSettings webSettings;
 
     private String pagePath;
     private recaptchaV2DialogListener listener;
@@ -35,11 +32,10 @@ public class recaptchaV2Dialog extends DialogFragment {
         this.pagePath = pagePath;
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    @NonNull
-    @Override
+    @SuppressLint("SetJavaScriptEnabled") @NonNull @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_DeviceDefault_DialogWhenLarge);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+            android.R.style.Theme_DeviceDefault_DialogWhenLarge);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         View rootView = inflater.inflate(R.layout.fragment_web_view, null);
@@ -58,14 +54,12 @@ public class recaptchaV2Dialog extends DialogFragment {
                 mContext = c;
             }
 
-            @JavascriptInterface
-            public void passGRecaptchaResponse(String gRecaptchaResponse) {
+            @JavascriptInterface public void passGRecaptchaResponse(String gRecaptchaResponse) {
                 dismiss();
                 listener.gRecaptchaResponseFound(gRecaptchaResponse);
             }
 
-            @JavascriptInterface
-            public void setWebViewVisible() {
+            @JavascriptInterface public void setWebViewVisible() {
                 rootView.setVisibility(View.VISIBLE);
             }
         }
@@ -75,18 +69,34 @@ public class recaptchaV2Dialog extends DialogFragment {
         webView.loadUrl(pagePath);
 
         webView.setWebViewClient(new WebViewClient() {
-            @SuppressWarnings("deprecation")
-            @Override
+            @SuppressWarnings("deprecation") @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return false;
             }
 
-            @Override
-            public void onPageFinished(WebView view, String url) {
+            @Override public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                webView.evaluateJavascript("document.head.innerHTML = \"\"; document.body.innerHTML = '<div id=\"g-recaptcha\" style=\"display: none;\" class=\"g-recaptcha\" data-sitekey=\"6LcQyPMUAAAAAN-wUp7pQ81ex5U7BpnG2bQHKClm\" data-size=\"compact\" data-theme=\"dark\"></div>'; ",
-                        value1 -> webView.evaluateJavascript("function onloadCallback() { grecaptcha.execute(grecaptcha.render('g-recaptcha', { 'sitekey' : '6LcQyPMUAAAAAN-wUp7pQ81ex5U7BpnG2bQHKClm', 'badge'   : 'bottomright', 'size'    : 'invisible', 'theme'   : 'dark', 'callback': function(){ Android.passGRecaptchaResponse(document.getElementsByClassName('g-recaptcha-response')[0].value); }, 'expired-callback': window['recaptcha_error_callback'], 'error-callback'  : window['recaptcha_error_callback']})); }",
-                                value2 -> webView.evaluateJavascript("var body = document.getElementsByTagName('body')[0]; var script= document.createElement('script'); script.type= 'text/javascript'; script.src= 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit'; body.appendChild(script); Android.setWebViewVisible();", null)));
+                webView.evaluateJavascript(
+                    "document.head.innerHTML = \"\"; document.body.innerHTML = '<div " +
+                        "id=\"g-recaptcha\" style=\"display: none;\" class=\"g-recaptcha\" " +
+                        "data-sitekey=\"6LcQyPMUAAAAAN-wUp7pQ81ex5U7BpnG2bQHKClm\" " +
+                        "data-size=\"compact\" data-theme=\"dark\"></div>'; ",
+                    value1 -> webView.evaluateJavascript(
+                        "function onloadCallback() { grecaptcha.execute(grecaptcha.render" +
+                            "('g-recaptcha', { 'sitekey' : " +
+                            "'6LcQyPMUAAAAAN-wUp7pQ81ex5U7BpnG2bQHKClm', 'badge'   : " +
+                            "'bottomright', 'size'    : 'invisible', 'theme'   : 'dark', " +
+                            "'callback': function(){ Android.passGRecaptchaResponse(document" +
+                            ".getElementsByClassName('g-recaptcha-response')[0].value); }, " +
+                            "'expired-callback': window['recaptcha_error_callback'], " +
+                            "'error-callback'  : window['recaptcha_error_callback']})); }",
+                        value2 -> webView.evaluateJavascript(
+                            "var body = document.getElementsByTagName('body')[0]; var script= " +
+                                "document.createElement('script'); script.type= " +
+                                "'text/javascript'; script.src= 'https://www.google" +
+                                ".com/recaptcha/api.js?onload=onloadCallback&render=explicit'; " +
+                                "body.appendChild(script); Android.setWebViewVisible();",
+                            null)));
             }
         });
 

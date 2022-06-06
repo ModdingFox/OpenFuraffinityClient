@@ -10,20 +10,16 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 
@@ -34,7 +30,8 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
     private List<String> checkedItems;
     private boolean isLoggedIn;
 
-    public commentListAdapter(List<HashMap<String, String>> mDataSetIn, Context context, boolean isLoggedIn) {
+    public commentListAdapter(List<HashMap<String, String>> mDataSetIn, Context context,
+                              boolean isLoggedIn) {
         mDataSet = mDataSetIn;
         this.context = context;
         this.isLoggedIn = isLoggedIn;
@@ -45,23 +42,26 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
         this.listener = listener;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
+        View v =
+            LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
 
         return new ViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.commentUserConstraintLayout.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink")));
+    @Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.commentUserConstraintLayout.setOnClickListener(
+            v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink")));
 
-        Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.commentUserIcon);
+        Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon"))
+            .diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading)
+            .into(holder.commentUserIcon);
         holder.commentUserName.setText(mDataSet.get(position).get("userName"));
 
         try {
-            Date postDate = new java.util.Date(Integer.parseInt(mDataSet.get(position).get("commentDate")) * 1000L);
+            Date postDate = new java.util.Date(
+                Integer.parseInt(mDataSet.get(position).get("commentDate")) * 1000L);
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd',' yyyy hh:mm a");
             String formattedDate = sdf.format(postDate);
             holder.commentDate.setText(formattedDate);
@@ -70,17 +70,22 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
             holder.commentDate.setText(mDataSet.get(position).get("commentDate"));
         }
 
-        holder.comment.loadData("<font color='white'>" + mDataSet.get(position).get("comment") + "</font>", "text/html; charset=utf-8", "UTF-8");
+        holder.comment.loadData(
+            "<font color='white'>" + mDataSet.get(position).get("comment") + "</font>",
+            "text/html; charset=utf-8", "UTF-8");
 
         if (isLoggedIn && mDataSet.get(position).containsKey("replyToLink")) {
             holder.replyButton.setVisibility(View.VISIBLE);
 
-            holder.replyButton.setOnClickListener(v -> listener.reply(mDataSet.get(position).get("replyToLink"), mDataSet.get(position).get("userName")));
+            holder.replyButton.setOnClickListener(
+                v -> listener.reply(mDataSet.get(position).get("replyToLink"),
+                    mDataSet.get(position).get("userName")));
         }
 
         if (mDataSet.get(position).containsKey("parentCommentId")) {
             for (int i = 0; i < position; i++) {
-                if (mDataSet.get(i).get("commentId").equals(mDataSet.get(position).get("parentCommentId"))) {
+                if (mDataSet.get(i).get("commentId")
+                    .equals(mDataSet.get(position).get("parentCommentId"))) {
                     int paddingToApply = Integer.parseInt(mDataSet.get(i).get("padding"));
                     paddingToApply += 25;
                     mDataSet.get(position).put("padding", Integer.toString(paddingToApply));
@@ -88,19 +93,22 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
                     holder.commentItemLinearLayout.setPadding(paddingToApply, 0, 0, 0);
                 }
             }
-        } else {
+        }
+        else {
             mDataSet.get(position).put("padding", "0");
         }
 
         if (mDataSet.get(position).containsKey("checkId")) {
             holder.checkBox.setVisibility(View.VISIBLE);
 
-            holder.checkBox.setChecked(checkedItems.contains(mDataSet.get(position).get("checkId")));
+            holder.checkBox.setChecked(
+                checkedItems.contains(mDataSet.get(position).get("checkId")));
 
             holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     checkedItems.add(mDataSet.get(position).get("checkId"));
-                } else {
+                }
+                else {
                     checkedItems.remove(mDataSet.get(position).get("checkId"));
                 }
             });
@@ -115,8 +123,7 @@ public class commentListAdapter extends RecyclerView.Adapter<commentListAdapter.
         checkedItems = new ArrayList<>();
     }
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         return mDataSet.size();
     }
 

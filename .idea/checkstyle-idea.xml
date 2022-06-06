@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CheckStyle-IDEA" serialisationVersion="2">
+    <checkstyleVersion>10.3</checkstyleVersion>
+    <scanScope>JavaOnly</scanScope>
+    <suppressErrors>true</suppressErrors>
+    <option name="thirdPartyClasspath" />
+    <option name="activeLocationIds">
+      <option value="d740695a-ca99-4d43-9a48-cf93213200b6" />
+    </option>
+    <option name="locations">
+      <list>
+        <ConfigurationLocation id="15ef38cb-afd7-4fbb-a113-fd46550649ae" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
+        <ConfigurationLocation id="6ece06ef-c02a-41a6-9d42-00642bbff5d4" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
+        <ConfigurationLocation id="d740695a-ca99-4d43-9a48-cf93213200b6" type="PROJECT_RELATIVE" scope="All" description="OFACCheckstyle">
+          $PROJECT_DIR$/checkstyle/checkstyle.xml
+          <option name="properties">
+            <map>
+              <entry key="checkstyle.cache.file" value="cache" />
+              <entry key="checkstyle.header.file" value="java.header" />
+              <entry key="checkstyle.importcontrol.file" value="import-control.xml" />
+              <entry key="checkstyle.importcontroltest.file" value="import-control-test.xml" />
+              <entry key="checkstyle.regexp.header.file" value="java_regexp.header" />
+              <entry key="checkstyle.suppressions-xpath.file" value="suppressions-xpath.xml" />
+              <entry key="checkstyle.suppressions.file" value="suppressions.xml" />
+            </map>
+          </option>
+        </ConfigurationLocation>
+      </list>
+    </option>
+  </component>
+</project>

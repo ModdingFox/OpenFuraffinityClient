@@ -1,16 +1,14 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsJournal extends abstractPage {
@@ -59,7 +57,8 @@ public class controlsJournal extends abstractPage {
                 Element deleteA = pageControlsJournalLinkDiv.selectFirst("a.delete");
                 Element popupDateSpan = pageControlsJournalLinkDiv.selectFirst("span.popup_date");
 
-                if (autoLinkA != null && editA != null && deleteA != null && popupDateSpan != null) {
+                if (autoLinkA != null && editA != null && deleteA != null &&
+                    popupDateSpan != null) {
                     HashMap<String, String> newResult = new HashMap<>();
                     newResult.put("postPath", autoLinkA.attr("href"));
                     newResult.put("postSubject", autoLinkA.text());
@@ -106,9 +105,9 @@ public class controlsJournal extends abstractPage {
         return msgFormForm != null && subjectInput != null && messageTextarea != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

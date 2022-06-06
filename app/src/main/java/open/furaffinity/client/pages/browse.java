@@ -1,23 +1,19 @@
 package open.furaffinity.client.pages;
 
+import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
+import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 import android.content.Context;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
 import open.furaffinity.client.utilities.parseAdZones;
-
-import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
-import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
-import static open.furaffinity.client.utilities.parseAdZones.getAdZones;
 
 public class browse extends abstractPage {
     private static final String pagePath = "/browse";
@@ -37,7 +33,9 @@ public class browse extends abstractPage {
         setPage("1");
         setRatingGeneral(true);
 
-        currentResolution = imageResultsTool.getimageResolutionFromInt(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault));
+        currentResolution = imageResultsTool.getimageResolutionFromInt(
+            sharedPref.getInt(context.getString(R.string.imageResolutionSetting),
+                settings.imageResolutionDefault));
     }
 
     public browse(browse browse) {
@@ -64,19 +62,21 @@ public class browse extends abstractPage {
         return cat != null && atype != null && species != null && gender != null && perpage != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
+    @Override protected Boolean doInBackground(Void... voids) {
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
         return false;
     }
 
-    private void setRestrictedKeyValuePairState(String key, String value, HashMap<String, String> AllowMap) {
+    private void setRestrictedKeyValuePairState(String key, String value,
+                                                HashMap<String, String> AllowMap) {
         if (AllowMap.containsKey(value)) {
             requestParameters.put(key, value);
-        } else if (value.equals("")) {
+        }
+        else if (value.equals("")) {
             requestParameters.remove(key);
         }
     }
@@ -169,7 +169,8 @@ public class browse extends abstractPage {
     private void setCheckboxState(String key, boolean state) {
         if (state) {
             requestParameters.put(key, "on");
-        } else {
+        }
+        else {
             requestParameters.remove(key);
         }
     }
@@ -202,5 +203,7 @@ public class browse extends abstractPage {
         return pageResults;
     }
 
-    public List<Integer> getAdZones() { return adZones; }
+    public List<Integer> getAdZones() {
+        return adZones;
+    }
 }

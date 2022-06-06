@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
@@ -26,8 +25,7 @@ public class manageUserSettings extends appFragment {
 
     private boolean isLoading = false;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_manage_user_settings;
     }
 
@@ -51,53 +49,60 @@ public class manageUserSettings extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
     protected void initPages() {
         page = new controlsUserSettings(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            @Override public void requestSucceeded(abstractPage abstractPage) {
                 if (((controlsUserSettings) abstractPage).getAcceptTrades()) {
                     accept_trades_yes.setChecked(true);
-                } else {
+                }
+                else {
                     accept_trades_no.setChecked(true);
                 }
 
                 if (((controlsUserSettings) abstractPage).getAcceptCommissions()) {
                     accept_commissions_yes.setChecked(true);
-                } else {
+                }
+                else {
                     accept_commissions_no.setChecked(true);
                 }
 
-                uiControls.spinnerSetAdapter(requireContext(), featured_journal_id, ((controlsUserSettings) abstractPage).getFeaturedJournalId(), ((controlsUserSettings) abstractPage).getFeaturedJournalIdCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), featured_journal_id,
+                    ((controlsUserSettings) abstractPage).getFeaturedJournalId(),
+                    ((controlsUserSettings) abstractPage).getFeaturedJournalIdCurrent(), true,
+                    false);
 
                 fab.setVisibility(View.VISIBLE);
                 isLoading = false;
             }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
+            @Override public void requestFailed(abstractPage abstractPage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
-                Toast.makeText(getActivity(), "Failed to load data for user settings", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to load data for user settings",
+                    Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     protected void updateUIElementListeners(View rootView) {
-        fab.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitControlsUserSettings(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                Toast.makeText(getActivity(), "Successfully updated user settings", Toast.LENGTH_SHORT).show();
-            }
+        fab.setOnClickListener(
+            v -> new open.furaffinity.client.submitPages.submitControlsUserSettings(getActivity(),
+                new abstractPage.pageListener() {
+                    @Override public void requestSucceeded(abstractPage abstractPage) {
+                        Toast.makeText(getActivity(), "Successfully updated user settings",
+                            Toast.LENGTH_SHORT).show();
+                    }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                Toast.makeText(getActivity(), "Failed to update user settings", Toast.LENGTH_SHORT).show();
-            }
-        }, page.getKey(), ((accept_trades_yes.isChecked()) ? ("1") : ("0")), ((accept_commissions_yes.isChecked()) ? ("1") : ("0")), ((kvPair) featured_journal_id.getSelectedItem()).getKey()).execute());
+                    @Override public void requestFailed(abstractPage abstractPage) {
+                        Toast.makeText(getActivity(), "Failed to update user settings",
+                            Toast.LENGTH_SHORT).show();
+                    }
+                }, page.getKey(), ((accept_trades_yes.isChecked()) ? ("1") : ("0")),
+                ((accept_commissions_yes.isChecked()) ? ("1") : ("0")),
+                ((kvPair) featured_journal_id.getSelectedItem()).getKey()).execute());
     }
 }

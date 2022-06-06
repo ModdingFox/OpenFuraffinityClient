@@ -3,19 +3,15 @@ package open.furaffinity.client.fragmentTabs;
 import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
@@ -26,8 +22,7 @@ import open.furaffinity.client.utilities.messageIds;
 
 public class msgOthersList extends appFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
-    @SuppressWarnings("FieldCanBeLocal")
-    private ConstraintLayout constraintLayout;
+    @SuppressWarnings("FieldCanBeLocal") private ConstraintLayout constraintLayout;
     private LinearLayoutManager layoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -39,8 +34,7 @@ public class msgOthersList extends appFragment {
     private boolean isLoading = false;
     private int msgOthersType;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_refreshable_recycler_view_with_fab;
     }
 
@@ -62,9 +56,11 @@ public class msgOthersList extends appFragment {
         removeAll.setImageResource(R.drawable.ic_menu_delete_all);
 
         //noinspection deprecation
-        removeSelected.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        removeSelected.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        removeAll.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        removeAll.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         constraintLayout.addView(removeSelected);
         constraintLayout.addView(removeAll);
@@ -82,8 +78,7 @@ public class msgOthersList extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
@@ -103,47 +98,59 @@ public class msgOthersList extends appFragment {
             mAdapter = new msgOthersListAdapter(mDataSet, getActivity());
             recyclerView.setAdapter(mAdapter);
 
-            page = new open.furaffinity.client.pages.msgOthers(getActivity(), new abstractPage.pageListener() {
-                @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    switch (msgOthersType) {
-                        case 0:
-                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processWatchNotifications(page.getWatches(), "started watching you"));
-                            break;
-                        case 1:
-                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getSubmissionComments(), "replied to"));
-                            break;
-                        case 2:
-                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processJournalLineNotifications(page.getJournalComments(), "replied to"));
-                            break;
-                        case 3:
-                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processShoutNotifications(page.getShouts(), "left a shout"));
-                            break;
-                        case 4:
-                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processLineNotifications(page.getFavorites(), "favorited"));
-                            break;
-                        case 5:
-                            mDataSet.addAll(open.furaffinity.client.pages.msgOthers.processJournalNotifications(page.getJournals(), "created journal"));
-                            break;
-                        default:
-                            break;
+            page = new open.furaffinity.client.pages.msgOthers(getActivity(),
+                new abstractPage.pageListener() {
+                    @Override public void requestSucceeded(abstractPage abstractPage) {
+                        switch (msgOthersType) {
+                            case 0:
+                                mDataSet.addAll(
+                                    open.furaffinity.client.pages.msgOthers.processWatchNotifications(
+                                        page.getWatches(), "started watching you"));
+                                break;
+                            case 1:
+                                mDataSet.addAll(
+                                    open.furaffinity.client.pages.msgOthers.processLineNotifications(
+                                        page.getSubmissionComments(), "replied to"));
+                                break;
+                            case 2:
+                                mDataSet.addAll(
+                                    open.furaffinity.client.pages.msgOthers.processJournalLineNotifications(
+                                        page.getJournalComments(), "replied to"));
+                                break;
+                            case 3:
+                                mDataSet.addAll(
+                                    open.furaffinity.client.pages.msgOthers.processShoutNotifications(
+                                        page.getShouts(), "left a shout"));
+                                break;
+                            case 4:
+                                mDataSet.addAll(
+                                    open.furaffinity.client.pages.msgOthers.processLineNotifications(
+                                        page.getFavorites(), "favorited"));
+                                break;
+                            case 5:
+                                mDataSet.addAll(
+                                    open.furaffinity.client.pages.msgOthers.processJournalNotifications(
+                                        page.getJournals(), "created journal"));
+                                break;
+                            default:
+                                break;
+                        }
+
+                        mAdapter.notifyDataSetChanged();
+
+                        fab.setVisibility(View.VISIBLE);
+                        isLoading = false;
+                        swipeRefreshLayout.setRefreshing(false);
                     }
 
-                    mAdapter.notifyDataSetChanged();
-
-                    fab.setVisibility(View.VISIBLE);
-                    isLoading = false;
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-
-                @Override
-                public void requestFailed(abstractPage abstractPage) {
-                    fab.setVisibility(View.GONE);
-                    isLoading = false;
-                    swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getActivity(), "Failed to load data for notification", Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override public void requestFailed(abstractPage abstractPage) {
+                        fab.setVisibility(View.GONE);
+                        isLoading = false;
+                        swipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(getActivity(), "Failed to load data for notification",
+                            Toast.LENGTH_SHORT).show();
+                    }
+                });
         }
     }
 
@@ -154,33 +161,35 @@ public class msgOthersList extends appFragment {
             params.put(itemType + "[" + i + "]", itemIds.get(i));
         }
 
-        new open.furaffinity.client.submitPages.submitMsgOthersDeleteSelected(getContext(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                resetRecycler();
-                Toast.makeText(getActivity(), "Successfully deleted selected notifications", Toast.LENGTH_SHORT).show();
-            }
+        new open.furaffinity.client.submitPages.submitMsgOthersDeleteSelected(getContext(),
+            new abstractPage.pageListener() {
+                @Override public void requestSucceeded(abstractPage abstractPage) {
+                    resetRecycler();
+                    Toast.makeText(getActivity(), "Successfully deleted selected notifications",
+                        Toast.LENGTH_SHORT).show();
+                }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                Toast.makeText(getActivity(), "Failed to delete selected notifications", Toast.LENGTH_SHORT).show();
-            }
-        }, page.getPagePath(), params).execute();
+                @Override public void requestFailed(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Failed to delete selected notifications",
+                        Toast.LENGTH_SHORT).show();
+                }
+            }, page.getPagePath(), params).execute();
     }
 
     private void deleteAllOfType(String paramKey, String paramValue) {
-        new open.furaffinity.client.submitPages.submitMsgOthersDeleteAllOfType(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                resetRecycler();
-                Toast.makeText(getActivity(), "Successfully nuked notifications", Toast.LENGTH_SHORT).show();
-            }
+        new open.furaffinity.client.submitPages.submitMsgOthersDeleteAllOfType(getActivity(),
+            new abstractPage.pageListener() {
+                @Override public void requestSucceeded(abstractPage abstractPage) {
+                    resetRecycler();
+                    Toast.makeText(getActivity(), "Successfully nuked notifications",
+                        Toast.LENGTH_SHORT).show();
+                }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                Toast.makeText(getActivity(), "Failed to nuke notifications", Toast.LENGTH_SHORT).show();
-            }
-        }, page.getPagePath(), paramKey, paramValue).execute();
+                @Override public void requestFailed(abstractPage abstractPage) {
+                    Toast.makeText(getActivity(), "Failed to nuke notifications",
+                        Toast.LENGTH_SHORT).show();
+                }
+            }, page.getPagePath(), paramKey, paramValue).execute();
     }
 
     protected void updateUIElementListeners(View rootView) {
@@ -190,34 +199,38 @@ public class msgOthersList extends appFragment {
             confirmDialog confirmDialog = new confirmDialog();
             confirmDialog.setTitleText("Delete Selected Notifications?");
             confirmDialog.setListener(new confirmDialog.dialogListener() {
-                @Override
-                public void onDialogPositiveClick(DialogFragment dialog) {
+                @Override public void onDialogPositiveClick(DialogFragment dialog) {
                     switch (msgOthersType) {
                         case 0:
-                            deleteSelected("watches", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            deleteSelected("watches",
+                                ((msgOthersListAdapter) mAdapter).getCheckedItems());
                             break;
                         case 1:
-                            deleteSelected("comments-submissions", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            deleteSelected("comments-submissions",
+                                ((msgOthersListAdapter) mAdapter).getCheckedItems());
                             break;
                         case 2:
-                            deleteSelected("comments-journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            deleteSelected("comments-journals",
+                                ((msgOthersListAdapter) mAdapter).getCheckedItems());
                             break;
                         case 3:
-                            deleteSelected("shouts", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            deleteSelected("shouts",
+                                ((msgOthersListAdapter) mAdapter).getCheckedItems());
                             break;
                         case 4:
-                            deleteSelected("favorites", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            deleteSelected("favorites",
+                                ((msgOthersListAdapter) mAdapter).getCheckedItems());
                             break;
                         case 5:
-                            deleteSelected("journals", ((msgOthersListAdapter) mAdapter).getCheckedItems());
+                            deleteSelected("journals",
+                                ((msgOthersListAdapter) mAdapter).getCheckedItems());
                             break;
                         default:
                             break;
                     }
                 }
 
-                @Override
-                public void onDialogNegativeClick(DialogFragment dialog) {
+                @Override public void onDialogNegativeClick(DialogFragment dialog) {
 
                 }
             });
@@ -228,8 +241,7 @@ public class msgOthersList extends appFragment {
             confirmDialog confirmDialog = new confirmDialog();
             confirmDialog.setTitleText("Delete All Notifications?");
             confirmDialog.setListener(new confirmDialog.dialogListener() {
-                @Override
-                public void onDialogPositiveClick(DialogFragment dialog) {
+                @Override public void onDialogPositiveClick(DialogFragment dialog) {
                     switch (msgOthersType) {
                         case 0:
                             deleteAllOfType("nuke-watches", "Nuke Watches");
@@ -254,8 +266,7 @@ public class msgOthersList extends appFragment {
                     }
                 }
 
-                @Override
-                public void onDialogNegativeClick(DialogFragment dialog) {
+                @Override public void onDialogNegativeClick(DialogFragment dialog) {
 
                 }
             });

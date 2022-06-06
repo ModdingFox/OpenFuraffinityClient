@@ -1,9 +1,7 @@
 package open.furaffinity.client.submitPages;
 
 import android.content.Context;
-
 import java.util.HashMap;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class submitControlsFoldersSubmissionsAddEditFolder extends abstractPage {
@@ -16,7 +14,13 @@ public class submitControlsFoldersSubmissionsAddEditFolder extends abstractPage 
     private final String folder_name;
     private final String folder_description;
 
-    public submitControlsFoldersSubmissionsAddEditFolder(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String folder_id, String group_id, String create_group_name, String folder_name, String folder_description) {
+    public submitControlsFoldersSubmissionsAddEditFolder(Context context,
+                                                         abstractPage.pageListener pageListener,
+                                                         String pagePath, String key,
+                                                         String folder_id, String group_id,
+                                                         String create_group_name,
+                                                         String folder_name,
+                                                         String folder_description) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;
@@ -27,13 +31,11 @@ public class submitControlsFoldersSubmissionsAddEditFolder extends abstractPage 
         this.folder_description = folder_description;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         return true;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
+    @Override protected Boolean doInBackground(Void... voids) {
         HashMap<String, String> params = new HashMap<>();
         params.put("key", key);
         params.put("folder_id", folder_id);
@@ -42,7 +44,8 @@ public class submitControlsFoldersSubmissionsAddEditFolder extends abstractPage 
         params.put("folder_name", folder_name);
         params.put("folder_description", folder_description);
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

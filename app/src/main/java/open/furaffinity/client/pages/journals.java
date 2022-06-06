@@ -1,18 +1,16 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
+import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class journals extends abstractPage {
@@ -40,9 +38,12 @@ public class journals extends abstractPage {
 
         for (Element journalSection : journalSections) {
             HashMap<String, String> newJournalEntry = new HashMap<>();
-            newJournalEntry.put("journalTitle", journalSection.selectFirst("div.section-header").selectFirst("h2").text());
-            newJournalEntry.put("journalDate", journalSection.selectFirst("div.section-header").selectFirst("span").text());
-            newJournalEntry.put("journalPath", journalSection.selectFirst("div.section-footer").selectFirst("a").attr("href"));
+            newJournalEntry.put("journalTitle",
+                journalSection.selectFirst("div.section-header").selectFirst("h2").text());
+            newJournalEntry.put("journalDate",
+                journalSection.selectFirst("div.section-header").selectFirst("span").text());
+            newJournalEntry.put("journalPath",
+                journalSection.selectFirst("div.section-footer").selectFirst("a").attr("href"));
             pageResults.add(newJournalEntry);
         }
 
@@ -50,9 +51,9 @@ public class journals extends abstractPage {
         return true;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

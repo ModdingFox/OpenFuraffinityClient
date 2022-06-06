@@ -1,28 +1,26 @@
 package open.furaffinity.client.pages;
 
+import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
+import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 import android.content.Context;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
 import open.furaffinity.client.utilities.parseAdZones;
 
-import static open.furaffinity.client.utilities.imageResultsTool.getDropDownOptions;
-import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
-
 public class search extends abstractPage {
     private static final String pagePath = "/search";
 
-    private static final List<String> rangeAllowedKeys = Arrays.asList("day", "3days", "week", "month", "all");
+    private static final List<String> rangeAllowedKeys =
+        Arrays.asList("day", "3days", "week", "month", "all");
     private static final List<String> modeAllowedKeys = Arrays.asList("all", "any", "extended");
     private final imageResultsTool.imageResolutions currentResolution;
     private HashMap<String, String> requestParameters = new HashMap<>();
@@ -40,7 +38,9 @@ public class search extends abstractPage {
         requestParameters.put("order-direction", "desc");//hacky but works for now
         setTypeArt(true);
 
-        currentResolution = imageResultsTool.getimageResolutionFromInt(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault));
+        currentResolution = imageResultsTool.getimageResolutionFromInt(
+            sharedPref.getInt(context.getString(R.string.imageResolutionSetting),
+                settings.imageResolutionDefault));
     }
 
     public search(search search) {
@@ -61,9 +61,9 @@ public class search extends abstractPage {
         return orderBy != null && orderDirection != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
+    @Override protected Boolean doInBackground(Void... voids) {
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, requestParameters);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
@@ -119,7 +119,8 @@ public class search extends abstractPage {
     private void setCheckboxState(String key, boolean state) {
         if (state) {
             requestParameters.put(key, "on");
-        } else {
+        }
+        else {
             requestParameters.remove(key);
         }
     }
@@ -235,5 +236,7 @@ public class search extends abstractPage {
         return pageResults;
     }
 
-    public List<Integer> getAdZones() { return adZones; }
+    public List<Integer> getAdZones() {
+        return adZones;
+    }
 }

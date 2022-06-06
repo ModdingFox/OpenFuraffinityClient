@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import open.furaffinity.client.R;
 
 public class msgPmsDialog extends DialogFragment {
@@ -21,9 +19,7 @@ public class msgPmsDialog extends DialogFragment {
         listener = msgPmsDialogListener;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    @NonNull @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -37,7 +33,9 @@ public class msgPmsDialog extends DialogFragment {
             userNameEditText.setText(this.user);
         }
 
-        builder.setPositiveButton(R.string.sendButton, (dialog, which) -> listener.userMessageData(userNameEditText.getText().toString(), subjectEditText.getText().toString(), messageEditText.getText().toString()));
+        builder.setPositiveButton(R.string.sendButton,
+            (dialog, which) -> listener.userMessageData(userNameEditText.getText().toString(),
+                subjectEditText.getText().toString(), messageEditText.getText().toString()));
 
         builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dismiss());
 

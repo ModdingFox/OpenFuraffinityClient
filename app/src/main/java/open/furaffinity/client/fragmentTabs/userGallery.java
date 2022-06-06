@@ -8,16 +8,13 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
@@ -46,8 +43,7 @@ public class userGallery extends appFragment {
     private HashMap<String, String> folderList = new HashMap<>();
 
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
-        @Override
-        public void requestSucceeded(abstractPage abstractPage) {
+        @Override public void requestSucceeded(abstractPage abstractPage) {
             List<HashMap<String, String>> pageResults = ((gallery) abstractPage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
@@ -57,10 +53,16 @@ public class userGallery extends appFragment {
             }
 
             //Deduplicate results
-            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+            List<String> newPostPaths =
+                pageResults.stream().map(currentMap -> currentMap.get("postPath"))
+                    .collect(Collectors.toList());
+            List<String> oldPostPaths =
+                mDataSet.stream().map(currentMap -> currentMap.get("postPath"))
+                    .collect(Collectors.toList());
             newPostPaths.removeAll(oldPostPaths);
-            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+            pageResults = pageResults.stream()
+                .filter(currentMap -> newPostPaths.contains(currentMap.get("postPath")))
+                .collect(Collectors.toList());
             mDataSet.addAll(pageResults);
             mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
@@ -68,8 +70,11 @@ public class userGallery extends appFragment {
                 folderList = ((gallery) abstractPage).getFolderResults();
 
                 if (folderList.size() > 0) {
-                    folderSpinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList, ((gallery) abstractPage).getPagePath(), true, false);
+                    folderSpinner.setLayoutParams(
+                        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    uiControls.spinnerSetAdapter(requireContext(), folderSpinner, folderList,
+                        ((gallery) abstractPage).getPagePath(), true, false);
 
                     controls.removeView(folderSpinner);
                     controls.addView(folderSpinner);
@@ -82,24 +87,29 @@ public class userGallery extends appFragment {
             swipeRefreshLayout.setRefreshing(false);
         }
 
-        @Override
-        public void requestFailed(abstractPage abstractPage) {
+        @Override public void requestFailed(abstractPage abstractPage) {
             loadingStopCounter--;
             isLoading = false;
             swipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(getActivity(), "Failed to load data for gallery", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Failed to load data for gallery", Toast.LENGTH_SHORT)
+                .show();
         }
     };
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_refreshable_recycler_view;
     }
 
     protected void getElements(View rootView) {
-        SharedPreferences sharedPref = requireActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            requireActivity().getSharedPreferences(getString(R.string.settingsFile),
+                Context.MODE_PRIVATE);
 
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(
+            sharedPref.getInt(getString(R.string.imageListColumns),
+                settings.imageListColumnsDefault),
+            sharedPref.getInt(getString(R.string.imageListOrientation),
+                settings.imageListOrientationDefault));
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
@@ -117,8 +127,7 @@ public class userGallery extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
@@ -147,13 +156,14 @@ public class userGallery extends appFragment {
     protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
-            @Override
-            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
-                page.setNextPage();
-                fetchPageData();
-            }
-        };
+        endlessRecyclerViewScrollListener =
+            new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+                @Override
+                public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
+                    page.setNextPage();
+                    fetchPageData();
+                }
+            };
 
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
@@ -169,8 +179,7 @@ public class userGallery extends appFragment {
                 }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            @Override public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });

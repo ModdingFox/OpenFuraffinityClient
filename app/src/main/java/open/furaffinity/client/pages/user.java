@@ -1,20 +1,16 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.io.InputStream;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class user extends abstractPage {
@@ -85,10 +81,13 @@ public class user extends abstractPage {
                 Element shoutAvatarDiv = currentElement.selectFirst("div.shout-avatar");
                 Element checkboxInput = currentElement.selectFirst("input[type=checkbox]");
 
-                currentShoutData.put("userName", currentElement.selectFirst(".comment_username").text());
-                currentShoutData.put("userIcon", "https:" + shoutAvatarDiv.selectFirst("img").attr("src"));
+                currentShoutData.put("userName",
+                    currentElement.selectFirst(".comment_username").text());
+                currentShoutData.put("userIcon",
+                    "https:" + shoutAvatarDiv.selectFirst("img").attr("src"));
                 currentShoutData.put("userLink", shoutAvatarDiv.selectFirst("a").attr("href"));
-                currentShoutData.put("commentDate", currentElement.selectFirst(".popup_date").text());
+                currentShoutData.put("commentDate",
+                    currentElement.selectFirst(".popup_date").text());
                 currentShoutData.put("comment", currentElement.selectFirst(".comment_text").html());
 
                 if (checkboxInput != null) {
@@ -114,17 +113,22 @@ public class user extends abstractPage {
         userAccountStatus = "";//This was removed
         userAccountStatusLine = userPageFlexItemUsername.selectFirst("span").text();
 
-        Element userPageFlexItemUserNavAvatarDesktopImg = doc.selectFirst("div.userpage-flex-item.user-nav-avatar-desktop").selectFirst("img");
+        Element userPageFlexItemUserNavAvatarDesktopImg =
+            doc.selectFirst("div.userpage-flex-item.user-nav-avatar-desktop").selectFirst("img");
         userIcon = "https:" + userPageFlexItemUserNavAvatarDesktopImg.attr("src");
 
         Elements userPageFlexItemsH2 = doc.select("div.section-header").select("h2");
 
         for (Element currentElement : userPageFlexItemsH2) {
-            Elements currentElementsParentSectionBody = currentElement.parent().parent().select("div.section-body");
+            Elements currentElementsParentSectionBody =
+                currentElement.parent().parent().select("div.section-body");
 
             switch (currentElement.text()) {
                 case "Stats":
-                    Matcher tableDataRegex = Pattern.compile("Views: ([\\d]+) Submissions: ([\\d]+) Favs: ([\\d]+) Comments Earned: ([\\d]+) Comments Made: ([\\d]+) Journals: ([\\d]+)").matcher(currentElementsParentSectionBody.get(0).text());
+                    Matcher tableDataRegex = Pattern.compile(
+                            "Views: ([\\d]+) Submissions: ([\\d]+) Favs: ([\\d]+) Comments " +
+                                "Earned: ([\\d]+) Comments Made: ([\\d]+) Journals: ([\\d]+)")
+                        .matcher(currentElementsParentSectionBody.get(0).text());
                     if (tableDataRegex.find()) {
                         userViews = tableDataRegex.group(1);
                         userSubmissions = tableDataRegex.group(2);
@@ -137,27 +141,34 @@ public class user extends abstractPage {
                 case "User Profile":
                     userProfile = "";
                     for (Element currentSectionBodyElement : currentElementsParentSectionBody) {
-                        open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(currentSectionBodyElement);
+                        open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(
+                            currentSectionBodyElement);
                         userProfile += currentSectionBodyElement.html();
                     }
                     break;
                 case "Featured Submission":
-                    userFeaturedSubmissionPath = currentElementsParentSectionBody.get(0).selectFirst("a").attr("href");
-                    userFeaturedSubmissionImagePath = currentElementsParentSectionBody.get(0).selectFirst("img").attr("src");
-                    userFeaturedSubmissionTitle = currentElementsParentSectionBody.get(0).selectFirst("h2").text();
+                    userFeaturedSubmissionPath =
+                        currentElementsParentSectionBody.get(0).selectFirst("a").attr("href");
+                    userFeaturedSubmissionImagePath =
+                        currentElementsParentSectionBody.get(0).selectFirst("img").attr("src");
+                    userFeaturedSubmissionTitle =
+                        currentElementsParentSectionBody.get(0).selectFirst("h2").text();
                     break;
                 case "Recent Watchers":
                     userRecentWatchers = currentElementsParentSectionBody.html();
-                    userWatchersPath = currentElement.parent().selectFirst("h3").selectFirst("a").attr("href");
+                    userWatchersPath =
+                        currentElement.parent().selectFirst("h3").selectFirst("a").attr("href");
                     break;
                 case "Recently Watched":
                     userRecentlyWatching = currentElementsParentSectionBody.html();
-                    userWatchingPath = currentElement.parent().selectFirst("h3").selectFirst("a").attr("href");
+                    userWatchingPath =
+                        currentElement.parent().selectFirst("h3").selectFirst("a").attr("href");
                     break;
             }
         }
 
-        for (Element currentElement : doc.selectFirst("div.userpage-flex-item.user-nav").select("a")) {
+        for (Element currentElement : doc.selectFirst("div.userpage-flex-item.user-nav")
+            .select("a")) {
             switch (currentElement.text()) {
                 case "Gallery":
                     userGalleryPath = currentElement.attr("href");
@@ -216,7 +227,8 @@ public class user extends abstractPage {
                             watchUnWatch = userNavControlsDivElement.attr("href");
                             break;
                         case "Note":
-                            noteUser = userNavControlsDivElement.attr("href").replace(msgPms.getNotePathPrefix(), "");
+                            noteUser = userNavControlsDivElement.attr("href")
+                                .replace(msgPms.getNotePathPrefix(), "");
                             noteUser = noteUser.substring(0, noteUser.length() - 1);
                             break;
                         case "Block":
@@ -232,12 +244,14 @@ public class user extends abstractPage {
             }
         }
 
-        return userPageFlexItemUsername != null && userPageFlexItemUserNavAvatarDesktopImg != null && userPageFlexItemsH2 != null && userPageProfileDiv != null;
+        return userPageFlexItemUsername != null &&
+            userPageFlexItemUserNavAvatarDesktopImg != null && userPageFlexItemsH2 != null &&
+            userPageProfileDiv != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

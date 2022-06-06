@@ -1,22 +1,19 @@
 package open.furaffinity.client.fragmentDrawers;
 
+import static open.furaffinity.client.utilities.sendPm.sendPM;
 import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
@@ -27,12 +24,9 @@ import open.furaffinity.client.dialogs.spinnerDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
 
-import static open.furaffinity.client.utilities.sendPm.sendPM;
-
 public class msgPms extends appFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
-    @SuppressWarnings("FieldCanBeLocal")
-    private ConstraintLayout constraintLayout;
+    @SuppressWarnings("FieldCanBeLocal") private ConstraintLayout constraintLayout;
     private LinearLayoutManager layoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -46,8 +40,7 @@ public class msgPms extends appFragment {
     private open.furaffinity.client.pages.msgPms page;
     private boolean isLoading = false;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_refreshable_recycler_view_with_fab;
     }
 
@@ -73,13 +66,17 @@ public class msgPms extends appFragment {
         messageListOptions.setImageResource(R.drawable.ic_menu_settings);
 
         //noinspection deprecation
-        newMessage.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        newMessage.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        deleteSelectedMessages.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        deleteSelectedMessages.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        setSelectedMessagesPriority.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        setSelectedMessagesPriority.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        messageListOptions.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        messageListOptions.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         constraintLayout.addView(newMessage);
         constraintLayout.addView(deleteSelectedMessages);
@@ -101,8 +98,7 @@ public class msgPms extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
@@ -117,40 +113,46 @@ public class msgPms extends appFragment {
     }
 
     protected void initPages() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
 
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new msgPmsListAdapter(mDataSet, getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        page = new open.furaffinity.client.pages.msgPms(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> messages = page.getMessages();
+        page = new open.furaffinity.client.pages.msgPms(getActivity(),
+            new abstractPage.pageListener() {
+                @Override public void requestSucceeded(abstractPage abstractPage) {
+                    List<HashMap<String, String>> messages = page.getMessages();
 
-                int curSize = mAdapter.getItemCount();
+                    int curSize = mAdapter.getItemCount();
 
-                //Deduplicate results
-                List<String> newMessages = messages.stream().map(currentMap -> currentMap.get("messageid")).collect(Collectors.toList());
-                List<String> oldMessages = mDataSet.stream().map(currentMap -> currentMap.get("messageid")).collect(Collectors.toList());
-                newMessages.removeAll(oldMessages);
-                messages = messages.stream().filter(currentMap -> newMessages.contains(currentMap.get("messageid"))).collect(Collectors.toList());
-                mDataSet.addAll(messages);
-                mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+                    //Deduplicate results
+                    List<String> newMessages =
+                        messages.stream().map(currentMap -> currentMap.get("messageid"))
+                            .collect(Collectors.toList());
+                    List<String> oldMessages =
+                        mDataSet.stream().map(currentMap -> currentMap.get("messageid"))
+                            .collect(Collectors.toList());
+                    newMessages.removeAll(oldMessages);
+                    messages = messages.stream()
+                        .filter(currentMap -> newMessages.contains(currentMap.get("messageid")))
+                        .collect(Collectors.toList());
+                    mDataSet.addAll(messages);
+                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
-                fab.setVisibility(View.VISIBLE);
-                isLoading = false;
-                swipeRefreshLayout.setRefreshing(false);
-            }
+                    fab.setVisibility(View.VISIBLE);
+                    isLoading = false;
+                    swipeRefreshLayout.setRefreshing(false);
+                }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                fab.setVisibility(View.GONE);
-                isLoading = false;
-                swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(getActivity(), "Failed to load data for notes", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override public void requestFailed(abstractPage abstractPage) {
+                    fab.setVisibility(View.GONE);
+                    isLoading = false;
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(getActivity(), "Failed to load data for notes",
+                        Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     protected void updateUIElementListeners(View rootView) {
@@ -167,17 +169,18 @@ public class msgPms extends appFragment {
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        newMessage.setOnClickListener(view -> sendPM(getActivity(), getChildFragmentManager(), null));
+        newMessage.setOnClickListener(
+            view -> sendPM(getActivity(), getChildFragmentManager(), null));
 
         deleteSelectedMessages.setOnClickListener(view -> {
             confirmDialog confirmDialog = new confirmDialog();
             confirmDialog.setTitleText("Delete Selected Messages?");
             confirmDialog.setListener(new confirmDialog.dialogListener() {
-                @Override
-                public void onDialogPositiveClick(DialogFragment dialog) {
+                @Override public void onDialogPositiveClick(DialogFragment dialog) {
                     String action = "trash";
 
-                    if(page.getSelectedFolder().equals(open.furaffinity.client.pages.msgPms.mailFolders.trash)) {
+                    if (page.getSelectedFolder()
+                        .equals(open.furaffinity.client.pages.msgPms.mailFolders.trash)) {
                         action = "delete";
                     }
 
@@ -188,32 +191,32 @@ public class msgPms extends appFragment {
                         params.put("items[" + i + "]", itemIds.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new abstractPage.pageListener() {
-                        @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
-                            resetRecycler();
-                            Toast.makeText(getActivity(), "Successfully deleted selected notes", Toast.LENGTH_SHORT).show();
-                        }
+                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(),
+                        new abstractPage.pageListener() {
+                            @Override public void requestSucceeded(abstractPage abstractPage) {
+                                resetRecycler();
+                                Toast.makeText(getActivity(), "Successfully deleted selected notes",
+                                    Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void requestFailed(abstractPage abstractPage) {
-                            Toast.makeText(getActivity(), "Failed to delete selected notes", Toast.LENGTH_SHORT).show();
-                        }
-                    }, page.getPagePath(), "move_to", action, params).execute();
+                            @Override public void requestFailed(abstractPage abstractPage) {
+                                Toast.makeText(getActivity(), "Failed to delete selected notes",
+                                    Toast.LENGTH_SHORT).show();
+                            }
+                        }, page.getPagePath(), "move_to", action, params).execute();
                 }
 
-                @Override
-                public void onDialogNegativeClick(DialogFragment dialog) {
+                @Override public void onDialogNegativeClick(DialogFragment dialog) {
 
                 }
             });
             confirmDialog.show(getChildFragmentManager(), "getDeleteConfirm");
         });
 
-        setSelectedMessagesPriority.setOnClickListener(view ->
-        {
+        setSelectedMessagesPriority.setOnClickListener(view -> {
             HashMap<String, String> prioritiesList = new HashMap<>();
-            for (open.furaffinity.client.pages.msgPms.priorities currentPriority : open.furaffinity.client.pages.msgPms.priorities.values()) {
+            for (open.furaffinity.client.pages.msgPms.priorities currentPriority :
+                open.furaffinity.client.pages.msgPms.priorities.values()) {
                 prioritiesList.put(currentPriority.toString(), currentPriority.getPrintableName());
             }
 
@@ -221,16 +224,17 @@ public class msgPms extends appFragment {
             spinnerDialog.setTitleText("Select Priority");
             spinnerDialog.setData(prioritiesList);
             spinnerDialog.setListener(new spinnerDialog.dialogListener() {
-                @Override
-                public void onDialogPositiveClick(DialogFragment dialog) {
+                @Override public void onDialogPositiveClick(DialogFragment dialog) {
                     List<String> itemIds = ((msgPmsListAdapter) mAdapter).getCheckedItems();
 
                     String moveKey;
                     String moveValue = spinnerDialog.getSpinnerSelection();
 
-                    if (spinnerDialog.getSpinnerSelection().equals(open.furaffinity.client.pages.msgPms.priorities.archive.toString())) {
+                    if (spinnerDialog.getSpinnerSelection().equals(
+                        open.furaffinity.client.pages.msgPms.priorities.archive.toString())) {
                         moveKey = "move_to";
-                    } else {
+                    }
+                    else {
                         moveKey = "set_prio";
                     }
 
@@ -239,32 +243,32 @@ public class msgPms extends appFragment {
                         params.put("items[" + i + "]", itemIds.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(), new abstractPage.pageListener() {
-                        @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
-                            resetRecycler();
-                            Toast.makeText(getActivity(), "Successfully moved selected notes", Toast.LENGTH_SHORT).show();
-                        }
+                    new open.furaffinity.client.submitPages.submitMsgPmsMoveItem(getActivity(),
+                        new abstractPage.pageListener() {
+                            @Override public void requestSucceeded(abstractPage abstractPage) {
+                                resetRecycler();
+                                Toast.makeText(getActivity(), "Successfully moved selected notes",
+                                    Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void requestFailed(abstractPage abstractPage) {
-                            Toast.makeText(getActivity(), "Failed to move selected notes", Toast.LENGTH_SHORT).show();
-                        }
-                    }, page.getPagePath(), moveKey, moveValue, params).execute();
+                            @Override public void requestFailed(abstractPage abstractPage) {
+                                Toast.makeText(getActivity(), "Failed to move selected notes",
+                                    Toast.LENGTH_SHORT).show();
+                            }
+                        }, page.getPagePath(), moveKey, moveValue, params).execute();
                 }
 
-                @Override
-                public void onDialogNegativeClick(DialogFragment dialog) {
+                @Override public void onDialogNegativeClick(DialogFragment dialog) {
                     dialog.dismiss();
                 }
             });
             spinnerDialog.show(getChildFragmentManager(), "selectPriority");
         });
 
-        messageListOptions.setOnClickListener(view ->
-        {
+        messageListOptions.setOnClickListener(view -> {
             HashMap<String, String> foldersList = new HashMap<>();
-            for (open.furaffinity.client.pages.msgPms.mailFolders currentMailFolder : open.furaffinity.client.pages.msgPms.mailFolders.values()) {
+            for (open.furaffinity.client.pages.msgPms.mailFolders currentMailFolder :
+                open.furaffinity.client.pages.msgPms.mailFolders.values()) {
                 foldersList.put(currentMailFolder.toString(), currentMailFolder.getPrintableName());
             }
 
@@ -272,12 +276,13 @@ public class msgPms extends appFragment {
             spinnerDialog.setTitleText("Select Folder");
             spinnerDialog.setData(foldersList);
             spinnerDialog.setListener(new spinnerDialog.dialogListener() {
-                @Override
-                public void onDialogPositiveClick(DialogFragment dialog) {
+                @Override public void onDialogPositiveClick(DialogFragment dialog) {
                     String selectedFolderValue = spinnerDialog.getSpinnerSelection();
                     if (!page.getSelectedFolder().toString().equals(selectedFolderValue)) {
-                        HashMap<String, open.furaffinity.client.pages.msgPms.mailFolders> foldersList = new HashMap<>();
-                        for (open.furaffinity.client.pages.msgPms.mailFolders currentMailFolder : open.furaffinity.client.pages.msgPms.mailFolders.values()) {
+                        HashMap<String, open.furaffinity.client.pages.msgPms.mailFolders>
+                            foldersList = new HashMap<>();
+                        for (open.furaffinity.client.pages.msgPms.mailFolders currentMailFolder :
+                            open.furaffinity.client.pages.msgPms.mailFolders.values()) {
                             foldersList.put(currentMailFolder.toString(), currentMailFolder);
                         }
 
@@ -287,8 +292,7 @@ public class msgPms extends appFragment {
                     }
                 }
 
-                @Override
-                public void onDialogNegativeClick(DialogFragment dialog) {
+                @Override public void onDialogNegativeClick(DialogFragment dialog) {
                     dialog.dismiss();
                 }
             });

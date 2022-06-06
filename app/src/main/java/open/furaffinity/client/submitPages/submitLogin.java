@@ -1,9 +1,7 @@
 package open.furaffinity.client.submitPages;
 
 import android.content.Context;
-
 import java.util.HashMap;
-
 import okhttp3.Cookie;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
@@ -15,15 +13,15 @@ public class submitLogin extends abstractPage {
     private Cookie a;
     private Cookie b;
 
-    public submitLogin(Context context, abstractPage.pageListener pageListener, String name, String pass, String gRecaptchaResponse) {
+    public submitLogin(Context context, abstractPage.pageListener pageListener, String name,
+                       String pass, String gRecaptchaResponse) {
         super(context, pageListener);
         this.name = name;
         this.pass = pass;
         this.gRecaptchaResponse = gRecaptchaResponse;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         for (Cookie currentCookie : webClient.getLastPageResponceCookies()) {
             switch (currentCookie.name()) {
                 case "a":
@@ -38,8 +36,7 @@ public class submitLogin extends abstractPage {
         return a != null && b != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
+    @Override protected Boolean doInBackground(Void... voids) {
         HashMap<String, String> params = new HashMap<>();
         params.put("action", "login");
         params.put("name", this.name);
@@ -48,7 +45,9 @@ public class submitLogin extends abstractPage {
 
         webClient.setFollowRedirects(false);
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + open.furaffinity.client.pages.login.getPagePath(), params);
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() +
+                open.furaffinity.client.pages.login.getPagePath(), params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

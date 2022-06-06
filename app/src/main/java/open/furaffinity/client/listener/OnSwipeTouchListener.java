@@ -14,8 +14,7 @@ public class OnSwipeTouchListener implements OnTouchListener {
         gestureDetector = new GestureDetector(ctx, new GestureListener());
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    @Override public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
 
@@ -44,25 +43,21 @@ public class OnSwipeTouchListener implements OnTouchListener {
         private static final int SWIPE_THRESHOLD = 25;
         private static final int SWIPE_VELOCITY_THRESHOLD = 100;
 
-        @Override
-        public boolean onDown(MotionEvent e) {
+        @Override public boolean onDown(MotionEvent e) {
             return true;
         }
 
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
+        @Override public boolean onSingleTapUp(MotionEvent e) {
             onClick();
             return super.onSingleTapUp(e);
         }
 
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
+        @Override public boolean onDoubleTap(MotionEvent e) {
             onDoubleClick();
             return super.onDoubleTap(e);
         }
 
-        @Override
-        public void onLongPress(MotionEvent e) {
+        @Override public void onLongPress(MotionEvent e) {
             onLongClick();
             super.onLongPress(e);
         }
@@ -74,18 +69,23 @@ public class OnSwipeTouchListener implements OnTouchListener {
                 float diffY = e2.getY() - e1.getY();
                 float diffX = e2.getX() - e1.getX();
                 if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (Math.abs(diffX) > SWIPE_THRESHOLD &&
+                        Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
                             onSwipeRight();
-                        } else {
+                        }
+                        else {
                             onSwipeLeft();
                         }
                         result = true;
                     }
-                } else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                }
+                else if (Math.abs(diffY) > SWIPE_THRESHOLD &&
+                    Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
                         onSwipeBottom();
-                    } else {
+                    }
+                    else {
                         onSwipeTop();
                     }
                     result = true;

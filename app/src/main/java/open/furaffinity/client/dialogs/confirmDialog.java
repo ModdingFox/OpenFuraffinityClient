@@ -3,21 +3,16 @@ package open.furaffinity.client.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import open.furaffinity.client.R;
 
 public class confirmDialog extends DialogFragment {
-    @SuppressWarnings("FieldCanBeLocal")
-    private TextView dialogText;
+    @SuppressWarnings("FieldCanBeLocal") private TextView dialogText;
 
     private String text = null;
     private dialogListener listener;
@@ -26,9 +21,7 @@ public class confirmDialog extends DialogFragment {
         listener = dialogListener;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    @NonNull @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -38,8 +31,10 @@ public class confirmDialog extends DialogFragment {
         dialogText.setText(text);
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> listener.onDialogPositiveClick(confirmDialog.this));
-        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> listener.onDialogNegativeClick(confirmDialog.this));
+        builder.setPositiveButton(R.string.acceptButton,
+            (dialog, which) -> listener.onDialogPositiveClick(confirmDialog.this));
+        builder.setNegativeButton(R.string.cancelButton,
+            (dialog, which) -> listener.onDialogNegativeClick(confirmDialog.this));
 
         return builder.create();
     }

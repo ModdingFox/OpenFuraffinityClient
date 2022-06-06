@@ -1,9 +1,7 @@
 package open.furaffinity.client.utilities;
 
 import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
-
 import java.util.Objects;
 
 public class kvPair {
@@ -27,14 +25,11 @@ public class kvPair {
         return value;
     }
 
-    @NonNull
-    @Override
-    public String toString() {
+    @NonNull @Override public String toString() {
         return value;
     }
 
-    @Override
-    public boolean equals(Object obj) {
+    @Override public boolean equals(Object obj) {
         if (obj instanceof kvPair) {
             kvPair c = (kvPair) obj;
             return Objects.equals(this.key, c.key) && Objects.equals(this.value, c.value);

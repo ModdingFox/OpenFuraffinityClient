@@ -2,16 +2,13 @@ package open.furaffinity.client.fragmentTabs;
 
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
@@ -28,13 +25,13 @@ public class manageWatches extends appFragment {
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_refreshable_recycler_view;
     }
 
     protected void getElements(View rootView) {
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager =
+            new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
@@ -49,8 +46,7 @@ public class manageWatches extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
@@ -67,20 +63,27 @@ public class manageWatches extends appFragment {
         recyclerView.setAdapter(mAdapter);
 
         page = new controlsBuddyList(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                List<HashMap<String, String>> pageResults = ((controlsBuddyList) abstractPage).getPageResults();
+            @Override public void requestSucceeded(abstractPage abstractPage) {
+                List<HashMap<String, String>> pageResults =
+                    ((controlsBuddyList) abstractPage).getPageResults();
 
                 int curSize = mAdapter.getItemCount();
 
                 if (pageResults.size() == 0 && loadingStopCounter > 0) {
                     loadingStopCounter--;
-                } else {
+                }
+                else {
                     //Deduplicate results
-                    List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("userLink")).collect(Collectors.toList());
-                    List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("userLink")).collect(Collectors.toList());
+                    List<String> newPostPaths =
+                        pageResults.stream().map(currentMap -> currentMap.get("userLink"))
+                            .collect(Collectors.toList());
+                    List<String> oldPostPaths =
+                        mDataSet.stream().map(currentMap -> currentMap.get("userLink"))
+                            .collect(Collectors.toList());
                     newPostPaths.removeAll(oldPostPaths);
-                    pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("userLink"))).collect(Collectors.toList());
+                    pageResults = pageResults.stream()
+                        .filter(currentMap -> newPostPaths.contains(currentMap.get("userLink")))
+                        .collect(Collectors.toList());
                     mDataSet.addAll(pageResults);
                     mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
                 }
@@ -89,12 +92,12 @@ public class manageWatches extends appFragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
+            @Override public void requestFailed(abstractPage abstractPage) {
                 loadingStopCounter--;
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(getActivity(), "Failed to load data for watches", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to load data for watches", Toast.LENGTH_SHORT)
+                    .show();
             }
         });
     }

@@ -8,16 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import open.furaffinity.client.R;
 
 public class textDialog extends DialogFragment {
-    @SuppressWarnings("FieldCanBeLocal")
-    private TextView dialogText;
+    @SuppressWarnings("FieldCanBeLocal") private TextView dialogText;
     private EditText editText;
 
     private String text = null;
@@ -28,9 +25,7 @@ public class textDialog extends DialogFragment {
         listener = dialogListener;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    @NonNull @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -42,12 +37,15 @@ public class textDialog extends DialogFragment {
         dialogText.setText(text);
 
         if (isPassword) {
-            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            editText.setInputType(
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         }
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> listener.onDialogPositiveClick(textDialog.this));
-        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> listener.onDialogNegativeClick(textDialog.this));
+        builder.setPositiveButton(R.string.acceptButton,
+            (dialog, which) -> listener.onDialogPositiveClick(textDialog.this));
+        builder.setNegativeButton(R.string.cancelButton,
+            (dialog, which) -> listener.onDialogNegativeClick(textDialog.this));
 
         return builder.create();
     }

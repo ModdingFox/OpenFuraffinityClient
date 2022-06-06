@@ -7,17 +7,13 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragmentDrawers.journal;
@@ -34,25 +30,28 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
         checkedItems = new ArrayList<>();
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.msgothers_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+            .inflate(R.layout.msgothers_item, parent, false);
 
         return new ViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    @Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String actionText = " ";
 
         if (mDataSet.get(position).containsKey("userIcon")) {
-            Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.userIcon);
+            Glide.with(holder.itemView).load(mDataSet.get(position).get("userIcon"))
+                .diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading)
+                .into(holder.userIcon);
 
             if (mDataSet.get(position).containsKey("userLink")) {
-                holder.userIcon.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink")));
+                holder.userIcon.setOnClickListener(v -> ((mainActivity) context).setUserPath(
+                    mDataSet.get(position).get("userLink")));
             }
-        } else {
+        }
+        else {
             holder.userIcon.setVisibility(View.GONE);
         }
 
@@ -60,9 +59,11 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
             holder.userName.setText(mDataSet.get(position).get("userName"));
 
             if (mDataSet.get(position).containsKey("userLink")) {
-                holder.userName.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("userLink")));
+                holder.userName.setOnClickListener(v -> ((mainActivity) context).setUserPath(
+                    mDataSet.get(position).get("userLink")));
             }
-        } else {
+        }
+        else {
             holder.userName.setVisibility(View.GONE);
         }
 
@@ -78,22 +79,26 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
 
         holder.actionText.setText(actionText);
 
-        if (mDataSet.get(position).containsKey("postLink") && mDataSet.get(position).containsKey("postClass")) {
+        if (mDataSet.get(position).containsKey("postLink") &&
+            mDataSet.get(position).containsKey("postClass")) {
             holder.actionText.setOnClickListener(v -> {
                 if (mDataSet.get(position).get("postClass").equals(journal.class.getName())) {
                     ((mainActivity) context).setJournalPath(mDataSet.get(position).get("postLink"));
-                } else if (mDataSet.get(position).get("postClass").equals(view.class.getName())) {
+                }
+                else if (mDataSet.get(position).get("postClass").equals(view.class.getName())) {
                     ((mainActivity) context).setViewPath(mDataSet.get(position).get("postLink"));
                 }
             });
         }
 
-        holder.checkBox.setChecked(checkedItems.contains(mDataSet.get(position).get("notificationId")));
+        holder.checkBox.setChecked(
+            checkedItems.contains(mDataSet.get(position).get("notificationId")));
 
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 checkedItems.add(mDataSet.get(position).get("notificationId"));
-            } else {
+            }
+            else {
                 checkedItems.remove(mDataSet.get(position).get("notificationId"));
             }
         });
@@ -107,8 +112,7 @@ public class msgOthersListAdapter extends RecyclerView.Adapter<msgOthersListAdap
         checkedItems = new ArrayList<>();
     }
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         return mDataSet.size();
     }
 

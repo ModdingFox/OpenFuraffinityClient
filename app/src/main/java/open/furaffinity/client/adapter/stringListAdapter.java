@@ -5,13 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragmentDrawers.journal;
@@ -28,35 +25,38 @@ public class stringListAdapter extends RecyclerView.Adapter<stringListAdapter.Vi
         this.context = context;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_item, parent, false);
+        View v =
+            LayoutInflater.from(parent.getContext()).inflate(R.layout.text_item, parent, false);
 
         return new ViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    @Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.item.setText(mDataSet.get(position).get("item"));
 
-        if (mDataSet.get(position).get("path") != null && mDataSet.get(position).get("class") != null) {
+        if (mDataSet.get(position).get("path") != null &&
+            mDataSet.get(position).get("class") != null) {
             holder.item.setOnClickListener(v -> {
                 if (mDataSet.get(position).get("class").equals(journal.class.getName())) {
                     ((mainActivity) context).setJournalPath(mDataSet.get(position).get("path"));
-                } else if (mDataSet.get(position).get("class").equals(msgPmsMessage.class.getName())) {
+                }
+                else if (mDataSet.get(position).get("class")
+                    .equals(msgPmsMessage.class.getName())) {
                     ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("path"));
-                } else if (mDataSet.get(position).get("class").equals(user.class.getName())) {
+                }
+                else if (mDataSet.get(position).get("class").equals(user.class.getName())) {
                     ((mainActivity) context).setUserPath(mDataSet.get(position).get("path"));
-                } else if (mDataSet.get(position).get("class").equals(view.class.getName())) {
+                }
+                else if (mDataSet.get(position).get("class").equals(view.class.getName())) {
                     ((mainActivity) context).setViewPath(mDataSet.get(position).get("path"));
                 }
             });
         }
     }
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         return mDataSet.size();
     }
 

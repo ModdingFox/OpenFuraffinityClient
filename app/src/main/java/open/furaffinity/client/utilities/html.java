@@ -24,8 +24,10 @@ public class html {
                     rootElementImg.attr("src", "https:" + rootElementImg.attr("src"));
                 }
 
-                if (rootElementImg.hasAttr("data-fullview-src") && rootElementImg.attr("data-fullview-src").startsWith("/")) {
-                    rootElementImg.attr("data-fullview-src", "https:" + rootElementImg.attr("data-fullview-src"));
+                if (rootElementImg.hasAttr("data-fullview-src") &&
+                    rootElementImg.attr("data-fullview-src").startsWith("/")) {
+                    rootElementImg.attr("data-fullview-src",
+                        "https:" + rootElementImg.attr("data-fullview-src"));
                 }
             }
         }
@@ -44,33 +46,42 @@ public class html {
             Document doc = Jsoup.parse(html);
 
             Elements submissionCommentsContainers = doc.select("div.comment_container");
-            Elements submissionCommentsContainersCollapsedHeight = submissionCommentsContainers.select("div.collapsed_height");
+            Elements submissionCommentsContainersCollapsedHeight =
+                submissionCommentsContainers.select("div.collapsed_height");
             submissionCommentsContainers.removeAll(submissionCommentsContainersCollapsedHeight);
 
             for (Element currentElement : submissionCommentsContainers) {
                 HashMap<String, String> currentCommentData = new HashMap<>();
 
-                Element currentElementUserStrong = currentElement.selectFirst("strong.comment_username");
+                Element currentElementUserStrong =
+                    currentElement.selectFirst("strong.comment_username");
 
-                Element currentElementAvatarDesktopDiv = currentElement.selectFirst("div.avatar-desktop");
-                Element currentElementAvatarDesktopA = currentElementAvatarDesktopDiv.selectFirst("a");
-                Element currentElementCommentUserAvatarImg = currentElementAvatarDesktopDiv.selectFirst("img.comment_useravatar");
+                Element currentElementAvatarDesktopDiv =
+                    currentElement.selectFirst("div.avatar-desktop");
+                Element currentElementAvatarDesktopA =
+                    currentElementAvatarDesktopDiv.selectFirst("a");
+                Element currentElementCommentUserAvatarImg =
+                    currentElementAvatarDesktopDiv.selectFirst("img.comment_useravatar");
 
                 Element currentElementCommentDiv = currentElement.selectFirst("div.comment_text");
-                open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(currentElementCommentDiv);
+                open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(
+                    currentElementCommentDiv);
 
                 Element currentElementReplyToLinkDiv = currentElement.selectFirst("a.replyto_link");
-                Element currentElementParentCommentIdDiv = currentElement.selectFirst("a.comment-parent");
+                Element currentElementParentCommentIdDiv =
+                    currentElement.selectFirst("a.comment-parent");
                 Element currentElementCommentIdDiv = currentElement.selectFirst("a.comment_anchor");
 
                 currentCommentData.put("userName", currentElementUserStrong.text());
-                currentCommentData.put("userIcon", "https:" + currentElementCommentUserAvatarImg.attr("src"));
+                currentCommentData.put("userIcon",
+                    "https:" + currentElementCommentUserAvatarImg.attr("src"));
                 currentCommentData.put("userLink", currentElementAvatarDesktopA.attr("href"));
                 currentCommentData.put("commentDate", currentElement.attr("data-timestamp"));
                 currentCommentData.put("comment", currentElementCommentDiv.html());
 
                 if (currentElementReplyToLinkDiv != null) {
-                    currentCommentData.put("replyToLink", currentElementReplyToLinkDiv.attr("href"));
+                    currentCommentData.put("replyToLink",
+                        currentElementReplyToLinkDiv.attr("href"));
                 }
 
                 if (currentElementParentCommentIdDiv != null) {

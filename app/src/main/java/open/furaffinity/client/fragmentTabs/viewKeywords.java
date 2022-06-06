@@ -1,19 +1,16 @@
 package open.furaffinity.client.fragmentTabs;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
@@ -32,8 +29,7 @@ public class viewKeywords extends appFragment {
 
     private ArrayList<String> mDataSet = new ArrayList<>();
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_recycler_view;
     }
 
@@ -46,9 +42,10 @@ public class viewKeywords extends appFragment {
         searchButton = new Button(requireContext());
     }
 
-    @Override
-    protected void initPages() {
-        searchButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    @Override protected void initPages() {
+        searchButton.setLayoutParams(
+            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
         searchButton.setText(getString(R.string.searchSelected));
         controls.addView(searchButton);
     }
@@ -64,8 +61,7 @@ public class viewKeywords extends appFragment {
         ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
@@ -74,7 +70,8 @@ public class viewKeywords extends appFragment {
             JSONObject searchQuery = new JSONObject();
 
             try {
-                searchQuery.put(searchContract.searchItemEntry.COLUMN_NAME_Q, ("@keywords " + String.join(" ", ((checkboxListAdapter) mAdapter).getCheckedItems())));
+                searchQuery.put(searchContract.searchItemEntry.COLUMN_NAME_Q, ("@keywords " +
+                    String.join(" ", ((checkboxListAdapter) mAdapter).getCheckedItems())));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

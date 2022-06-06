@@ -6,7 +6,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import java.util.HashMap;
 
 public class dynamicEditItem {
@@ -16,24 +15,33 @@ public class dynamicEditItem {
     private Spinner spinner;
     private String name;
 
-    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, String placeholder) {
-        initDynamicEditItem(context, linearLayout, name, header, value, placeholder, Integer.MAX_VALUE, null);
+    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header,
+                           String value, String placeholder) {
+        initDynamicEditItem(context, linearLayout, name, header, value, placeholder,
+            Integer.MAX_VALUE, null);
     }
 
-    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, String placeholder, int maxLength) {
-        initDynamicEditItem(context, linearLayout, name, header, value, placeholder, maxLength, null);
+    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header,
+                           String value, String placeholder, int maxLength) {
+        initDynamicEditItem(context, linearLayout, name, header, value, placeholder, maxLength,
+            null);
     }
 
-    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, HashMap<String, String> options) {
+    public dynamicEditItem(Context context, LinearLayout linearLayout, String name, String header,
+                           String value, HashMap<String, String> options) {
         initDynamicEditItem(context, linearLayout, name, header, value, "", 0, options);
     }
 
-    private void initDynamicEditItem(Context context, LinearLayout linearLayout, String name, String header, String value, String placeholder, int maxLength, HashMap<String, String> options) {
+    private void initDynamicEditItem(Context context, LinearLayout linearLayout, String name,
+                                     String header, String value, String placeholder, int maxLength,
+                                     HashMap<String, String> options) {
         this.name = name;
 
         this.linearLayout = linearLayout;
         this.textView = new TextView(context);
-        this.textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        this.textView.setLayoutParams(
+            new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
         this.textView.setText(header);
         this.linearLayout.addView(this.textView);
 
@@ -49,9 +57,11 @@ public class dynamicEditItem {
             }
 
             this.linearLayout.addView(this.editText);
-        } else {
+        }
+        else {
             this.spinner = new Spinner(context);
-            open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(context, this.spinner, options, value, false, false);
+            open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(context, this.spinner,
+                options, value, false, false);
             this.linearLayout.addView(this.spinner);
         }
     }
@@ -63,7 +73,8 @@ public class dynamicEditItem {
     public String getValue() {
         if (this.editText != null) {
             return this.editText.getText().toString();
-        } else if (this.spinner != null) {
+        }
+        else if (this.spinner != null) {
             return ((kvPair) this.spinner.getSelectedItem()).getKey();
         }
 
@@ -75,7 +86,8 @@ public class dynamicEditItem {
 
         if (editText != null) {
             this.linearLayout.removeView(this.editText);
-        } else if (spinner != null) {
+        }
+        else if (spinner != null) {
             this.linearLayout.removeView(this.spinner);
         }
     }

@@ -1,11 +1,10 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import android.content.Context;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class commissions extends abstractPage {
@@ -20,10 +19,12 @@ public class commissions extends abstractPage {
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
-        Element userPageFlexItemUsernameH = doc.selectFirst("div.section-body :first-child > table :first-child > table");
+        Element userPageFlexItemUsernameH =
+            doc.selectFirst("div.section-body :first-child > table :first-child > table");
 
         if (userPageFlexItemUsernameH != null) {
-            open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(userPageFlexItemUsernameH);
+            open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(
+                userPageFlexItemUsernameH);
             commissionBody = userPageFlexItemUsernameH.html();
             return true;
         }
@@ -31,9 +32,9 @@ public class commissions extends abstractPage {
         return false;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... voids) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

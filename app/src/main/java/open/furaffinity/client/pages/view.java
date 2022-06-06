@@ -1,18 +1,14 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.net.URL;
+import android.content.Context;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class view extends abstractPage {
@@ -103,14 +99,16 @@ public class view extends abstractPage {
         Element submissionIdContainer = doc.selectFirst("div.submission-id-container");
 
         if (submissionIdContainer != null) {
-            Element submissionIdAvatar = submissionIdContainer.selectFirst("div.submission-id-avatar");
+            Element submissionIdAvatar =
+                submissionIdContainer.selectFirst("div.submission-id-avatar");
 
             if (submissionIdAvatar != null) {
                 Element submissionIdAvatarUserPage = submissionIdAvatar.selectFirst("a");
                 if (submissionIdAvatarUserPage != null) {
                     submissionUserPage = submissionIdAvatarUserPage.attr("href");
 
-                    Element submissionIdAvatarUserIcon = submissionIdAvatarUserPage.selectFirst("img");
+                    Element submissionIdAvatarUserIcon =
+                        submissionIdAvatarUserPage.selectFirst("img");
                     if (submissionIdAvatarUserIcon != null) {
                         submissionUserIcon = "https:" + submissionIdAvatarUserIcon.attr("src");
                     }
@@ -124,7 +122,8 @@ public class view extends abstractPage {
                     submissionTitle = submissionTitleP.text();
                 }
 
-                //Using the submissionTitleDiv as a ref to find the user name. Yeah its not great but works for now
+                //Using the submissionTitleDiv as a ref to find the user name. Yeah its not great
+                // but works for now
                 Element submissionUserA = submissionTitleDiv.nextElementSibling().selectFirst("a");
                 if (submissionUserA != null) {
                     Element submissionUserStrong = submissionUserA.selectFirst("strong");
@@ -144,7 +143,8 @@ public class view extends abstractPage {
         if (submissionDescriptionDiv != null) {
             Elements submissionDescriptionDivA = submissionDescriptionDiv.select("a");
             if (submissionDescriptionDivA != null) {
-                open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(submissionDescriptionDivA);
+                open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(
+                    submissionDescriptionDivA);
                 submissionDescription = submissionDescriptionDiv.html();
             }
         }
@@ -188,11 +188,14 @@ public class view extends abstractPage {
         if (submissionInfoSection != null) {
             Element submissionCategoryDiv = submissionInfoSection.selectFirst("div");
             if (submissionCategoryDiv != null) {
-                Element submissionCategoryNameSpan = submissionCategoryDiv.selectFirst("span.category-name");
+                Element submissionCategoryNameSpan =
+                    submissionCategoryDiv.selectFirst("span.category-name");
                 if (submissionCategoryNameSpan != null) {
-                    Element submissionCategoryNameTypeSpan = submissionCategoryDiv.selectFirst("span.type-name");
+                    Element submissionCategoryNameTypeSpan =
+                        submissionCategoryDiv.selectFirst("span.type-name");
                     if (submissionCategoryNameTypeSpan != null) {
-                        submissionCategory = submissionCategoryNameSpan.text() + " / " + submissionCategoryNameTypeSpan.text();
+                        submissionCategory = submissionCategoryNameSpan.text() + " / " +
+                            submissionCategoryNameTypeSpan.text();
                     }
                 }
             }
@@ -242,9 +245,9 @@ public class view extends abstractPage {
         return submissionIdContainer != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
@@ -355,7 +358,7 @@ public class view extends abstractPage {
         return folderList;
     }
 
-    public String getSubmissionMimeType(){
+    public String getSubmissionMimeType() {
         return submissionMimeType;
     }
 }

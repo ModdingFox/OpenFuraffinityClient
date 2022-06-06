@@ -5,9 +5,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
-
 import androidx.fragment.app.DialogFragment;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
@@ -45,8 +43,7 @@ public class manageAccountSettings extends appFragment {
 
     private boolean isLoading = false;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_manage_account_settings;
     }
 
@@ -84,50 +81,73 @@ public class manageAccountSettings extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
     protected void initPages() {
         page = new controlsSettings(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            @Override public void requestSucceeded(abstractPage abstractPage) {
                 fa_useremail.setText(((controlsSettings) abstractPage).getFaUserEmail());
 
-                uiControls.spinnerSetAdapter(requireContext(), bdaymonth, ((controlsSettings) abstractPage).getBDayMonth(), ((controlsSettings) abstractPage).getBDayMonthCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), bdayday, ((controlsSettings) abstractPage).getBDayDay(), ((controlsSettings) abstractPage).getBDayDayCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), bdayyear, ((controlsSettings) abstractPage).getBDayYear(), ((controlsSettings) abstractPage).getBDayYearCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), viewmature, ((controlsSettings) abstractPage).getViewMature(), ((controlsSettings) abstractPage).getViewMatureCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), timezone, ((controlsSettings) abstractPage).getTimezone(), ((controlsSettings) abstractPage).getTimezoneCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdaymonth,
+                    ((controlsSettings) abstractPage).getBDayMonth(),
+                    ((controlsSettings) abstractPage).getBDayMonthCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdayday,
+                    ((controlsSettings) abstractPage).getBDayDay(),
+                    ((controlsSettings) abstractPage).getBDayDayCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), bdayyear,
+                    ((controlsSettings) abstractPage).getBDayYear(),
+                    ((controlsSettings) abstractPage).getBDayYearCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), viewmature,
+                    ((controlsSettings) abstractPage).getViewMature(),
+                    ((controlsSettings) abstractPage).getViewMatureCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), timezone,
+                    ((controlsSettings) abstractPage).getTimezone(),
+                    ((controlsSettings) abstractPage).getTimezoneCurrent(), true, false);
 
                 timezone_dst.setChecked(((controlsSettings) abstractPage).getTimezoneDST());
 
-                uiControls.spinnerSetAdapter(requireContext(), fullview, ((controlsSettings) abstractPage).getFullView(), ((controlsSettings) abstractPage).getFullViewCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), style, ((controlsSettings) abstractPage).getStyle(), ((controlsSettings) abstractPage).getStyleCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), stylesheet, ((controlsSettings) abstractPage).getStylesheet(), ((controlsSettings) abstractPage).getStylesheetCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), scales_enabled, ((controlsSettings) abstractPage).getScalesEnabled(), ((controlsSettings) abstractPage).getScalesEnabledCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), fullview,
+                    ((controlsSettings) abstractPage).getFullView(),
+                    ((controlsSettings) abstractPage).getFullViewCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), style,
+                    ((controlsSettings) abstractPage).getStyle(),
+                    ((controlsSettings) abstractPage).getStyleCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), stylesheet,
+                    ((controlsSettings) abstractPage).getStylesheet(),
+                    ((controlsSettings) abstractPage).getStylesheetCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), scales_enabled,
+                    ((controlsSettings) abstractPage).getScalesEnabled(),
+                    ((controlsSettings) abstractPage).getScalesEnabledCurrent(), true, false);
 
                 paypal_email.setText(((controlsSettings) abstractPage).getPayPalEmail());
 
-                uiControls.spinnerSetAdapter(requireContext(), display_mode, ((controlsSettings) abstractPage).getDisplayMode(), ((controlsSettings) abstractPage).getDisplayModeCurrent(), true, false);
-                uiControls.spinnerSetAdapter(requireContext(), scales_message_enabled, ((controlsSettings) abstractPage).getScalesMessageEnabled(), ((controlsSettings) abstractPage).getScalesMessageEnabledCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), display_mode,
+                    ((controlsSettings) abstractPage).getDisplayMode(),
+                    ((controlsSettings) abstractPage).getDisplayModeCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), scales_message_enabled,
+                    ((controlsSettings) abstractPage).getScalesMessageEnabled(),
+                    ((controlsSettings) abstractPage).getScalesMessageEnabledCurrent(), true,
+                    false);
 
                 scales_name.setText(((controlsSettings) abstractPage).getScalesName());
                 scales_plural_name.setText(((controlsSettings) abstractPage).getScalesPluralName());
                 scales_cost.setText(((controlsSettings) abstractPage).getScalesCost());
 
-                uiControls.spinnerSetAdapter(requireContext(), account_disabled, ((controlsSettings) abstractPage).getAccountDisabled(), ((controlsSettings) abstractPage).getAccountDisabledCurrent(), true, false);
+                uiControls.spinnerSetAdapter(requireContext(), account_disabled,
+                    ((controlsSettings) abstractPage).getAccountDisabled(),
+                    ((controlsSettings) abstractPage).getAccountDisabledCurrent(), true, false);
 
                 fab.setVisibility(View.VISIBLE);
                 isLoading = false;
             }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
+            @Override public void requestFailed(abstractPage abstractPage) {
                 fab.setVisibility(View.GONE);
                 isLoading = false;
-                Toast.makeText(getActivity(), "Failed to load data for account settings", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to load data for account settings",
+                    Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -138,45 +158,41 @@ public class manageAccountSettings extends appFragment {
             textDialog.setTitleText("Enter current password:");
             textDialog.setIsPassword();
             textDialog.setListener(new textDialog.dialogListener() {
-                @Override
-                public void onDialogPositiveClick(DialogFragment dialog) {
-                    new open.furaffinity.client.submitPages.submitControlsSettings(getActivity(), new abstractPage.pageListener() {
-                        @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
-                            Toast.makeText(getActivity(), "Account settings updated", Toast.LENGTH_SHORT).show();
-                        }
+                @Override public void onDialogPositiveClick(DialogFragment dialog) {
+                    new open.furaffinity.client.submitPages.submitControlsSettings(getActivity(),
+                        new abstractPage.pageListener() {
+                            @Override public void requestSucceeded(abstractPage abstractPage) {
+                                Toast.makeText(getActivity(), "Account settings updated",
+                                    Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void requestFailed(abstractPage abstractPage) {
-                            Toast.makeText(getActivity(), "Failed to update account settings:" + ((open.furaffinity.client.submitPages.submitControlsSettings) abstractPage).getErrorMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    },
-                            fa_useremail.getText().toString(),
-                            ((kvPair) bdaymonth.getSelectedItem()).getKey(),
-                            ((kvPair) bdayday.getSelectedItem()).getKey(),
-                            ((kvPair) bdayyear.getSelectedItem()).getKey(),
-                            ((kvPair) viewmature.getSelectedItem()).getKey(),
-                            ((kvPair) timezone.getSelectedItem()).getKey(),
-                            ((timezone_dst.isChecked()) ? ("1") : ("0")),
-                            ((kvPair) fullview.getSelectedItem()).getKey(),
-                            ((kvPair) style.getSelectedItem()).getKey(),
-                            ((kvPair) stylesheet.getSelectedItem()).getKey(),
-                            ((kvPair) scales_enabled.getSelectedItem()).getKey(),
-                            paypal_email.getText().toString(),
-                            ((kvPair) display_mode.getSelectedItem()).getKey(),
-                            ((kvPair) scales_message_enabled.getSelectedItem()).getKey(),
-                            scales_name.getText().toString(),
-                            scales_plural_name.getText().toString(),
-                            scales_cost.getText().toString(),
-                            ((kvPair) account_disabled.getSelectedItem()).getKey(),
-                            newpassword.getText().toString(),
-                            newpassword2.getText().toString(),
-                            ((textDialog) dialog).getText()
-                    ).execute();
+                            @Override public void requestFailed(abstractPage abstractPage) {
+                                Toast.makeText(getActivity(), "Failed to update account settings:" +
+                                        ((open.furaffinity.client.submitPages.submitControlsSettings) abstractPage).getErrorMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                            }
+                        }, fa_useremail.getText().toString(),
+                        ((kvPair) bdaymonth.getSelectedItem()).getKey(),
+                        ((kvPair) bdayday.getSelectedItem()).getKey(),
+                        ((kvPair) bdayyear.getSelectedItem()).getKey(),
+                        ((kvPair) viewmature.getSelectedItem()).getKey(),
+                        ((kvPair) timezone.getSelectedItem()).getKey(),
+                        ((timezone_dst.isChecked()) ? ("1") : ("0")),
+                        ((kvPair) fullview.getSelectedItem()).getKey(),
+                        ((kvPair) style.getSelectedItem()).getKey(),
+                        ((kvPair) stylesheet.getSelectedItem()).getKey(),
+                        ((kvPair) scales_enabled.getSelectedItem()).getKey(),
+                        paypal_email.getText().toString(),
+                        ((kvPair) display_mode.getSelectedItem()).getKey(),
+                        ((kvPair) scales_message_enabled.getSelectedItem()).getKey(),
+                        scales_name.getText().toString(), scales_plural_name.getText().toString(),
+                        scales_cost.getText().toString(),
+                        ((kvPair) account_disabled.getSelectedItem()).getKey(),
+                        newpassword.getText().toString(), newpassword2.getText().toString(),
+                        ((textDialog) dialog).getText()).execute();
                 }
 
-                @Override
-                public void onDialogNegativeClick(DialogFragment dialog) {
+                @Override public void onDialogNegativeClick(DialogFragment dialog) {
                     dialog.dismiss();
                 }
             });

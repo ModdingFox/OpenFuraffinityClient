@@ -2,13 +2,11 @@ package open.furaffinity.client.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.fragmentTabs.notImplementedYet;
 import open.furaffinity.client.fragmentTabs.shouts;
@@ -21,15 +19,18 @@ import open.furaffinity.client.pages.user;
 import open.furaffinity.client.utilities.messageIds;
 
 public class userSectionsPagerAdapter extends FragmentPagerAdapter {
-    @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.userTab0, R.string.userTab1, R.string.userTab2, R.string.userTab3, R.string.userTab4, R.string.userTab5, R.string.userTab6, R.string.userTab7, R.string.userTab8};
+    @StringRes private static final int[] TAB_TITLES =
+        new int[] {R.string.userTab0, R.string.userTab1, R.string.userTab2, R.string.userTab3,
+            R.string.userTab4, R.string.userTab5, R.string.userTab6, R.string.userTab7,
+            R.string.userTab8};
     private final Context mContext;
 
     private final user user;
     private final String currentPage;
     private final String currentPagePath;
 
-    public userSectionsPagerAdapter(Context context, FragmentManager fm, user user, String currentPage, String currentPagePath) {
+    public userSectionsPagerAdapter(Context context, FragmentManager fm, user user,
+                                    String currentPage, String currentPagePath) {
         super(fm);
         mContext = context;
         this.user = user;
@@ -37,8 +38,7 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
         this.currentPagePath = currentPagePath;
     }
 
-    @Override
-    public Fragment getItem(int position) {
+    @Override public Fragment getItem(int position) {
         Bundle bundle = new Bundle();
 
         switch (position) {
@@ -52,7 +52,8 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
                 userGallery newUserGalleryFragment = new userGallery();
                 if (currentPage.equals("gallery")) {
                     bundle.putString(messageIds.pagePath_MESSAGE, currentPagePath);
-                } else {
+                }
+                else {
                     bundle.putString(messageIds.pagePath_MESSAGE, user.getUserGalleryPath());
                 }
                 newUserGalleryFragment.setArguments(bundle);
@@ -61,7 +62,8 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
                 userGallery newUserScrapsFragment = new userGallery();
                 if (currentPage.equals("favorites")) {
                     bundle.putString(messageIds.pagePath_MESSAGE, currentPagePath);
-                } else {
+                }
+                else {
                     bundle.putString(messageIds.pagePath_MESSAGE, user.getUserScrapsPath());
                 }
                 newUserScrapsFragment.setArguments(bundle);
@@ -79,7 +81,8 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
             case 5:
                 webViewContent newUserCommissionsFragment = new webViewContent();
                 bundle.putString(messageIds.pagePath_MESSAGE, user.getUserCommissionPath());
-                bundle.putString(messageIds.submissionDescription_MESSAGE, open.furaffinity.client.pages.commissions.class.getName());
+                bundle.putString(messageIds.submissionDescription_MESSAGE,
+                    open.furaffinity.client.pages.commissions.class.getName());
                 newUserCommissionsFragment.setArguments(bundle);
                 return newUserCommissionsFragment;
             case 6:
@@ -90,7 +93,8 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
                 return newUserWatchedByFragment;
             case 7:
                 watch newUserWatchingFragment = new watch();
-                bundle.putString(messageIds.userWatchRecent_MESSAGE, user.getUserRecentlyWatching());
+                bundle.putString(messageIds.userWatchRecent_MESSAGE,
+                    user.getUserRecentlyWatching());
                 bundle.putString(messageIds.pagePath_MESSAGE, user.getUserWatchingPath());
                 newUserWatchingFragment.setArguments(bundle);
                 return newUserWatchingFragment;
@@ -104,14 +108,11 @@ public class userSectionsPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
+    @Nullable @Override public CharSequence getPageTitle(int position) {
         return mContext.getResources().getString(TAB_TITLES[position]);
     }
 
-    @Override
-    public int getCount() {
+    @Override public int getCount() {
         return TAB_TITLES.length;
     }
 }

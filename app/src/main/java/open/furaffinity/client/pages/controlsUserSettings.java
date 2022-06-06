@@ -1,14 +1,12 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.HashMap;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsUserSettings extends abstractPage {
@@ -67,7 +65,8 @@ public class controlsUserSettings extends abstractPage {
 
                 if ("featured_journal_id".equals(select.attr("name"))) {
                     featured_journal_id = newOptionList;
-                    featured_journal_id_current = ((selected != null) ? (selected.attr("value")) : ("0"));
+                    featured_journal_id_current =
+                        ((selected != null) ? (selected.attr("value")) : ("0"));
                 }
             }
         }
@@ -84,9 +83,9 @@ public class controlsUserSettings extends abstractPage {
         return false;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.fragmentDrawers.settings;
@@ -30,24 +28,26 @@ public abstract class appFragment extends Fragment {
 
     protected abstract void updateUIElementListeners(View rootView);
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         Context context = requireActivity();
-        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(this.getString(R.string.trackBackHistorySetting), settings.trackBackHistoryDefault)) {
+        if (sharedPref.getBoolean(this.getString(R.string.trackBackHistorySetting),
+            settings.trackBackHistoryDefault)) {
             OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-                @Override
-                public void handleOnBackPressed() {
+                @Override public void handleOnBackPressed() {
                     ((mainActivity) requireActivity()).drawerFragmentPop();
                 }
             };
-            this.requireActivity().getOnBackPressedDispatcher().addCallback(this.requireActivity(), callback);
+            this.requireActivity().getOnBackPressedDispatcher()
+                .addCallback(this.requireActivity(), callback);
         }
 
         View rootView = inflater.inflate(getLayout(), container, false);

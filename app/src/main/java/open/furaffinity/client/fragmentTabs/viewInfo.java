@@ -2,7 +2,6 @@ package open.furaffinity.client.fragmentTabs;
 
 import android.view.View;
 import android.widget.TextView;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.utilities.messageIds;
@@ -28,8 +27,7 @@ public class viewInfo extends appFragment {
     private String submissionDateString;
     private String submissionSizeString;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_view_info;
     }
 
@@ -45,18 +43,21 @@ public class viewInfo extends appFragment {
         submissionSize = rootView.findViewById(R.id.submissionSize);
     }
 
-    @Override
-    protected void initPages() {
+    @Override protected void initPages() {
     }
 
     protected void fetchPageData() {
         if (getArguments() != null) {
-            submissionCommentsString = getArguments().getString(messageIds.submissionComments_MESSAGE);
-            submissionFavoritesString = getArguments().getString(messageIds.submissionFavorites_MESSAGE);
+            submissionCommentsString =
+                getArguments().getString(messageIds.submissionComments_MESSAGE);
+            submissionFavoritesString =
+                getArguments().getString(messageIds.submissionFavorites_MESSAGE);
             submissionViewsString = getArguments().getString(messageIds.submissionViews_MESSAGE);
             submissionRatingString = getArguments().getString(messageIds.submissionRating_MESSAGE);
-            submissionCategoryString = getArguments().getString(messageIds.submissionCategory_MESSAGE);
-            submissionSpeciesString = getArguments().getString(messageIds.submissionSpecies_MESSAGE);
+            submissionCategoryString =
+                getArguments().getString(messageIds.submissionCategory_MESSAGE);
+            submissionSpeciesString =
+                getArguments().getString(messageIds.submissionSpecies_MESSAGE);
             submissionGenderString = getArguments().getString(messageIds.submissionGender_MESSAGE);
             submissionDateString = getArguments().getString(messageIds.submissionDate_MESSAGE);
             submissionSizeString = getArguments().getString(messageIds.submissionSize_MESSAGE);
@@ -73,13 +74,11 @@ public class viewInfo extends appFragment {
         submissionSize.setText(submissionSizeString);
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
-    @Override
-    protected void updateUIElementListeners(View rootView) {
+    @Override protected void updateUIElementListeners(View rootView) {
 
     }
 }

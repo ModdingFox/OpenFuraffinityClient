@@ -1,5 +1,6 @@
 package open.furaffinity.client.fragmentDrawers;
 
+import static open.furaffinity.client.utilities.sendPm.sendPM;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,8 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,16 +20,14 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
-
-import com.github.barteksc.pdfviewer.PDFView;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.barteksc.pdfviewer.PDFView;
 import com.github.chrisbanes.photoview.OnSingleFlingListener;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.itextpdf.text.Document;
@@ -41,7 +38,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.rtfparserkit.converter.text.StringTextConverter;
 import com.rtfparserkit.parser.RtfStreamSource;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,7 +48,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.ServiceConnections.mediaPlayerServiceConnection;
 import open.furaffinity.client.abstractClasses.abstractPage;
@@ -64,11 +59,8 @@ import open.furaffinity.client.sqlite.historyContract.historyItemEntry;
 import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.fabCircular;
 
-import static open.furaffinity.client.utilities.sendPm.sendPM;
-
 public class view extends appFragment {
-    @SuppressWarnings("FieldCanBeLocal")
-    private ConstraintLayout constraintLayout;
+    @SuppressWarnings("FieldCanBeLocal") private ConstraintLayout constraintLayout;
 
     private TextView submissionTitle;
     private PhotoView submissionImage;
@@ -80,8 +72,9 @@ public class view extends appFragment {
     private ViewPager viewPager;
     private TabLayout tabs;
 
-    private mediaPlayerServiceConnection mediaPlayerServiceConnection = new mediaPlayerServiceConnection();
-    private Handler submissionMediaPlayerHandler = new Handler();
+    private final mediaPlayerServiceConnection mediaPlayerServiceConnection =
+        new mediaPlayerServiceConnection();
+    private final Handler submissionMediaPlayerHandler = new Handler();
 
     private ConstraintLayout submissionMediaPlayerConstraintLayout;
     private ImageView submissionMediaPlayerSubmissionImage;
@@ -93,13 +86,22 @@ public class view extends appFragment {
     private Button submissionMediaPlayerRepeat;
     private Button submissionMediaPlayerFastForward;
 
-    private Runnable UpdateSongTime = new Runnable() {
+    private final Runnable UpdateSongTime = new Runnable() {
         public void run() {
             int currentTime = mediaPlayerServiceConnection.getBinder().getCurrentPosition();
-            int remainingTime = mediaPlayerServiceConnection.getBinder().getDuration() - currentTime;
+            int remainingTime =
+                mediaPlayerServiceConnection.getBinder().getDuration() - currentTime;
 
-            submissionMediaPlayerCurrentTime.setText(String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long)currentTime), TimeUnit.MILLISECONDS.toSeconds((long)currentTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)currentTime))));
-            submissionMediaPlayerRemainingTime.setText(String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long)remainingTime), TimeUnit.MILLISECONDS.toSeconds((long)remainingTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)remainingTime))));
+            submissionMediaPlayerCurrentTime.setText(
+                String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long) currentTime),
+                    TimeUnit.MILLISECONDS.toSeconds((long) currentTime) -
+                        TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes((long) currentTime))));
+            submissionMediaPlayerRemainingTime.setText(
+                String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes((long) remainingTime),
+                    TimeUnit.MILLISECONDS.toSeconds((long) remainingTime) -
+                        TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes((long) remainingTime))));
             submissionMediaPlayerSeekBar.setProgress(currentTime);
             submissionMediaPlayerHandler.postDelayed(this, 100);
         }
@@ -116,22 +118,25 @@ public class view extends appFragment {
     private open.furaffinity.client.pages.view page;
     private boolean isLoading = false;
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
-        @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            submissionTitle.setText(((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle());
+        @Override public void requestSucceeded(abstractPage abstractPage) {
+            submissionTitle.setText(
+                ((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle());
 
-            switch(((open.furaffinity.client.pages.view) abstractPage).getSubmissionMimeType()){
+            switch (((open.furaffinity.client.pages.view) abstractPage).getSubmissionMimeType()) {
                 case "text/plain":
                     new AsyncTask<Void, Void, InputStream>() {
-                        @Override
-                        protected InputStream doInBackground(Void... voids) {
+                        @Override protected InputStream doInBackground(Void... voids) {
                             try {
-                                InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
-                                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                                InputStream inputStream = new URL(
+                                    ((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                                InputStreamReader inputStreamReader =
+                                    new InputStreamReader(inputStream);
+                                BufferedReader bufferedReader =
+                                    new BufferedReader(inputStreamReader);
 
                                 Document document = new Document();
-                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                ByteArrayOutputStream byteArrayOutputStream =
+                                    new ByteArrayOutputStream();
                                 PdfWriter.getInstance(document, byteArrayOutputStream);
                                 document.open();
 
@@ -148,48 +153,57 @@ public class view extends appFragment {
 
                                 document.close();
 
-                                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                                return new ByteArrayInputStream(
+                                    byteArrayOutputStream.toByteArray());
                             } catch (IOException | DocumentException e) {
                                 return null;
                             }
                         }
 
-                        @Override
-                        protected void onPostExecute(InputStream inputStream) {
-                            if(inputStream != null){
+                        @Override protected void onPostExecute(InputStream inputStream) {
+                            if (inputStream != null) {
                                 submissionPDF.fromStream(inputStream).fitEachPage(true).load();
                                 submissionImage.setVisibility(View.GONE);
                                 submissionPDF.setVisibility(View.VISIBLE);
-                            } else {
-                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
-                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Glide.with(view.this).load(
+                                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink())
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf",
+                                    Toast.LENGTH_SHORT).show();
                             }
                         }
                     }.execute();
                     break;
                 case "text/rtf":
                     new AsyncTask<Void, Void, InputStream>() {
-                        @Override
-                        protected InputStream doInBackground(Void... voids) {
+                        @Override protected InputStream doInBackground(Void... voids) {
                             try {
-                                InputStream inputStream = new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                                InputStream inputStream = new URL(
+                                    ((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
                                 StringTextConverter stringTextConverter = new StringTextConverter();
                                 stringTextConverter.convert(new RtfStreamSource(inputStream));
                                 String extractedText = stringTextConverter.getText();
 
-                                InputStream extractedTextInputStream = new ByteArrayInputStream(extractedText.getBytes(StandardCharsets.UTF_8));
-                                InputStreamReader inputStreamReader = new InputStreamReader(extractedTextInputStream);
-                                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                                InputStream extractedTextInputStream = new ByteArrayInputStream(
+                                    extractedText.getBytes(StandardCharsets.UTF_8));
+                                InputStreamReader inputStreamReader =
+                                    new InputStreamReader(extractedTextInputStream);
+                                BufferedReader bufferedReader =
+                                    new BufferedReader(inputStreamReader);
 
                                 Document document = new Document();
-                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                ByteArrayOutputStream byteArrayOutputStream =
+                                    new ByteArrayOutputStream();
                                 PdfWriter.getInstance(document, byteArrayOutputStream);
                                 document.open();
 
                                 Font font = new Font();
                                 font.setStyle(Font.NORMAL);
                                 font.setSize(11);
-                                
+
                                 String line;
                                 while ((line = bufferedReader.readLine()) != null) {
                                     Paragraph paragraph = new Paragraph(line + "\n", font);
@@ -199,21 +213,26 @@ public class view extends appFragment {
 
                                 document.close();
 
-                                return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                                return new ByteArrayInputStream(
+                                    byteArrayOutputStream.toByteArray());
                             } catch (IOException | DocumentException e) {
                                 return null;
                             }
                         }
 
-                        @Override
-                        protected void onPostExecute(InputStream inputStream) {
-                            if(inputStream != null){
+                        @Override protected void onPostExecute(InputStream inputStream) {
+                            if (inputStream != null) {
                                 submissionPDF.fromStream(inputStream).load();
                                 submissionImage.setVisibility(View.GONE);
                                 submissionPDF.setVisibility(View.VISIBLE);
-                            } else {
-                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
-                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Glide.with(view.this).load(
+                                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink())
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf",
+                                    Toast.LENGTH_SHORT).show();
                             }
                         }
                     }.execute();
@@ -221,28 +240,35 @@ public class view extends appFragment {
                 case "application/msword":
                 case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 case "application/vnd.oasis.opendocument.text":
-                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                    Glide.with(view.this).load(
+                            ((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading)
+                        .into(submissionImage);
                     break;
                 case "application/pdf":
                     new AsyncTask<Void, Void, InputStream>() {
-                        @Override
-                        protected InputStream doInBackground(Void... voids) {
+                        @Override protected InputStream doInBackground(Void... voids) {
                             try {
-                                return new URL(((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
+                                return new URL(
+                                    ((open.furaffinity.client.pages.view) abstractPage).getDownload()).openStream();
                             } catch (IOException e) {
                                 return null;
                             }
                         }
 
-                        @Override
-                        protected void onPostExecute(InputStream inputStream) {
-                            if(inputStream != null){
+                        @Override protected void onPostExecute(InputStream inputStream) {
+                            if (inputStream != null) {
                                 submissionPDF.fromStream(inputStream).fitEachPage(true).load();
                                 submissionImage.setVisibility(View.GONE);
                                 submissionPDF.setVisibility(View.VISIBLE);
-                            } else {
-                                Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
-                                Toast.makeText(getActivity(), "Failed to load pdf", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Glide.with(view.this).load(
+                                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink())
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .placeholder(R.drawable.loading).into(submissionImage);
+                                Toast.makeText(getActivity(), "Failed to load pdf",
+                                    Toast.LENGTH_SHORT).show();
                             }
                         }
                     }.execute();
@@ -250,31 +276,42 @@ public class view extends appFragment {
                 case "audio/mpeg":
                 case "audio/x-wav":
                 case "audio/midi":
-                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionMediaPlayerSubmissionImage);
+                    Glide.with(view.this).load(
+                            ((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading)
+                        .into(submissionMediaPlayerSubmissionImage);
 
-                    mediaPlayerServiceConnection.getBinder().playURL(
-                        ((open.furaffinity.client.pages.view) abstractPage).getDownload(),
-                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionUser(),
-                        ((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle()
-                    );
+                    mediaPlayerServiceConnection.getBinder()
+                        .playURL(((open.furaffinity.client.pages.view) abstractPage).getDownload(),
+                            ((open.furaffinity.client.pages.view) abstractPage).getSubmissionUser(),
+                            ((open.furaffinity.client.pages.view) abstractPage).getSubmissionTitle());
 
-                    submissionMediaPlayerSeekBar.setMax(mediaPlayerServiceConnection.getBinder().getDuration());
+                    submissionMediaPlayerSeekBar.setMax(
+                        mediaPlayerServiceConnection.getBinder().getDuration());
                     submissionMediaPlayerHandler.postDelayed(UpdateSongTime, 100);
 
                     submissionImage.setVisibility(View.GONE);
                     submissionMediaPlayerConstraintLayout.setVisibility(View.VISIBLE);
                     break;
                 default:
-                    Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionImage);
+                    Glide.with(view.this).load(
+                            ((open.furaffinity.client.pages.view) abstractPage).getSubmissionImgLink())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading)
+                        .into(submissionImage);
                     break;
             }
 
-            Glide.with(view.this).load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(submissionUserIcon);
-            submissionUser.setText(((open.furaffinity.client.pages.view) abstractPage).getSubmissionUser());
+            Glide.with(view.this)
+                .load(((open.furaffinity.client.pages.view) abstractPage).getSubmissionUserIcon())
+                .diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading)
+                .into(submissionUserIcon);
+            submissionUser.setText(
+                ((open.furaffinity.client.pages.view) abstractPage).getSubmissionUser());
 
             if (((open.furaffinity.client.pages.view) abstractPage).getIsFav()) {
                 submissionFavorite.setImageResource(R.drawable.ic_menu_favorite);
-            } else {
+            }
+            else {
                 submissionFavorite.setImageResource(R.drawable.ic_menu_unfavorite);
             }
 
@@ -285,25 +322,28 @@ public class view extends appFragment {
             isLoading = false;
         }
 
-        @Override
-        public void requestFailed(abstractPage abstractPage) {
+        @Override public void requestFailed(abstractPage abstractPage) {
             fab.setVisibility(View.GONE);
             isLoading = false;
-            Toast.makeText(getActivity(), "Failed to load data for view", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Failed to load data for view", Toast.LENGTH_SHORT)
+                .show();
         }
     };
 
     private void saveHistory() {
-        SharedPreferences sharedPref = requireActivity().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            requireActivity().getSharedPreferences(getString(R.string.settingsFile),
+                Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(requireActivity().getString(R.string.trackHistorySetting), settings.trackHistoryDefault)) {
+        if (sharedPref.getBoolean(requireActivity().getString(R.string.trackHistorySetting),
+            settings.trackHistoryDefault)) {
             historyDBHelper dbHelper = new historyDBHelper(requireActivity());
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             //Delete previous versions from history
             String selection = historyItemEntry.COLUMN_NAME_URL + " LIKE ?";
             String[] selectionArgs = {page.getPagePath()};
-            db.delete(historyItemEntry.TABLE_NAME_VIEW, selection , selectionArgs);
+            db.delete(historyItemEntry.TABLE_NAME_VIEW, selection, selectionArgs);
 
             //Insert into history
             ContentValues values = new ContentValues();
@@ -314,16 +354,18 @@ public class view extends appFragment {
             db.insert(historyItemEntry.TABLE_NAME_VIEW, null, values);
 
             //Limit history to 512 entries
-            db.execSQL("DELETE FROM " + historyItemEntry.TABLE_NAME_VIEW + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY rowid DESC LIMIT 512))");
+            db.execSQL("DELETE FROM " + historyItemEntry.TABLE_NAME_VIEW +
+                " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM viewHistory ORDER BY " +
+                "rowid DESC LIMIT 512))");
 
             db.close();
         }
 
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), page.getPagePath());
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(),
+            page.getPagePath());
     }
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_view;
     }
 
@@ -341,15 +383,20 @@ public class view extends appFragment {
         tabs = rootView.findViewById(R.id.tabs);
         fab = rootView.findViewById(R.id.fab);
 
-        submissionMediaPlayerConstraintLayout = rootView.findViewById(R.id.submissionMediaPlayerConstraintLayout);
-        submissionMediaPlayerSubmissionImage = rootView.findViewById(R.id.submissionMediaPlayerSubmissionImage);
-        submissionMediaPlayerCurrentTime = rootView.findViewById(R.id.submissionMediaPlayerCurrentTime);
-        submissionMediaPlayerRemainingTime = rootView.findViewById(R.id.submissionMediaPlayerRemainingTime);
+        submissionMediaPlayerConstraintLayout =
+            rootView.findViewById(R.id.submissionMediaPlayerConstraintLayout);
+        submissionMediaPlayerSubmissionImage =
+            rootView.findViewById(R.id.submissionMediaPlayerSubmissionImage);
+        submissionMediaPlayerCurrentTime =
+            rootView.findViewById(R.id.submissionMediaPlayerCurrentTime);
+        submissionMediaPlayerRemainingTime =
+            rootView.findViewById(R.id.submissionMediaPlayerRemainingTime);
         submissionMediaPlayerSeekBar = rootView.findViewById(R.id.submissionMediaPlayerSeekBar);
         submissionMediaPlayerRewind = rootView.findViewById(R.id.submissionMediaPlayerRewind);
         submissionMediaPlayerPlayPause = rootView.findViewById(R.id.submissionMediaPlayerPlayPause);
         submissionMediaPlayerRepeat = rootView.findViewById(R.id.submissionMediaPlayerRepeat);
-        submissionMediaPlayerFastForward = rootView.findViewById(R.id.submissionMediaPlayerFastForward);
+        submissionMediaPlayerFastForward =
+            rootView.findViewById(R.id.submissionMediaPlayerFastForward);
 
         submissionFavorite = new FloatingActionButton(requireContext());
         submissionDownload = new FloatingActionButton(requireContext());
@@ -364,15 +411,20 @@ public class view extends appFragment {
         imageInfoSwitch.setImageResource(R.drawable.ic_menu_about);
 
         //noinspection deprecation
-        submissionFavorite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        submissionFavorite.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        submissionDownload.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        submissionDownload.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        sendNote.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        sendNote.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        shareLink.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        shareLink.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        imageInfoSwitch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        imageInfoSwitch.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         constraintLayout.addView(submissionFavorite);
         constraintLayout.addView(submissionDownload);
@@ -401,13 +453,13 @@ public class view extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
     private void setupViewPager(open.furaffinity.client.pages.view page) {
-        viewSectionsPagerAdapter sectionsPagerAdapter = new viewSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
+        viewSectionsPagerAdapter sectionsPagerAdapter =
+            new viewSectionsPagerAdapter(this.getActivity(), getChildFragmentManager(), page);
         viewPager.setAdapter(sectionsPagerAdapter);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);
@@ -417,8 +469,7 @@ public class view extends appFragment {
         String pagePath = ((mainActivity) requireActivity()).getViewPath();
 
         loginCheck = new loginCheck(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            @Override public void requestSucceeded(abstractPage abstractPage) {
                 fab.removeButton(submissionFavorite);
                 fab.removeButton(sendNote);
 
@@ -431,15 +482,15 @@ public class view extends appFragment {
                 }
             }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
+            @Override public void requestFailed(abstractPage abstractPage) {
                 fab.removeButton(submissionFavorite);
                 fab.removeButton(sendNote);
 
                 submissionFavorite.setVisibility(View.GONE);
                 sendNote.setVisibility(View.GONE);
 
-                Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to load data for loginCheck",
+                    Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -450,11 +501,13 @@ public class view extends appFragment {
 
     @SuppressLint("ClickableViewAccessibility")
     protected void updateUIElementListeners(View rootView) {
-        submissionUserLinearLayout.setOnClickListener(v -> ((mainActivity) requireActivity()).setUserPath(page.getSubmissionUserPage()));
+        submissionUserLinearLayout.setOnClickListener(
+            v -> ((mainActivity) requireActivity()).setUserPath(page.getSubmissionUserPage()));
 
         submissionImage.setOnSingleFlingListener(new OnSingleFlingListener() {
             @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                                   float velocityY) {
                 int SWIPE_THRESHOLD = 100;
                 int SWIPE_VELOCITY_THRESHOLD = 100;
                 boolean result = false;
@@ -462,10 +515,12 @@ public class view extends appFragment {
                     float diffY = e2.getY() - e1.getY();
                     float diffX = e2.getX() - e1.getX();
                     if (Math.abs(diffX) > Math.abs(diffY)) {
-                        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (Math.abs(diffX) > SWIPE_THRESHOLD &&
+                            Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                             if (diffX > 0) {
                                 onSwipeRight();
-                            } else {
+                            }
+                            else {
                                 onSwipeLeft();
                             }
                             result = true;
@@ -491,86 +546,95 @@ public class view extends appFragment {
         });
 
         submissionMediaPlayerSubmissionImage.setOnTouchListener(new View.OnTouchListener() {
-            GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                    int SWIPE_THRESHOLD = 100;
-                    int SWIPE_VELOCITY_THRESHOLD = 100;
-                    boolean result = false;
-                    try {
-                        float diffY = e2.getY() - e1.getY();
-                        float diffX = e2.getX() - e1.getX();
-                        if (Math.abs(diffX) > Math.abs(diffY)) {
-                            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                                if (diffX > 0) {
-                                    onSwipeRight();
-                                } else {
-                                    onSwipeLeft();
+            final GestureDetector gestureDetector =
+                new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                                           float velocityY) {
+                        int SWIPE_THRESHOLD = 100;
+                        int SWIPE_VELOCITY_THRESHOLD = 100;
+                        boolean result = false;
+                        try {
+                            float diffY = e2.getY() - e1.getY();
+                            float diffX = e2.getX() - e1.getX();
+                            if (Math.abs(diffX) > Math.abs(diffY)) {
+                                if (Math.abs(diffX) > SWIPE_THRESHOLD &&
+                                    Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                                    if (diffX > 0) {
+                                        onSwipeRight();
+                                    }
+                                    else {
+                                        onSwipeLeft();
+                                    }
+                                    result = true;
                                 }
-                                result = true;
                             }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
                         }
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                        return result;
                     }
-                    return result;
-                }
 
-                public void onSwipeRight() {
-                    if (page.getNext() != null) {
-                        ((mainActivity) requireActivity()).setViewPath(page.getNext());
+                    public void onSwipeRight() {
+                        if (page.getNext() != null) {
+                            ((mainActivity) requireActivity()).setViewPath(page.getNext());
+                        }
                     }
-                }
 
-                public void onSwipeLeft() {
-                    if (page.getPrev() != null) {
-                        ((mainActivity) requireActivity()).setViewPath(page.getPrev());
+                    public void onSwipeLeft() {
+                        if (page.getPrev() != null) {
+                            ((mainActivity) requireActivity()).setViewPath(page.getPrev());
+                        }
                     }
-                }
-            });
+                });
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            @Override public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
                 return true;
             }
         });
 
         submissionDownload.setOnClickListener(v -> {
-            open.furaffinity.client.utilities.downloadContent.downloadSubmission(requireActivity(), requireContext(), page);
+            open.furaffinity.client.utilities.downloadContent.downloadSubmission(requireActivity(),
+                requireContext(), page);
         });
 
-        submissionFavorite.setOnClickListener(v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                fetchPageData();
-                Toast.makeText(getActivity(), "Successfully updated favorites", Toast.LENGTH_SHORT).show();
-            }
+        submissionFavorite.setOnClickListener(
+            v -> new open.furaffinity.client.submitPages.submitGetRequest(getActivity(),
+                new abstractPage.pageListener() {
+                    @Override public void requestSucceeded(abstractPage abstractPage) {
+                        fetchPageData();
+                        Toast.makeText(getActivity(), "Successfully updated favorites",
+                            Toast.LENGTH_SHORT).show();
+                    }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                Toast.makeText(getActivity(), "Failed to update favorites", Toast.LENGTH_SHORT).show();
-            }
-        }, page.getFavUnFav()).execute());
+                    @Override public void requestFailed(abstractPage abstractPage) {
+                        Toast.makeText(getActivity(), "Failed to update favorites",
+                            Toast.LENGTH_SHORT).show();
+                    }
+                }, page.getFavUnFav()).execute());
 
-        sendNote.setOnClickListener(v -> sendPM(getActivity(), getChildFragmentManager(), page.getNote()));
+        sendNote.setOnClickListener(
+            v -> sendPM(getActivity(), getChildFragmentManager(), page.getNote()));
 
         shareLink.setOnClickListener(v -> {
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath());
+            sharingIntent.putExtra(Intent.EXTRA_TEXT,
+                open.furaffinity.client.utilities.webClient.getBaseUrl() + page.getPagePath());
             startActivity(Intent.createChooser(sharingIntent, "Share via"));
         });
 
         imageInfoSwitch.setOnClickListener(v -> {
-            if(submissionInfo.getVisibility() == View.GONE){
+            if (submissionInfo.getVisibility() == View.GONE) {
                 submissionImage.setVisibility(View.GONE);
                 submissionPDF.setVisibility(View.GONE);
                 submissionMediaPlayerConstraintLayout.setVisibility(View.GONE);
                 submissionInfo.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 submissionInfo.setVisibility(View.GONE);
-                switch(page.getSubmissionMimeType()){
+                switch (page.getSubmissionMimeType()) {
                     case "text/plain":
                     case "text/rtf":
                     case "application/pdf":
@@ -588,21 +652,20 @@ public class view extends appFragment {
             }
         });
 
-        submissionMediaPlayerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            }
+        submissionMediaPlayerSeekBar.setOnSeekBarChangeListener(
+            new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {
 
-            }
+                }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayerServiceConnection.getBinder().seekTo(seekBar.getProgress());
-            }
-        });
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {
+                    mediaPlayerServiceConnection.getBinder().seekTo(seekBar.getProgress());
+                }
+            });
 
         submissionMediaPlayerRewind.setOnClickListener(v -> {
             mediaPlayerServiceConnection.getBinder().rewind();
@@ -611,9 +674,10 @@ public class view extends appFragment {
         submissionMediaPlayerPlayPause.setOnClickListener(v -> {
             mediaPlayerServiceConnection.getBinder().playPause();
 
-            if(mediaPlayerServiceConnection.getBinder().isPlaying()) {
+            if (mediaPlayerServiceConnection.getBinder().isPlaying()) {
                 submissionMediaPlayerPlayPause.setText("Pause");
-            } else{
+            }
+            else {
                 submissionMediaPlayerPlayPause.setText("Play");
             }
         });
@@ -621,9 +685,10 @@ public class view extends appFragment {
         submissionMediaPlayerRepeat.setOnClickListener(v -> {
             mediaPlayerServiceConnection.getBinder().repeat();
 
-            if(mediaPlayerServiceConnection.getBinder().isLooping()) {
+            if (mediaPlayerServiceConnection.getBinder().isLooping()) {
                 submissionMediaPlayerRepeat.setText("Repeat");
-            } else {
+            }
+            else {
                 submissionMediaPlayerRepeat.setText("Once");
             }
         });
@@ -633,26 +698,25 @@ public class view extends appFragment {
         });
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("viewPath", page.getPagePath());
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(getContext(), open.furaffinity.client.services.mediaPlayer.class);
+        Intent intent =
+            new Intent(getContext(), open.furaffinity.client.services.mediaPlayer.class);
         getActivity().bindService(intent, mediaPlayerServiceConnection, Context.BIND_AUTO_CREATE);
 
         if (savedInstanceState != null && savedInstanceState.containsKey("viewPath")) {
-            page = new open.furaffinity.client.pages.view(getActivity(), pageListener, savedInstanceState.getString("viewPath"));
+            page = new open.furaffinity.client.pages.view(getActivity(), pageListener,
+                savedInstanceState.getString("viewPath"));
         }
     }
 
-    @Override
-    public void onStop() {
+    @Override public void onStop() {
         super.onStop();
     }
 }

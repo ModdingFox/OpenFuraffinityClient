@@ -3,7 +3,6 @@ package open.furaffinity.client.fragmentDrawers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -13,24 +12,21 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
-
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.dialogs.confirmDialog;
-import open.furaffinity.client.sqlite.historyContract;
-import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.sqlite.backContract;
 import open.furaffinity.client.sqlite.backDBHelper;
+import open.furaffinity.client.sqlite.historyContract;
+import open.furaffinity.client.sqlite.historyDBHelper;
 import open.furaffinity.client.utilities.imageResultsTool;
 import open.furaffinity.client.utilities.kvPair;
 import open.furaffinity.client.utilities.uiControls;
@@ -44,11 +40,14 @@ public class settings extends appFragment {
     public static boolean standardNotificationsDefault = true;
     public static boolean searchNotificationsEnabledDefault = false;
     public static int searchNotificationsIntervalDefault = 15;
-    public static int imageResolutionDefault = imageResultsTool.imageResolutions.Original.getValue();
+    public static int imageResolutionDefault =
+        imageResultsTool.imageResolutions.Original.getValue();
     public static int recyclerVisibleThresholdDefault = 16;
     public static int imageListColumnsDefault = 1;
     public static boolean imageListInfoDefault = true;
-    public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;//Likely not gunna expose this as some views break with it as HORIZONTAL though the option would be nice
+    public static int imageListOrientationDefault = StaggeredGridLayoutManager.VERTICAL;
+        //Likely not gunna expose this as some views break with it as HORIZONTAL though the
+        // option would be nice
     public static boolean trackHistoryDefault = false;
     public static boolean trackBackHistoryDefault = true;
     public static boolean saveBrowseStateDefault = true;
@@ -90,8 +89,7 @@ public class settings extends appFragment {
     private Switch trackBackHistory;
     private Button clearBackHistory;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_settings;
     }
 
@@ -100,8 +98,10 @@ public class settings extends appFragment {
         notificationsSwitch = rootView.findViewById(R.id.notificationsSwitch);
         notificationsInterval = rootView.findViewById(R.id.notificationsInterval);
         watchNotificationsSwitch = rootView.findViewById(R.id.watchNotificationsSwitch);
-        submissionCommentNotificationsSwitch = rootView.findViewById(R.id.submissionCommentNotificationsSwitch);
-        journalCommentNotificationsSwitch = rootView.findViewById(R.id.journalCommentNotificationsSwitch);
+        submissionCommentNotificationsSwitch =
+            rootView.findViewById(R.id.submissionCommentNotificationsSwitch);
+        journalCommentNotificationsSwitch =
+            rootView.findViewById(R.id.journalCommentNotificationsSwitch);
         shoutNotificationsSwitch = rootView.findViewById(R.id.shoutNotificationsSwitch);
         favoriteNotificationsSwitch = rootView.findViewById(R.id.favoriteNotificationsSwitch);
         journalNotificationsSwitch = rootView.findViewById(R.id.journalNotificationsSwitch);
@@ -116,119 +116,195 @@ public class settings extends appFragment {
         enablePostLabels = rootView.findViewById(R.id.enablePostLabels);
         saveBrowseStateSwitch = rootView.findViewById(R.id.saveBrowseStateSwitch);
         cachedBrowseStateSwitch = rootView.findViewById(R.id.cachedBrowseStateSwitch);
-        InvalidateCachedBrowseTimeEditText = rootView.findViewById(R.id.InvalidateCachedBrowseTimeEditText);
-        InvalidateCachedBrowseAfterEditText = rootView.findViewById(R.id.InvalidateCachedBrowseAfterEditText);
+        InvalidateCachedBrowseTimeEditText =
+            rootView.findViewById(R.id.InvalidateCachedBrowseTimeEditText);
+        InvalidateCachedBrowseAfterEditText =
+            rootView.findViewById(R.id.InvalidateCachedBrowseAfterEditText);
         saveSearchStateSwitch = rootView.findViewById(R.id.saveSearchStateSwitch);
         cachedSearchStateSwitch = rootView.findViewById(R.id.cachedSearchStateSwitch);
-        InvalidateCachedSearchTimeEditText = rootView.findViewById(R.id.InvalidateCachedSearchTimeEditText);
-        InvalidateCachedSearchAfterEditText = rootView.findViewById(R.id.InvalidateCachedSearchAfterEditText);
+        InvalidateCachedSearchTimeEditText =
+            rootView.findViewById(R.id.InvalidateCachedSearchTimeEditText);
+        InvalidateCachedSearchAfterEditText =
+            rootView.findViewById(R.id.InvalidateCachedSearchAfterEditText);
         trackHistory = rootView.findViewById(R.id.trackHistory);
         clearHistory = rootView.findViewById(R.id.clearHistory);
         trackBackHistory = rootView.findViewById(R.id.trackBackHistory);
         clearBackHistory = rootView.findViewById(R.id.clearBackHistory);
     }
 
-    @Override
-    protected void initPages() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+    @Override protected void initPages() {
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
     }
 
-    @Override
-    protected void fetchPageData() {
+    @Override protected void fetchPageData() {
 
     }
 
     protected void updateUIElements() {
         Context context = requireActivity();
-        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        advertisementsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.advertisementsEnabledSetting), advertisementsEnabledDefault));
-        notificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), notificationsEnabledDefault));
-        notificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault)));
-        watchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.watchNotificationsEnabledSetting), standardNotificationsDefault));
-        submissionCommentNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.submissionCommentNotificationsEnabledSetting), standardNotificationsDefault));
-        journalCommentNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.journalCommentNotificationsEnabledSetting), standardNotificationsDefault));
-        shoutNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.shoutNotificationsEnabledSetting), standardNotificationsDefault));
-        favoriteNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.favoriteNotificationsEnabledSetting), standardNotificationsDefault));
-        journalNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.journalNotificationsEnabledSetting), standardNotificationsDefault));
-        noteNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.noteNotificationsEnabledSetting), standardNotificationsDefault));
-        submissionNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.submissionNotificationsEnabledSetting), standardNotificationsDefault));
-        searchNotificationsSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), searchNotificationsEnabledDefault));
-        searchNotificationsInterval.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault)));
+        advertisementsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.advertisementsEnabledSetting),
+                advertisementsEnabledDefault));
+        notificationsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting),
+                notificationsEnabledDefault));
+        notificationsInterval.setText(Integer.toString(
+            sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting),
+                notificationsIntervalDefault)));
+        watchNotificationsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.watchNotificationsEnabledSetting),
+                standardNotificationsDefault));
+        submissionCommentNotificationsSwitch.setChecked(sharedPref.getBoolean(
+            context.getString(R.string.submissionCommentNotificationsEnabledSetting),
+            standardNotificationsDefault));
+        journalCommentNotificationsSwitch.setChecked(sharedPref.getBoolean(
+            context.getString(R.string.journalCommentNotificationsEnabledSetting),
+            standardNotificationsDefault));
+        shoutNotificationsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.shoutNotificationsEnabledSetting),
+                standardNotificationsDefault));
+        favoriteNotificationsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.favoriteNotificationsEnabledSetting),
+                standardNotificationsDefault));
+        journalNotificationsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.journalNotificationsEnabledSetting),
+                standardNotificationsDefault));
+        noteNotificationsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.noteNotificationsEnabledSetting),
+                standardNotificationsDefault));
+        submissionNotificationsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.submissionNotificationsEnabledSetting),
+                standardNotificationsDefault));
+        searchNotificationsSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting),
+                searchNotificationsEnabledDefault));
+        searchNotificationsInterval.setText(Integer.toString(
+            sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting),
+                searchNotificationsIntervalDefault)));
 
         HashMap<String, String> imageResolutionOptions = new HashMap<String, String>();
-        for (imageResultsTool.imageResolutions currentImageResolution : imageResultsTool.imageResolutions.values()) {
-            imageResolutionOptions.put(currentImageResolution.toString(), currentImageResolution.getPrintableName());
+        for (imageResultsTool.imageResolutions currentImageResolution :
+            imageResultsTool.imageResolutions.values()) {
+            imageResolutionOptions.put(currentImageResolution.toString(),
+                currentImageResolution.getPrintableName());
         }
 
-        uiControls.spinnerSetAdapter(requireContext(), imageResolution, imageResolutionOptions, Integer.toString(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault)), true, true);
+        uiControls.spinnerSetAdapter(requireContext(), imageResolution, imageResolutionOptions,
+            Integer.toString(sharedPref.getInt(context.getString(R.string.imageResolutionSetting),
+                settings.imageResolutionDefault)), true, true);
 
-        recyclerVisibleThresholdCount.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.recyclerVisibleThreshold), recyclerVisibleThresholdDefault)));
-        imageListColumnsCount.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.imageListColumns), imageListColumnsDefault)));
-        imageListOrientation.setChecked(sharedPref.getInt(context.getString(R.string.imageListOrientation), imageListOrientationDefault) == StaggeredGridLayoutManager.VERTICAL);
-        enablePostLabels.setChecked(sharedPref.getBoolean(context.getString(R.string.imageListInfo), imageListInfoDefault));
-        saveBrowseStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.saveBrowseState), saveBrowseStateDefault));
-        cachedBrowseStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.cachedBrowseStateSetting), cachedBrowseDefault));
-        InvalidateCachedBrowseTimeEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseTimeSetting), InvalidateCachedBrowseTimeDefault)));
-        InvalidateCachedBrowseAfterEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting), InvalidateCachedBrowseAfterDefault)));
-        saveSearchStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.saveSearchState), saveSearchStateDefault));
-        cachedSearchStateSwitch.setChecked(sharedPref.getBoolean(context.getString(R.string.cachedSearchStateSetting), cachedSearchDefault));
-        InvalidateCachedSearchTimeEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchTimeSetting), InvalidateCachedSearchTimeDefault)));
-        InvalidateCachedSearchAfterEditText.setText(Integer.toString(sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchAfterSetting), InvalidateCachedSearchAfterDefault)));
-        trackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackHistorySetting), trackHistoryDefault));
-        trackBackHistory.setChecked(sharedPref.getBoolean(context.getString(R.string.trackBackHistorySetting), trackBackHistoryDefault));
+        recyclerVisibleThresholdCount.setText(Integer.toString(
+            sharedPref.getInt(context.getString(R.string.recyclerVisibleThreshold),
+                recyclerVisibleThresholdDefault)));
+        imageListColumnsCount.setText(Integer.toString(
+            sharedPref.getInt(context.getString(R.string.imageListColumns),
+                imageListColumnsDefault)));
+        imageListOrientation.setChecked(
+            sharedPref.getInt(context.getString(R.string.imageListOrientation),
+                imageListOrientationDefault) == StaggeredGridLayoutManager.VERTICAL);
+        enablePostLabels.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.imageListInfo), imageListInfoDefault));
+        saveBrowseStateSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.saveBrowseState),
+                saveBrowseStateDefault));
+        cachedBrowseStateSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.cachedBrowseStateSetting),
+                cachedBrowseDefault));
+        InvalidateCachedBrowseTimeEditText.setText(Integer.toString(
+            sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseTimeSetting),
+                InvalidateCachedBrowseTimeDefault)));
+        InvalidateCachedBrowseAfterEditText.setText(Integer.toString(
+            sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting),
+                InvalidateCachedBrowseAfterDefault)));
+        saveSearchStateSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.saveSearchState),
+                saveSearchStateDefault));
+        cachedSearchStateSwitch.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.cachedSearchStateSetting),
+                cachedSearchDefault));
+        InvalidateCachedSearchTimeEditText.setText(Integer.toString(
+            sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchTimeSetting),
+                InvalidateCachedSearchTimeDefault)));
+        InvalidateCachedSearchAfterEditText.setText(Integer.toString(
+            sharedPref.getInt(context.getString(R.string.InvalidateCachedSearchAfterSetting),
+                InvalidateCachedSearchAfterDefault)));
+        trackHistory.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.trackHistorySetting),
+                trackHistoryDefault));
+        trackBackHistory.setChecked(
+            sharedPref.getBoolean(context.getString(R.string.trackBackHistorySetting),
+                trackBackHistoryDefault));
     }
 
     protected void updateUIElementListeners(View rootView) {
         advertisementsSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Context context = requireActivity();
-                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences sharedPref =
+                    context.getSharedPreferences(getString(R.string.settingsFile),
+                        Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
 
-                if(!isChecked) {
+                if (!isChecked) {
                     confirmDialog confirmDialog = new confirmDialog();
                     String confirmDialogText = "Heewwwoooo just a quick thing.\n\n" +
-                        "Although this app does not have server costs and is not distributed for-profit FurAffinity does have server costs and the advertisements they serve help pay for them to keep being awesome.\n" +
-                        "As this app is opensource its pointless for it to force advertisements on anyone as someone could just pull the code and remove them anyways.\n" +
-                        "So before you turn advertisements I ask you to reconsider the decision.\n" +
+                        "Although this app does not have server costs and is not distributed " +
+                        "for-profit FurAffinity does have server costs and the advertisements " +
+                        "they serve help pay for them to keep being awesome.\n" +
+                        "As this app is opensource its pointless for it to force advertisements " +
+                        "on anyone as someone could just pull the code and remove them anyways.\n" +
+                        "So before you turn advertisements I ask you to reconsider the decision" +
+                        ".\n" +
                         "Accept to turn advertisements off. Cancel to leave them on";
                     confirmDialog.setTitleText(confirmDialogText);
                     confirmDialog.setListener(new confirmDialog.dialogListener() {
-                        @Override
-                        public void onDialogPositiveClick(DialogFragment dialog) {
-                            editor.putBoolean(context.getString(R.string.advertisementsEnabledSetting), false);
+                        @Override public void onDialogPositiveClick(DialogFragment dialog) {
+                            editor.putBoolean(
+                                context.getString(R.string.advertisementsEnabledSetting), false);
                             editor.apply();
                         }
 
-                        @Override
-                        public void onDialogNegativeClick(DialogFragment dialog) {
+                        @Override public void onDialogNegativeClick(DialogFragment dialog) {
                             advertisementsSwitch.setChecked(true);
                         }
                     });
-                    confirmDialog.show(getChildFragmentManager(), "getAdvertisementsDisableConfirm");
-                } else {
-                    editor.putBoolean(context.getString(R.string.advertisementsEnabledSetting), isChecked);
+                    confirmDialog.show(getChildFragmentManager(),
+                        "getAdvertisementsDisableConfirm");
+                }
+                else {
+                    editor.putBoolean(context.getString(R.string.advertisementsEnabledSetting),
+                        isChecked);
                     editor.apply();
                 }
             }
         });
 
         notificationsSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Context context = requireActivity();
-                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences sharedPref =
+                    context.getSharedPreferences(getString(R.string.settingsFile),
+                        Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(context.getString(R.string.notificationsEnabledSetting), isChecked);
+                editor.putBoolean(context.getString(R.string.notificationsEnabledSetting),
+                    isChecked);
                 editor.apply();
 
-                WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACNotification));
+                WorkManager.getInstance(context)
+                    .cancelUniqueWork(context.getString(R.string.OFACNotification));
 
                 if (isChecked) {
-                    PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault), TimeUnit.MINUTES).build();
-                    WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
+                    PeriodicWorkRequest workRequest =
+                        new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class,
+                            sharedPref.getInt(
+                                context.getString(R.string.notificationsIntervalSetting),
+                                notificationsIntervalDefault), TimeUnit.MINUTES).build();
+                    WorkManager.getInstance(context)
+                        .enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification),
+                            ExistingPeriodicWorkPolicy.KEEP, workRequest);
                 }
             }
         });
@@ -239,28 +315,38 @@ public class settings extends appFragment {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
                     int value = Integer.parseInt(notificationsInterval.getText().toString());
 
                     if (value > 0) {
                         Context context = requireActivity();
-                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref =
+                            context.getSharedPreferences(getString(R.string.settingsFile),
+                                Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putInt(context.getString(R.string.notificationsIntervalSetting), value);
+                        editor.putInt(context.getString(R.string.notificationsIntervalSetting),
+                            value);
                         editor.apply();
 
-                        WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACNotification));
+                        WorkManager.getInstance(context)
+                            .cancelUniqueWork(context.getString(R.string.OFACNotification));
 
-                        if (sharedPref.getBoolean(context.getString(R.string.notificationsEnabledSetting), notificationsEnabledDefault)) {
-                            PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(notificationWorker.class, sharedPref.getInt(context.getString(R.string.notificationsIntervalSetting), notificationsIntervalDefault), TimeUnit.MINUTES).build();
-                            WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
+                        if (sharedPref.getBoolean(
+                            context.getString(R.string.notificationsEnabledSetting),
+                            notificationsEnabledDefault)) {
+                            PeriodicWorkRequest workRequest =
+                                new androidx.work.PeriodicWorkRequest.Builder(
+                                    notificationWorker.class, sharedPref.getInt(
+                                    context.getString(R.string.notificationsIntervalSetting),
+                                    notificationsIntervalDefault), TimeUnit.MINUTES).build();
+                            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                                context.getString(R.string.OFACNotification),
+                                ExistingPeriodicWorkPolicy.KEEP, workRequest);
                         }
                     }
                 } catch (NumberFormatException ignored) {
@@ -271,80 +357,115 @@ public class settings extends appFragment {
 
         watchNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.watchNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(context.getString(R.string.watchNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
         });
 
         submissionCommentNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.submissionCommentNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(
+                context.getString(R.string.submissionCommentNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
         });
 
         journalCommentNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.journalCommentNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(context.getString(R.string.journalCommentNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
         });
 
         shoutNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.shoutNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(context.getString(R.string.shoutNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
         });
 
         favoriteNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.favoriteNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(context.getString(R.string.favoriteNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
         });
 
         journalNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.journalNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(context.getString(R.string.journalNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
         });
 
         noteNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.noteNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(context.getString(R.string.noteNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
         });
 
         submissionNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.submissionNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(context.getString(R.string.submissionNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
         });
 
         searchNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(context.getString(R.string.searchNotificationsEnabledSetting), isChecked);
+            editor.putBoolean(context.getString(R.string.searchNotificationsEnabledSetting),
+                isChecked);
             editor.apply();
 
-            WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
+            WorkManager.getInstance(context)
+                .cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
 
             if (isChecked) {
-                PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
-                WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
+                PeriodicWorkRequest workRequest =
+                    new PeriodicWorkRequest.Builder(searchNotificationWorker.class,
+                        sharedPref.getInt(
+                            context.getString(R.string.searchNotificationsIntervalSetting),
+                            searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
+                WorkManager.getInstance(context)
+                    .enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification),
+                        ExistingPeriodicWorkPolicy.KEEP, workRequest);
             }
         });
 
@@ -354,28 +475,38 @@ public class settings extends appFragment {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
                     int value = Integer.parseInt(searchNotificationsInterval.getText().toString());
 
                     if (value > 0) {
                         Context context = requireActivity();
-                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref =
+                            context.getSharedPreferences(getString(R.string.settingsFile),
+                                Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putInt(context.getString(R.string.searchNotificationsIntervalSetting), value);
+                        editor.putInt(
+                            context.getString(R.string.searchNotificationsIntervalSetting), value);
                         editor.apply();
 
-                        WorkManager.getInstance(context).cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
+                        WorkManager.getInstance(context)
+                            .cancelUniqueWork(context.getString(R.string.OFACSearchNotification));
 
-                        if (sharedPref.getBoolean(context.getString(R.string.searchNotificationsEnabledSetting), searchNotificationsEnabledDefault)) {
-                            PeriodicWorkRequest workRequest = new androidx.work.PeriodicWorkRequest.Builder(searchNotificationWorker.class, sharedPref.getInt(context.getString(R.string.searchNotificationsIntervalSetting), searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
-                            WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getString(R.string.OFACSearchNotification), ExistingPeriodicWorkPolicy.KEEP, workRequest);
+                        if (sharedPref.getBoolean(
+                            context.getString(R.string.searchNotificationsEnabledSetting),
+                            searchNotificationsEnabledDefault)) {
+                            PeriodicWorkRequest workRequest =
+                                new androidx.work.PeriodicWorkRequest.Builder(
+                                    searchNotificationWorker.class, sharedPref.getInt(
+                                    context.getString(R.string.searchNotificationsIntervalSetting),
+                                    searchNotificationsIntervalDefault), TimeUnit.MINUTES).build();
+                            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                                context.getString(R.string.OFACSearchNotification),
+                                ExistingPeriodicWorkPolicy.KEEP, workRequest);
                         }
                     }
                 } catch (NumberFormatException ignored) {
@@ -387,16 +518,18 @@ public class settings extends appFragment {
         imageResolution.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int selectedValue = Integer.parseInt(((kvPair) imageResolution.getSelectedItem()).getKey());
+                int selectedValue =
+                    Integer.parseInt(((kvPair) imageResolution.getSelectedItem()).getKey());
                 Context context = requireActivity();
-                SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                SharedPreferences sharedPref =
+                    context.getSharedPreferences(getString(R.string.settingsFile),
+                        Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt(context.getString(R.string.imageResolutionSetting), selectedValue);
                 editor.apply();
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            @Override public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -407,19 +540,20 @@ public class settings extends appFragment {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
-                    int value = Integer.parseInt(recyclerVisibleThresholdCount.getText().toString());
+                    int value =
+                        Integer.parseInt(recyclerVisibleThresholdCount.getText().toString());
 
                     if (value > 0) {
                         Context context = requireActivity();
-                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref =
+                            context.getSharedPreferences(getString(R.string.settingsFile),
+                                Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putInt(context.getString(R.string.recyclerVisibleThreshold), value);
                         editor.apply();
@@ -436,19 +570,19 @@ public class settings extends appFragment {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
                     int value = Integer.parseInt(imageListColumnsCount.getText().toString());
 
                     if (value > 0) {
                         Context context = requireActivity();
-                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref =
+                            context.getSharedPreferences(getString(R.string.settingsFile),
+                                Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putInt(context.getString(R.string.imageListColumns), value);
                         editor.apply();
@@ -461,15 +595,21 @@ public class settings extends appFragment {
 
         imageListOrientation.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(context.getString(R.string.imageListOrientation), ((isChecked) ? (StaggeredGridLayoutManager.VERTICAL) : (StaggeredGridLayoutManager.HORIZONTAL)));
+            editor.putInt(context.getString(R.string.imageListOrientation),
+                ((isChecked) ? (StaggeredGridLayoutManager.VERTICAL) :
+                    (StaggeredGridLayoutManager.HORIZONTAL)));
             editor.apply();
         });
 
         enablePostLabels.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(context.getString(R.string.imageListInfo), isChecked);
             editor.apply();
@@ -481,7 +621,9 @@ public class settings extends appFragment {
             }
 
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(context.getString(R.string.saveBrowseState), isChecked);
             editor.apply();
@@ -493,7 +635,9 @@ public class settings extends appFragment {
             }
 
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(context.getString(R.string.cachedBrowseStateSetting), isChecked);
             editor.apply();
@@ -505,21 +649,23 @@ public class settings extends appFragment {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
-                    int value = Integer.parseInt(InvalidateCachedBrowseTimeEditText.getText().toString());
+                    int value =
+                        Integer.parseInt(InvalidateCachedBrowseTimeEditText.getText().toString());
 
                     if (value > 0 && value < Integer.MAX_VALUE) {
                         Context context = requireActivity();
-                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref =
+                            context.getSharedPreferences(getString(R.string.settingsFile),
+                                Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putInt(context.getString(R.string.InvalidateCachedBrowseTimeSetting), value);
+                        editor.putInt(context.getString(R.string.InvalidateCachedBrowseTimeSetting),
+                            value);
                         editor.apply();
                     }
                 } catch (NumberFormatException ignored) {
@@ -534,21 +680,23 @@ public class settings extends appFragment {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
-                    int value = Integer.parseInt(InvalidateCachedBrowseAfterEditText.getText().toString());
+                    int value =
+                        Integer.parseInt(InvalidateCachedBrowseAfterEditText.getText().toString());
 
                     if (value > 0 && value <= 24) {
                         Context context = requireActivity();
-                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref =
+                            context.getSharedPreferences(getString(R.string.settingsFile),
+                                Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting), value);
+                        editor.putInt(
+                            context.getString(R.string.InvalidateCachedBrowseAfterSetting), value);
                         editor.apply();
                     }
                 } catch (NumberFormatException ignored) {
@@ -563,7 +711,9 @@ public class settings extends appFragment {
             }
 
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(context.getString(R.string.saveSearchState), isChecked);
             editor.apply();
@@ -575,7 +725,9 @@ public class settings extends appFragment {
             }
 
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(context.getString(R.string.cachedSearchStateSetting), isChecked);
             editor.apply();
@@ -587,21 +739,23 @@ public class settings extends appFragment {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
-                    int value = Integer.parseInt(InvalidateCachedSearchTimeEditText.getText().toString());
+                    int value =
+                        Integer.parseInt(InvalidateCachedSearchTimeEditText.getText().toString());
 
                     if (value > 0 && value < Integer.MAX_VALUE) {
                         Context context = requireActivity();
-                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref =
+                            context.getSharedPreferences(getString(R.string.settingsFile),
+                                Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putInt(context.getString(R.string.InvalidateCachedSearchTimeSetting), value);
+                        editor.putInt(context.getString(R.string.InvalidateCachedSearchTimeSetting),
+                            value);
                         editor.apply();
                     }
                 } catch (NumberFormatException ignored) {
@@ -616,21 +770,23 @@ public class settings extends appFragment {
 
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 try {
-                    int value = Integer.parseInt(InvalidateCachedSearchAfterEditText.getText().toString());
+                    int value =
+                        Integer.parseInt(InvalidateCachedSearchAfterEditText.getText().toString());
 
                     if (value > 0 && value <= 24) {
                         Context context = requireActivity();
-                        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref =
+                            context.getSharedPreferences(getString(R.string.settingsFile),
+                                Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putInt(context.getString(R.string.InvalidateCachedSearchAfterSetting), value);
+                        editor.putInt(
+                            context.getString(R.string.InvalidateCachedSearchAfterSetting), value);
                         editor.apply();
                     }
                 } catch (NumberFormatException ignored) {
@@ -641,7 +797,9 @@ public class settings extends appFragment {
 
         trackHistory.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(context.getString(R.string.trackHistorySetting), isChecked);
             editor.apply();
@@ -663,7 +821,9 @@ public class settings extends appFragment {
 
         trackBackHistory.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(context.getString(R.string.trackBackHistorySetting), isChecked);
             editor.apply();

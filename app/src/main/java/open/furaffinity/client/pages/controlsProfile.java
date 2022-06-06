@@ -1,17 +1,15 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
+import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsProfile extends abstractPage {
@@ -20,6 +18,7 @@ public class controlsProfile extends abstractPage {
     private static final String pagePath = "/controls/profile/";
     private final List<inputItem> pageResults = new ArrayList<>();
     private String key;
+
     public controlsProfile(Context context, pageListener pageListener) {
         super(context, pageListener);
     }
@@ -53,14 +52,18 @@ public class controlsProfile extends abstractPage {
                                 if (input.hasAttr("maxLength")) {
                                     try {
                                         int maxLength = Integer.parseInt(input.attr("maxLength"));
-                                        pageResults.add(new inputItem(input.attr("name"), h4.text(), input.attr("value"), maxLength));
+                                        pageResults.add(new inputItem(input.attr("name"), h4.text(),
+                                            input.attr("value"), maxLength));
                                     } catch (NumberFormatException e) {
                                         Log.e(TAG, "processPageData: ", e);
                                     }
-                                } else {
-                                    pageResults.add(new inputItem(input.attr("name"), h4.text(), input.attr("value")));
                                 }
-                            } else if (select != null) {
+                                else {
+                                    pageResults.add(new inputItem(input.attr("name"), h4.text(),
+                                        input.attr("value")));
+                                }
+                            }
+                            else if (select != null) {
                                 String selected = null;
                                 Elements selectOptions = select.select("option");
                                 HashMap<String, String> options = new HashMap<>();
@@ -73,19 +76,24 @@ public class controlsProfile extends abstractPage {
                                     }
                                 }
 
-                                pageResults.add(new inputItem(select.attr("name"), h4.text(), selected, options));
+                                pageResults.add(
+                                    new inputItem(select.attr("name"), h4.text(), selected,
+                                        options));
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     Element h4 = currentControlPanelItemContainerDiv.selectFirst("h4");
                     Element textarea = currentControlPanelItemContainerDiv.selectFirst("textarea");
                     Element select = currentControlPanelItemContainerDiv.selectFirst("select");
 
                     if (h4 != null) {
                         if (textarea != null) {
-                            pageResults.add(new inputItem(textarea.attr("name"), h4.text(), textarea.text()));
-                        } else if (select != null) {
+                            pageResults.add(
+                                new inputItem(textarea.attr("name"), h4.text(), textarea.text()));
+                        }
+                        else if (select != null) {
                             String selected = null;
                             Elements selectOptions = select.select("option");
                             HashMap<String, String> options = new HashMap<>();
@@ -98,7 +106,8 @@ public class controlsProfile extends abstractPage {
                                 }
                             }
 
-                            pageResults.add(new inputItem(select.attr("name"), h4.text(), selected, options));
+                            pageResults.add(
+                                new inputItem(select.attr("name"), h4.text(), selected, options));
                         }
                     }
                 }
@@ -112,12 +121,13 @@ public class controlsProfile extends abstractPage {
             }
         }
 
-        return controlPanelItemContainerDiv != null && controlPanelItemContainerDiv.size() > 0 && msgFormForm != null;
+        return controlPanelItemContainerDiv != null && controlPanelItemContainerDiv.size() > 0 &&
+            msgFormForm != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
@@ -147,11 +157,13 @@ public class controlsProfile extends abstractPage {
             initInputItem(name, header, value, maxLength, null);
         }
 
-        public inputItem(String name, String header, String value, HashMap<String, String> options) {
+        public inputItem(String name, String header, String value,
+                         HashMap<String, String> options) {
             initInputItem(name, header, value, 0, options);
         }
 
-        private void initInputItem(String name, String header, String value, int maxLength, HashMap<String, String> options) {
+        private void initInputItem(String name, String header, String value, int maxLength,
+                                   HashMap<String, String> options) {
             this.name = name;
             this.header = header;
             this.value = value;

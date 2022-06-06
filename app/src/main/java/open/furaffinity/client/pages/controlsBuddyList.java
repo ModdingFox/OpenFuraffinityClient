@@ -1,16 +1,14 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsBuddyList extends abstractPage {
@@ -36,23 +34,29 @@ public class controlsBuddyList extends abstractPage {
 
         if (flexItemWatchList != null) {
             for (Element currentElement : flexItemWatchList) {
-                Element flexItemWatchlistAvatar = currentElement.selectFirst("div.flex-item-watchlist-avatar");
-                Element flexItemWatchlistControls = currentElement.selectFirst("div.flex-item-watchlist-controls");
+                Element flexItemWatchlistAvatar =
+                    currentElement.selectFirst("div.flex-item-watchlist-avatar");
+                Element flexItemWatchlistControls =
+                    currentElement.selectFirst("div.flex-item-watchlist-controls");
 
                 if (flexItemWatchlistAvatar != null && flexItemWatchlistControls != null) {
                     HashMap<String, String> newEntry = new HashMap<>();
 
                     Element userLink = flexItemWatchlistAvatar.selectFirst("a");
                     Element userProfileImg = flexItemWatchlistAvatar.selectFirst("img");
-                    open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(userProfileImg);
+                    open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(
+                        userProfileImg);
 
                     Elements flexItemWatchlistControlsA = flexItemWatchlistControls.select("a");
 
-                    if (userLink != null && userProfileImg != null && flexItemWatchlistControlsA != null && flexItemWatchlistControlsA.size() == 2) {
+                    if (userLink != null && userProfileImg != null &&
+                        flexItemWatchlistControlsA != null &&
+                        flexItemWatchlistControlsA.size() == 2) {
                         newEntry.put("userLink", userLink.attr("href"));
                         newEntry.put("userIcon", userProfileImg.attr("src"));
                         newEntry.put("userName", userProfileImg.attr("alt"));
-                        newEntry.put("userRemoveLink", flexItemWatchlistControlsA.get(1).attr("href"));
+                        newEntry.put("userRemoveLink",
+                            flexItemWatchlistControlsA.get(1).attr("href"));
                         pageResults.add(newEntry);
                     }
                 }
@@ -64,9 +68,9 @@ public class controlsBuddyList extends abstractPage {
         return false;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

@@ -1,17 +1,14 @@
 package open.furaffinity.client.submitPages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class submitSubmissionPart2 extends open.furaffinity.client.abstractClasses.abstractPage {
@@ -19,17 +16,17 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
 
     private final String sourceFilePath;
     private final String thumbnailFilePath;
-
+    private final open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1;
     private String submissionKey = "";
-    private HashMap<String, String> rating = new HashMap<>();
+    private final HashMap<String, String> rating = new HashMap<>();
     private HashMap<String, String> cat = new HashMap<>();
     private HashMap<String, String> aType = new HashMap<>();
     private HashMap<String, String> species = new HashMap<>();
     private HashMap<String, String> gender = new HashMap<>();
 
-    private final open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1;
-
-    public submitSubmissionPart2(Context context, abstractPage.pageListener pageListener, open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1, String sourceFilePath, String thumbnailFilePath) {
+    public submitSubmissionPart2(Context context, abstractPage.pageListener pageListener,
+                                 open.furaffinity.client.submitPages.submitSubmissionPart1 submitSubmissionPart1,
+                                 String sourceFilePath, String thumbnailFilePath) {
         super(context, pageListener);
         this.submitSubmissionPart1 = submitSubmissionPart1;
         this.sourceFilePath = sourceFilePath;
@@ -40,8 +37,7 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
         return pagePath;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         boolean result = true;
         Document doc = Jsoup.parse(html);
 
@@ -50,10 +46,12 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
             Element keyInput = finalizeForm.selectFirst("input[name=key]");
             if (keyInput != null) {
                 submissionKey = keyInput.attr("value");
-            } else {
+            }
+            else {
                 result = false;
             }
-        } else {
+        }
+        else {
             result = false;
         }
 
@@ -80,8 +78,7 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
         return result;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
+    @Override protected Boolean doInBackground(Void... voids) {
         HashMap<String, String> simplePostParams = new HashMap<>();
         simplePostParams.put("MAX_FILE_SIZE", submitSubmissionPart1.getMaxFileSize());
         simplePostParams.put("key", submitSubmissionPart1.getSubmissionKey());
@@ -108,21 +105,25 @@ public class submitSubmissionPart2 extends open.furaffinity.client.abstractClass
             newParam.put("name", "thumbnail");
             newParam.put("filePath", thumbnailFilePath);
             postParams.add(newParam);
-        } else {
+        }
+        else {
             HashMap<String, String> newParam = new HashMap<>();
             newParam.put("name", "thumbnail");
             newParam.put("filePath", "");
             postParams.add(newParam);
         }
 
-        String html = webClient.sendFormPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, postParams);
+        String html = webClient.sendFormPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, postParams);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
         return false;
     }
 
-    public String getSubmissionKey() { return submissionKey; }
+    public String getSubmissionKey() {
+        return submissionKey;
+    }
 
     public HashMap<String, String> getCat() {
         return cat;

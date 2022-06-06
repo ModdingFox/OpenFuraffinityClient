@@ -1,12 +1,11 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class journal extends abstractPage {
@@ -36,20 +35,25 @@ public class journal extends abstractPage {
     protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
-        Element userPageFlexItemUserNavAvatarDesktop = doc.selectFirst("div.userpage-flex-item.user-nav-avatar-desktop");
-        Element userPageFlexItemUserNavAvatarDesktopImg = userPageFlexItemUserNavAvatarDesktop.selectFirst("img");
-        Element userPageFlexItemUserNavAvatarDesktopA = userPageFlexItemUserNavAvatarDesktop.selectFirst("a");
+        Element userPageFlexItemUserNavAvatarDesktop =
+            doc.selectFirst("div.userpage-flex-item.user-nav-avatar-desktop");
+        Element userPageFlexItemUserNavAvatarDesktopImg =
+            userPageFlexItemUserNavAvatarDesktop.selectFirst("img");
+        Element userPageFlexItemUserNavAvatarDesktopA =
+            userPageFlexItemUserNavAvatarDesktop.selectFirst("a");
         journalUserIcon = "https:" + userPageFlexItemUserNavAvatarDesktopImg.attr("src");
         journalUserLink = userPageFlexItemUserNavAvatarDesktopA.attr("href");
 
-        Element userPageFlexItemUsernameH = doc.selectFirst("div.userpage-flex-item.username").selectFirst("h2");
+        Element userPageFlexItemUsernameH =
+            doc.selectFirst("div.userpage-flex-item.username").selectFirst("h2");
         journalUserName = userPageFlexItemUsernameH.text();
 
         Element journalTitleH2 = doc.selectFirst("h2.journal-title");
         journalTitle = journalTitleH2.text();
         journalDate = journalTitleH2.nextElementSibling().text();
 
-        Element journalContentContainer = doc.selectFirst("div.journal-content-container").selectFirst("div.journal-content");
+        Element journalContentContainer =
+            doc.selectFirst("div.journal-content-container").selectFirst("div.journal-content");
         open.furaffinity.client.utilities.html.correctHtmlAHrefAndImgScr(journalContentContainer);
         journalContent = journalContentContainer.html();
 
@@ -73,7 +77,8 @@ public class journal extends abstractPage {
                             watchUnWatch = userNavControlsDivElement.attr("href");
                             break;
                         case "Note":
-                            noteUser = userNavControlsDivElement.attr("href").replace(msgPms.getNotePathPrefix(), "");
+                            noteUser = userNavControlsDivElement.attr("href")
+                                .replace(msgPms.getNotePathPrefix(), "");
                             noteUser = noteUser.substring(0, noteUser.length() - 1);
                             break;
                     }
@@ -84,9 +89,9 @@ public class journal extends abstractPage {
         return journalTitleH2 != null && journalContentContainer != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

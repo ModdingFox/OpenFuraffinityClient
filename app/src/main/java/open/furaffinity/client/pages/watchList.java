@@ -1,18 +1,16 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
+import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.user;
 import open.furaffinity.client.utilities.messageIds;
@@ -36,7 +34,8 @@ public class watchList extends abstractPage {
         this.page = watchList.page;
     }
 
-    public static List<HashMap<String, String>> processWatchList(String html, boolean isUserPageData) {
+    public static List<HashMap<String, String>> processWatchList(String html,
+                                                                 boolean isUserPageData) {
         List<HashMap<String, String>> result = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);
@@ -59,9 +58,9 @@ public class watchList extends abstractPage {
         return true;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + getCurrentPage());
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

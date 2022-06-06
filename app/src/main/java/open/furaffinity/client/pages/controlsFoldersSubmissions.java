@@ -1,16 +1,14 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsFoldersSubmissions extends abstractPage {
@@ -77,7 +75,8 @@ public class controlsFoldersSubmissions extends abstractPage {
 
                 if (groupOrFolder.is("tr.group-row")) {
                     newItem.put("type", "group");
-                } else {
+                }
+                else {
                     newItem.put("type", "folder");
                 }
 
@@ -98,7 +97,8 @@ public class controlsFoldersSubmissions extends abstractPage {
                 Element img = td.selectFirst("img");
 
                 if (img != null && img.hasAttr("src")) {
-                    newItem.put("iconLink", open.furaffinity.client.utilities.webClient.getBaseUrl() + img.attr("src"));
+                    newItem.put("iconLink",
+                        open.furaffinity.client.utilities.webClient.getBaseUrl() + img.attr("src"));
                 }
 
                 td = td.nextElementSibling();
@@ -107,7 +107,8 @@ public class controlsFoldersSubmissions extends abstractPage {
 
                 if (name != null) {
                     newItem.put("name", name.text());
-                } else {
+                }
+                else {
                     name = td.selectFirst("h3");
                     if (name != null) {
                         newItem.put("name", name.text());
@@ -169,9 +170,9 @@ public class controlsFoldersSubmissions extends abstractPage {
         return addGroupForm != null && renameGroupForm != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
@@ -198,20 +199,20 @@ public class controlsFoldersSubmissions extends abstractPage {
         return selectedGroup;
     }
 
-    public List<HashMap<String, String>> getGroups(){
+    public List<HashMap<String, String>> getGroups() {
         List<HashMap<String, String>> result = new ArrayList<>();
-        for(HashMap<String, String> currentElement : getPageResults()){
-            if(currentElement.get("type").equals("group")) {
+        for (HashMap<String, String> currentElement : getPageResults()) {
+            if (currentElement.get("type").equals("group")) {
                 result.add(currentElement);
             }
         }
         return result;
     }
 
-    public List<HashMap<String, String>> getFolders(){
+    public List<HashMap<String, String>> getFolders() {
         List<HashMap<String, String>> result = new ArrayList<>();
-        for(HashMap<String, String> currentElement : getPageResults()){
-            if(currentElement.get("type").equals("folder")) {
+        for (HashMap<String, String> currentElement : getPageResults()) {
+            if (currentElement.get("type").equals("folder")) {
                 result.add(currentElement);
             }
         }

@@ -6,13 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 
@@ -25,24 +22,24 @@ public class journalListAdapter extends RecyclerView.Adapter<journalListAdapter.
         this.context = context;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.journal_item, parent, false);
+        View v =
+            LayoutInflater.from(parent.getContext()).inflate(R.layout.journal_item, parent, false);
 
         return new ViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.journalItemLinearLayout.setOnClickListener(v -> ((mainActivity) context).setJournalPath(mDataSet.get(position).get("journalPath")));
+    @Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.journalItemLinearLayout.setOnClickListener(
+            v -> ((mainActivity) context).setJournalPath(
+                mDataSet.get(position).get("journalPath")));
 
         holder.journalTitle.setText(mDataSet.get(position).get("journalTitle"));
         holder.journalDate.setText(mDataSet.get(position).get("journalDate"));
     }
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         return mDataSet.size();
     }
 

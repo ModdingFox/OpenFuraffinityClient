@@ -6,19 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 
-public class manageAvatarListAdapter extends RecyclerView.Adapter<manageAvatarListAdapter.ViewHolder> {
+public class manageAvatarListAdapter
+    extends RecyclerView.Adapter<manageAvatarListAdapter.ViewHolder> {
     private final List<HashMap<String, String>> mDataSet;
 
     private final Context context;
@@ -33,26 +30,28 @@ public class manageAvatarListAdapter extends RecyclerView.Adapter<manageAvatarLi
         listener = manageAvatarListAdapterListener;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.imageview_and_x2_button_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+            .inflate(R.layout.imageview_and_x2_button_item, parent, false);
 
         return new ViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(context).load(mDataSet.get(position).get("imgUrl")).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(holder.imageView);
+    @Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Glide.with(context).load(mDataSet.get(position).get("imgUrl"))
+            .diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading)
+            .into(holder.imageView);
 
-        holder.setButton.setOnClickListener(v -> listener.onSet(mDataSet.get(position).get("setUrl")));
+        holder.setButton.setOnClickListener(
+            v -> listener.onSet(mDataSet.get(position).get("setUrl")));
 
-        holder.deleteButton.setOnClickListener(v -> listener.onDelete(mDataSet.get(position).get("deleteUrl")));
+        holder.deleteButton.setOnClickListener(
+            v -> listener.onDelete(mDataSet.get(position).get("deleteUrl")));
 
     }
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         return mDataSet.size();
     }
 

@@ -7,19 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import java.util.HashMap;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.utilities.kvPair;
 
 public class spinnerDialog extends DialogFragment {
-    @SuppressWarnings("FieldCanBeLocal")
-    private TextView dialogText;
+    @SuppressWarnings("FieldCanBeLocal") private TextView dialogText;
     private Spinner spinner;
 
     private String text = null;
@@ -30,9 +26,7 @@ public class spinnerDialog extends DialogFragment {
         listener = dialogListener;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    @NonNull @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -42,11 +36,14 @@ public class spinnerDialog extends DialogFragment {
         spinner = rootView.findViewById(R.id.spinner);
 
         dialogText.setText(text);
-        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data, "", true, false);
+        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data,
+            "", true, false);
 
         builder.setView(rootView);
-        builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> listener.onDialogPositiveClick(spinnerDialog.this));
-        builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> listener.onDialogNegativeClick(spinnerDialog.this));
+        builder.setPositiveButton(R.string.acceptButton,
+            (dialog, which) -> listener.onDialogPositiveClick(spinnerDialog.this));
+        builder.setNegativeButton(R.string.cancelButton,
+            (dialog, which) -> listener.onDialogNegativeClick(spinnerDialog.this));
 
         return builder.create();
     }

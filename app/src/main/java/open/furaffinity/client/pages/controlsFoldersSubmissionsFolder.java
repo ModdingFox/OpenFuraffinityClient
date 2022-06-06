@@ -1,14 +1,12 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.HashMap;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsFoldersSubmissionsFolder extends abstractPage {
@@ -22,7 +20,8 @@ public class controlsFoldersSubmissionsFolder extends abstractPage {
 
     String key;
 
-    public controlsFoldersSubmissionsFolder(Context context, pageListener pageListener, String pagePath, String folderId) {
+    public controlsFoldersSubmissionsFolder(Context context, pageListener pageListener,
+                                            String pagePath, String folderId) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.folderId = folderId;
@@ -67,17 +66,18 @@ public class controlsFoldersSubmissionsFolder extends abstractPage {
             this.key = keyButton.attr("value");
         }
 
-        return groupId != null && folderName != null && folderDescription != null && keyButton != null;
+        return groupId != null && folderName != null && folderDescription != null &&
+            keyButton != null;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
+    @Override protected Boolean doInBackground(Void... Void) {
         HashMap<String, String> params = new HashMap<>();
         if (folderId != null) {
             params.put("folder_id", folderId);
         }
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

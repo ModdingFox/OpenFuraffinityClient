@@ -1,18 +1,14 @@
 package open.furaffinity.client.activity;
 
-import android.app.Notification;
-import android.content.BroadcastReceiver;
+import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.MediaPlayer;
-import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,33 +16,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.navigation.NavigationView;
-
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.pages.loginCheck;
-import open.furaffinity.client.sqlite.backDBHelper;
 import open.furaffinity.client.sqlite.backContract;
-
-import static open.furaffinity.client.utilities.messageIds.searchSelected_MESSAGE;
+import open.furaffinity.client.sqlite.backDBHelper;
 
 public class mainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
@@ -57,8 +46,7 @@ public class mainActivity extends AppCompatActivity {
     private Menu navMenu;
     private NavController navController;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private View headerView;
+    @SuppressWarnings("FieldCanBeLocal") private View headerView;
     private ImageView imageView;
     private TextView userName;
 
@@ -89,25 +77,21 @@ public class mainActivity extends AppCompatActivity {
 
     private backDBHelper dbHelper;
 
-    private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener(){
-        @Override
-        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+    private final DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener() {
+        @Override public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
         }
 
-        @Override
-        public void onDrawerOpened(@NonNull View drawerView) {
+        @Override public void onDrawerOpened(@NonNull View drawerView) {
             loginCheck = new loginCheck(loginCheck);
             loginCheck.execute();
         }
 
-        @Override
-        public void onDrawerClosed(@NonNull View drawerView) {
+        @Override public void onDrawerClosed(@NonNull View drawerView) {
 
         }
 
-        @Override
-        public void onDrawerStateChanged(int newState) {
+        @Override public void onDrawerStateChanged(int newState) {
 
         }
     };
@@ -123,7 +107,10 @@ public class mainActivity extends AppCompatActivity {
         if (incomingPagePath != null) {
             String pagePath = incomingPagePath.getPath();
 
-            Matcher pathMatcher = Pattern.compile("^/(view|user|gallery|scraps|favorites|journals|commissions|watchlist/to|watchlist/by|journal|msg/pms)/(.+)$").matcher(pagePath);
+            Matcher pathMatcher = Pattern.compile(
+                    "^/(view|user|gallery|scraps|favorites|journals|commissions|watchlist/to" +
+                        "|watchlist/by|journal|msg/pms)/(.+)$")
+                .matcher(pagePath);
 
             if (pathMatcher.find()) {
                 switch (pathMatcher.group(1)) {
@@ -181,14 +168,17 @@ public class mainActivity extends AppCompatActivity {
 
     private void initClientAndPage() {
         loginCheck = new loginCheck(this, new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            @Override public void requestSucceeded(abstractPage abstractPage) {
                 if (((loginCheck) abstractPage).getIsLoggedIn()) {
-                    Glide.with(mainActivity.this).load(((loginCheck) abstractPage).getUserIcon()).diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading).into(imageView);
-                    imageView.setOnClickListener(v -> mainActivity.this.setUserPath(((loginCheck) abstractPage).getUserPage()));
+                    Glide.with(mainActivity.this).load(((loginCheck) abstractPage).getUserIcon())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE).placeholder(R.drawable.loading)
+                        .into(imageView);
+                    imageView.setOnClickListener(v -> mainActivity.this.setUserPath(
+                        ((loginCheck) abstractPage).getUserPage()));
 
                     userName.setText(((loginCheck) abstractPage).getUserName());
-                    userName.setOnClickListener(v -> mainActivity.this.setUserPath(((loginCheck) abstractPage).getUserPage()));
+                    userName.setOnClickListener(v -> mainActivity.this.setUserPath(
+                        ((loginCheck) abstractPage).getUserPage()));
 
                     navMenu.findItem(R.id.nav_upload).setVisible(true);
                     navMenu.findItem(R.id.nav_profile).setVisible(true);
@@ -206,48 +196,55 @@ public class mainActivity extends AppCompatActivity {
                     int notificationJCount = ((loginCheck) abstractPage).getNotificationJ();
                     int notificationNCount = ((loginCheck) abstractPage).getNotificationN();
 
-                    if(notificationSCount > 0) {
+                    if (notificationSCount > 0) {
                         notificationS.setVisibility(View.VISIBLE);
                         notificationSTextView.setText(Integer.toString(notificationSCount));
-                    } else {
+                    }
+                    else {
                         notificationS.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationWCount > 0) {
+                    if (notificationWCount > 0) {
                         notificationW.setVisibility(View.VISIBLE);
                         notificationWTextView.setText(Integer.toString(notificationWCount));
-                    } else {
+                    }
+                    else {
                         notificationW.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationCCount > 0) {
+                    if (notificationCCount > 0) {
                         notificationC.setVisibility(View.VISIBLE);
                         notificationCTextView.setText(Integer.toString(notificationCCount));
-                    } else {
+                    }
+                    else {
                         notificationC.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationFCount > 0) {
+                    if (notificationFCount > 0) {
                         notificationF.setVisibility(View.VISIBLE);
                         notificationFTextView.setText(Integer.toString(notificationFCount));
-                    } else {
+                    }
+                    else {
                         notificationF.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationJCount > 0) {
+                    if (notificationJCount > 0) {
                         notificationJ.setVisibility(View.VISIBLE);
                         notificationJTextView.setText(Integer.toString(notificationJCount));
-                    } else {
+                    }
+                    else {
                         notificationJ.setVisibility(View.INVISIBLE);
                     }
 
-                    if(notificationNCount > 0) {
+                    if (notificationNCount > 0) {
                         notificationN.setVisibility(View.VISIBLE);
                         notificationNTextView.setText(Integer.toString(notificationNCount));
-                    } else {
+                    }
+                    else {
                         notificationN.setVisibility(View.INVISIBLE);
                     }
-                } else {
+                }
+                else {
                     imageView.setImageResource(R.mipmap.ic_launcher);
                     userName.setText(getString(R.string.app_name));
 
@@ -269,8 +266,7 @@ public class mainActivity extends AppCompatActivity {
                 }
             }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
+            @Override public void requestFailed(abstractPage abstractPage) {
                 imageView.setImageResource(R.mipmap.ic_launcher);
                 userName.setText(getString(R.string.app_name));
 
@@ -290,7 +286,8 @@ public class mainActivity extends AppCompatActivity {
                 notificationJ.setVisibility(View.GONE);
                 notificationN.setVisibility(View.GONE);
 
-                Toast.makeText(mainActivity.this, "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainActivity.this, "Failed to load data for loginCheck",
+                    Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -300,9 +297,11 @@ public class mainActivity extends AppCompatActivity {
     }
 
     public void updateUIElements() {
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        navMenu.findItem(R.id.nav_history).setVisible(sharedPref.getBoolean(getString(R.string.trackHistorySetting), false));
+        navMenu.findItem(R.id.nav_history)
+            .setVisible(sharedPref.getBoolean(getString(R.string.trackHistorySetting), false));
         navMenu.findItem(R.id.nav_journal).setVisible(journalPath != null);
         navMenu.findItem(R.id.nav_msg_pms_message).setVisible(msgPmsPath != null);
         navMenu.findItem(R.id.nav_user).setVisible(userPath != null);
@@ -343,12 +342,12 @@ public class mainActivity extends AppCompatActivity {
 
     private void setupNavigationUI() {
         setSupportActionBar(toolbar);
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_browse, R.id.nav_search, R.id.nav_upload, R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms, R.id.nav_history,
-                R.id.nav_journal, R.id.nav_msg_pms_message, R.id.nav_user, R.id.nav_view,
-                R.id.nav_settings, R.id.nav_login, R.id.nav_about)
-                .setDrawerLayout(drawer)
-                .build();
+        mAppBarConfiguration =
+            new AppBarConfiguration.Builder(R.id.nav_browse, R.id.nav_search, R.id.nav_upload,
+                R.id.nav_profile, R.id.nav_msg_submission, R.id.nav_msg_others, R.id.nav_msg_pms,
+                R.id.nav_history, R.id.nav_journal, R.id.nav_msg_pms_message, R.id.nav_user,
+                R.id.nav_view, R.id.nav_settings, R.id.nav_login, R.id.nav_about).setDrawerLayout(
+                drawer).build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
@@ -446,15 +445,19 @@ public class mainActivity extends AppCompatActivity {
     }
 
     public void drawerFragmentPush(String fragmentClass, String fragmentData) {
-        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            this.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(this.getString(R.string.trackBackHistorySetting), settings.trackBackHistoryDefault)) {
+        if (sharedPref.getBoolean(this.getString(R.string.trackBackHistorySetting),
+            settings.trackBackHistoryDefault)) {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             //Delete previous versions from history
-            String selection = backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME + " LIKE ? AND " + backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA + " LIKE ?";
-            String[] selectionArgs = { fragmentClass, fragmentData};
-            db.delete(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, selection , selectionArgs);
+            String selection =
+                backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME + " LIKE ? AND " +
+                    backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA + " LIKE ?";
+            String[] selectionArgs = {fragmentClass, fragmentData};
+            db.delete(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, selection, selectionArgs);
 
             //Insert into history
             ContentValues values = new ContentValues();
@@ -464,7 +467,10 @@ public class mainActivity extends AppCompatActivity {
             db.insert(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, null, values);
 
             //Limit history to 512 entries
-            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + " ORDER BY rowid DESC LIMIT 512))");
+            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY +
+                " WHERE rowid < (SELECT min(rowid) FROM (SELECT rowid FROM " +
+                backContract.backItemEntry.TABLE_NAME_BACK_HISTORY +
+                " ORDER BY rowid DESC LIMIT 512))");
 
             db.close();
         }
@@ -474,85 +480,111 @@ public class mainActivity extends AppCompatActivity {
         String fragmentClass = "";
         String fragmentData = "";
 
-        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            this.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(this.getString(R.string.trackBackHistorySetting), settings.trackBackHistoryDefault)) {
+        if (sharedPref.getBoolean(this.getString(R.string.trackBackHistorySetting),
+            settings.trackBackHistoryDefault)) {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-            String[] projection = {
-                    backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME,
-                    backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA,
-                    backContract.backItemEntry.COLUMN_NAME_DATETIME
-            };
+            String[] projection = {backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME,
+                backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA,
+                backContract.backItemEntry.COLUMN_NAME_DATETIME};
 
             String sortOrder = "rowid DESC";
 
-            Cursor cursor = db.query(
-                    backContract.backItemEntry.TABLE_NAME_BACK_HISTORY,
-                    projection,
-                    null,
-                    null,
-                    null,
-                    null,
-                    sortOrder
-            );
+            Cursor cursor =
+                db.query(backContract.backItemEntry.TABLE_NAME_BACK_HISTORY, projection, null, null,
+                    null, null, sortOrder);
 
             //Remove the current page from the back history as we want to leave it
-            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + " WHERE rowid = (SELECT max(rowid) FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + ")");
+            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY +
+                " WHERE rowid = (SELECT max(rowid) FROM " +
+                backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + ")");
 
             if (cursor.moveToNext()) {
-                fragmentClass = cursor.getString(cursor.getColumnIndexOrThrow(backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME));
-                fragmentData = cursor.getString(cursor.getColumnIndexOrThrow(backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA));
+                fragmentClass = cursor.getString(cursor.getColumnIndexOrThrow(
+                    backContract.backItemEntry.COLUMN_NAME_FRAGMENT_NAME));
+                fragmentData = cursor.getString(cursor.getColumnIndexOrThrow(
+                    backContract.backItemEntry.COLUMN_NAME_FRAGMENT_DATA));
             }
 
-            //Remove the previous page from the back history as we will be going back to it and dont wanna get stuck in an infinite loop of returning to the same page we are going back to
-            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + " WHERE rowid = (SELECT max(rowid) FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + ")");
+            //Remove the previous page from the back history as we will be going back to it and
+            // dont wanna get stuck in an infinite loop of returning to the same page we are
+            // going back to
+            db.execSQL("DELETE FROM " + backContract.backItemEntry.TABLE_NAME_BACK_HISTORY +
+                " WHERE rowid = (SELECT max(rowid) FROM " +
+                backContract.backItemEntry.TABLE_NAME_BACK_HISTORY + ")");
         }
 
         if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.about.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_about);
             navigationView.getMenu().performIdentifierAction(R.id.nav_about, 0);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.browse.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.browse.class.getName())) {
             setBrowseParamaters(fragmentData);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.history.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.history.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_history);
             navigationView.getMenu().performIdentifierAction(R.id.nav_history, 0);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.journal.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.journal.class.getName())) {
             setJournalPath(fragmentData);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.msgOthers.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.msgOthers.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_msg_others);
             navigationView.getMenu().performIdentifierAction(R.id.nav_msg_others, 0);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.msgPms.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.msgPms.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_msg_pms);
             navigationView.getMenu().performIdentifierAction(R.id.nav_msg_pms, 0);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.msgSubmission.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.msgSubmission.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_msg_submission);
             navigationView.getMenu().performIdentifierAction(R.id.nav_msg_submission, 0);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentTabs.msgPmsMessage.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentTabs.msgPmsMessage.class.getName())) {
             setMsgPmsPath(fragmentData);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.profile.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.profile.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_profile);
             navigationView.getMenu().performIdentifierAction(R.id.nav_profile, 0);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.settings.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.settings.class.getName())) {
             navigationView.setCheckedItem(R.id.nav_settings);
             navigationView.getMenu().performIdentifierAction(R.id.nav_settings, 0);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.search.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.search.class.getName())) {
             setSearchParamaters(fragmentData);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.user.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.user.class.getName())) {
             setUserPath(fragmentData);
-        } else if (fragmentClass.equals(open.furaffinity.client.fragmentDrawers.view.class.getName())) {
+        }
+        else if (fragmentClass.equals(
+            open.furaffinity.client.fragmentDrawers.view.class.getName())) {
             setViewPath(fragmentData);
-        } else {
+        }
+        else {
             this.finish();
             System.exit(0);
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startService(new Intent( this, open.furaffinity.client.services.mediaPlayer.class ));
+        startService(new Intent(this, open.furaffinity.client.services.mediaPlayer.class));
         dbHelper = new backDBHelper(this);
 
         setContentView(R.layout.activity_main);
@@ -567,8 +599,7 @@ public class mainActivity extends AppCompatActivity {
         getPagePath();
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    @Override protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putString("searchSelected", searchSelected);
@@ -579,8 +610,7 @@ public class mainActivity extends AppCompatActivity {
         outState.putString("viewPath", viewPath);
     }
 
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+    @Override protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         searchSelected = savedInstanceState.getString("searchSelected");
@@ -591,20 +621,17 @@ public class mainActivity extends AppCompatActivity {
         viewPath = savedInstanceState.getString("viewPath");
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.navigation_drawer, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+    @Override public boolean onSupportNavigateUp() {
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration) ||
+            super.onSupportNavigateUp();
     }
 }

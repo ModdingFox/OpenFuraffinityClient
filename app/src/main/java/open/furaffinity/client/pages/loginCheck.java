@@ -1,12 +1,11 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class loginCheck extends abstractPage {
@@ -36,8 +35,7 @@ public class loginCheck extends abstractPage {
         this.userPage = loginCheck.userPage;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
 
         if (doc != null) {
@@ -62,27 +60,33 @@ public class loginCheck extends abstractPage {
 
                 Elements notifications = doc.select("a.notification-container");
 
-                for(Element notification : notifications) {
+                for (Element notification : notifications) {
                     String notificationText = notification.text();
 
-                    switch (notificationText.substring(notificationText.length() - 1, notificationText.length())) {
+                    switch (notificationText.substring(notificationText.length() - 1)) {
                         case "S":
-                            notificationS = Integer.parseInt(notificationText.substring(0, notificationText.length() - 1));
+                            notificationS = Integer.parseInt(
+                                notificationText.substring(0, notificationText.length() - 1));
                             break;
                         case "W":
-                            notificationW = Integer.parseInt(notificationText.substring(0, notificationText.length() - 1));
+                            notificationW = Integer.parseInt(
+                                notificationText.substring(0, notificationText.length() - 1));
                             break;
                         case "C":
-                            notificationC = Integer.parseInt(notificationText.substring(0, notificationText.length() - 1));
+                            notificationC = Integer.parseInt(
+                                notificationText.substring(0, notificationText.length() - 1));
                             break;
                         case "F":
-                            notificationF = Integer.parseInt(notificationText.substring(0, notificationText.length() - 1));
+                            notificationF = Integer.parseInt(
+                                notificationText.substring(0, notificationText.length() - 1));
                             break;
                         case "J":
-                            notificationJ = Integer.parseInt(notificationText.substring(0, notificationText.length() - 1));
+                            notificationJ = Integer.parseInt(
+                                notificationText.substring(0, notificationText.length() - 1));
                             break;
                         case "N":
-                            notificationN = Integer.parseInt(notificationText.substring(0, notificationText.length() - 1));
+                            notificationN = Integer.parseInt(
+                                notificationText.substring(0, notificationText.length() - 1));
                             break;
                     }
                 }
@@ -94,9 +98,9 @@ public class loginCheck extends abstractPage {
         return false;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl());
+    @Override protected Boolean doInBackground(Void... voids) {
+        String html =
+            webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl());
 
         if (html != null && webClient.getLastPageLoaded()) {
             return processPageData(html);
@@ -121,12 +125,31 @@ public class loginCheck extends abstractPage {
         return userName;
     }
 
-    public String getUserPage() { return userPage; }
+    public String getUserPage() {
+        return userPage;
+    }
 
-    public int getNotificationS() { return notificationS; }
-    public int getNotificationW() { return notificationW; }
-    public int getNotificationC() { return notificationC; }
-    public int getNotificationF() { return notificationF; }
-    public int getNotificationJ() { return notificationJ; }
-    public int getNotificationN() { return notificationN; }
+    public int getNotificationS() {
+        return notificationS;
+    }
+
+    public int getNotificationW() {
+        return notificationW;
+    }
+
+    public int getNotificationC() {
+        return notificationC;
+    }
+
+    public int getNotificationF() {
+        return notificationF;
+    }
+
+    public int getNotificationJ() {
+        return notificationJ;
+    }
+
+    public int getNotificationN() {
+        return notificationN;
+    }
 }

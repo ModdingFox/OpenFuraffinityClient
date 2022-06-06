@@ -4,11 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.viewpager.widget.ViewPager;
-
 import com.google.android.material.tabs.TabLayout;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
@@ -18,8 +15,7 @@ public class history extends appFragment {
     private ViewPager viewPager;
     private TabLayout tabs;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_history;
     }
 
@@ -28,35 +24,33 @@ public class history extends appFragment {
         tabs = rootView.findViewById(R.id.tabs);
     }
 
-    @Override
-    protected void initPages() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+    @Override protected void initPages() {
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
     }
 
-    @Override
-    protected void fetchPageData() {
-
-    }
-
-    @Override
-    protected void updateUIElements() {
+    @Override protected void fetchPageData() {
 
     }
 
-    @Override
-    protected void updateUIElementListeners(View rootView) {
+    @Override protected void updateUIElements() {
+
+    }
+
+    @Override protected void updateUIElementListeners(View rootView) {
 
     }
 
     private void setupViewPager() {
-        historySectionsPagerAdapter historySectionsPagerAdapter = new historySectionsPagerAdapter(this.getActivity(), getChildFragmentManager());
+        historySectionsPagerAdapter historySectionsPagerAdapter =
+            new historySectionsPagerAdapter(this.getActivity(), getChildFragmentManager());
         viewPager.setAdapter(historySectionsPagerAdapter);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         setupViewPager();
         return rootView;

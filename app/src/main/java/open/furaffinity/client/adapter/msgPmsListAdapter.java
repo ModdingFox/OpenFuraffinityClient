@@ -6,14 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 
@@ -28,23 +25,24 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
         checkedItems = new ArrayList<>();
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.msgpms_item, parent, false);
+        View v =
+            LayoutInflater.from(parent.getContext()).inflate(R.layout.msgpms_item, parent, false);
 
         return new ViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    @Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (mDataSet.get(position).containsKey("messageSender")) {
             holder.userName.setText(mDataSet.get(position).get("messageSender"));
 
             if (mDataSet.get(position).containsKey("messageSenderLink")) {
-                holder.userName.setOnClickListener(v -> ((mainActivity) context).setUserPath(mDataSet.get(position).get("messageSenderLink")));
+                holder.userName.setOnClickListener(v -> ((mainActivity) context).setUserPath(
+                    mDataSet.get(position).get("messageSenderLink")));
             }
-        } else {
+        }
+        else {
             holder.userName.setVisibility(View.GONE);
         }
 
@@ -60,7 +58,8 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
         holder.messageText.setText(messageText);
 
         if (mDataSet.get(position).containsKey("messageLink")) {
-            holder.messageText.setOnClickListener(v -> ((mainActivity) context).setMsgPmsPath(mDataSet.get(position).get("messageLink")));
+            holder.messageText.setOnClickListener(v -> ((mainActivity) context).setMsgPmsPath(
+                mDataSet.get(position).get("messageLink")));
         }
 
         holder.checkBox.setChecked(checkedItems.contains(mDataSet.get(position).get("messageid")));
@@ -68,7 +67,8 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 checkedItems.add(mDataSet.get(position).get("messageid"));
-            } else {
+            }
+            else {
                 checkedItems.remove(mDataSet.get(position).get("messageid"));
             }
         });
@@ -82,8 +82,7 @@ public class msgPmsListAdapter extends RecyclerView.Adapter<msgPmsListAdapter.Vi
         checkedItems = new ArrayList<>();
     }
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         return mDataSet.size();
     }
 

@@ -1,9 +1,7 @@
 package open.furaffinity.client.submitPages;
 
 import android.content.Context;
-
 import java.util.HashMap;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class submitControlsJournal extends abstractPage {
@@ -16,7 +14,9 @@ public class submitControlsJournal extends abstractPage {
     private final boolean lockComments;
     private final boolean makeFeatured;
 
-    public submitControlsJournal(Context context, abstractPage.pageListener pageListener, String pagePath, String key, String id, String subject, String body, boolean lockComments, boolean makeFeatured) {
+    public submitControlsJournal(Context context, abstractPage.pageListener pageListener,
+                                 String pagePath, String key, String id, String subject,
+                                 String body, boolean lockComments, boolean makeFeatured) {
         super(context, pageListener);
         this.pagePath = pagePath;
         this.key = key;
@@ -27,13 +27,11 @@ public class submitControlsJournal extends abstractPage {
         this.makeFeatured = makeFeatured;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         return true;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
+    @Override protected Boolean doInBackground(Void... voids) {
         HashMap<String, String> params = new HashMap<>();
         params.put("key", key);
         params.put("id", id);
@@ -50,7 +48,8 @@ public class submitControlsJournal extends abstractPage {
             params.put("make_featured", "on");
         }
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

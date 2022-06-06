@@ -8,27 +8,22 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.Toast;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.adapter.manageImageListAdapter;
 import open.furaffinity.client.dialogs.confirmDialog;
-import open.furaffinity.client.dialogs.textDialog;
 import open.furaffinity.client.listener.EndlessRecyclerViewScrollListener;
 import open.furaffinity.client.utilities.fabCircular;
 import open.furaffinity.client.utilities.kvPair;
@@ -37,8 +32,7 @@ import open.furaffinity.client.utilities.uiControls;
 public class msgSubmission extends appFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     TableLayout settingsTableLayout;
-    @SuppressWarnings("FieldCanBeLocal")
-    private ConstraintLayout constraintLayout;
+    @SuppressWarnings("FieldCanBeLocal") private ConstraintLayout constraintLayout;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -54,9 +48,9 @@ public class msgSubmission extends appFragment {
     private int loadingStopCounter = 3;
     private boolean isLoading = false;
     private final abstractPage.pageListener pageListener = new abstractPage.pageListener() {
-        @Override
-        public void requestSucceeded(abstractPage abstractPage) {
-            List<HashMap<String, String>> pageResults = ((open.furaffinity.client.pages.msgSubmission) abstractPage).getPageResults();
+        @Override public void requestSucceeded(abstractPage abstractPage) {
+            List<HashMap<String, String>> pageResults =
+                ((open.furaffinity.client.pages.msgSubmission) abstractPage).getPageResults();
 
             int curSize = mAdapter.getItemCount();
 
@@ -65,10 +59,16 @@ public class msgSubmission extends appFragment {
             }
 
             //Deduplicate results
-            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
+            List<String> newPostPaths =
+                pageResults.stream().map(currentMap -> currentMap.get("postPath"))
+                    .collect(Collectors.toList());
+            List<String> oldPostPaths =
+                mDataSet.stream().map(currentMap -> currentMap.get("postPath"))
+                    .collect(Collectors.toList());
             newPostPaths.removeAll(oldPostPaths);
-            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
+            pageResults = pageResults.stream()
+                .filter(currentMap -> newPostPaths.contains(currentMap.get("postPath")))
+                .collect(Collectors.toList());
             mDataSet.addAll(pageResults);
             mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
 
@@ -77,27 +77,32 @@ public class msgSubmission extends appFragment {
             swipeRefreshLayout.setRefreshing(false);
         }
 
-        @Override
-        public void requestFailed(abstractPage abstractPage) {
+        @Override public void requestFailed(abstractPage abstractPage) {
             loadingStopCounter--;
             fab.setVisibility(View.GONE);
             isLoading = false;
             swipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(getActivity(), "Failed to load data for submissions", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Failed to load data for submissions", Toast.LENGTH_SHORT)
+                .show();
         }
     };
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_msg_submission;
     }
 
     protected void getElements(View rootView) {
-        SharedPreferences sharedPref = requireContext().getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            requireContext().getSharedPreferences(getString(R.string.settingsFile),
+                Context.MODE_PRIVATE);
 
         constraintLayout = rootView.findViewById(R.id.constraintLayout);
 
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(
+            sharedPref.getInt(getString(R.string.imageListColumns),
+                settings.imageListColumnsDefault),
+            sharedPref.getInt(getString(R.string.imageListOrientation),
+                settings.imageListOrientationDefault));
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = rootView.findViewById(R.id.recyclerView);
@@ -119,11 +124,14 @@ public class msgSubmission extends appFragment {
         deleteAll.setImageResource(R.drawable.ic_menu_delete_all);
 
         //noinspection deprecation
-        pageSettings.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        pageSettings.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        deleteSelected.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        deleteSelected.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
         //noinspection deprecation
-        deleteAll.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
+        deleteAll.setBackgroundTintList(ColorStateList.valueOf(
+            getResources().getColor(androidx.cardview.R.color.cardview_dark_background)));
 
         constraintLayout.addView(pageSettings);
         constraintLayout.addView(deleteSelected);
@@ -143,8 +151,7 @@ public class msgSubmission extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
@@ -158,29 +165,33 @@ public class msgSubmission extends appFragment {
     }
 
     protected void initPages() {
-        ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
+        ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(), "");
 
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         mAdapter = new manageImageListAdapter(mDataSet, requireActivity(), requireActivity());
         recyclerView.setAdapter(mAdapter);
 
-        page = new open.furaffinity.client.pages.msgSubmission(requireActivity(), pageListener, true);
+        page =
+            new open.furaffinity.client.pages.msgSubmission(requireActivity(), pageListener, true);
     }
 
     private void loadCurrentSettings() {
         msgSubmissionOrder.setChecked(page.getIsNewestFirst());
-        uiControls.spinnerSetAdapter(requireContext(), msgSubmissionPerPageSpinner, page.getPerpage(), page.getCurrentPerpage(), true, true);
+        uiControls.spinnerSetAdapter(requireContext(), msgSubmissionPerPageSpinner,
+            page.getPerpage(), page.getCurrentPerpage(), true, true);
     }
 
     private void saveCurrentSettings() {
         boolean valueChanged = false;
 
         if (page.getIsNewestFirst() != msgSubmissionOrder.isChecked()) {
-            page = new open.furaffinity.client.pages.msgSubmission(getActivity(), pageListener, msgSubmissionOrder.isChecked());
+            page = new open.furaffinity.client.pages.msgSubmission(getActivity(), pageListener,
+                msgSubmissionOrder.isChecked());
             valueChanged = true;
         }
 
-        String selectedPerpageValue = ((kvPair) msgSubmissionPerPageSpinner.getSelectedItem()).getKey();
+        String selectedPerpageValue =
+            ((kvPair) msgSubmissionPerPageSpinner.getSelectedItem()).getKey();
         if (!page.getCurrentPerpage().equals(selectedPerpageValue)) {
             page.setPerpage(selectedPerpageValue);
             valueChanged = true;
@@ -194,53 +205,57 @@ public class msgSubmission extends appFragment {
     protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
-            @Override
-            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
-                if (page.setNextPage()) {
-                    int curSize = mAdapter.getItemCount();
-                    fetchPageData();
-                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+        endlessRecyclerViewScrollListener =
+            new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+                @Override
+                public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
+                    if (page.setNextPage()) {
+                        int curSize = mAdapter.getItemCount();
+                        fetchPageData();
+                        mAdapter.notifyItemRangeInserted(curSize, mDataSet.size() - 1);
+                    }
                 }
-            }
-        };
+            };
 
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        ((manageImageListAdapter) mAdapter).setListener(new manageImageListAdapter.manageImageListAdapterListener() {
-            @Override
-            public void onSwipeLeft(String postId) {
+        ((manageImageListAdapter) mAdapter).setListener(
+            new manageImageListAdapter.manageImageListAdapterListener() {
+                @Override public void onSwipeLeft(String postId) {
 
-            }
+                }
 
-            @Override
-            public void onSwipeRight(String postId) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("submissions[]", postId);
+                @Override public void onSwipeRight(String postId) {
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("submissions[]", postId);
 
-                new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(getActivity(), new abstractPage.pageListener() {
-                    @Override
-                    public void requestSucceeded(abstractPage abstractPage) {
-                        resetRecycler();
-                        Toast.makeText(getActivity(), "Successfully deleted submission notification", Toast.LENGTH_SHORT).show();
-                    }
+                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(
+                        getActivity(), new abstractPage.pageListener() {
+                        @Override public void requestSucceeded(abstractPage abstractPage) {
+                            resetRecycler();
+                            Toast.makeText(getActivity(),
+                                    "Successfully deleted submission notification",
+                                    Toast.LENGTH_SHORT)
+                                .show();
+                        }
 
-                    @Override
-                    public void requestFailed(abstractPage abstractPage) {
-                        Toast.makeText(getActivity(), "Failed to delete submission notification", Toast.LENGTH_SHORT).show();
-                    }
-                }, page.getPagePath(), params).execute();
-            }
-        });
+                        @Override public void requestFailed(abstractPage abstractPage) {
+                            Toast.makeText(getActivity(),
+                                    "Failed to delete submission notification", Toast.LENGTH_SHORT)
+                                .show();
+                        }
+                    }, page.getPagePath(), params).execute();
+                }
+            });
 
-        pageSettings.setOnClickListener(view ->
-        {
+        pageSettings.setOnClickListener(view -> {
             if (swipeRefreshLayout.getVisibility() == View.VISIBLE) {
                 swipeRefreshLayout.setVisibility(View.GONE);
                 loadCurrentSettings();
                 settingsTableLayout.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 settingsTableLayout.setVisibility(View.GONE);
                 saveCurrentSettings();
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
@@ -251,8 +266,7 @@ public class msgSubmission extends appFragment {
             confirmDialog confirmDialog = new confirmDialog();
             confirmDialog.setTitleText("Delete Selected Submission Notifications?");
             confirmDialog.setListener(new confirmDialog.dialogListener() {
-                @Override
-                public void onDialogPositiveClick(DialogFragment dialog) {
+                @Override public void onDialogPositiveClick(DialogFragment dialog) {
                     List<String> elements = ((manageImageListAdapter) mAdapter).getCheckedItems();
 
                     HashMap<String, String> params = new HashMap<>();
@@ -261,22 +275,24 @@ public class msgSubmission extends appFragment {
                         params.put("submissions[" + i + "]", elements.get(i));
                     }
 
-                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(getActivity(), new abstractPage.pageListener() {
-                        @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteSelected(
+                        getActivity(), new abstractPage.pageListener() {
+                        @Override public void requestSucceeded(abstractPage abstractPage) {
                             resetRecycler();
-                            Toast.makeText(getActivity(), "Successfully deleted selected submission notifications", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(),
+                                "Successfully deleted selected submission notifications",
+                                Toast.LENGTH_SHORT).show();
                         }
 
-                        @Override
-                        public void requestFailed(abstractPage abstractPage) {
-                            Toast.makeText(getActivity(), "Failed to delete selected submission notifications", Toast.LENGTH_SHORT).show();
+                        @Override public void requestFailed(abstractPage abstractPage) {
+                            Toast.makeText(getActivity(),
+                                "Failed to delete selected submission notifications",
+                                Toast.LENGTH_SHORT).show();
                         }
                     }, page.getPagePath(), params).execute();
                 }
 
-                @Override
-                public void onDialogNegativeClick(DialogFragment dialog) {
+                @Override public void onDialogNegativeClick(DialogFragment dialog) {
 
                 }
             });
@@ -287,24 +303,26 @@ public class msgSubmission extends appFragment {
             confirmDialog confirmDialog = new confirmDialog();
             confirmDialog.setTitleText("Delete All Submission Notifications?");
             confirmDialog.setListener(new confirmDialog.dialogListener() {
-                @Override
-                public void onDialogPositiveClick(DialogFragment dialog) {
-                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteAll(getActivity(), new abstractPage.pageListener() {
-                        @Override
-                        public void requestSucceeded(abstractPage abstractPage) {
+                @Override public void onDialogPositiveClick(DialogFragment dialog) {
+                    new open.furaffinity.client.submitPages.submitMsgSubmissionsDeleteAll(
+                        getActivity(), new abstractPage.pageListener() {
+                        @Override public void requestSucceeded(abstractPage abstractPage) {
                             resetRecycler();
-                            Toast.makeText(getActivity(), "Successfully deleted submission notifications", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(),
+                                    "Successfully deleted submission notifications",
+                                    Toast.LENGTH_SHORT)
+                                .show();
                         }
 
-                        @Override
-                        public void requestFailed(abstractPage abstractPage) {
-                            Toast.makeText(getActivity(), "Failed to delete submission notifications", Toast.LENGTH_SHORT).show();
+                        @Override public void requestFailed(abstractPage abstractPage) {
+                            Toast.makeText(getActivity(),
+                                    "Failed to delete submission notifications", Toast.LENGTH_SHORT)
+                                .show();
                         }
                     }, page.getPagePath()).execute();
                 }
 
-                @Override
-                public void onDialogNegativeClick(DialogFragment dialog) {
+                @Override public void onDialogNegativeClick(DialogFragment dialog) {
 
                 }
             });

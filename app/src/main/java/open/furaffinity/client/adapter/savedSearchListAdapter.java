@@ -9,19 +9,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.activity.mainActivity;
 import open.furaffinity.client.sqlite.searchContract.searchItemEntry;
 import open.furaffinity.client.sqlite.searchDBHelper;
 import open.furaffinity.client.utilities.notificationItem;
 
-public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchListAdapter.ViewHolder> {
+public class savedSearchListAdapter
+    extends RecyclerView.Adapter<savedSearchListAdapter.ViewHolder> {
     private final List<notificationItem> mDataSet;
     private final Context context;
 
@@ -30,20 +28,20 @@ public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchList
         this.context = context;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.savedsearch_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+            .inflate(R.layout.savedsearch_item, parent, false);
 
         return new ViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    @Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.nameTextView.setText(mDataSet.get(position).getName());
         holder.notificationSwitch.setChecked(mDataSet.get(position).getState());
 
-        holder.nameTextView.setOnClickListener(v -> ((mainActivity) context).setSearchSelected(Integer.toString(mDataSet.get(position).getRowId())));
+        holder.nameTextView.setOnClickListener(v -> ((mainActivity) context).setSearchSelected(
+            Integer.toString(mDataSet.get(position).getRowId())));
 
         holder.notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             searchDBHelper dbHelper = new searchDBHelper(context);
@@ -79,8 +77,7 @@ public class savedSearchListAdapter extends RecyclerView.Adapter<savedSearchList
         });
     }
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         return mDataSet.size();
     }
 

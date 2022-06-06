@@ -1,16 +1,14 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class msgPms extends abstractPage {
@@ -22,6 +20,7 @@ public class msgPms extends abstractPage {
     private mailFolders selectedFolder = mailFolders.inbox;
     private String postKey;
     private boolean recaptchaRequired;
+
     public msgPms(Context context, pageListener pageListener) {
         super(context, pageListener);
     }
@@ -48,16 +47,23 @@ public class msgPms extends abstractPage {
         Element MessagecenterMailListPane = doc.selectFirst("div.messagecenter-mail-list-pane");
 
         if (MessagecenterMailListPane != null) {
-            Elements NoteListContainer = MessagecenterMailListPane.select("div.note-list-container");
+            Elements NoteListContainer =
+                MessagecenterMailListPane.select("div.note-list-container");
 
             for (Element currentElement : NoteListContainer) {
                 HashMap<String, String> newElement = new HashMap<>();
 
-                Element messageid = currentElement.selectFirst("div.note-list-checkbox-mobile-tablet>input");
-                Element messageLink = currentElement.selectFirst("div.note-list-subject-container>a");
-                Element messageSubject = currentElement.selectFirst("div.note-list-subject-container>a>div.note-list-subject");
-                Element messageSender = currentElement.selectFirst("div.note-list-sendgroup>div.note-list-sender-container>div.note-list-sender>div>a");
-                Element messageSendDate = currentElement.selectFirst("div.note-list-sendgroup>div.note-list-senddate>span.popup_date");
+                Element messageid =
+                    currentElement.selectFirst("div.note-list-checkbox-mobile-tablet>input");
+                Element messageLink =
+                    currentElement.selectFirst("div.note-list-subject-container>a");
+                Element messageSubject = currentElement.selectFirst(
+                    "div.note-list-subject-container>a>div.note-list-subject");
+                Element messageSender = currentElement.selectFirst(
+                    "div.note-list-sendgroup>div.note-list-sender-container>div" +
+                        ".note-list-sender>div>a");
+                Element messageSendDate = currentElement.selectFirst(
+                    "div.note-list-sendgroup>div.note-list-senddate>span.popup_date");
 
                 if (messageid != null) {
                     newElement.put("messageid", messageid.attr("value"));
@@ -96,13 +102,14 @@ public class msgPms extends abstractPage {
         return false;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
+    @Override protected Boolean doInBackground(Void... Void) {
         HashMap<String, String> cookies = new HashMap<>();
         cookies.put("folder", this.selectedFolder.toString());
 
         String html;
-        html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + "/" + currentPage, cookies);
+        html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath + "/" + currentPage,
+            cookies);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
@@ -142,13 +149,9 @@ public class msgPms extends abstractPage {
     }
 
     public enum mailFolders {
-        inbox("inbox", "Inbox"),
-        unread("unread", "Unread"),
-        sent("sent", "Sent"),
-        high_prio("high_prio", "High priority"),
-        medium_prio("medium_prio", "Medium priority"),
-        low_prio("low_prio", "Low priority"),
-        archive("archive", "Archive"),
+        inbox("inbox", "Inbox"), unread("unread", "Unread"), sent("sent", "Sent"),
+        high_prio("high_prio", "High priority"), medium_prio("medium_prio", "Medium priority"),
+        low_prio("low_prio", "Low priority"), archive("archive", "Archive"),
         trash("trash", "Trash");
 
         private final String value;
@@ -159,8 +162,7 @@ public class msgPms extends abstractPage {
             this.printableName = printableName;
         }
 
-        @Override
-        public String toString() {
+        @Override public String toString() {
             return this.value;
         }
 
@@ -170,12 +172,8 @@ public class msgPms extends abstractPage {
     }
 
     public enum priorities {
-        high("high", "High"),
-        medium("medium", "Medium"),
-        low("low", "Low"),
-        none("none", "None"),
-        archive("archive", "Archive"),
-        unread("unread", "Mark Unread");
+        high("high", "High"), medium("medium", "Medium"), low("low", "Low"), none("none", "None"),
+        archive("archive", "Archive"), unread("unread", "Mark Unread");
 
         private final String value;
         private final String printableName;
@@ -185,8 +183,7 @@ public class msgPms extends abstractPage {
             this.printableName = printableName;
         }
 
-        @Override
-        public String toString() {
+        @Override public String toString() {
             return this.value;
         }
 

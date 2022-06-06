@@ -1,11 +1,8 @@
 package open.furaffinity.client.submitPages;
 
 import android.content.Context;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class submitSubmissionPart3 extends abstractPage {
@@ -29,7 +26,11 @@ public class submitSubmissionPart3 extends abstractPage {
     private final List<String> folderIds;
     private final String newFolderName;
 
-    public submitSubmissionPart3(Context context, abstractPage.pageListener pageListener, String key, String cat, String aType, String species, String gender, String rating, String title, String message, String keywords, Boolean disableComments, Boolean putInScraps, List<String> folderIds, String newFolderName) {
+    public submitSubmissionPart3(Context context, abstractPage.pageListener pageListener,
+                                 String key, String cat, String aType, String species,
+                                 String gender, String rating, String title, String message,
+                                 String keywords, Boolean disableComments, Boolean putInScraps,
+                                 List<String> folderIds, String newFolderName) {
         super(context, pageListener);
         this.key = key;
         this.cat = cat;
@@ -46,14 +47,12 @@ public class submitSubmissionPart3 extends abstractPage {
         this.newFolderName = newFolderName;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         //Document doc = Jsoup.parse(html);
         return true;//Really should test this at some point.
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
+    @Override protected Boolean doInBackground(Void... voids) {
         HashMap<String, String> params = new HashMap<>();
 
         params.put("key", key);
@@ -68,11 +67,11 @@ public class submitSubmissionPart3 extends abstractPage {
         params.put("message", message);
         params.put("keywords", keywords);
 
-        for(int i = 0; i < folderIds.size(); i++){
-            params.put("folder_ids[" + Integer.toString(i) + "]", folderIds.get(i));
+        for (int i = 0; i < folderIds.size(); i++) {
+            params.put("folder_ids[" + i + "]", folderIds.get(i));
         }
 
-        if(newFolderName != null && !newFolderName.isEmpty()) {
+        if (newFolderName != null && !newFolderName.isEmpty()) {
             params.put("create_folder_name", newFolderName);
         }
 
@@ -84,7 +83,8 @@ public class submitSubmissionPart3 extends abstractPage {
             params.put("scrap", "1");
         }
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath, params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

@@ -1,9 +1,7 @@
 package open.furaffinity.client.submitPages;
 
 import android.content.Context;
-
 import java.util.HashMap;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.pages.controlsSiteSettings;
 
@@ -22,7 +20,14 @@ public class submitControlsSiteSettings extends abstractPage {
     private final String no_search_engines;
     private final String no_notes;
 
-    public submitControlsSiteSettings(Context context, abstractPage.pageListener pageListener, boolean disable_avatars_yes, boolean disable_avatars_no, boolean switch_date_format_full, boolean switch_date_format_fuzzy, String perpage, String newsubmissions_direction, String thumbnail_size, boolean gallery_navigation_minigallery, boolean gallery_navigation_links, String hide_favorites, String no_guests, String no_search_engines, String no_notes) {
+    public submitControlsSiteSettings(Context context, abstractPage.pageListener pageListener,
+                                      boolean disable_avatars_yes, boolean disable_avatars_no,
+                                      boolean switch_date_format_full,
+                                      boolean switch_date_format_fuzzy, String perpage,
+                                      String newsubmissions_direction, String thumbnail_size,
+                                      boolean gallery_navigation_minigallery,
+                                      boolean gallery_navigation_links, String hide_favorites,
+                                      String no_guests, String no_search_engines, String no_notes) {
         super(context, pageListener);
         this.disable_avatars_yes = disable_avatars_yes;
         this.disable_avatars_no = disable_avatars_no;
@@ -39,13 +44,11 @@ public class submitControlsSiteSettings extends abstractPage {
         this.no_notes = no_notes;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         return true;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
+    @Override protected Boolean doInBackground(Void... voids) {
         HashMap<String, String> params = new HashMap<>();
         params.put("do", "update");
 
@@ -83,7 +86,9 @@ public class submitControlsSiteSettings extends abstractPage {
         params.put("no_notes", no_notes);
         params.put("save_settings", "Save Settings");
 
-        String html = webClient.sendPostRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + controlsSiteSettings.getPagePath(), params);
+        String html = webClient.sendPostRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() +
+                controlsSiteSettings.getPagePath(), params);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

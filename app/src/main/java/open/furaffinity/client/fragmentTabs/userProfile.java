@@ -3,7 +3,6 @@ package open.furaffinity.client.fragmentTabs;
 import android.graphics.Color;
 import android.view.View;
 import android.webkit.WebView;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.utilities.messageIds;
@@ -15,8 +14,7 @@ public class userProfile extends appFragment {
     private String userPageProfileData = "";
     private String userProfileData = "";
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_user_profile;
     }
 
@@ -25,8 +23,7 @@ public class userProfile extends appFragment {
         userProfile = rootView.findViewById(R.id.userProfile);
     }
 
-    @Override
-    protected void initPages() {
+    @Override protected void initPages() {
 
     }
 
@@ -39,17 +36,17 @@ public class userProfile extends appFragment {
         userPageProfile.setBackgroundColor(Color.TRANSPARENT);
         userProfile.setBackgroundColor(Color.TRANSPARENT);
 
-        userPageProfile.loadData("<font color='white'>" + userPageProfileData + "</font>", "text/html; charset=utf-8", "UTF-8");
-        userProfile.loadData("<font color='white'>" + userProfileData + "</font>", "text/html; charset=utf-8", "UTF-8");
+        userPageProfile.loadData("<font color='white'>" + userPageProfileData + "</font>",
+            "text/html; charset=utf-8", "UTF-8");
+        userProfile.loadData("<font color='white'>" + userProfileData + "</font>",
+            "text/html; charset=utf-8", "UTF-8");
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
-    @Override
-    protected void updateUIElementListeners(View rootView) {
+    @Override protected void updateUIElementListeners(View rootView) {
 
     }
 }

@@ -5,16 +5,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
@@ -26,20 +23,18 @@ import open.furaffinity.client.utilities.messageIds;
 public class shouts extends appFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private RecyclerView.LayoutManager layoutManager;
-    @SuppressWarnings("FieldCanBeLocal")
-    private LinearLayout controls;
+    @SuppressWarnings("FieldCanBeLocal") private LinearLayout controls;
     private EditText comment;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter<commentListAdapter.ViewHolder> mAdapter;
-    @SuppressWarnings("FieldCanBeLocal")
-    private open.furaffinity.client.pages.loginCheck loginCheck;
+    @SuppressWarnings("FieldCanBeLocal") private open.furaffinity.client.pages.loginCheck
+        loginCheck;
     private open.furaffinity.client.pages.user user;
     private boolean isLoading = false;
     private String pagePath;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_refreshable_recycler_view;
     }
 
@@ -48,7 +43,8 @@ public class shouts extends appFragment {
 
         controls = rootView.findViewById(R.id.controls);
         comment = new EditText(getContext());
-        comment.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        comment.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT));
         comment.setText(getString(R.string.commentTextBox));
         comment.setShowSoftInputOnFocus(false);
         comment.setVisibility(View.GONE);
@@ -68,8 +64,7 @@ public class shouts extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
@@ -84,24 +79,26 @@ public class shouts extends appFragment {
         if (getArguments() != null) {
             pagePath = getArguments().getString(messageIds.pagePath_MESSAGE);
 
-            loginCheck = new open.furaffinity.client.pages.loginCheck(getActivity(), new abstractPage.pageListener() {
-                @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    if (((open.furaffinity.client.pages.loginCheck) abstractPage).getIsLoggedIn()) {
-                        comment.setVisibility(View.VISIBLE);
-                    } else {
-                        comment.setVisibility(View.GONE);
+            loginCheck = new open.furaffinity.client.pages.loginCheck(getActivity(),
+                new abstractPage.pageListener() {
+                    @Override public void requestSucceeded(abstractPage abstractPage) {
+                        if (((open.furaffinity.client.pages.loginCheck) abstractPage).getIsLoggedIn()) {
+                            comment.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            comment.setVisibility(View.GONE);
+                        }
+
+                        ((commentListAdapter) mAdapter).setLoggedIn(
+                            ((open.furaffinity.client.pages.loginCheck) abstractPage).getIsLoggedIn());
+                        resetRecycler();
                     }
 
-                    ((commentListAdapter) mAdapter).setLoggedIn(((open.furaffinity.client.pages.loginCheck) abstractPage).getIsLoggedIn());
-                    resetRecycler();
-                }
-
-                @Override
-                public void requestFailed(abstractPage abstractPage) {
-                    Toast.makeText(getActivity(), "Failed to load data for loginCheck", Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override public void requestFailed(abstractPage abstractPage) {
+                        Toast.makeText(getActivity(), "Failed to load data for loginCheck",
+                            Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             loginCheck.execute();
 
@@ -110,20 +107,20 @@ public class shouts extends appFragment {
             recyclerView.setAdapter(mAdapter);
 
             user = new user(getActivity(), new abstractPage.pageListener() {
-                @Override
-                public void requestSucceeded(abstractPage abstractPage) {
-                    mDataSet.addAll(open.furaffinity.client.pages.user.processShouts(user.getUserShouts()));
+                @Override public void requestSucceeded(abstractPage abstractPage) {
+                    mDataSet.addAll(
+                        open.furaffinity.client.pages.user.processShouts(user.getUserShouts()));
                     mAdapter.notifyDataSetChanged();
 
                     isLoading = false;
                     swipeRefreshLayout.setRefreshing(false);
                 }
 
-                @Override
-                public void requestFailed(abstractPage abstractPage) {
+                @Override public void requestFailed(abstractPage abstractPage) {
                     isLoading = false;
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getActivity(), "Failed to load data for shouts", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Failed to load data for shouts",
+                        Toast.LENGTH_SHORT).show();
                 }
             }, pagePath);
         }
@@ -139,24 +136,24 @@ public class shouts extends appFragment {
 
                 textDialog.setListener(new textDialog.dialogListener() {
 
-                    @Override
-                    public void onDialogPositiveClick(DialogFragment dialog) {
-                        new open.furaffinity.client.submitPages.submitShout(getActivity(), new abstractPage.pageListener() {
-                            @Override
-                            public void requestSucceeded(abstractPage abstractPage) {
-                                resetRecycler();
-                                Toast.makeText(getActivity(), "Successfully posted shout", Toast.LENGTH_SHORT).show();
-                            }
+                    @Override public void onDialogPositiveClick(DialogFragment dialog) {
+                        new open.furaffinity.client.submitPages.submitShout(getActivity(),
+                            new abstractPage.pageListener() {
+                                @Override public void requestSucceeded(abstractPage abstractPage) {
+                                    resetRecycler();
+                                    Toast.makeText(getActivity(), "Successfully posted shout",
+                                        Toast.LENGTH_SHORT).show();
+                                }
 
-                            @Override
-                            public void requestFailed(abstractPage abstractPage) {
-                                Toast.makeText(getActivity(), "Failed to post shout", Toast.LENGTH_SHORT).show();
-                            }
-                        }, pagePath, user.getShoutKey(), user.getShoutName(), textDialog.getText()).execute();
+                                @Override public void requestFailed(abstractPage abstractPage) {
+                                    Toast.makeText(getActivity(), "Failed to post shout",
+                                        Toast.LENGTH_SHORT).show();
+                                }
+                            }, pagePath, user.getShoutKey(), user.getShoutName(),
+                            textDialog.getText()).execute();
                     }
 
-                    @Override
-                    public void onDialogNegativeClick(DialogFragment dialog) {
+                    @Override public void onDialogNegativeClick(DialogFragment dialog) {
                         dialog.dismiss();
                     }
                 });

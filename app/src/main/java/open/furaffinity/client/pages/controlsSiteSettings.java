@@ -1,14 +1,12 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.HashMap;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class controlsSiteSettings extends abstractPage {
@@ -85,15 +83,18 @@ public class controlsSiteSettings extends abstractPage {
                         break;
                     case "newsubmissions_direction":
                         newsubmissions_direction = newOptionList;
-                        newsubmissions_direction_current = ((selected != null) ? (selected.attr("value")) : ("desc"));
+                        newsubmissions_direction_current =
+                            ((selected != null) ? (selected.attr("value")) : ("desc"));
                         break;
                     case "thumbnail_size":
                         thumbnail_size = newOptionList;
-                        thumbnail_size_current = ((selected != null) ? (selected.attr("value")) : ("250"));
+                        thumbnail_size_current =
+                            ((selected != null) ? (selected.attr("value")) : ("250"));
                         break;
                     case "hide_favorites":
                         hide_favorites = newOptionList;
-                        hide_favorites_current = ((selected != null) ? (selected.attr("value")) : ("n"));
+                        hide_favorites_current =
+                            ((selected != null) ? (selected.attr("value")) : ("n"));
                         break;
                     case "no_guests":
                         no_guests = newOptionList;
@@ -101,7 +102,8 @@ public class controlsSiteSettings extends abstractPage {
                         break;
                     case "no_search_engines":
                         no_search_engines = newOptionList;
-                        no_search_engines_current = ((selected != null) ? (selected.attr("value")) : ("0"));
+                        no_search_engines_current =
+                            ((selected != null) ? (selected.attr("value")) : ("0"));
                         break;
                     case "no_notes":
                         no_notes = newOptionList;
@@ -114,9 +116,9 @@ public class controlsSiteSettings extends abstractPage {
         return inputs != null && inputs.size() > 0 && selects != null && selects.size() > 0;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

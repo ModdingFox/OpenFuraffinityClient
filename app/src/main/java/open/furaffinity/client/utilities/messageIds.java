@@ -5,9 +5,11 @@ public class messageIds {
 
     public static String searchSelected_MESSAGE = "open.furaffinity.client.searchSelected";
 
-    public static String submissionDescription_MESSAGE = "open.furaffinity.client.submissionDescription";
+    public static String submissionDescription_MESSAGE =
+        "open.furaffinity.client.submissionDescription";
     public static String submissionComments_MESSAGE = "open.furaffinity.client.submissionComments";
-    public static String submissionFavorites_MESSAGE = "open.furaffinity.client.submissionFavorites";
+    public static String submissionFavorites_MESSAGE =
+        "open.furaffinity.client.submissionFavorites";
     public static String submissionViews_MESSAGE = "open.furaffinity.client.submissionViews";
     public static String submissionRating_MESSAGE = "open.furaffinity.client.submissionRating";
     public static String submissionCategory_MESSAGE = "open.furaffinity.client.submissionCategory";
@@ -16,7 +18,8 @@ public class messageIds {
     public static String submissionDate_MESSAGE = "open.furaffinity.client.submissionDate";
     public static String submissionSize_MESSAGE = "open.furaffinity.client.submissionSize";
     public static String SubmissionTags_MESSAGE = "open.furaffinity.client.submissionTags";
-    public static String SubmissionCommentsType_MESSAGE = "open.furaffinity.client.submissionCommentsType";
+    public static String SubmissionCommentsType_MESSAGE =
+        "open.furaffinity.client.submissionCommentsType";
     public static String SubmissionFolders_MESSAGE = "open.furaffinity.client.submissionFolders";
 
     public static String userPageProfile_MESSAGE = "open.furaffinity.client.userPageProfile";

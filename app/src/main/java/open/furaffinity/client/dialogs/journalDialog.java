@@ -7,11 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import open.furaffinity.client.R;
 
 public class journalDialog extends DialogFragment {
@@ -23,9 +21,7 @@ public class journalDialog extends DialogFragment {
         listener = journalDialogListener;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    @NonNull @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -45,7 +41,9 @@ public class journalDialog extends DialogFragment {
         }
 
         builder.setPositiveButton(R.string.sendButton, (dialog, which) -> {
-            listener.onDialogPositiveClick(subjectEditText.getText().toString(), messageEditText.getText().toString(), lockCommentsSwitch.isChecked(), makeFeaturedSwitch.isChecked());
+            listener.onDialogPositiveClick(subjectEditText.getText().toString(),
+                messageEditText.getText().toString(), lockCommentsSwitch.isChecked(),
+                makeFeaturedSwitch.isChecked());
             dismiss();
         });
 
@@ -65,6 +63,7 @@ public class journalDialog extends DialogFragment {
     }
 
     public interface journalDialogListener {
-        void onDialogPositiveClick(String subject, String body, boolean lockComments, boolean makeFeatured);
+        void onDialogPositiveClick(String subject, String body, boolean lockComments,
+                                   boolean makeFeatured);
     }
 }

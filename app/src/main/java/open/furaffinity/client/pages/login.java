@@ -1,11 +1,10 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import android.content.Context;
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class login extends abstractPage {
@@ -22,18 +21,17 @@ public class login extends abstractPage {
         return pagePath;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         Document doc = Jsoup.parse(html);
         Element gRecaptcha = doc.selectFirst("[id=g-recaptcha]");
         recaptchaRequired = gRecaptcha != null;
         return true;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
+    @Override protected Boolean doInBackground(Void... voids) {
         String html;
-        html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+        html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

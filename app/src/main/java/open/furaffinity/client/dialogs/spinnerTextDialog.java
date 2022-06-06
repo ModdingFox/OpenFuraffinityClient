@@ -7,13 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import java.util.HashMap;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.utilities.kvPair;
 
@@ -29,9 +26,7 @@ public class spinnerTextDialog extends DialogFragment {
         listener = spinnerTextDialogListener;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    @NonNull @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -40,11 +35,13 @@ public class spinnerTextDialog extends DialogFragment {
         spinner = rootView.findViewById(R.id.spinner);
         editText = rootView.findViewById(R.id.editText);
 
-        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data, ((currentValue == null) ? ("") : (currentValue)), true, false);
+        open.furaffinity.client.utilities.uiControls.spinnerSetAdapter(getContext(), spinner, data,
+            ((currentValue == null) ? ("") : (currentValue)), true, false);
 
         builder.setView(rootView);
         builder.setPositiveButton(R.string.acceptButton, (dialog, which) -> {
-            listener.onDialogPositiveClick(((kvPair) spinner.getSelectedItem()).getKey(), editText.getText().toString());
+            listener.onDialogPositiveClick(((kvPair) spinner.getSelectedItem()).getKey(),
+                editText.getText().toString());
             dismiss();
         });
         builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dismiss());

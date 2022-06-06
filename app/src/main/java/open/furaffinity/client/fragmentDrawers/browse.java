@@ -1,5 +1,8 @@
 package open.furaffinity.client.fragmentDrawers;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,16 +12,10 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.Toast;
-
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -26,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.abstractClasses.appFragment;
@@ -74,16 +70,20 @@ public class browse extends appFragment {
     private int pageNumber = -1;
     private int pageCacheCheckResultCount = 0;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_browse;
     }
 
     protected void getElements(View rootView) {
         Context context = requireActivity();
-        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(sharedPref.getInt(getString(R.string.imageListColumns), settings.imageListColumnsDefault), sharedPref.getInt(getString(R.string.imageListOrientation), settings.imageListOrientationDefault));
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(
+            sharedPref.getInt(getString(R.string.imageListColumns),
+                settings.imageListColumnsDefault),
+            sharedPref.getInt(getString(R.string.imageListOrientation),
+                settings.imageListOrientationDefault));
         settingsTableLayout = rootView.findViewById(R.id.settingsTableLayout);
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
@@ -112,8 +112,7 @@ public class browse extends appFragment {
         }
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
@@ -128,17 +127,22 @@ public class browse extends appFragment {
 
     private void initCurrentSettings() {
         Context context = requireActivity();
-        SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+            context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
 
-        if (sharedPref.getBoolean(getString(R.string.saveBrowseState), settings.saveBrowseStateDefault)) {
+        if (sharedPref.getBoolean(getString(R.string.saveBrowseState),
+            settings.saveBrowseStateDefault)) {
             page.setCat(sharedPref.getString(getString(R.string.browseCatSetting), ""));
             page.setAtype(sharedPref.getString(getString(R.string.browseAtypeSetting), ""));
             page.setSpecies(sharedPref.getString(getString(R.string.browseSpeciesSetting), ""));
             page.setGender(sharedPref.getString(getString(R.string.browseGenderSetting), ""));
             page.setPerpage(sharedPref.getString(getString(R.string.browsePerpageSetting), ""));
-            page.setRatingGeneral(sharedPref.getBoolean(getString(R.string.browseRatingGeneralSetting), true));
-            page.setRatingMature(sharedPref.getBoolean(getString(R.string.browseRatingMatureSetting), false));
-            page.setRatingAdult(sharedPref.getBoolean(getString(R.string.browseRatingAdultSetting), false));
+            page.setRatingGeneral(
+                sharedPref.getBoolean(getString(R.string.browseRatingGeneralSetting), true));
+            page.setRatingMature(
+                sharedPref.getBoolean(getString(R.string.browseRatingMatureSetting), false));
+            page.setRatingAdult(
+                sharedPref.getBoolean(getString(R.string.browseRatingAdultSetting), false));
         }
 
         isInitialized = true;
@@ -162,19 +166,18 @@ public class browse extends appFragment {
                 if (loginCheck.getIsLoggedIn() && loginCheck.getIsNSFWAllowed()) {
                     browseRatingMatureSwitch.setVisibility(View.VISIBLE);
                     browseRatingAdultSwitch.setVisibility(View.VISIBLE);
-                } else {
+                }
+                else {
                     browseRatingMatureSwitch.setVisibility(View.GONE);
                     browseRatingAdultSwitch.setVisibility(View.GONE);
                 }
             }
 
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
+            @Override public void requestSucceeded(abstractPage abstractPage) {
                 updateUIElements();
             }
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
+            @Override public void requestFailed(abstractPage abstractPage) {
                 updateUIElements();
                 Toast.makeText(getActivity(), "Failed to detect login", Toast.LENGTH_SHORT).show();
             }
@@ -182,86 +185,103 @@ public class browse extends appFragment {
 
         loginCheck.execute();
 
-        page = new open.furaffinity.client.pages.browse(this.getActivity(), new abstractPage.pageListener() {
-            @Override
-            public void requestSucceeded(abstractPage abstractPage) {
-                if (!isInitialized) {
-                    isLoading = false;
-                    initCurrentSettings();
-                    fab.setVisibility(View.VISIBLE);
+        page = new open.furaffinity.client.pages.browse(this.getActivity(),
+            new abstractPage.pageListener() {
+                @Override public void requestSucceeded(abstractPage abstractPage) {
+                    if (!isInitialized) {
+                        isLoading = false;
+                        initCurrentSettings();
+                        fab.setVisibility(View.VISIBLE);
 
-                    if (isCacheInitialized || mDataSet == null || mDataSet.size() == 0) {
+                        if (isCacheInitialized || mDataSet == null || mDataSet.size() == 0) {
+                            isCacheInitialized = true;
+                            resetRecycler();
+                        }
+                        else {
+                            fetchPageData();
+                        }
+                    }
+                    else if (!isCacheInitialized) {
+                        isLoading = false;
                         isCacheInitialized = true;
-                        resetRecycler();
-                    } else {
-                        fetchPageData();
-                    }
-                } else if (!isCacheInitialized) {
-                    isLoading = false;
-                    isCacheInitialized = true;
 
-                    List<HashMap<String, String>> pageResults = page.getPageResults();
-                    if (pageResults.size() > pageCacheCheckResultCount) {
-                        pageResults = pageResults.subList(0, pageCacheCheckResultCount);
-                    }
+                        List<HashMap<String, String>> pageResults = page.getPageResults();
+                        if (pageResults.size() > pageCacheCheckResultCount) {
+                            pageResults = pageResults.subList(0, pageCacheCheckResultCount);
+                        }
 
-                    if (mDataSet.size() > 0 && pageResults.contains(mDataSet.get(0))) {
-                        page.setPage(Integer.toString(pageNumber));
-                        swipeRefreshLayout.setRefreshing(false);
-                    } else {
-                        resetRecycler();
-                    }
-                } else {
-                    final open.furaffinity.client.pages.browse browsePage = ((open.furaffinity.client.pages.browse) abstractPage);
-
-                    new open.furaffinity.client.pages.adRetrieval(getActivity(), new abstractPage.pageListener() {
-                        @Override
-                        public void requestSucceeded(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
-                            List <HashMap<String, String>> pageResults = browsePage.getPageResults();
-                            List<HashMap<String, String>> adResults = ((open.furaffinity.client.pages.adRetrieval) abstractPage).getAdData();
-
-                            int curSize = mAdapter.getItemCount();
-
-                            //Deduplicate results
-                            List<String> newPostPaths = pageResults.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-                            List<String> oldPostPaths = mDataSet.stream().map(currentMap -> currentMap.get("postPath")).collect(Collectors.toList());
-                            newPostPaths.removeAll(oldPostPaths);
-                            pageResults = pageResults.stream().filter(currentMap -> newPostPaths.contains(currentMap.get("postPath"))).collect(Collectors.toList());
-
-                            if(!adResults.isEmpty()){
-                                int totalAddItems = pageResults.size() + adResults.size();
-                                int spacing = totalAddItems/adResults.size();
-
-                                for(int i = 0; i < adResults.size(); i++) {
-                                    int addPosition = (spacing * i) + i;
-                                    if(addPosition <= pageResults.size()) {
-                                        pageResults.add(addPosition, adResults.get(i));
-                                    }
-                                }
-                            }
-
-                            mDataSet.addAll(pageResults);
-                            mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
-
-                            isLoading = false;
+                        if (mDataSet.size() > 0 && pageResults.contains(mDataSet.get(0))) {
+                            page.setPage(Integer.toString(pageNumber));
                             swipeRefreshLayout.setRefreshing(false);
                         }
-
-                        @Override
-                        public void requestFailed(open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
-
+                        else {
+                            resetRecycler();
                         }
-                    }, browsePage.getAdZones()).execute();
-                }
-            }
+                    }
+                    else {
+                        final open.furaffinity.client.pages.browse browsePage =
+                            ((open.furaffinity.client.pages.browse) abstractPage);
 
-            @Override
-            public void requestFailed(abstractPage abstractPage) {
-                isLoading = false;
-                swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(getActivity(), "Failed to load data from browse page", Toast.LENGTH_SHORT).show();
-            }
-        });
+                        new open.furaffinity.client.pages.adRetrieval(getActivity(),
+                            new abstractPage.pageListener() {
+                                @Override
+                                public void requestSucceeded(
+                                    open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+                                    List<HashMap<String, String>> pageResults =
+                                        browsePage.getPageResults();
+                                    List<HashMap<String, String>> adResults =
+                                        ((open.furaffinity.client.pages.adRetrieval) abstractPage).getAdData();
+
+                                    int curSize = mAdapter.getItemCount();
+
+                                    //Deduplicate results
+                                    List<String> newPostPaths = pageResults.stream()
+                                        .map(currentMap -> currentMap.get("postPath"))
+                                        .collect(Collectors.toList());
+                                    List<String> oldPostPaths = mDataSet.stream()
+                                        .map(currentMap -> currentMap.get("postPath"))
+                                        .collect(Collectors.toList());
+                                    newPostPaths.removeAll(oldPostPaths);
+                                    pageResults = pageResults.stream().filter(
+                                            currentMap -> newPostPaths.contains(
+                                                currentMap.get("postPath")))
+                                        .collect(Collectors.toList());
+
+                                    if (!adResults.isEmpty()) {
+                                        int totalAddItems = pageResults.size() + adResults.size();
+                                        int spacing = totalAddItems / adResults.size();
+
+                                        for (int i = 0; i < adResults.size(); i++) {
+                                            int addPosition = (spacing * i) + i;
+                                            if (addPosition <= pageResults.size()) {
+                                                pageResults.add(addPosition, adResults.get(i));
+                                            }
+                                        }
+                                    }
+
+                                    mDataSet.addAll(pageResults);
+                                    mAdapter.notifyItemRangeInserted(curSize, mDataSet.size());
+
+                                    isLoading = false;
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+
+                                @Override
+                                public void requestFailed(
+                                    open.furaffinity.client.abstractClasses.abstractPage abstractPage) {
+
+                                }
+                            }, browsePage.getAdZones()).execute();
+                    }
+                }
+
+                @Override public void requestFailed(abstractPage abstractPage) {
+                    isLoading = false;
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(getActivity(), "Failed to load data from browse page",
+                        Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     private JSONObject getSearchParamaterObject() {
@@ -270,12 +290,17 @@ public class browse extends appFragment {
         try {
             result.put(browseContract.browseItemEntry.COLUMN_NAME_CAT, page.getCurrentCat());
             result.put(browseContract.browseItemEntry.COLUMN_NAME_ATYPE, page.getCurrentAtype());
-            result.put(browseContract.browseItemEntry.COLUMN_NAME_SPECIES, page.getCurrentSpecies());
+            result.put(browseContract.browseItemEntry.COLUMN_NAME_SPECIES,
+                page.getCurrentSpecies());
             result.put(browseContract.browseItemEntry.COLUMN_NAME_GENDER, page.getCurrentGender());
-            result.put(browseContract.browseItemEntry.COLUMN_NAME_PERPAGE, page.getCurrentPerpage());
-            result.put(browseContract.browseItemEntry.COLUMN_NAME_RATINGGENERAL, (!page.getCurrentRatingGeneral().equals("")));
-            result.put(browseContract.browseItemEntry.COLUMN_NAME_RATINGMATURE, (!page.getCurrentRatingMature().equals("")));
-            result.put(browseContract.browseItemEntry.COLUMN_NAME_RATINGADULT, (!page.getCurrentRatingAdult().equals("")));
+            result.put(browseContract.browseItemEntry.COLUMN_NAME_PERPAGE,
+                page.getCurrentPerpage());
+            result.put(browseContract.browseItemEntry.COLUMN_NAME_RATINGGENERAL,
+                (!page.getCurrentRatingGeneral().equals("")));
+            result.put(browseContract.browseItemEntry.COLUMN_NAME_RATINGMATURE,
+                (!page.getCurrentRatingMature().equals("")));
+            result.put(browseContract.browseItemEntry.COLUMN_NAME_RATINGADULT,
+                (!page.getCurrentRatingAdult().equals("")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -284,37 +309,45 @@ public class browse extends appFragment {
     }
 
     private void loadCurrentSettings() {
-        if(browseParamaters != null) {
+        if (browseParamaters != null) {
             try {
                 JSONObject loadedBrowseParamaters = new JSONObject(browseParamaters);
 
                 for (Iterator<String> it = loadedBrowseParamaters.keys(); it.hasNext(); ) {
                     String key = it.next();
 
-                    switch(key) {
+                    switch (key) {
                         case browseContract.browseItemEntry.COLUMN_NAME_CAT:
-                            page.setCat(loadedBrowseParamaters.getString(browseContract.browseItemEntry.COLUMN_NAME_CAT));
+                            page.setCat(loadedBrowseParamaters.getString(
+                                browseContract.browseItemEntry.COLUMN_NAME_CAT));
                             break;
                         case browseContract.browseItemEntry.COLUMN_NAME_ATYPE:
-                            page.setAtype(loadedBrowseParamaters.getString(browseContract.browseItemEntry.COLUMN_NAME_ATYPE));
+                            page.setAtype(loadedBrowseParamaters.getString(
+                                browseContract.browseItemEntry.COLUMN_NAME_ATYPE));
                             break;
                         case browseContract.browseItemEntry.COLUMN_NAME_SPECIES:
-                            page.setSpecies(loadedBrowseParamaters.getString(browseContract.browseItemEntry.COLUMN_NAME_SPECIES));
+                            page.setSpecies(loadedBrowseParamaters.getString(
+                                browseContract.browseItemEntry.COLUMN_NAME_SPECIES));
                             break;
                         case browseContract.browseItemEntry.COLUMN_NAME_GENDER:
-                            page.setGender(loadedBrowseParamaters.getString(browseContract.browseItemEntry.COLUMN_NAME_GENDER));
+                            page.setGender(loadedBrowseParamaters.getString(
+                                browseContract.browseItemEntry.COLUMN_NAME_GENDER));
                             break;
                         case browseContract.browseItemEntry.COLUMN_NAME_PERPAGE:
-                            page.setPerpage(loadedBrowseParamaters.getString(browseContract.browseItemEntry.COLUMN_NAME_PERPAGE));
+                            page.setPerpage(loadedBrowseParamaters.getString(
+                                browseContract.browseItemEntry.COLUMN_NAME_PERPAGE));
                             break;
                         case browseContract.browseItemEntry.COLUMN_NAME_RATINGGENERAL:
-                            page.setRatingGeneral(loadedBrowseParamaters.getBoolean(browseContract.browseItemEntry.COLUMN_NAME_RATINGGENERAL));
+                            page.setRatingGeneral(loadedBrowseParamaters.getBoolean(
+                                browseContract.browseItemEntry.COLUMN_NAME_RATINGGENERAL));
                             break;
                         case browseContract.browseItemEntry.COLUMN_NAME_RATINGMATURE:
-                            page.setRatingMature(loadedBrowseParamaters.getBoolean(browseContract.browseItemEntry.COLUMN_NAME_RATINGMATURE));
+                            page.setRatingMature(loadedBrowseParamaters.getBoolean(
+                                browseContract.browseItemEntry.COLUMN_NAME_RATINGMATURE));
                             break;
                         case browseContract.browseItemEntry.COLUMN_NAME_RATINGADULT:
-                            page.setRatingAdult(loadedBrowseParamaters.getBoolean(browseContract.browseItemEntry.COLUMN_NAME_RATINGADULT));
+                            page.setRatingAdult(loadedBrowseParamaters.getBoolean(
+                                browseContract.browseItemEntry.COLUMN_NAME_RATINGADULT));
                             break;
                         default:
                             break;
@@ -327,11 +360,16 @@ public class browse extends appFragment {
             browseParamaters = null;
         }
 
-        uiControls.spinnerSetAdapter(requireContext(), browseCatSpinner, page.getCat(), page.getCurrentCat(), true, true);
-        uiControls.spinnerSetAdapter(requireContext(), browseAtypeSpinner, page.getAtype(), page.getCurrentAtype(), true, true);
-        uiControls.spinnerSetAdapter(requireContext(), browseSpeciesSpinner, page.getSpecies(), page.getCurrentSpecies(), true, true);
-        uiControls.spinnerSetAdapter(requireContext(), browseGenderSpinner, page.getGender(), page.getCurrentGender(), true, true);
-        uiControls.spinnerSetAdapter(requireContext(), browsePerpageSpinner, page.getPerpage(), page.getCurrentPerpage(), true, true);
+        uiControls.spinnerSetAdapter(requireContext(), browseCatSpinner, page.getCat(),
+            page.getCurrentCat(), true, true);
+        uiControls.spinnerSetAdapter(requireContext(), browseAtypeSpinner, page.getAtype(),
+            page.getCurrentAtype(), true, true);
+        uiControls.spinnerSetAdapter(requireContext(), browseSpeciesSpinner, page.getSpecies(),
+            page.getCurrentSpecies(), true, true);
+        uiControls.spinnerSetAdapter(requireContext(), browseGenderSpinner, page.getGender(),
+            page.getCurrentGender(), true, true);
+        uiControls.spinnerSetAdapter(requireContext(), browsePerpageSpinner, page.getPerpage(),
+            page.getCurrentPerpage(), true, true);
         browsePageEditText.setText(page.getCurrentPage());
         browseRatingGeneralSwitch.setChecked((!page.getCurrentRatingGeneral().equals("")));
 
@@ -401,18 +439,24 @@ public class browse extends appFragment {
 
         if (valueChanged) {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
 
-            if (sharedPref.getBoolean(getString(R.string.saveBrowseState), settings.saveBrowseStateDefault)) {
+            if (sharedPref.getBoolean(getString(R.string.saveBrowseState),
+                settings.saveBrowseStateDefault)) {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.browseCatSetting), selectedCatValue);
                 editor.putString(getString(R.string.browseAtypeSetting), selectedAtypeValue);
                 editor.putString(getString(R.string.browseSpeciesSetting), selectedSpeciesValue);
                 editor.putString(getString(R.string.browseGenderSetting), selectedGenderValue);
                 editor.putString(getString(R.string.browsePerpageSetting), selectedPerpageValue);
-                editor.putBoolean(getString(R.string.browseRatingGeneralSetting), (selectedRatingGeneralValue.equals("on")));
-                editor.putBoolean(getString(R.string.browseRatingMatureSetting), (selectedRatingMatureValue.equals("on")));
-                editor.putBoolean(getString(R.string.browseRatingAdultSetting), (selectedRatingAdultValue.equals("on")));
+                editor.putBoolean(getString(R.string.browseRatingGeneralSetting),
+                    (selectedRatingGeneralValue.equals("on")));
+                editor.putBoolean(getString(R.string.browseRatingMatureSetting),
+                    (selectedRatingMatureValue.equals("on")));
+                editor.putBoolean(getString(R.string.browseRatingAdultSetting),
+                    (selectedRatingAdultValue.equals("on")));
                 editor.apply();
             }
 
@@ -423,27 +467,29 @@ public class browse extends appFragment {
     protected void updateUIElementListeners(View rootView) {
         swipeRefreshLayout.setOnRefreshListener(this::resetRecycler);
 
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
-            @Override
-            public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
-                if (!isLoading) {
-                    page.setPage(Integer.toString(page.getPage() + 1));
-                    fetchPageData();
+        endlessRecyclerViewScrollListener =
+            new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+                @Override
+                public void onLoadMore(int pageNumber, int totalItemsCount, RecyclerView view) {
+                    if (!isLoading) {
+                        page.setPage(Integer.toString(page.getPage() + 1));
+                        fetchPageData();
+                    }
                 }
-            }
-        };
+            };
 
         //noinspection deprecation
         recyclerView.setOnScrollListener(endlessRecyclerViewScrollListener);
 
-        fab.setOnClickListener(view ->
-        {
+        fab.setOnClickListener(view -> {
             if (settingsTableLayout.getVisibility() == View.VISIBLE) {
                 settingsTableLayout.setVisibility(View.GONE);
                 saveCurrentSettings();
-                ((mainActivity)requireActivity()).drawerFragmentPush(this.getClass().getName(), getSearchParamaterObject().toString());
+                ((mainActivity) requireActivity()).drawerFragmentPush(this.getClass().getName(),
+                    getSearchParamaterObject().toString());
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 swipeRefreshLayout.setVisibility(View.GONE);
                 loadCurrentSettings();
                 settingsTableLayout.setVisibility(View.VISIBLE);
@@ -460,7 +506,8 @@ public class browse extends appFragment {
 
     private int getRecyclerFirstItem() {
         int[] firstVisibleItems = null;
-        firstVisibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItems);
+        firstVisibleItems =
+            staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItems);
         if (firstVisibleItems != null && firstVisibleItems.length > 0) {
             return firstVisibleItems[0];
         }
@@ -468,61 +515,87 @@ public class browse extends appFragment {
         return -1;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         browseParamaters = ((mainActivity) requireActivity()).getBrowseParamaters();
 
         if (browseParamaters == null) {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
 
-            if (sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
-                long sessionTimestamp = sharedPref.getLong(getString(R.string.browseSessionTimestamp), 0);
-                long sessionInvalidateCachedTime = sharedPref.getInt(getString(R.string.InvalidateCachedBrowseTimeSetting), settings.InvalidateCachedBrowseTimeDefault);
-                sessionInvalidateCachedTime = sessionInvalidateCachedTime * 60;//convert min to seconds
+            if (sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting),
+                open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
+                long sessionTimestamp =
+                    sharedPref.getLong(getString(R.string.browseSessionTimestamp), 0);
+                long sessionInvalidateCachedTime =
+                    sharedPref.getInt(getString(R.string.InvalidateCachedBrowseTimeSetting),
+                        settings.InvalidateCachedBrowseTimeDefault);
+                sessionInvalidateCachedTime =
+                    sessionInvalidateCachedTime * 60;//convert min to seconds
 
                 long currentTimestamp = Instant.now().getEpochSecond();
                 long minTimestamp = currentTimestamp - sessionInvalidateCachedTime;
 
                 if (sessionTimestamp >= minTimestamp && sessionTimestamp <= currentTimestamp) {
-                    pageCacheCheckResultCount = sharedPref.getInt(context.getString(R.string.InvalidateCachedBrowseAfterSetting), settings.InvalidateCachedBrowseAfterDefault);
+                    pageCacheCheckResultCount = sharedPref.getInt(
+                        context.getString(R.string.InvalidateCachedBrowseAfterSetting),
+                        settings.InvalidateCachedBrowseAfterDefault);
 
-                    String mDataSetString = sharedPref.getString(context.getString(R.string.browseSessionDataSet), null);
-                    pageNumber = sharedPref.getInt(context.getString(R.string.browseSessionPage), -1);
-                    recyclerViewPosition = sharedPref.getInt(context.getString(R.string.browseSessionRecyclerView), -1);
+                    String mDataSetString =
+                        sharedPref.getString(context.getString(R.string.browseSessionDataSet),
+                            null);
+                    pageNumber =
+                        sharedPref.getInt(context.getString(R.string.browseSessionPage), -1);
+                    recyclerViewPosition =
+                        sharedPref.getInt(context.getString(R.string.browseSessionRecyclerView),
+                            -1);
 
                     if (mDataSetString != null) {
-                        mDataSet = (List<HashMap<String, String>>) open.furaffinity.client.utilities.serialization.deSearilizeFromString(mDataSetString);
-                    } else {
+                        mDataSet =
+                            (List<HashMap<String, String>>) open.furaffinity.client.utilities.serialization.deSearilizeFromString(
+                                mDataSetString);
+                    }
+                    else {
                         isCacheInitialized = true;
                     }
-                } else {
+                }
+                else {
                     isCacheInitialized = true;
                 }
-            } else {
+            }
+            else {
                 isCacheInitialized = true;
             }
-        } else {
+        }
+        else {
             isCacheInitialized = true;
         }
     }
 
-    @Override
-    public void onStop() {
+    @Override public void onStop() {
         super.onStop();
         if (mDataSet != null && page != null && recyclerView != null) {
             Context context = requireActivity();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(R.string.settingsFile), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref =
+                context.getSharedPreferences(getString(R.string.settingsFile),
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
 
-            if (sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting), open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
-                editor.putLong(context.getString(R.string.browseSessionTimestamp), Instant.now().getEpochSecond());
-                editor.putString(context.getString(R.string.browseSessionDataSet), open.furaffinity.client.utilities.serialization.searilizeToString((Serializable) mDataSet));
+            if (sharedPref.getBoolean(getString(R.string.cachedBrowseStateSetting),
+                open.furaffinity.client.fragmentDrawers.settings.cachedBrowseDefault)) {
+                editor.putLong(context.getString(R.string.browseSessionTimestamp),
+                    Instant.now().getEpochSecond());
+                editor.putString(context.getString(R.string.browseSessionDataSet),
+                    open.furaffinity.client.utilities.serialization.searilizeToString(
+                        (Serializable) mDataSet));
                 editor.putInt(context.getString(R.string.browseSessionPage), page.getPage());
-                editor.putInt(context.getString(R.string.browseSessionRecyclerView), getRecyclerFirstItem());
-            } else {
+                editor.putInt(context.getString(R.string.browseSessionRecyclerView),
+                    getRecyclerFirstItem());
+            }
+            else {
                 editor.putLong(context.getString(R.string.browseSessionTimestamp), 0);
                 editor.putString(context.getString(R.string.browseSessionDataSet), "");
                 editor.putInt(context.getString(R.string.browseSessionPage), -1);

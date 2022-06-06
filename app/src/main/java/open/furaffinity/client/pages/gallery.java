@@ -1,22 +1,20 @@
 package open.furaffinity.client.pages;
 
-import android.content.Context;
+import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.abstractPage;
 import open.furaffinity.client.fragmentDrawers.settings;
 import open.furaffinity.client.utilities.imageResultsTool;
-
-import static open.furaffinity.client.utilities.imageResultsTool.getResultsData;
 
 public class gallery extends abstractPage {
     private final HashMap<String, String> folderResults = new HashMap<>();
@@ -34,7 +32,9 @@ public class gallery extends abstractPage {
     public gallery(Context context, pageListener pageListener, String pagePath) {
         super(context, pageListener);
         this.pagePath = pagePath;
-        currentResolution = imageResultsTool.getimageResolutionFromInt(sharedPref.getInt(context.getString(R.string.imageResolutionSetting), settings.imageResolutionDefault));
+        currentResolution = imageResultsTool.getimageResolutionFromInt(
+            sharedPref.getInt(context.getString(R.string.imageResolutionSetting),
+                settings.imageResolutionDefault));
     }
 
     public gallery(gallery gallery) {
@@ -105,8 +105,10 @@ public class gallery extends abstractPage {
 
         Element assignFolderSubmitElement = doc.selectFirst("button[name=assign_folder_submit]");
         Element createFolderSubmitElement = doc.selectFirst("button[name=create_folder_submit]");
-        Element removeFromFoldersSubmitElement = doc.selectFirst("button[name=remove_from_folders_submit]");
-        Element moveFromScrapsSubmitElement = doc.selectFirst("button[name=move_from_scraps_submit]");
+        Element removeFromFoldersSubmitElement =
+            doc.selectFirst("button[name=remove_from_folders_submit]");
+        Element moveFromScrapsSubmitElement =
+            doc.selectFirst("button[name=move_from_scraps_submit]");
         Element moveToScrapsSubmitElement = doc.selectFirst("button[name=move_to_scraps_submit]");
 
         if (assignFolderSubmitElement != null) {
@@ -133,9 +135,9 @@ public class gallery extends abstractPage {
         return true;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... Void) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... Void) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }

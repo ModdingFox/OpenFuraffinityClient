@@ -4,10 +4,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
-
 import open.furaffinity.client.R;
 import open.furaffinity.client.abstractClasses.appFragment;
 import open.furaffinity.client.adapter.historyListAdapter;
@@ -30,12 +27,11 @@ public class historyList extends appFragment {
     private final List<HashMap<String, String>> mDataSet = new ArrayList<>();
     private LinearLayoutManager layoutManager;
     private RecyclerView recyclerView;
-    @SuppressWarnings("FieldCanBeLocal")
-    private RecyclerView.Adapter<historyListAdapter.ViewHolder> mAdapter;
+    @SuppressWarnings("FieldCanBeLocal") private RecyclerView.Adapter<historyListAdapter.ViewHolder>
+        mAdapter;
     private int currentView = 0;
 
-    @Override
-    protected int getLayout() {
+    @Override protected int getLayout() {
         return R.layout.fragment_recycler_view;
     }
 
@@ -48,7 +44,8 @@ public class historyList extends appFragment {
     protected void initPages() {
         if (getArguments() != null) {
             currentView = getArguments().getInt(messageIds.historyListPage_MESSAGE);
-        } else {
+        }
+        else {
             Toast.makeText(getActivity(), "Missing current view type", Toast.LENGTH_SHORT).show();
         }
 
@@ -61,12 +58,9 @@ public class historyList extends appFragment {
         historyDBHelper dbHelper = new historyDBHelper(getActivity());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] projection = {
-                historyItemEntry.COLUMN_NAME_USER,
-                historyItemEntry.COLUMN_NAME_TITLE,
-                historyItemEntry.COLUMN_NAME_URL,
-                historyItemEntry.COLUMN_NAME_DATETIME
-        };
+        String[] projection =
+            {historyItemEntry.COLUMN_NAME_USER, historyItemEntry.COLUMN_NAME_TITLE,
+                historyItemEntry.COLUMN_NAME_URL, historyItemEntry.COLUMN_NAME_DATETIME};
 
         String sortOrder = "rowid DESC";
 
@@ -88,24 +82,22 @@ public class historyList extends appFragment {
                 break;
         }
 
-        Cursor cursor = db.query(
-                tableName,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                sortOrder
-        );
+        Cursor cursor = db.query(tableName, projection, null, null, null, null, sortOrder);
 
         while (cursor.moveToNext()) {
             HashMap<String, String> newItem = new HashMap<>();
-            String itemUser = cursor.getString(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_USER));
-            String itemTitle = cursor.getString(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_TITLE));
-            String itemURL = cursor.getString(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_URL));
-            long itemDateTime = cursor.getLong(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_DATETIME));
+            String itemUser =
+                cursor.getString(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_USER));
+            String itemTitle =
+                cursor.getString(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_TITLE));
+            String itemURL =
+                cursor.getString(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_URL));
+            long itemDateTime =
+                cursor.getLong(cursor.getColumnIndexOrThrow(historyItemEntry.COLUMN_NAME_DATETIME));
 
-            LocalDateTime itemLocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(itemDateTime), TimeZone.getDefault().toZoneId());
+            LocalDateTime itemLocalDateTime =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(itemDateTime),
+                    TimeZone.getDefault().toZoneId());
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
 
             newItem.put("class", routableClass);
@@ -113,8 +105,10 @@ public class historyList extends appFragment {
 
             if (itemTitle == null || itemTitle.equals("")) {
                 newItem.put("item", itemUser + " viewed on " + formatter.format(itemLocalDateTime));
-            } else {
-                newItem.put("item", itemTitle + " by " + itemUser + " viewed on " + formatter.format(itemLocalDateTime));
+            }
+            else {
+                newItem.put("item", itemTitle + " by " + itemUser + " viewed on " +
+                    formatter.format(itemLocalDateTime));
             }
             mDataSet.add(newItem);
         }
@@ -123,13 +117,11 @@ public class historyList extends appFragment {
         db.close();
     }
 
-    @Override
-    protected void updateUIElements() {
+    @Override protected void updateUIElements() {
 
     }
 
-    @Override
-    protected void updateUIElementListeners(View rootView) {
+    @Override protected void updateUIElementListeners(View rootView) {
 
     }
 }

@@ -1,14 +1,12 @@
 package open.furaffinity.client.submitPages;
 
-import android.content.Context;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
 import java.util.HashMap;
-
 import open.furaffinity.client.abstractClasses.abstractPage;
 
 public class submitSubmissionPart1 extends open.furaffinity.client.abstractClasses.abstractPage {
@@ -36,8 +34,7 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
         return pagePath;
     }
 
-    @Override
-    protected Boolean processPageData(String html) {
+    @Override protected Boolean processPageData(String html) {
         boolean result = true;
         Document doc = Jsoup.parse(html);
 
@@ -55,10 +52,11 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
                 submissionType.put(key, value);
             }
 
-            if(submissionType.keySet().size() < 1) {
+            if (submissionType.keySet().size() < 1) {
                 result = false;
             }
-        } else {
+        }
+        else {
             result = false;
         }
 
@@ -67,26 +65,29 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
             Element keyInput = uploadFormForm.selectFirst("input[name=key]");
             if (keyInput != null) {
                 submissionKey = keyInput.attr("value");
-            } else {
+            }
+            else {
                 result = false;
             }
 
             Element maxFileSizeInput = uploadFormForm.selectFirst("input[name=MAX_FILE_SIZE]");
             if (maxFileSizeInput != null) {
                 maxFileSize = maxFileSizeInput.attr("value");
-            } else {
+            }
+            else {
                 result = false;
             }
-        } else {
+        }
+        else {
             result = false;
         }
 
         return result;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
-        String html = webClient.sendGetRequest(open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
+    @Override protected Boolean doInBackground(Void... voids) {
+        String html = webClient.sendGetRequest(
+            open.furaffinity.client.utilities.webClient.getBaseUrl() + pagePath);
         if (webClient.getLastPageLoaded() && html != null) {
             return processPageData(html);
         }
@@ -101,17 +102,17 @@ public class submitSubmissionPart1 extends open.furaffinity.client.abstractClass
         return submissionTypeCurrent;
     }
 
+    public void setSubmissionTypeCurrent(String submissionTypeCurrent) {
+        if (submissionType.containsKey(submissionTypeCurrent)) {
+            this.submissionTypeCurrent = submissionTypeCurrent;
+        }
+    }
+
     public String getMaxFileSize() {
         return maxFileSize;
     }
 
     public String getSubmissionKey() {
         return submissionKey;
-    }
-
-    public void setSubmissionTypeCurrent(String submissionTypeCurrent) {
-        if (submissionType.containsKey(submissionTypeCurrent)) {
-            this.submissionTypeCurrent = submissionTypeCurrent;
-        }
     }
 }
