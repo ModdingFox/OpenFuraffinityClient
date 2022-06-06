@@ -46,7 +46,7 @@ checkstyle {
     ]
     description 'Check code standard'
     group 'verification'
-    ignoreFailures = true//Will ignore these for the moment so that we can build and fix
+    ignoreFailures = true
     showViolations = false//Hiding this for now as there are to many.
     toolVersion '10.3'
 }

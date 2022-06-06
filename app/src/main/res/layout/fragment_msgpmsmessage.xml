@@ -5,7 +5,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragmentTabs.msgPmsMessage">
+    tools:context=".fragmentTabs.MsgPmsMessage">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -76,7 +76,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <open.furaffinity.client.utilities.fabCircular
+    <open.furaffinity.client.utilities.FabCircular
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

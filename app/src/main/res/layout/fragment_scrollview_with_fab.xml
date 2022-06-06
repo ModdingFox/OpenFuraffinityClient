@@ -25,7 +25,7 @@
 
     </ScrollView>
 
-    <open.furaffinity.client.utilities.fabCircular
+    <open.furaffinity.client.utilities.FabCircular
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

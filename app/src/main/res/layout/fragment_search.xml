@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragmentDrawers.search">
+    tools:context=".fragmentDrawers.Search">
 
     <ScrollView
         android:id="@+id/searchOptionsScrollView"
@@ -268,7 +268,7 @@
         android:scrollbars="vertical"
         android:visibility="gone" />
 
-    <open.furaffinity.client.utilities.fabCircular
+    <open.furaffinity.client.utilities.FabCircular
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

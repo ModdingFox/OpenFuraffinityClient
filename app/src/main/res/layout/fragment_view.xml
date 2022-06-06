@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragmentDrawers.view">
+    tools:context=".fragmentDrawers.View">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -201,7 +201,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <open.furaffinity.client.utilities.fabCircular
+    <open.furaffinity.client.utilities.FabCircular
         android:id="@+id/fab"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

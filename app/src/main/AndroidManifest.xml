@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.mainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/title_activity_navigation_drawer"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -126,7 +126,7 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".broadcastReceivers.onBoot"
+            android:name=".broadcastReceivers.OnBoot"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
@@ -134,7 +134,7 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".services.mediaPlayer"
+            android:name=".services.MediaPlayer"
             android:icon="@drawable/ic_music"
             android:label="@string/musicPlayerService"/>
     </application>

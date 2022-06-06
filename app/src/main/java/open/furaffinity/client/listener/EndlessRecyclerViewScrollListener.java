@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import java.util.Objects;
-import open.furaffinity.client.fragmentDrawers.settings;
+import open.furaffinity.client.fragmentDrawers.Settings;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
-    private final int visibleThreshold = settings.recyclerVisibleThresholdDefault;
+    private final int visibleThreshold = Settings.recyclerVisibleThresholdDefault;
     private final RecyclerView.LayoutManager mLayoutManager;
     private int currentPage = 0;
     private int previousTotalItemCount = 0;
