@@ -1,2 +1,2 @@
-rootProject.name='Open FurAffinity Client'
+rootProject.name = "OpenFuraffinityClientV2"
 include ':app'

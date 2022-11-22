@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_browse">
+
+    <fragment
+        android:id="@+id/nav_browse"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_browse"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_search"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <dialog
+        android:id="@+id/nav_upload"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_upload" />
+
+    <fragment
+        android:id="@+id/nav_msg_submission"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_msg_submission"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_msg_others"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_msg_others"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_msg_pms"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_msg_pms"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_history"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_journal"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_journal"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_msg_pms_message"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_msg_pms_message"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_user"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_user"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_view"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_view"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+
+    <dialog
+        android:id="@+id/nav_login"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_login" />
+
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_not_implemented_yet" />
+</navigation>

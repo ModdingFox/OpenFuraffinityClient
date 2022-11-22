@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<FindBugsFilter>
+  <Match>
+    <Package name="open.furaffinity.client.databinding.*"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Package name="open.furaffinity.client.databinding.*"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+</FindBugsFilter>

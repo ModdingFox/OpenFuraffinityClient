@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.1'
+        classpath 'com.android.tools.build:gradle:7.3.1'
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.7'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -25,6 +25,7 @@ allprojects {
     }
 
     checkstyleConfigRoot = "${project.rootDir}/checkstyle"
+    spotbugsConfigRoot = "${project.rootDir}/spotbugs"
 }
 
 task clean(type: Delete) {

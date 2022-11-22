@@ -69,9 +69,11 @@
   </module>
 
   <!-- Javadoc Comments -->
+  <!-- Disabled as Javadoc Generation Fails
   <module name="JavadocPackage">
     <property name="allowLegacy" value="false"/>
   </module>
+  -->
 
   <!-- Miscellaneous -->
   <module name="NewlineAtEndOfFile"/>
@@ -640,17 +642,21 @@
       <!-- avoid errors on tag '@noinspection' -->
       <property name="allowUnknownTags" value="true"/>
     </module>
-    <module name="JavadocVariable"/>
+    <!-- Disabled as Javadoc Generation Fails <module name="JavadocVariable"/> -->
+    <!-- Disabled as Javadoc Generation Fails
     <module name="MissingJavadocMethod">
       <property name="scope" value="private"/>
     </module>
-    <module name="MissingJavadocPackage"/>
+    -->
+    <!-- Disabled as Javadoc Generation Fails <module name="MissingJavadocPackage"/> -->
+    <!-- Disabled as Javadoc Generation Fails
     <module name="MissingJavadocType">
       <property name="scope" value="private"/>
     </module>
+    -->
     <module name="NonEmptyAtclauseDescription"/>
     <module name="SingleLineJavadoc"/>
-    <module name="WriteTag"/>
+    <!-- Disabled as Javadoc Generation Fails <module name="WriteTag"/> -->
     <module name="SummaryJavadoc"/>
     <module name="RequireEmptyLineBeforeBlockTagGroup"/>
 
