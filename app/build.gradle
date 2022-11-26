@@ -1,6 +1,6 @@
 plugins {
-    id 'com.android.application'
     id 'checkstyle'
+    id 'com.android.application'
     id 'com.github.spotbugs'
 }
 
@@ -29,6 +29,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
+        dataBinding true
         viewBinding true
     }
 }
@@ -91,7 +92,15 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'org.jsoup:jsoup:1.15.3'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+    implementation 'com.github.spotbugs:spotbugs-annotations:4.7.3'
+    implementation 'com.google.guava:guava:31.1-android'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 }

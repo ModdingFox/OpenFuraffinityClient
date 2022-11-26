@@ -352,11 +352,12 @@
     <module name="ThrowsCount">
       <property name="max" value="2"/>
     </module>
+    <!-- Disable as we want to be able to have an abstract define fields for implementations
     <module name="VisibilityModifier">
       <property name="ignoreAnnotationCanonicalNames"
                 value="org.junit.Rule, org.junit.jupiter.api.io.TempDir"/>
     </module>
-
+    -->
     <!-- Coding -->
     <module name="ArrayTrailingComma"/>
     <module name="AvoidDoubleBraceInitialization"/>

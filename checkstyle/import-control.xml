@@ -6,6 +6,18 @@
 <import-control pkg="open.furaffinity.client">
   <allow pkg="android"/>
   <allow pkg="androidx"/>
+  <allow pkg="com.bumptech.glide"/>
   <allow pkg="com.google.android"/>
+  <allow class="com.google.common.base.Strings"/>
+  <allow class="com.google.common.collect.ImmutableSet"/>
+  <allow class="edu.umd.cs.findbugs.annotations.SuppressFBWarnings"/>
+  <allow pkg="java.io"/>
+  <allow pkg="java.net"/>
+  <allow pkg="java.nio"/>
+  <allow pkg="java.time"/>
+  <allow pkg="java.util"/>
+  <allow pkg="okhttp3"/>
+  <allow class="org.apache.commons.lang3.StringUtils"/>
+  <allow pkg="org.jsoup"/>
   <allow pkg="open.furaffinity.client"/>
 </import-control>

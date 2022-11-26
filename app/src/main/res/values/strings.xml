@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">OpenFuraffinityClient</string>
 
+    <!-- fragment_not_implemented_yet -->
     <string name="notImplementedYet">Not implemented yet.</string>
 
-    <!-- nav_header_main.xml(Main App Drawer) -->
+    <!-- activity_main_navigation_header.xml(Main App Drawer) -->
     <string name="notificationSTextView">S:</string>
     <string name="notificationWTextView">W:</string>
     <string name="notificationCTextView">C:</string>
@@ -11,7 +12,7 @@
     <string name="notificationJTextView">J:</string>
     <string name="notificationNTextView">N:</string>
 
-    <!-- activity_main_drawer.xml(Main App Drawer) -->
+    <!-- activity_main_navigation.xml activity_main_navigation_menu.xml(Main App Drawer) -->
     <string name="menu_browse">Browse</string>
     <string name="menu_search">Search</string>
     <string name="menu_profile">Profile</string>
@@ -28,5 +29,11 @@
     <string name="menu_login">Login</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_about">About</string>
+
+    <!-- fragment_login.xml -->
+    <string name="loginButton">Login</string>
+    <string name="userNameText">Username:</string>
+    <string name="passwordText">Password:</string>
+    <string name="acceptButton">Accept</string>
 
 </resources>

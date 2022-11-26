@@ -2,94 +2,133 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
+    android:id="@+id/activity_navigation"
     app:startDestination="@+id/nav_browse">
 
     <fragment
         android:id="@+id/nav_browse"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.browse.BrowseFragment"
         android:label="@string/menu_browse"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_browse" >
+        <action
+            android:id="@+id/action_nav_browse_to_nav_view2"
+            app:destination="@id/nav_view" />
+        <action
+            android:id="@+id/action_nav_browse_to_nav_msg_pms_message2"
+            app:destination="@id/nav_msg_pms_message" />
+        <action
+            android:id="@+id/action_nav_browse_to_nav_journal2"
+            app:destination="@id/nav_journal" />
+        <action
+            android:id="@+id/action_nav_browse_to_nav_user2"
+            app:destination="@id/nav_user" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_search"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.search.SearchFragment"
         android:label="@string/menu_search"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_nav_search_to_nav_view2"
+            app:destination="@id/nav_view" />
+        <action
+            android:id="@+id/action_nav_search_to_nav_msg_pms_message2"
+            app:destination="@id/nav_msg_pms_message" />
+        <action
+            android:id="@+id/action_nav_search_to_nav_journal2"
+            app:destination="@id/nav_journal" />
+        <action
+            android:id="@+id/action_nav_search_to_nav_user2"
+            app:destination="@id/nav_user" />
+    </fragment>
 
-    <dialog
+    <fragment
         android:id="@+id/nav_upload"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
-        android:label="@string/menu_upload" />
+        android:name="open.furaffinity.client.fragments.upload.UploadFragment"
+        android:label="@string/menu_upload"
+        tools:layout="@layout/fragment_upload" />
 
     <fragment
         android:id="@+id/nav_msg_submission"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.msgSubmission.MsgSubmissionFragment"
         android:label="@string/menu_msg_submission"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_msg_submission" />
 
     <fragment
         android:id="@+id/nav_msg_others"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.msgOthers.MsgOthersFragment"
         android:label="@string/menu_msg_others"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_msg_others" />
 
     <fragment
         android:id="@+id/nav_msg_pms"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.msgPms.MsgPmsFragment"
         android:label="@string/menu_msg_pms"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_msg_pms" />
 
     <fragment
         android:id="@+id/nav_history"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.history.HistoryFragment"
         android:label="@string/menu_history"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.profile.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/nav_journal"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.journal.JournalFragment"
         android:label="@string/menu_journal"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_journal" />
 
     <fragment
         android:id="@+id/nav_msg_pms_message"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.NotImplementedYet"
         android:label="@string/menu_msg_pms_message"
         tools:layout="@layout/fragment_not_implemented_yet" />
 
     <fragment
         android:id="@+id/nav_user"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.user.UserFragment"
         android:label="@string/menu_user"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_user" />
 
     <fragment
         android:id="@+id/nav_view"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.view.ViewFragment"
         android:label="@string/menu_view"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_view" />
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.settings.SettingsFragment"
         android:label="@string/menu_settings"
-        tools:layout="@layout/fragment_not_implemented_yet" />
+        tools:layout="@layout/fragment_settings" />
 
-    <dialog
+    <fragment
         android:id="@+id/nav_login"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
-        android:label="@string/menu_login" />
+        android:name="open.furaffinity.client.fragments.login.LoginFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_nav_login_to_nav_recaptchav2"
+            app:destination="@id/nav_recaptchav2" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_recaptchav2"
+        android:name="open.furaffinity.client.fragments.recaptchaV2.RecaptchaV2Fragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_recaptcha_v2" />
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="open.furaffinity.client.fragment.NotImplementedYet"
+        android:name="open.furaffinity.client.fragments.about.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_not_implemented_yet" />
+
 </navigation>

@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/nav_group"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_browse"
             android:icon="@drawable/icon_paw"
@@ -43,26 +45,6 @@
             android:title="@string/menu_history" />
 
         <item
-            android:id="@+id/nav_journal"
-            android:icon="@drawable/icon_journal"
-            android:title="@string/menu_journal" />
-
-        <item
-            android:id="@+id/nav_msg_pms_message"
-            android:icon="@drawable/icon_openmessage"
-            android:title="@string/menu_msg_pms_message" />
-
-        <item
-            android:id="@+id/nav_user"
-            android:icon="@drawable/icon_user"
-            android:title="@string/menu_user" />
-
-        <item
-            android:id="@+id/nav_view"
-            android:icon="@drawable/icon_image"
-            android:title="@string/menu_view" />
-
-        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/icon_settings"
             android:title="@string/menu_settings" />
@@ -71,6 +53,12 @@
             android:id="@+id/nav_login"
             android:icon="@drawable/icon_login"
             android:title="@string/menu_login" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/icon_logout"
+            android:title="@string/menu_logout"
+            android:visible="false"/>
 
         <item
             android:id="@+id/nav_about"
